@@ -106,6 +106,6 @@
 
 @layer base {
   body {
-    @apply bg-background;
+    @apply bg-background text-label-normal;
   }
 }
