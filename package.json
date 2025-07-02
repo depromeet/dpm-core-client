@@ -1,37 +1,39 @@
 {
-	"name": "dpm-core-client",
-	"version": "0.1.0",
-	"private": true,
-	"scripts": {
-		"dev": "next dev --turbopack",
-		"build": "next build",
-		"start": "next start",
-		"format": "biome format --write .",
-		"lint": "biome lint --write ."
-	},
-	"dependencies": {
-		"@radix-ui/react-slot": "^1.2.3",
-		"@tanstack/react-query": "^5.80.6",
-		"axios": "^1.9.0",
-		"better-auth": "^1.2.9",
-		"class-variance-authority": "^0.7.1",
-		"clsx": "^2.1.1",
-		"lucide-react": "^0.514.0",
-		"motion": "^12.17.0",
-		"next": "15.3.3",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0",
-		"tailwind-merge": "^3.3.1"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
-		"@tailwindcss/postcss": "^4",
-		"@types/node": "^20",
-		"@types/react": "^19",
-		"@types/react-dom": "^19",
-		"tailwindcss": "^4",
-		"tw-animate-css": "^1.3.4",
-		"typescript": "^5"
-	},
-	"packageManager": "yarn@4.9.2"
+  "name": "dpm-core-client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "format": "biome format --write .",
+    "lint": "biome lint --write ."
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.14",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@tanstack/react-query": "^5.80.6",
+    "axios": "^1.9.0",
+    "better-auth": "^1.2.9",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.514.0",
+    "motion": "^12.17.0",
+    "next": "15.3.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.3.1",
+    "vaul": "^1.1.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "^4",
+    "tw-animate-css": "^1.3.4",
+    "typescript": "^5"
+  },
+  "packageManager": "yarn@4.9.2"
 }
