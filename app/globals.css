@@ -18,7 +18,7 @@
 
   /* Gray Colors */
   --color-gray-0: #ffffff;
-  --color-gray-50: #f9fafb;
+  --color-gray-50: #f6f8fa;
   --color-gray-100: #f3f4f6;
   --color-gray-200: #e5e7eb;
   --color-gray-300: #d1d5db;
@@ -53,6 +53,18 @@
   --color-yellow-800: #663a00;
   --color-yellow-900: #361e00;
 
+  /* Green colors */
+  --color-green-50: #f7fff0;
+  --color-green-100: #edffde;
+  --color-green-200: #d1f1bd;
+  --color-green-300: #a9e58e;
+  --color-green-400: #67bb4e;
+  --color-green-500: #3ea32c;
+  --color-green-600: #288c1f;
+  --color-green-700: #156c15;
+  --color-green-800: #0c4c10;
+  --color-green-900: #06330d;
+
   /* Semantic colors */
   --color-primary-extralight: var(--color-blue-50);
   --color-primary-light: var(--color-blue-100);
@@ -66,7 +78,7 @@
   --color-label-normal: var(--color-gray-800);
   --color-label-strong: var(--color-gray-900);
   --color-icon-noraml: var(--color-gray-400);
-  --color-icon-inverse: var(--color-gray-0);
+  --color-icon-strong: var(--color-gray-500);
   --color-line-noraml: --alpha(var(--color-gray-500) / 20%);
   --color-line-subtle: --alpha(var(--color-gray-500) / 13%);
   --color-background-normal: var(--color-gray-0);
