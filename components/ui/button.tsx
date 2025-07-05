@@ -20,6 +20,7 @@ const buttonVariants = cva(
         sm: "h-8 px-3 rounded-md text-caption1 font-medium",
         md: "h-10 px-4 rounded-lg  text-body2  font-semibold",
         lg: "h-12 px-5 rounded-lg text-body1 font-semibold",
+        full: "w-full h-14 text-body1 font-semibold",
       },
     },
     defaultVariants: {
