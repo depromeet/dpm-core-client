@@ -44,7 +44,6 @@ function Button({
 	return (
 		<Comp
 			data-slot="button"
-			onContextMenu={(e) => e.preventDefault()}
 			className={cn(buttonVariants({ variant, size, className }))}
 			{...props}
 		/>
