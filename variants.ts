@@ -8,3 +8,16 @@ export const pressInOutVariatns = {
 		scale: 1.025,
 	},
 };
+
+export const fadeInOutVariatns = {
+	variants: {
+		initial: {
+			opacity: 0,
+			y: 20,
+		},
+		animate: {
+			opacity: 1,
+			y: 0,
+		},
+	},
+};

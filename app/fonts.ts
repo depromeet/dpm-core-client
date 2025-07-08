@@ -1,5 +1,6 @@
 import localFont from 'next/font/local';
 
+// TODO: 폰트 적용이 이상한지 체크하기
 export const pretendard = localFont({
 	display: 'swap',
 	adjustFontFallback: 'Arial',
@@ -52,3 +53,10 @@ export const pretendard = localFont({
 		},
 	],
 });
+
+// export const pretendard = localFont({
+// 	display: 'swap',
+// 	variable: '--font-pretendard',
+// 	weight: '100 900',
+// 	src: '../assets/fonts/pretendard/PretendardVariable.woff2',
+// });
