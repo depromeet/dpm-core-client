@@ -1,10 +1,19 @@
-import type { Metadata } from 'next';
-
+import { cn } from '@/lib/utils';
+import type { Metadata, Viewport } from 'next';
+import { pretendard } from './fonts';
 import './globals.css';
 
 export const metadata: Metadata = {
 	title: '',
 	description: '',
+};
+
+export const viewport: Viewport = {
+	initialScale: 1,
+	maximumScale: 1,
+	userScalable: false,
+	minimumScale: 1,
+	width: 'device-width',
 };
 
 export default function RootLayout({
@@ -14,7 +23,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="ko">
-			<body>{children}</body>
+			<body className={cn(pretendard.variable)}>
+				<main className="max-w-lg mx-auto h-dvh">{children}</main>
+			</body>
 		</html>
 	);
 }
