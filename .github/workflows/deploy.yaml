@@ -9,14 +9,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    container: pandoc/latex
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Install mustache (to update the date)
-        run: apk add ruby && gem install mustache
-      - name: creates output
-        run: sh ./build.sh
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build project
+        run: yarn build
+      - name: Prepare output
+        run: |
+          mkdir -p output
+          cp -r .next output/
+          cp -r public output/
+          cp package.json output/
+          cp next.config.ts output/
       - name: Pushes to another repository
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@main
