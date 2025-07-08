@@ -13,6 +13,9 @@ The project is developed using **Next.js** and **TypeScript**, with modern libra
 - **Authentication**: [better-auth](https://www.better-auth.com/)  
 - **Code Formatting**: [Biome](https://biomejs.dev/)
 
+
+
+
 ---
 
 ## 📁 Project Structure
