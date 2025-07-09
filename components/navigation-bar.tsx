@@ -10,14 +10,16 @@ const NavigationBar = (props: ComponentPropsWithoutRef<'header'>) => {
 
 	const handleScroll = useCallback(() => {
 		const currentScrollY = window.scrollY;
+		const scrollDiff = Math.abs(currentScrollY - prevScrollY.current);
 
-		if (currentScrollY > prevScrollY.current) {
-			setIsHidden(true);
-		} else {
-			setIsHidden(false);
+		if (scrollDiff > 50) {
+			if (currentScrollY > prevScrollY.current) {
+				setIsHidden(true);
+			} else {
+				setIsHidden(false);
+			}
+			prevScrollY.current = currentScrollY;
 		}
-
-		prevScrollY.current = currentScrollY;
 	}, []);
 
 	useIsomorphicLayoutEffect(() => {

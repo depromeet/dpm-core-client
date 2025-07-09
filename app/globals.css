@@ -120,6 +120,7 @@
 
 @layer base {
 	body {
+		overscroll-behavior: none;
 		@apply bg-background text-label-normal font-pretendard;
 	}
 }
