@@ -114,7 +114,7 @@ const UserPage = () => {
 					<IconCard icon={IconSession} title="세션" />
 					<IconCard icon={IconSettlement} title="정산" />
 				</ul>
-				<div className="mt-5 px-4">
+				<div className="my-5 px-4">
 					<SessionCard />
 				</div>
 			</motion.div>

@@ -24,7 +24,7 @@ export default function RootLayout({
 	return (
 		<html lang="ko">
 			<body className={cn(pretendard.variable)}>
-				<main className="max-w-lg mx-auto h-dvh">{children}</main>
+				<main className="max-w-lg mx-auto">{children}</main>
 			</body>
 		</html>
 	);
