@@ -1,23 +1,10 @@
 'use client';
+import { formatISOStringToFullDateString } from '@/lib/date';
 import { pressInOutVariatns } from '@/variants';
-import { motion } from 'motion/react';
-import Link from 'next/link';
+
+import { MotionLink } from '@/components/motion';
+
 import { sessionMocks } from '../_session-mock';
-
-const MotionLink = motion.create(Link);
-
-const formatDate = (isoString: string) => {
-	const date = new Date(isoString);
-	const days = ['일', '월', '화', '수', '목', '금', '토'];
-	const year = date.getFullYear().toString().slice(2);
-	const month = (date.getMonth() + 1).toString().padStart(2, '0');
-	const day = date.getDate().toString().padStart(2, '0');
-	const dayOfWeek = days[date.getDay()];
-	const hours = date.getHours().toString().padStart(2, '0');
-	const minutes = date.getMinutes().toString().padStart(2, '0');
-
-	return `${year}년 ${month}월 ${day}일 (${dayOfWeek}) ${hours}:${minutes}`;
-};
 
 const SessionCard = () => {
 	const currentMock = sessionMocks[0];
@@ -35,13 +22,13 @@ const SessionCard = () => {
 				<div className="gap-x-4 flex">
 					<span className="text-body2 font-semibold text-label-assistive w-[70px]">세션 시간</span>
 					<span className="inline-flex text-body2 text-label-subtle">
-						{formatDate(currentMock.datetime)}
+						{formatISOStringToFullDateString(currentMock.datetime)}
 					</span>
 				</div>
 				<div className="gap-x-4 flex">
 					<span className="text-body2 font-semibold text-label-assistive w-[70px]">세션 장소</span>
 					<span className="inline-flex text-body2 text-label-subtle">
-						{formatDate(currentMock.datetime)}
+						{formatISOStringToFullDateString(currentMock.datetime)}
 					</span>
 				</div>
 			</div>
