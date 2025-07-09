@@ -4,8 +4,8 @@ import { pretendard } from './fonts';
 import './globals.css';
 
 export const metadata: Metadata = {
-	title: '',
-	description: '',
+	title: 'Dpmcore',
+	description: 'Dpmcore',
 };
 
 export const viewport: Viewport = {

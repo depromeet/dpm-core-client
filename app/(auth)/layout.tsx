@@ -1,6 +1,3 @@
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
 
 const AuthLayout = async (props: PropsWithChildren) => {
@@ -8,13 +5,13 @@ const AuthLayout = async (props: PropsWithChildren) => {
 		return props.children;
 	}
 
-	const session = await auth.api.getSession({
-		headers: await headers(),
-	});
+	// const session = await auth.api.getSession({
+	// 	headers: await headers(),
+	// });
 
-	if (!session) {
-		return redirect('/login');
-	}
+	// if (!session) {
+	// 	return redirect('/login');
+	// }
 
 	return props.children;
 };
