@@ -13,7 +13,11 @@
 		"isolatedModules": true,
 		"jsx": "react-jsx",
 		"declaration": true,
-		"outDir": "dist"
+		"outDir": "dist",
+		"baseUrl": ".",
+		"paths": {
+			"@dpm-core/shared": ["src"]
+		}
 	},
 	"include": ["src/**/*"],
 	"exclude": ["node_modules", "dist"]

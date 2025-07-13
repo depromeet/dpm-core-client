@@ -7,7 +7,7 @@ import { fadeInOutVariatns } from '@/variants';
 
 import { UserAvatar } from '@/components/icons/user-avatar';
 import { NavigationBar } from '@/components/navigation-bar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@dpm-core/shared';
 
 import IconAttendance from '@/assets/icons/icon_attendance.png';
 import IconSession from '@/assets/icons/icon_session.png';

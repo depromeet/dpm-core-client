@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@dpm-core/shared';
 import { type HTMLAttributes, forwardRef } from 'react';
 
 const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(

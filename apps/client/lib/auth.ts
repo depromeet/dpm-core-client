@@ -1,3 +1,1 @@
-import { betterAuth } from 'better-auth';
-
-export const auth = betterAuth({});
+export { auth } from '@dpm-core/shared';

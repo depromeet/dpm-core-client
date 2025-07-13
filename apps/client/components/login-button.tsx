@@ -2,23 +2,23 @@
 
 import { pressInOutVariatns } from '@/variants';
 import { type MotionProps, motion } from 'motion/react';
-import Link from 'next/link';
 import { type ComponentPropsWithoutRef, forwardRef } from 'react';
+
+import { Button } from '@dpm-core/shared';
 import { KakaoLogo } from './icons/kakao-logo';
-import { Button } from './ui/button';
 
 const MotionButton = motion.create(Button);
 
 const LoginButton = forwardRef<
 	HTMLButtonElement,
 	ComponentPropsWithoutRef<typeof Button> & MotionProps
->((props, ref) => {
+>(({ ...props }, ref) => {
 	return (
 		<MotionButton ref={ref} {...props} {...pressInOutVariatns} asChild>
-			<Link href="https://dev.dpmcore.o-r.kr/login">
+			<a href="/api/auth/sign-in/kakao" className="flex items-center gap-2 text-sm font-medium">
 				<KakaoLogo />
-				<p className="text-[15px] w-full text-center">카카오로 시작하기</p>
-			</Link>
+				카카오 로그인
+			</a>
 		</MotionButton>
 	);
 });

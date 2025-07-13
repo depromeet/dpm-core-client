@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@dpm-core/shared';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
 import type * as React from 'react';
 
