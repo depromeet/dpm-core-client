@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 const LoginPage = () => {
 	return (
-		<div className="bg-primary-extralight h-full flex flex-col justify-center gap-y-10">
+		<div className="bg-primary-extralight min-h-dvh flex flex-col justify-center gap-y-10">
 			<div className="mx-auto text-center flex flex-col gap-y-10">
 				<h1 className="uppercase text-headline1 font-semibold text-label-normal">DPM CORE</h1>
 				<p>

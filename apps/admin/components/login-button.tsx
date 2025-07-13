@@ -15,7 +15,7 @@ const LoginButton = forwardRef<
 >((props, ref) => {
 	return (
 		<MotionButton ref={ref} {...props} {...pressInOutVariatns} asChild>
-			<Link href="/">
+			<Link href="https://dev.dpmcore.o-r.kr/login">
 				<KakaoLogo />
 				<p className="text-[15px] w-full text-center">카카오로 시작하기</p>
 			</Link>

@@ -1,0 +1,17 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: dpm-core-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./local.dpmcore.o-r.kr.pem:/etc/ssl/certs/local.dpmcore.o-r.kr.pem
+      - ./local.dpmcore.o-r.kr-key.pem:/etc/ssl/private/local.dpmcore.o-r.kr-key.pem
+    networks:
+      - dpm-network
+
+networks:
+  dpm-network:
+    driver: bridge
