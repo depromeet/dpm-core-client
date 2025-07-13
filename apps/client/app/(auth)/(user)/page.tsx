@@ -3,7 +3,7 @@ import * as motion from 'motion/react-client';
 import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
 
-import { fadeInOutVariatns } from '@/variants';
+import { fadeInOutVariatns } from '@dpm-core/shared';
 
 import { UserAvatar } from '@/components/icons/user-avatar';
 import { NavigationBar } from '@/components/navigation-bar';

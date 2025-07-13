@@ -1,6 +1,6 @@
 'use client';
 import { formatISOStringToFullDateString } from '@/lib/date';
-import { pressInOutVariatns } from '@/variants';
+import { pressInOutVariatns } from '@dpm-core/shared';
 
 import { MotionLink } from '@/components/motion';
 

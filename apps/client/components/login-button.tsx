@@ -1,6 +1,6 @@
 'use client';
 
-import { pressInOutVariatns } from '@/variants';
+import { pressInOutVariatns } from '@dpm-core/shared';
 import { type MotionProps, motion } from 'motion/react';
 import { type ComponentPropsWithoutRef, forwardRef } from 'react';
 

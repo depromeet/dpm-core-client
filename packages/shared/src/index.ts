@@ -15,3 +15,6 @@ export * from './components/ui/popover';
 // Auth
 export * from './auth/client';
 export * from './auth/server';
+
+// Variants
+export * from './variants';

@@ -2,7 +2,7 @@
 import Iconttendance3D from '@/assets/icons/icon_attendance_3d.png';
 import { ArrowRight } from '@/components/icons/arrow-right';
 import { MotionButton } from '@/components/motion';
-import { pressInOutVariatns } from '@/variants';
+import { pressInOutVariatns } from '@dpm-core/shared';
 
 import Image from 'next/image';
 
