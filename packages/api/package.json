@@ -1,0 +1,23 @@
+{
+	"name": "@dpm-core/api",
+	"version": "0.1.0",
+	"private": true,
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup src/index.ts --format cjs,esm --dts",
+		"dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+		"format": "biome format --write .",
+		"lint": "biome lint --write ."
+	},
+	"dependencies": {
+		"axios": "^1.10.0"
+	},
+	"devDependencies": {
+		"tsup": "^8.0.1",
+		"typescript": "^5"
+	}
+}
