@@ -1,8 +1,8 @@
-import Banner from '@/assets/images/login-banner.webp';
+'use client';
+
 import { LoginButton } from '@dpm-core/shared';
 import Image from 'next/image';
-
-export const dynamic = 'force-dynamic';
+import Banner from '../../assets/images/login-banner.webp';
 
 const LoginPage = () => {
 	return (
