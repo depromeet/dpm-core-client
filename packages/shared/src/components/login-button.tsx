@@ -1,4 +1,5 @@
 'use client';
+
 import { motion } from 'motion/react';
 import { forwardRef } from 'react';
 
@@ -6,7 +7,7 @@ import { pressInOutVariatns } from '../variants';
 import { KakaoLogo } from './icons/kakao-logo';
 import { Button } from './ui/button';
 
-const MotionButton = motion.create(Button);
+const MotionButton = motion(Button);
 
 interface LoginButtonProps {
 	href?: string;
