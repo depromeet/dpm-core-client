@@ -7,15 +7,13 @@
 		"start": "turbo start",
 		"format": "biome format --write .",
 		"lint": "biome lint --write .",
-		"clean": "turbo clean"
+		"clean": "turbo clean",
+		"create-package": "node scripts/create-package.js"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"turbo": "^2.3.5"
 	},
 	"packageManager": "yarn@4.9.2",
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	]
+	"workspaces": ["apps/*", "packages/*"]
 }

@@ -4,6 +4,98 @@
 
 이 문서는 DPM Core 모노레포에서 새로운 패키지를 추가하거나 기존 패키지를 수정하는 방법을 설명합니다.
 
+## 🚀 CLI 도구로 패키지 생성 (권장)
+
+### 1. CLI 도구 실행
+
+```bash
+# 패키지 생성 CLI 실행
+yarn create-package
+
+# 또는 직접 스크립트 실행
+node scripts/create-package.js
+```
+
+### 2. 대화형 설정
+
+CLI 도구가 다음 항목들을 순차적으로 질문합니다:
+
+1. **패키지 이름**: 생성할 패키지 이름 입력 (예: `ui-components`)
+2. **패키지 타입 선택**:
+   - `1. UI 컴포넌트 패키지` - React 컴포넌트를 포함하는 패키지
+   - `2. API 서비스 패키지` - API 통신을 위한 서비스 패키지
+   - `3. 유틸리티 패키지` - 공통 유틸리티 함수들을 포함하는 패키지
+   - `4. 커스텀 패키지` - 사용자 정의 패키지
+3. **패키지 설명**: 패키지에 대한 설명 입력
+4. **샘플 컴포넌트 생성** (UI 컴포넌트 패키지 선택 시): 예제 컴포넌트 생성 여부
+
+### 3. 사용 예시
+
+```bash
+$ yarn create-package
+
+🚀 DPM Core 패키지 생성 도구
+
+패키지 이름을 입력하세요 (예: ui-components): my-components
+
+패키지 타입을 선택하세요:
+1. UI 컴포넌트 패키지 - React 컴포넌트를 포함하는 패키지
+2. API 서비스 패키지 - API 통신을 위한 서비스 패키지
+3. 유틸리티 패키지 - 공통 유틸리티 함수들을 포함하는 패키지
+4. 커스텀 패키지 - 사용자 정의 패키지
+
+선택 (1-4): 1
+패키지 설명을 입력하세요: 커스텀 UI 컴포넌트들
+샘플 컴포넌트를 생성하시겠습니까? (y/N): y
+컴포넌트 이름을 입력하세요 (예: MyComponent): CustomButton
+
+ℹ 패키지 생성 중: @dpm-core/my-components
+ℹ 타입: UI 컴포넌트 패키지
+ℹ 설명: 커스텀 UI 컴포넌트들
+✓ 패키지 '@dpm-core/my-components'이 성공적으로 생성되었습니다!
+
+다음 단계:
+1. cd packages/my-components
+2. yarn install (워크스페이스 레벨에서 실행)
+3. yarn workspace @dpm-core/my-components build
+4. 다른 패키지에서 사용: yarn workspace <app-name> add @dpm-core/my-components
+```
+
+### 4. 자동 생성되는 파일들
+
+CLI 도구는 다음 파일들을 자동으로 생성합니다:
+
+```
+packages/my-components/
+├── package.json          # 패키지 설정 및 의존성
+├── tsconfig.json         # TypeScript 설정
+├── README.md             # 패키지 문서
+└── src/
+    ├── index.ts          # 진입점 파일
+    ├── components/       # 컴포넌트 디렉터리 (UI 패키지)
+    │   └── CustomButton.tsx
+    ├── utils/            # 유틸리티 디렉터리
+    │   └── cn.ts         # 클래스 이름 조합 함수
+    └── types/            # 타입 정의 디렉터리
+```
+
+### 5. 생성 후 작업
+
+```bash
+# 1. 의존성 설치
+yarn install
+
+# 2. 패키지 빌드
+yarn workspace @dpm-core/my-components build
+
+# 3. 다른 앱에서 사용
+yarn workspace @dpm-core/admin add @dpm-core/my-components
+```
+
+## 🛠️ 수동 패키지 생성 (고급)
+
+CLI 도구를 사용하지 않고 수동으로 패키지를 생성하려면 다음 절차를 따르세요:
+
 ## 🆕 새로운 패키지 추가
 
 ### 1. 패키지 디렉터리 생성
