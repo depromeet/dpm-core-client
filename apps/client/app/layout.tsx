@@ -1,8 +1,8 @@
 import { cn } from '@dpm-core/shared';
-import '@dpm-core/shared/src/globals.css';
 import type { Metadata, Viewport } from 'next';
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
+import './globals.css';
 
 export const metadata: Metadata = {
 	title: 'Dpmcore',

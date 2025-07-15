@@ -1,13 +1,11 @@
 'use client';
 
-import { motion } from 'motion/react';
 import { forwardRef } from 'react';
 
-import { pressInOutVariatns } from '../variants';
-import { KakaoLogo } from './icons/kakao-logo';
-import { Button } from './ui/button';
+import { Button, KakaoLogo, pressInOutVariatns } from '@dpm-core/shared';
+import { motion } from 'motion/react';
 
-const MotionButton = motion(Button);
+const MotionButton = motion.create(Button);
 
 interface LoginButtonProps {
 	href?: string;
