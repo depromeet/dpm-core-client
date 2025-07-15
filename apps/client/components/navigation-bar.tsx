@@ -1,8 +1,13 @@
 'use client';
 
-import { cn } from '@/lib/utils';
-import { useIsomorphicLayoutEffect } from 'motion/react';
-import { type ComponentPropsWithoutRef, useCallback, useRef, useState } from 'react';
+import { cn } from '@dpm-core/shared';
+import {
+	type ComponentPropsWithoutRef,
+	useCallback,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react';
 
 const NavigationBar = (props: ComponentPropsWithoutRef<'header'>) => {
 	const [isHidden, setIsHidden] = useState(false);
@@ -22,7 +27,7 @@ const NavigationBar = (props: ComponentPropsWithoutRef<'header'>) => {
 		}
 	}, []);
 
-	useIsomorphicLayoutEffect(() => {
+	useLayoutEffect(() => {
 		window.addEventListener('scroll', handleScroll, { passive: true });
 
 		return () => {

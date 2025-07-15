@@ -5,12 +5,12 @@ import Link from 'next/link';
 
 import { fadeInOutVariatns } from '@dpm-core/shared';
 
-import { NavigationBar } from '@/components/navigation-bar';
 import { Popover, PopoverContent, PopoverTrigger, UserAvatar } from '@dpm-core/shared';
+import { NavigationBar } from '../../../components/navigation-bar';
 
-import IconAttendance from '@/assets/icons/icon_attendance.png';
-import IconSession from '@/assets/icons/icon_session.png';
-import IconSettlement from '@/assets/icons/icon_settlement.png';
+import IconAttendance from '../../../assets/icons/icon_attendance.png';
+import IconSession from '../../../assets/icons/icon_session.png';
+import IconSettlement from '../../../assets/icons/icon_settlement.png';
 
 import { SessionCard } from './_components/session-card';
 import { SessionTopBanner } from './_components/session-top-banner';

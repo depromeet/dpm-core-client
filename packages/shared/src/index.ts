@@ -7,7 +7,6 @@ export * from './types/common';
 
 // Components
 export * from './components/icons';
-export * from './components/login-button';
 export * from './components/ui/avatar';
 export * from './components/ui/button';
 export * from './components/ui/card';
