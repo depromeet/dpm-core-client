@@ -10,9 +10,7 @@
 			}
 		],
 		"paths": {
-			"@/*": ["./*"],
-			"@dpm-core/shared": ["../../packages/shared/src"],
-			"@dpm-core/api": ["../../packages/api/src"]
+			"@/*": ["./*"]
 		}
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"]

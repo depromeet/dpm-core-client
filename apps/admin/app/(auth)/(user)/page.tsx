@@ -4,14 +4,13 @@ import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
 
 import { fadeInOutVariatns } from '@dpm-core/shared';
-
-import { NavigationBar } from '@/apps/admin/components/navigation-bar';
 import { Popover, PopoverContent, PopoverTrigger, UserAvatar } from '@dpm-core/shared';
 
-import IconAttendance from '@/apps/admin/assets/icons/icon_attendance.png';
-import IconSession from '@/apps/admin/assets/icons/icon_session.png';
-import IconSettlement from '@/apps/admin/assets/icons/icon_settlement.png';
+import IconAttendance from '@/assets/icons/icon_attendance.png';
+import IconSession from '@/assets/icons/icon_session.png';
+import IconSettlement from '@/assets/icons/icon_settlement.png';
 
+import { NavigationBar } from '@/components/navigation-bar';
 import { SessionCard } from './_components/session-card';
 import { SessionTopBanner } from './_components/session-top-banner';
 

@@ -1,7 +1,6 @@
 {
 	"name": "@dpm-core/shared",
 	"version": "0.1.0",
-	"private": false,
 	"main": "src/index.ts",
 	"types": "src/index.ts",
 	"description": "DPM Core shared components and utilities",
@@ -10,7 +9,10 @@
 		"url": "https://github.com/depromeet/dpm-core-client.git",
 		"directory": "packages/shared"
 	},
-	"files": ["dist", "src"],
+	"files": [
+		"dist",
+		"src"
+	],
 	"scripts": {
 		"build": "tsup src/index.ts --format cjs,esm --dts",
 		"dev": "tsup src/index.ts --format cjs,esm --dts --watch",

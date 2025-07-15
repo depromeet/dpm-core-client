@@ -1,8 +1,8 @@
 'use client';
 import { pressInOutVariatns } from '@dpm-core/shared';
 
-import { MotionLink } from '@/apps/admin/components/motion';
-import { formatISOStringToFullDateString } from '@/apps/admin/lib/date';
+import { MotionLink } from '@/components/motion';
+import { formatISOStringToFullDateString } from '@/lib/date';
 import { sessionMocks } from '../_session-mock';
 
 const SessionCard = () => {

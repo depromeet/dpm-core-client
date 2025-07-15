@@ -19,5 +19,8 @@
 		"turbo": "^2.3.5"
 	},
 	"packageManager": "yarn@4.9.2",
-	"workspaces": ["apps/*", "packages/*"]
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	]
 }

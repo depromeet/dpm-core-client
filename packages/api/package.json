@@ -1,7 +1,6 @@
 {
 	"name": "@dpm-core/api",
 	"version": "0.1.0",
-	"private": false,
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"description": "DPM Core API client and utilities",
@@ -10,7 +9,9 @@
 		"url": "https://github.com/depromeet/dpm-core-client.git",
 		"directory": "packages/api"
 	},
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"build": "tsup src/index.ts --format cjs,esm --dts",
 		"dev": "tsup src/index.ts --format cjs,esm --dts --watch",

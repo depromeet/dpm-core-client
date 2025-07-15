@@ -1,4 +1,4 @@
-import Banner from '@/apps/admin/assets/images/login-banner.webp';
+import Banner from '@/assets/images/login-banner.webp';
 import { LoginButton } from '@dpm-core/shared';
 import Image from 'next/image';
 

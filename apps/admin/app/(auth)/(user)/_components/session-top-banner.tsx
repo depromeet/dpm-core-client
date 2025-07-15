@@ -1,6 +1,7 @@
 'use client';
-import Iconttendance3D from '@/apps/admin/assets/icons/icon_attendance_3d.png';
-import { MotionButton } from '@/apps/admin/components/motion';
+import Iconttendance3D from '@/assets/icons/icon_attendance_3d.png';
+import { MotionButton } from '@/components/motion';
+
 import { ArrowRight, pressInOutVariatns } from '@dpm-core/shared';
 import Image from 'next/image';
 
