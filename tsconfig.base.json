@@ -9,8 +9,7 @@
 		"module": "esnext",
 		"moduleResolution": "bundler",
 		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"baseUrl": "."
+		"isolatedModules": true
 	},
 	"exclude": ["node_modules", "dist", ".next"]
 }
