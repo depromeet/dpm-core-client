@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@source '../../../node_modules/@dpm-core/shared';
 
 @custom-variant dark (&:is(.dark *));
 

@@ -40,18 +40,15 @@ function DrawerOverlay({
 function DrawerContent({
 	className,
 	children,
-	showCloseButton = true,
 	...props
-}: React.ComponentProps<typeof DrawerPrimitive.Content> & {
-	showCloseButton?: boolean;
-}) {
+}: React.ComponentProps<typeof DrawerPrimitive.Content>) {
 	return (
 		<DrawerPortal data-slot="drawer-portal">
 			<DrawerOverlay />
 			<DrawerPrimitive.Content
 				data-slot="drawer-content"
 				className={cn(
-					'group/drawer-content bg-background fixed z-50 flex h-auto flex-col pt-[30px]',
+					'group/drawer-content bg-background fixed z-50 flex h-auto flex-col',
 					'data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-[20px]',
 					'data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-[20px]',
 					'data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=right]:sm:max-w-sm',
@@ -60,27 +57,36 @@ function DrawerContent({
 				)}
 				{...props}
 			>
-				{showCloseButton && (
-					<DrawerClose className="absolute right-4 top-5 p-1.5 rounded-full bg-background-strong">
-						<XIcon className="text-gray-500" size={16} />
-					</DrawerClose>
-				)}
 				{children}
 			</DrawerPrimitive.Content>
 		</DrawerPortal>
 	);
 }
 
-function DrawerHeader({ className, ...props }: React.ComponentProps<'div'>) {
+function DrawerHeader({
+	className,
+	children,
+	showCloseButton = true,
+	...props
+}: React.ComponentProps<'div'> & {
+	showCloseButton?: boolean;
+}) {
 	return (
 		<div
 			data-slot="drawer-header"
 			className={cn(
-				'flex flex-col gap-0.5 px-4 group-data-[vaul-drawer-direction=bottom]/drawer-content:text-center group-data-[vaul-drawer-direction=top]/drawer-content:text-center md:gap-1.5 md:text-left',
+				'flex flex-col gap-0.5 px-6 pt-7.5 group-data-[vaul-drawer-direction=bottom]/drawer-content:text-center group-data-[vaul-drawer-direction=top]/drawer-content:text-center md:gap-1.5 md:text-left',
 				className,
 			)}
 			{...props}
-		/>
+		>
+			{showCloseButton && (
+				<DrawerClose className="absolute right-4 top-5 p-1.5 rounded-full bg-background-strong">
+					<XIcon className="text-gray-500" size={16} />
+				</DrawerClose>
+			)}
+			{children}
+		</div>
 	);
 }
 
@@ -104,6 +110,19 @@ function DrawerTitle({ className, ...props }: React.ComponentProps<typeof Drawer
 	);
 }
 
+function DrawerDescription({
+	className,
+	...props
+}: React.ComponentProps<typeof DrawerPrimitive.Description>) {
+	return (
+		<DrawerPrimitive.Description
+			data-slot="drawer-description"
+			className={cn('text-body2', className)}
+			{...props}
+		/>
+	);
+}
+
 export {
 	Drawer,
 	DrawerClose,
@@ -112,6 +131,7 @@ export {
 	DrawerHeader,
 	DrawerOverlay,
 	DrawerPortal,
-	DrawerTitle,
 	DrawerTrigger,
+	DrawerTitle,
+	DrawerDescription,
 };
