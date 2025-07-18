@@ -6,7 +6,7 @@
 		"declaration": true,
 		"outDir": "dist",
 		"paths": {
-			"@dpm-core/shared/*": ["./src/*"]
+			"@dpm-core/api": ["./src"]
 		}
 	},
 	"include": ["src/**/*"],

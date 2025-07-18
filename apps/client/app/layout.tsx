@@ -1,7 +1,8 @@
-import { cn } from '@/lib/utils';
-import '@dpm-core/shared/src/globals.css';
+import { cn } from '@dpm-core/shared';
 import type { Metadata, Viewport } from 'next';
+import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
+import './globals.css';
 
 export const metadata: Metadata = {
 	title: 'Dpmcore',
@@ -24,7 +25,9 @@ export default function RootLayout({
 	return (
 		<html lang="ko">
 			<body className={cn(pretendard.variable)}>
-				<main className="max-w-lg mx-auto min-h-dvh">{children}</main>
+				<QueryProvider>
+					<main className="max-w-lg mx-auto min-h-dvh">{children}</main>
+				</QueryProvider>
 			</body>
 		</html>
 	);

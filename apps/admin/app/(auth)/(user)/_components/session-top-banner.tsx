@@ -1,8 +1,8 @@
 'use client';
 import Iconttendance3D from '@/assets/icons/icon_attendance_3d.png';
 import { MotionButton } from '@/components/motion';
-import { ArrowRight, pressInOutVariatns } from '@dpm-core/shared';
 
+import { ArrowRight, pressInOutVariatns } from '@dpm-core/shared';
 import Image from 'next/image';
 
 const SessionTopBanner = () => {

@@ -5,18 +5,11 @@
 		"allowJs": true,
 		"skipLibCheck": true,
 		"strict": true,
-		"noEmit": true,
 		"esModuleInterop": true,
 		"module": "esnext",
 		"moduleResolution": "bundler",
 		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"jsx": "preserve",
-		"incremental": true,
-		"baseUrl": ".",
-		"paths": {
-			"@dpm-core/shared": ["packages/shared/src"]
-		}
+		"isolatedModules": true
 	},
 	"exclude": ["node_modules", "dist", ".next"]
 }
