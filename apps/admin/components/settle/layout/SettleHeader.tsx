@@ -30,7 +30,7 @@ const SettleHeader = () => {
 	};
 
 	return (
-		<header className="sticky top-0 z-10 px-4 bg-white">
+		<header className="max-w-lg mx-auto fixed top-0 left-0 right-0 z-10 px-4 bg-white h-12">
 			{/* header content */}
 			<div className="h-12 flex items-center justify-center relative">
 				<button

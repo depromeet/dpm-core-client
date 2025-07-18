@@ -1,8 +1,8 @@
 'use client';
 
+import { useSettleFilterStore } from '@/store/useSettleFilterStore';
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import clsx from 'clsx';
-import { useState } from 'react';
 
 const FILTERS = [
 	{ value: 'all', label: '전체' },
@@ -14,15 +14,15 @@ const FILTERS = [
 type FilterValue = (typeof FILTERS)[number]['value'];
 
 export default function SettleHeaderFilter() {
-	const [value, setValue] = useState<FilterValue>('all');
+	const { filter, setFilter } = useSettleFilterStore();
 
 	return (
-		<div className="h-12 flex items-center gap-2 overflow-x-auto px-0.5">
+		<div className="h-12 min-w- flex items-center z-10 gap-2 bg-white overflow-x-auto px-0.5">
 			<ToggleGroup.Root
 				type="single"
-				value={value}
+				value={filter}
 				aria-label="정산 상태 필터"
-				onValueChange={(v) => v && setValue(v as FilterValue)}
+				onValueChange={(v) => v && setFilter(v as FilterValue)}
 				className="flex gap-2"
 			>
 				{FILTERS.map(({ value: v, label }) => (

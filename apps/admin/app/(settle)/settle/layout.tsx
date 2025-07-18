@@ -1,13 +1,12 @@
-import SettleHeader from '@/components/settle/header/SettleHeader';
-
+import SettleHeader from '@/components/settle/layout/SettleHeader';
 
 const SettleLayout = async ({ children }: { children: React.ReactNode }) => {
-    return (
-        <>
-           <SettleHeader/>
-            {children}
-        </>
-    )
+	return (
+		<>
+			<SettleHeader />
+			{children}
+		</>
+	);
 };
 
 export default SettleLayout;
