@@ -11,11 +11,11 @@ interface CopyButtonProps extends ButtonProps {
 	src?: string;
 }
 
-export async function copyToClipboardWithMeta(value: string) {
+async function copyToClipboardWithMeta(value: string) {
 	navigator.clipboard.writeText(value);
 }
 
-export function CopyButton({ value, className, src, variant = 'none', ...props }: CopyButtonProps) {
+function CopyButton({ value, className, src, variant = 'none', ...props }: CopyButtonProps) {
 	const [hasCopied, setHasCopied] = React.useState(false);
 
 	React.useEffect(() => {
@@ -40,3 +40,4 @@ export function CopyButton({ value, className, src, variant = 'none', ...props }
 		</Button>
 	);
 }
+export { CopyButton };
