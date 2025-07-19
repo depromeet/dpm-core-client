@@ -2,13 +2,13 @@
 
 import { Button, KakaoLogo, pressInOutVariatns } from '@dpm-core/shared';
 import { motion } from 'motion/react';
-import { forwardRef } from 'react';
+import { type ComponentPropsWithoutRef, forwardRef } from 'react';
 
 const MotionButton = motion.create(Button);
 
 interface LoginButtonProps {
 	href?: string;
-	variant?: 'primary' | 'secondary' | 'assistive' | 'text';
+	variant?: ComponentPropsWithoutRef<typeof Button>['variant'];
 	size?: 'xs' | 'sm' | 'md' | 'lg' | 'full';
 	className?: string;
 }
@@ -27,7 +27,7 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 			>
 				<a href={loginUrl.toString()} className="flex items-center gap-2 text-sm font-medium">
 					<KakaoLogo />
-					카카오 로그인
+					<p className="flex-1 text-[#000000] opacity-85">카카오로 시작하기</p>
 				</a>
 			</MotionButton>
 		);
