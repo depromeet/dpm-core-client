@@ -1,0 +1,104 @@
+'use client';
+
+import { CopyButton } from '@dpm-core/shared';
+import { ErrorBoundary } from '@suspensive/react';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { type PropsWithChildren, Suspense } from 'react';
+import { ErrorBox } from '@/components/error-box';
+import { Pressable } from '@/components/motion';
+import { formatISOStringHHMM, formatISOStringToFullDateString } from '@/lib/date';
+import { calcSessionAttendanceTime, calcSessionLateAttendanceTime } from '@/lib/session/calc';
+import { getSessionDetailQuery } from '@/remotes/queries/session';
+import { EditSessionBottomSheet } from './edit-session-bottom-sheet';
+
+const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
+	const {
+		data: { data: sessionDetail },
+	} = useSuspenseQuery(getSessionDetailQuery(Number(sessionId)));
+
+	return (
+		<div className="flex flex-col gap-y-5">
+			<h3 className="text-headline2 font-semibold text-label-normal">{sessionDetail.eventName}</h3>
+			<SessionDetailInfoBox label="세션 정보">
+				<p className="text-body2 font-semibold text-label-assistive">세션 주차</p>
+				<p className="text-body2 font-medium text-label-subtle">{`${sessionDetail.week}주차`}</p>
+				<p className="text-body2 font-semibold text-label-assistive">세션명</p>
+				<p className="text-body2 font-medium text-label-subtle">{sessionDetail.eventName}</p>
+				<p className="text-body2 font-semibold text-label-assistive">세션 날짜</p>
+				<p className="text-body2 font-medium text-label-subtle">
+					{formatISOStringToFullDateString(sessionDetail.attendanceStartTime)}
+				</p>
+			</SessionDetailInfoBox>
+
+			<SessionDetailInfoBox label="세션 정보">
+				<p className="text-body2 font-semibold text-label-assistive">출석 코드</p>
+				<div className="flex items-center justify-between">
+					<p className="text-body2 font-medium text-label-subtle">{sessionDetail.attendanceCode}</p>
+					<CopyButton value={sessionDetail.attendanceCode} />
+				</div>
+			</SessionDetailInfoBox>
+
+			<SessionDetailInfoBox
+				label="출석/지각 시간"
+				actions={
+					<EditSessionBottomSheet>
+						<Pressable variant="none">수정</Pressable>
+					</EditSessionBottomSheet>
+				}
+			>
+				<p className="text-body2 font-semibold text-label-assistive">출석 시간</p>
+				<p className="text-body2 font-medium text-label-subtle">
+					{formatISOStringHHMM(sessionDetail.attendanceStartTime)} -{' '}
+					{formatISOStringHHMM(
+						calcSessionAttendanceTime(sessionDetail.attendanceStartTime).toISOString(),
+					)}
+				</p>
+
+				<p className="text-body2 font-semibold text-label-assistive">지각 시간</p>
+				<p className="text-body2 font-medium text-label-subtle">
+					{formatISOStringHHMM(sessionDetail.attendanceStartTime)} -{' '}
+					{formatISOStringHHMM(
+						calcSessionLateAttendanceTime(sessionDetail.attendanceStartTime).toISOString(),
+					)}
+				</p>
+			</SessionDetailInfoBox>
+		</div>
+	);
+};
+
+interface SessionDetailInfoBoxProps {
+	label: string;
+	actions?: React.ReactNode;
+}
+
+const SessionDetailInfoBox = ({
+	label,
+	actions,
+	children,
+}: PropsWithChildren<SessionDetailInfoBoxProps>) => {
+	return (
+		<div className="flex flex-col">
+			<div className="flex justify-between">
+				<span className="text-body1 text-label-subtle font-semibold mb-2">{label}</span>
+				{actions}
+			</div>
+
+			<div className="rounded-lg bg-background-subtle px-5 py-3 grid grid-cols-[70px_1fr] gap-x-4 gap-y-3">
+				{children}
+			</div>
+		</div>
+	);
+};
+
+const SessionDetailInfo = ErrorBoundary.with(
+	{
+		fallback: () => <ErrorBox />,
+	},
+	({ sessionId }: { sessionId: string }) => (
+		<Suspense>
+			<SessionDetailInfoContainer sessionId={sessionId} />
+		</Suspense>
+	),
+);
+
+export default SessionDetailInfo;
