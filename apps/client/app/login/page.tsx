@@ -1,6 +1,5 @@
 import Banner from '@/assets/images/login-banner.webp';
 import { LoginButton } from '@/components/login-button';
-
 import Image from 'next/image';
 
 const LoginPage = () => {
