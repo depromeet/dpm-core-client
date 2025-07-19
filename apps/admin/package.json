@@ -1,15 +1,16 @@
 {
-	"name": "@dpm-core/admin",
+	"name": "admin",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack --port 3001",
 		"build": "next build",
-		"start": "next start",
+		"start": "next start --turbopack --port 3001",
 		"format": "biome format --write .",
 		"lint": "biome lint --write ."
 	},
 	"dependencies": {
+		"@dpm-core/api": "workspace:*",
 		"@dpm-core/shared": "workspace:*",
 		"motion": "^12.23.0",
 		"next": "15.3.3",

@@ -1,36 +1,18 @@
 {
 	"name": "@dpm-core/api",
 	"version": "0.1.0",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
 	"description": "DPM Core API client and utilities",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/depromeet/dpm-core-client.git",
-		"directory": "packages/api"
+	"exports": {
+		".": "./src/index.ts"
 	},
 	"files": [
 		"dist"
 	],
-	"exports": {
-		".": {
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.js",
-			"types": "./dist/index.d.ts"
-		}
-	},
-	"scripts": {
-		"build": "tsup src/index.ts --format cjs,esm --dts",
-		"dev": "tsup src/index.ts --format cjs,esm --dts --watch",
-		"format": "biome format --write .",
-		"lint": "biome lint --write ."
-	},
 	"dependencies": {
 		"@dpm-core/shared": "workspace:*",
 		"ky": "^1.8.2"
 	},
 	"devDependencies": {
-		"tsup": "^8.0.1",
 		"typescript": "^5"
 	}
 }

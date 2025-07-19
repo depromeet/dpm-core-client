@@ -9,12 +9,14 @@ const buttonVariants = cva(
 	{
 		variants: {
 			variant: {
+				none: 'bg-inherit text-inherit',
 				primary: 'bg-primary-normal hover:bg-primary-strong text-label-inverse',
 				secondary: 'bg-background-inverse hover:bg-gray-700 text-label-inverse',
 				assistive: 'bg-background-strong hover:bg-background-heavy text-label-normal',
 				text: 'text-label-assistive disabled:text-label-subtle',
 			},
 			size: {
+				none: 'h-auto',
 				xs: 'h-6 px-2.5 rounded-sm text-caption1 font-medium',
 				sm: 'h-8 px-3 rounded-md text-caption1 font-medium',
 				md: 'h-10 px-4 rounded-lg  text-body2  font-semibold',
@@ -22,6 +24,13 @@ const buttonVariants = cva(
 				full: 'w-full h-14 text-body1 font-semibold',
 			},
 		},
+		compoundVariants: [
+			{
+				variant: 'text',
+				size: ['full', 'lg', 'md', 'sm', 'xs', 'none'],
+				className: 'h-auto w-auto px-0',
+			},
+		],
 		defaultVariants: {
 			variant: 'primary',
 			size: 'md',
@@ -30,8 +39,8 @@ const buttonVariants = cva(
 );
 
 interface ButtonProps extends React.ComponentProps<'button'> {
-	variant?: 'primary' | 'secondary' | 'assistive' | 'text';
-	size?: 'xs' | 'sm' | 'md' | 'lg' | 'full';
+	variant?: 'primary' | 'secondary' | 'assistive' | 'text' | 'none';
+	size?: 'xs' | 'sm' | 'md' | 'lg' | 'full' | 'none';
 	asChild?: boolean;
 }
 

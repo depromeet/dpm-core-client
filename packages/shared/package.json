@@ -1,52 +1,39 @@
 {
 	"name": "@dpm-core/shared",
 	"version": "0.1.0",
-	"main": "src/index.ts",
-	"types": "src/index.ts",
 	"description": "DPM Core shared components and utilities",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/depromeet/dpm-core-client.git",
-		"directory": "packages/shared"
-	},
-	"files": [
-		"dist",
-		"src"
-	],
 	"exports": {
-		".": {
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.js",
-			"types": "./dist/index.d.ts"
-		},
-		"./styles.css": "./dist/styles.css"
+		".": "./src/index.ts",
+		"./theme-styles.css": "./src/theme-styles.css",
+		"./shared-styles.css": "./dist/index.css"
 	},
 	"scripts": {
-		"build": "tsup src/index.ts --format cjs,esm --dts && yarn build:style",
-		"build:style": "tailwindcss -i src/styles.css -o dist/styles.css",
-		"dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+		"build:styles": "tailwindcss -i ./src/shared-styles.css -o ./dist/index.css",
+		"dev:styles": "tailwindcss -i ./src/shared-styles.css -o ./dist/index.css --watch",
 		"format": "biome format --write .",
 		"lint": "biome lint --write ."
 	},
+	"files": [
+		"dist"
+	],
 	"dependencies": {
 		"@radix-ui/react-avatar": "^1.1.10",
 		"@radix-ui/react-popover": "^1.1.14",
 		"@radix-ui/react-slot": "^1.2.3",
-		"class-variance-authority": "^0.7.1",
-		"clsx": "^2.1.1",
 		"dayjs": "^1.11.13",
 		"lucide-react": "^0.514.0",
 		"motion": "^12.23.0",
-		"tailwind-merge": "^3.3.1",
 		"vaul": "^1.1.2"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
-		"@tailwindcss/cli": "^4.1.11",
+		"@tailwindcss/cli": "^4.1.5",
+		"@tailwindcss/postcss": "^4.1.5",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
+		"tailwind-merge": "^3.3.1",
 		"tailwindcss": "^4",
-		"tsup": "^8.0.1",
 		"tw-animate-css": "^1.3.4",
 		"typescript": "^5"
 	},
