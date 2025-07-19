@@ -1,24 +1,24 @@
-import { ChevronRight } from 'lucide-react';
+import {
+	fadeInOutVariatns,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+	UserAvatar,
+} from '@dpm-core/shared';
 import * as motion from 'motion/react-client';
 import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
-
-import { fadeInOutVariatns } from '@dpm-core/shared';
-
-import { Popover, PopoverContent, PopoverTrigger, UserAvatar } from '@dpm-core/shared';
-import { NavigationBar } from '../../../components/navigation-bar';
-
 import IconAttendance from '../../../assets/icons/icon_attendance.png';
 import IconSession from '../../../assets/icons/icon_session.png';
 import IconSettlement from '../../../assets/icons/icon_settlement.png';
-
-import { SessionCard } from './_components/session-card';
-import { SessionTopBanner } from './_components/session-top-banner';
+import { NavigationBar } from '../../../components/navigation-bar';
+import { SessionList } from './_components/session-list';
+import { SessionCurrentWeekBanner } from './_components/session-top-banner';
 
 const UserPage = () => {
 	return (
 		<motion.div
-			className="h-full w-full"
+			className="w-full flex flex-col min-h-[inherit]"
 			initial="initial"
 			animate="animate"
 			transition={{
@@ -41,30 +41,18 @@ const UserPage = () => {
 				</Popover>
 			</NavigationBar>
 
-			<motion.div
-				initial={{ opacity: 0, y: -20 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ delay: 0.5 }}
-				className="py-3 px-4 bg-primary-normal flex items-center justify-between"
-			>
-				<p className="text-white">2주차 세션 출석 코드 : 0000</p>
-				<ChevronRight />
-			</motion.div>
-			<motion.div variants={fadeInOutVariatns.variants} className="pt-5 px-4 pb-[30px]">
-				<SessionTopBanner />
-			</motion.div>
+			<SessionCurrentWeekBanner />
+
 			<motion.div
 				variants={fadeInOutVariatns.variants}
-				className="flex flex-col divide-y-8 divide-background-strong"
+				className="flex flex-col divide-y-8 divide-background-strong flex-1"
 			>
 				<ul className="gap-x-3 flex items-center mt-5 pb-10">
 					<IconCard icon={IconAttendance} title="출석" />
 					<IconCard icon={IconSession} title="세션" />
 					<IconCard icon={IconSettlement} title="정산" />
 				</ul>
-				<div className="my-5 px-4">
-					<SessionCard />
-				</div>
+				<SessionList />
 			</motion.div>
 		</motion.div>
 	);
