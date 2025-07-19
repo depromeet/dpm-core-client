@@ -1,6 +1,7 @@
 import { logger } from '@dpm-core/shared';
 import type { AfterResponseHook } from 'ky';
 import ky from 'ky';
+import { setCookie } from '../auth/cookie';
 
 interface RefreshPluginOptions {
 	whitelist?: (string | RegExp)[];
@@ -66,10 +67,9 @@ export function createRefreshPlugin(options?: RefreshPluginOptions): AfterRespon
 						}
 						const data = await res.json();
 						logger.auth('refresh 성공', data);
-						if (localStorage) {
-							// TODO: COOKIE 로 변경
-							localStorage.setItem('accessToken', data.data.token);
-						}
+
+						setCookie(data.data.token, data.data.expirationTime);
+
 						request.headers.set('Authorization', `Bearer ${data.data.token}`);
 
 						for (const cb of waitQueue) {
