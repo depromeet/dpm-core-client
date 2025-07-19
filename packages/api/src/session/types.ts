@@ -67,7 +67,7 @@ export interface SessionDetail {
 	 * 출석 코드
 	 * @todo
 	 */
-	// attendanceCode: string;
+	attendanceCode: string;
 }
 
 export interface CurrentWeekSession {
