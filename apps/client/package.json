@@ -20,7 +20,8 @@
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"react-lottie": "^1.2.10",
-		"react-virtuoso": "^4.13.0"
+		"react-virtuoso": "^4.13.0",
+		"zod": "^4.0.5"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",

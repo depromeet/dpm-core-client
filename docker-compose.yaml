@@ -11,22 +11,7 @@ services:
       - ./local.dpmcore.o-r.kr-key.pem:/etc/ssl/private/local.dpmcore.o-r.kr-key.pem
     networks:
       - dpm-network
-  
-  mysql:
-    image: mysql:8.0
-    container_name: dpm-core-mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: dpm_core
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql-data:/var/lib/mysql
-    networks:
-      - dpm-network
 
-volumes:
-  mysql-data:
 
 networks:
   dpm-network:

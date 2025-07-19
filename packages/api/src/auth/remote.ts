@@ -11,4 +11,9 @@ export const auth = {
 
 		return res;
 	},
+
+	logout: async () => {
+		const res = await http.post('v1/logout');
+		return res;
+	},
 };
