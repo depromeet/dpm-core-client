@@ -1,19 +1,22 @@
+import {
+	fadeInOutVariatns,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+	UserAvatar,
+} from '@dpm-core/shared';
 import { ChevronRight } from 'lucide-react';
 import * as motion from 'motion/react-client';
 import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
 
-import { fadeInOutVariatns } from '@dpm-core/shared';
-
-import { NavigationBar } from '@/components/navigation-bar';
-import { Popover, PopoverContent, PopoverTrigger, UserAvatar } from '@dpm-core/shared';
-
 import IconAttendance from '@/assets/icons/icon_attendance.png';
 import IconSession from '@/assets/icons/icon_session.png';
 import IconSettlement from '@/assets/icons/icon_settlement.png';
 
+import { NavigationBar } from '@/components/navigation-bar';
+import { SessionEventCard } from '@/components/session-event-card';
 import { SessionCard } from './_components/session-card';
-import { SessionTopBanner } from './_components/session-top-banner';
 
 const UserPage = () => {
 	return (
@@ -51,7 +54,7 @@ const UserPage = () => {
 				<ChevronRight />
 			</motion.div>
 			<motion.div variants={fadeInOutVariatns.variants} className="pt-5 px-4 pb-[30px]">
-				<SessionTopBanner />
+				<SessionEventCard />
 			</motion.div>
 			<motion.div
 				variants={fadeInOutVariatns.variants}

@@ -1,0 +1,14 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"noEmit": false,
+		"jsx": "react-jsx",
+		"declaration": true,
+		"outDir": "dist",
+		"paths": {
+			"@dpm-core/api": ["./src"]
+		}
+	},
+	"include": ["src/**/*"],
+	"exclude": ["dist"]
+}

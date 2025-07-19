@@ -36,9 +36,7 @@ lerna-debug.log*
 .DS_Store
 *.pem
 
-# IDE
-.vscode/
-.idea/
+
 
 # Cache
 .cache/

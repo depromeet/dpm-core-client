@@ -1,5 +1,5 @@
-import { cn } from '@/lib/utils';
-import '@dpm-core/shared/src/globals.css';
+import { cn } from '@dpm-core/shared';
+import '@dpm-core/shared/styles.css';
 import type { Metadata, Viewport } from 'next';
 import { pretendard } from './fonts';
 
