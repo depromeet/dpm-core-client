@@ -11,6 +11,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { useTransitionRouter } from 'next-view-transitions';
 import { type PropsWithChildren, useState } from 'react';
+import { deleteToken } from '@/lib/utils';
 import { useAppShell } from '@/providers/app-shell-provider';
 import { withdrawMutationOptions } from '@/remotes/mutations/member';
 import { Pressable } from '../motion';
@@ -32,12 +33,13 @@ const WithdrawBottomSheet = ({
 	};
 
 	const redirectToHome = () => {
-		router.replace('/');
+		router.replace('/login');
 	};
 
 	const { mutate: withdrawMutate, isPending: isWithdrawPending } = useMutation(
 		withdrawMutationOptions({
 			onSuccess: () => {
+				deleteToken();
 				handleClose();
 				redirectToHome();
 			},

@@ -5,8 +5,10 @@ type WithdrawMutationOptions = MutationOptions;
 
 export const withdrawMutationOptions = (options: WithdrawMutationOptions) =>
 	mutationOptions({
-		...options,
-		mutationFn: () => {
-			return member.withdraw();
+		mutationKey: ['withdraw'],
+		mutationFn: async () => {
+			await member.withdraw();
+			return true;
 		},
+		...options,
 	});

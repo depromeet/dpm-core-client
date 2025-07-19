@@ -1,7 +1,8 @@
 'use client';
 
-import type { Member } from '@dpm-core/api';
-import { useQuery } from '@tanstack/react-query';
+import { auth, type Member } from '@dpm-core/api';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { usePathname } from 'next/navigation';
 import { type PropsWithChildren, useEffect, useState } from 'react';
 import { Loading } from '@/components/lotties/loading';
 import { UnauthenticatedLayout } from '@/layout/unauthenticated-layout';
@@ -26,8 +27,27 @@ const [AuthProviderContext, useAuth] = createContext<AuthContextType>('Auth', {
 const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [user, setUser] = useState<Member | null>(null);
+	const pathname = usePathname();
 
-	const { data: { data: memberInfo } = {}, isLoading, error } = useQuery(getMyMemberInfoQuery);
+	const queryClient = useQueryClient();
+
+	const {
+		data: { data: memberInfo } = {},
+		isLoading,
+		error,
+	} = useQuery({
+		queryKey: ['memberInfo', 'reissue'],
+		queryFn: async () => {
+			const { data } = await auth.reissue();
+			if (data) {
+				// TODO: COOKIE 로 변경
+				localStorage.setItem('accessToken', data.token);
+			}
+			const memberInfo = await queryClient.fetchQuery(getMyMemberInfoQuery);
+			return memberInfo;
+		},
+		retry: false,
+	});
 
 	useEffect(() => {
 		if (memberInfo) {
@@ -36,13 +56,13 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		}
 	}, [memberInfo]);
 
-	if (error) {
+	if (error && pathname !== '/login') {
 		return <UnauthenticatedLayout />;
 	}
 
 	if (isLoading) {
 		return (
-			<div className="flex flex-col items-center justify-center min-h-[inherit]">
+			<div className="flex flex-col items-center justify-center h-dvh">
 				<Loading />
 			</div>
 		);

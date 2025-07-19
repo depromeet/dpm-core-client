@@ -20,6 +20,7 @@ class Http {
 					(request) => {
 						logger.api(request.method, request.url);
 						if (localStorage) {
+							// TODO: COOKIE 로 변경
 							const token = localStorage.getItem('accessToken');
 							if (token) {
 								request.headers.set('Authorization', `Bearer ${token}`);
@@ -64,12 +65,12 @@ class Http {
 
 	patch = async <Response = unknown>(url: string, options?: Options) => {
 		const res = await this.instance.patch<ApiResponse<Response>>(url, options);
-		return res.json();
+		return res.text();
 	};
 
 	delete = async <Response = unknown>(url: string, options?: Options) => {
 		const res = await this.instance.delete<ApiResponse<Response>>(url, options);
-		return res.json();
+		return res.text();
 	};
 }
 
