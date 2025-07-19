@@ -1,29 +1,21 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { forwardRef } from 'react';
-
 import { Button, KakaoLogo, pressInOutVariatns } from '@dpm-core/shared';
 import { motion } from 'motion/react';
+import { type ComponentPropsWithoutRef, forwardRef } from 'react';
 
 const MotionButton = motion.create(Button);
 
 interface LoginButtonProps {
 	href?: string;
-	variant?: 'primary' | 'secondary' | 'assistive' | 'text';
+	variant?: ComponentPropsWithoutRef<typeof Button>['variant'];
 	size?: 'xs' | 'sm' | 'md' | 'lg' | 'full';
 	className?: string;
 }
 
 const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
-	({ variant, size, className, ...props }, ref) => {
-		const searchParams = useSearchParams();
-		const callbackUrl = searchParams.get('callbackUrl') || '/';
-
-		// callbackUrl을 인코딩하여 카카오 로그인 URL에 포함
-		const loginUrl = new URL('https://dev.dpmcore.o-r.kr/v1/login/kakao');
-		loginUrl.searchParams.set('callbackUrl', callbackUrl);
-
+	({ variant, size, className }, ref) => {
+		const loginUrl = new URL('https://dev.dpmcore.o-r.kr/login/kakao');
 		return (
 			<MotionButton
 				ref={ref}
@@ -35,7 +27,7 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 			>
 				<a href={loginUrl.toString()} className="flex items-center gap-2 text-sm font-medium">
 					<KakaoLogo />
-					카카오 로그인
+					<p className="flex-1 text-[#000000] opacity-85">카카오로 시작하기</p>
 				</a>
 			</MotionButton>
 		);

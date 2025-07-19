@@ -1,4 +1,4 @@
-import { fadeInOutVariatns, UserAvatar } from '@dpm-core/shared';
+import { AppLayout, fadeInOutVariatns, UserAvatar } from '@dpm-core/shared';
 import * as motion from 'motion/react-client';
 import Image, { type StaticImageData } from 'next/image';
 import { Link } from 'next-view-transitions';
@@ -6,7 +6,6 @@ import IconAttendance from '@/assets/icons/icon_attendance.png';
 import IconSession from '@/assets/icons/icon_session.png';
 import IconSettlement from '@/assets/icons/icon_settlement.png';
 import { NavigationBar } from '@/components/navigation-bar';
-import { AppLayout } from '@/layout/app-layout';
 import { SessionList } from './_components/session-list';
 import { SessionCurrentWeekBanner } from './_components/session-top-banner';
 

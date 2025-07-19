@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { usePathname } from 'next/navigation';
 import { type PropsWithChildren, useEffect, useState } from 'react';
 import { Loading } from '@/components/lotties/loading';
-import { UnauthenticatedLayout } from '@/layout/unauthenticated-layout';
+import { UnauthenticatedLayout } from '@/components/unauthenticated-layout';
 import { createContext } from '@/providers/create-context';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
@@ -39,10 +39,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		queryKey: ['memberInfo', 'reissue'],
 		queryFn: async () => {
 			const { data } = await auth.reissue();
-			if (data) {
-				// TODO: COOKIE 로 변경
-				localStorage.setItem('accessToken', data.token);
-			}
+
 			const memberInfo = await queryClient.fetchQuery(getMyMemberInfoQuery);
 			return memberInfo;
 		},

@@ -1,7 +1,7 @@
-import { cn } from '@dpm-core/shared';
 import type { HTMLMotionProps } from 'motion/react';
 import * as motion from 'motion/react-client';
 import type { PropsWithChildren } from 'react';
+import { cn } from '../utils/cn';
 
 type AppLayoutProps = HTMLMotionProps<'div'>;
 

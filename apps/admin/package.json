@@ -12,8 +12,12 @@
 	"dependencies": {
 		"@dpm-core/api": "workspace:*",
 		"@dpm-core/shared": "workspace:*",
+		"@suspensive/react": "^3.3.0",
+		"@tanstack/react-query": "^5.83.0",
+		"dayjs": "^1.11.13",
 		"motion": "^12.23.0",
 		"next": "15.3.3",
+		"next-view-transitions": "^0.3.4",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"react-virtuoso": "^4.13.0"

@@ -10,9 +10,11 @@
 	],
 	"dependencies": {
 		"@dpm-core/shared": "workspace:*",
+		"js-cookie": "^3.0.5",
 		"ky": "^1.8.2"
 	},
 	"devDependencies": {
+		"@types/js-cookie": "^3",
 		"typescript": "^5"
 	}
 }
