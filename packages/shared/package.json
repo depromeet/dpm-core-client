@@ -21,6 +21,7 @@
 		"@radix-ui/react-popover": "^1.1.14",
 		"@radix-ui/react-slot": "^1.2.3",
 		"dayjs": "^1.11.13",
+		"input-otp": "^1.4.2",
 		"lucide-react": "^0.514.0",
 		"motion": "^12.23.0",
 		"vaul": "^1.1.2"

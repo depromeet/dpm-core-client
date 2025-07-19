@@ -6,20 +6,13 @@ import IconAttendance from '@/assets/icons/icon_attendance.png';
 import IconSession from '@/assets/icons/icon_session.png';
 import IconSettlement from '@/assets/icons/icon_settlement.png';
 import { NavigationBar } from '@/components/navigation-bar';
+import { AppLayout } from '@/layout/app-layout';
 import { SessionList } from './_components/session-list';
 import { SessionCurrentWeekBanner } from './_components/session-top-banner';
 
 const UserPage = () => {
 	return (
-		<motion.div
-			className="w-full flex flex-col min-h-[inherit]"
-			initial="initial"
-			animate="animate"
-			transition={{
-				staggerChildren: 0.2,
-				delay: 1,
-			}}
-		>
+		<AppLayout className="bg-background-normal">
 			<NavigationBar>
 				<h3 className="font-normal ">Dpmcore(Logo)</h3>
 
@@ -41,7 +34,7 @@ const UserPage = () => {
 				</ul>
 				<SessionList />
 			</motion.div>
-		</motion.div>
+		</AppLayout>
 	);
 };
 

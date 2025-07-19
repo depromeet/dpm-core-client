@@ -1,10 +1,11 @@
 import { cn } from '@dpm-core/shared';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { Metadata, Viewport } from 'next';
+import { ViewTransitions } from 'next-view-transitions';
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
+
 import './globals.css';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { ViewTransitions } from 'next-view-transitions';
 
 export const metadata: Metadata = {
 	title: 'Dpmcore',

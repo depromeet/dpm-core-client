@@ -1,21 +1,18 @@
 'use client';
 
-import { session } from '@dpm-core/api';
 import { Aesterisk } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Suspense } from 'react';
 import { Loading } from '@/components/lotties/loading';
 import { formatISOStringToFullDateString } from '@/lib/date';
+import { getSessionListQuery } from '@/remotes/queries/session';
 import { SessionCard } from './session-card';
 
 const SessionListContainer = () => {
 	const {
 		data: { data },
-	} = useSuspenseQuery({
-		queryKey: ['session-list'],
-		queryFn: session.getList,
-	});
+	} = useSuspenseQuery(getSessionListQuery);
 	return (
 		<>
 			{data.sessions?.length ? (
