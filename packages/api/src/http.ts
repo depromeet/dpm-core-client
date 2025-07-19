@@ -1,7 +1,7 @@
 import { logger } from '@dpm-core/shared';
-import ky, { type KyInstance } from 'ky';
+import ky, { type KyInstance, type Options } from 'ky';
 import { createRefreshPlugin } from './plugins/create-refresh-plugin';
-import type { BaseResponse } from './type';
+import type { ApiResponse } from './type';
 
 class Http {
 	private instance: KyInstance;
@@ -41,18 +41,18 @@ class Http {
 		});
 	}
 
-	get = async <Response = unknown>(url: string) => {
-		const res = await this.instance.get<BaseResponse<Response>>(url);
+	get = async <Response = unknown>(url: string, options?: Options) => {
+		const res = await this.instance.get<ApiResponse<Response>>(url, options);
 		return res.json();
 	};
 
-	post = async <Response = unknown>(url: string) => {
-		const res = await this.instance.post<BaseResponse<Response>>(url);
+	post = async <Response = unknown>(url: string, options?: Options) => {
+		const res = await this.instance.post<ApiResponse<Response>>(url, options);
 		return res.json();
 	};
 
-	put = async <Response = unknown>(url: string) => {
-		const res = await this.instance.put<BaseResponse<Response>>(url);
+	put = async <Response = unknown>(url: string, options?: Options) => {
+		const res = await this.instance.put<ApiResponse<Response>>(url, options);
 		return res.json();
 	};
 }

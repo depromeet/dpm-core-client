@@ -21,9 +21,9 @@ export function createRefreshPlugin(options?: RefreshPluginOptions): AfterRespon
 		});
 
 		// FIXME: 미인증 반환 코드 확인 후 변경
-		// if (response.status !== 401) {
-		// 	return response;
-		// }
+		if (response.ok || response.status < 400) {
+			return response;
+		}
 
 		logger.debug('401 에러 감지', { url: request.url });
 
