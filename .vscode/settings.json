@@ -3,6 +3,6 @@
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
 		"source.fixAll": "always",
-		"source.organizeImports": "explicit"
+		"source.removeUnusedImports": "explicit"
 	}
 }

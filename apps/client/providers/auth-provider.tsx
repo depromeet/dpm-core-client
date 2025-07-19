@@ -1,14 +1,9 @@
-"use client";
+'use client';
 
-import { getMyMemberInfo } from "@dpm-core/api";
-import { useQuery } from "@tanstack/react-query";
-import { RedirectType, redirect } from "next/navigation";
-import {
-	createContext,
-	useEffect,
-	useState,
-	type PropsWithChildren,
-} from "react";
+import { getMyMemberInfo } from '@dpm-core/api';
+import { useQuery } from '@tanstack/react-query';
+import { RedirectType, redirect } from 'next/navigation';
+import { createContext, type PropsWithChildren, useEffect, useState } from 'react';
 
 interface AuthContextType {
 	isAuthenticated: boolean;
@@ -30,7 +25,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [user, setUser] = useState<number | null>(null);
 
 	const { data, isLoading, error } = useQuery({
-		queryKey: ["get-my-member-info"],
+		queryKey: ['get-my-member-info'],
 		queryFn: () => {
 			return getMyMemberInfo();
 		},
@@ -68,5 +63,5 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 export { AuthProvider };
 
 function UnauthenticatedLayout() {
-	return redirect("/login", RedirectType.replace);
+	return redirect('/login', RedirectType.replace);
 }

@@ -1,5 +1,4 @@
-type LogLevel = "debug" | "info" | "warn" | "error";
-
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 interface LoggerConfig {
 	level: LogLevel;
@@ -19,24 +18,24 @@ class Logger {
 	};
 
 	private readonly colors: Record<LogLevel, string> = {
-		debug: "\x1b[36m", // cyan
-		info: "\x1b[34m", // blue
-		warn: "\x1b[33m", // yellow
-		error: "\x1b[31m", // red
+		debug: '\x1b[36m', // cyan
+		info: '\x1b[34m', // blue
+		warn: '\x1b[33m', // yellow
+		error: '\x1b[31m', // red
 	};
 
 	private readonly emojis: Record<LogLevel, string> = {
-		debug: "🔍",
-		info: "ℹ️",
-		warn: "⚠️",
-		error: "❌",
+		debug: '🔍',
+		info: 'ℹ️',
+		warn: '⚠️',
+		error: '❌',
 	};
 
-	private readonly reset = "\x1b[0m";
+	private readonly reset = '\x1b[0m';
 
 	constructor(config: Partial<LoggerConfig> = {}) {
 		this.config = {
-			level: process.env.NODE_ENV === "production" ? "warn" : "debug",
+			level: process.env.NODE_ENV === 'production' ? 'warn' : 'debug',
 			enableColors: true,
 			enableEmojis: true,
 			enableTimestamp: true,
@@ -49,12 +48,8 @@ class Logger {
 		return this.levels[level] >= this.levels[this.config.level];
 	}
 
-	private formatMessage(
-		level: LogLevel,
-		message: string,
-		data?: unknown,
-	): string {
-		let formattedMessage = "";
+	private formatMessage(level: LogLevel, message: string, data?: unknown): string {
+		let formattedMessage = '';
 
 		/*
     타임스탬프
@@ -103,11 +98,11 @@ class Logger {
 		const formattedMessage = this.formatMessage(level, message, data);
 
 		const consoleMethod =
-			level === "error"
+			level === 'error'
 				? console.error
-				: level === "warn"
+				: level === 'warn'
 					? console.warn
-					: level === "info"
+					: level === 'info'
 						? console.info
 						: console.debug;
 
@@ -119,32 +114,24 @@ class Logger {
 	}
 
 	debug(message: string, data?: unknown): void {
-		this.log("debug", message, data);
+		this.log('debug', message, data);
 	}
 
 	info(message: string, data?: unknown): void {
-		this.log("info", message, data);
+		this.log('info', message, data);
 	}
 
 	warn(message: string, data?: unknown): void {
-		this.log("warn", message, data);
+		this.log('warn', message, data);
 	}
 
 	error(message: string, data?: unknown): void {
-		this.log("error", message, data);
+		this.log('error', message, data);
 	}
 
 	api(method: string, url: string, status?: number): void {
-		const emoji = status
-			? status >= 400
-				? "🔴"
-				: status >= 300
-					? "🟡"
-					: "🟢"
-			: "🌐";
-		this.info(
-			`${emoji} ${method.toUpperCase()} ${url}${status ? ` - ${status}` : ""}`,
-		);
+		const emoji = status ? (status >= 400 ? '🔴' : status >= 300 ? '🟡' : '🟢') : '🌐';
+		this.info(`${emoji} ${method.toUpperCase()} ${url}${status ? ` - ${status}` : ''}`);
 	}
 
 	auth(action: string, data?: unknown): void {
@@ -152,7 +139,7 @@ class Logger {
 	}
 
 	query(queryKey: string[], action: string): void {
-		this.debug(`🔄 QUERY: [${queryKey.join(", ")}] - ${action}`);
+		this.debug(`🔄 QUERY: [${queryKey.join(', ')}] - ${action}`);
 	}
 
 	component(name: string, action: string, data?: unknown): void {
