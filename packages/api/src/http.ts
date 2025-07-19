@@ -61,6 +61,16 @@ class Http {
 		const res = await this.instance.put<ApiResponse<Response>>(url, options);
 		return res.json();
 	};
+
+	patch = async <Response = unknown>(url: string, options?: Options) => {
+		const res = await this.instance.patch<ApiResponse<Response>>(url, options);
+		return res.json();
+	};
+
+	delete = async <Response = unknown>(url: string, options?: Options) => {
+		const res = await this.instance.delete<ApiResponse<Response>>(url, options);
+		return res.json();
+	};
 }
 
 export const http = new Http();

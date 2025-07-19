@@ -1,8 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
-@source '../../../node_modules/@dpm-core/shared';
-
-@custom-variant dark (&:is(.dark *));
 
 @theme inline {
 	/* Blue Colors */
@@ -109,19 +105,4 @@
 	--color-background: var(--background);
 
 	--font-pretendard: var(--font-pretendard);
-}
-
-:root {
-	--background: var(--color-gray-0);
-}
-
-.dark {
-	--background: var(--color-gray-800);
-}
-
-@layer base {
-	body {
-		overscroll-behavior: none;
-		@apply bg-background text-label-normal font-pretendard;
-	}
 }

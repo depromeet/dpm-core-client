@@ -4,11 +4,8 @@
 		"noEmit": false,
 		"jsx": "react-jsx",
 		"declaration": true,
-		"outDir": "dist",
-		"paths": {
-			"@dpm-core/api": ["./src"]
-		}
+		"outDir": "dist"
 	},
-	"include": ["src/**/*"],
+	"include": ["src"],
 	"exclude": ["dist"]
 }

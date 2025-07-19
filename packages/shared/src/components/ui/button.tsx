@@ -24,6 +24,13 @@ const buttonVariants = cva(
 				full: 'w-full h-14 text-body1 font-semibold',
 			},
 		},
+		compoundVariants: [
+			{
+				variant: 'text',
+				size: ['full', 'lg', 'md', 'sm', 'xs', 'none'],
+				className: 'h-auto w-auto px-0',
+			},
+		],
 		defaultVariants: {
 			variant: 'primary',
 			size: 'md',

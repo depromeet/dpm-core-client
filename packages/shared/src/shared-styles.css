@@ -1,0 +1,19 @@
+@import "tw-animate-css";
+@import "./theme-styles.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+	--background: var(--color-gray-0);
+}
+
+.dark {
+	--background: var(--color-gray-800);
+}
+
+@layer base {
+	body {
+		overscroll-behavior: none;
+		@apply bg-background text-label-normal font-pretendard;
+	}
+}

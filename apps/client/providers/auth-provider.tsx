@@ -1,10 +1,11 @@
 'use client';
 
-import { type Member, member } from '@dpm-core/api';
+import { type Member } from '@dpm-core/api';
 import { useQuery } from '@tanstack/react-query';
 import { RedirectType, redirect } from 'next/navigation';
 import { createContext, type PropsWithChildren, useEffect, useState } from 'react';
 import { Loading } from '@/components/lotties/loading';
+import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
 interface AuthContextType {
 	isAuthenticated: boolean;
@@ -25,18 +26,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [user, setUser] = useState<Member | null>(null);
 
-	const {
-		data: { data: memberInfo } = {},
-		isLoading,
-		error,
-	} = useQuery({
-		queryKey: ['get-my-member-info'],
-		queryFn: () => {
-			return member.getMyMemberInfo();
-		},
-		retry: false,
-		refetchInterval: false,
-	});
+	const { data: { data: memberInfo } = {}, isLoading, error } = useQuery(getMyMemberInfoQuery);
 
 	useEffect(() => {
 		if (memberInfo) {
