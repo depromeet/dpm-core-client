@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
 import './globals.css';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ViewTransitions } from 'next-view-transitions';
 
 export const metadata: Metadata = {
@@ -27,6 +28,7 @@ export default function RootLayout({
 					<ViewTransitions>
 						<main className="max-w-lg mx-auto min-h-dvh">{children}</main>
 					</ViewTransitions>
+					<ReactQueryDevtools />
 				</QueryProvider>
 			</body>
 		</html>
