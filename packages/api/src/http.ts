@@ -19,6 +19,12 @@ class Http {
 				beforeRequest: [
 					(request) => {
 						logger.api(request.method, request.url);
+						if (localStorage) {
+							const token = localStorage.getItem('accessToken');
+							if (token) {
+								request.headers.set('Authorization', `Bearer ${token}`);
+							}
+						}
 					},
 				],
 				afterResponse: [

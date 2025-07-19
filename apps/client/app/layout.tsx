@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
 import './globals.css';
+import { ViewTransitions } from 'next-view-transitions';
 
 export const metadata: Metadata = {
 	title: 'Dpmcore',
@@ -10,11 +11,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-	initialScale: 1,
-	maximumScale: 1,
-	userScalable: false,
-	minimumScale: 1,
 	width: 'device-width',
+	initialScale: 1,
 };
 
 export default function RootLayout({
@@ -26,7 +24,9 @@ export default function RootLayout({
 		<html lang="ko">
 			<body className={cn(pretendard.variable)}>
 				<QueryProvider>
-					<main className="max-w-lg mx-auto min-h-dvh">{children}</main>
+					<ViewTransitions>
+						<main className="max-w-lg mx-auto min-h-dvh">{children}</main>
+					</ViewTransitions>
 				</QueryProvider>
 			</body>
 		</html>

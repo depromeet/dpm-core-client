@@ -1,17 +1,11 @@
-import {
-	fadeInOutVariatns,
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-	UserAvatar,
-} from '@dpm-core/shared';
+import { fadeInOutVariatns, UserAvatar } from '@dpm-core/shared';
 import * as motion from 'motion/react-client';
 import Image, { type StaticImageData } from 'next/image';
-import Link from 'next/link';
-import IconAttendance from '../../../assets/icons/icon_attendance.png';
-import IconSession from '../../../assets/icons/icon_session.png';
-import IconSettlement from '../../../assets/icons/icon_settlement.png';
-import { NavigationBar } from '../../../components/navigation-bar';
+import { Link } from 'next-view-transitions';
+import IconAttendance from '@/assets/icons/icon_attendance.png';
+import IconSession from '@/assets/icons/icon_session.png';
+import IconSettlement from '@/assets/icons/icon_settlement.png';
+import { NavigationBar } from '@/components/navigation-bar';
 import { SessionList } from './_components/session-list';
 import { SessionCurrentWeekBanner } from './_components/session-top-banner';
 
@@ -29,16 +23,9 @@ const UserPage = () => {
 			<NavigationBar>
 				<h3 className="font-normal ">Dpmcore(Logo)</h3>
 
-				<Popover>
-					<PopoverTrigger>
-						<UserAvatar />
-					</PopoverTrigger>
-					<PopoverContent className="bg-white w-fit flex flex-col">
-						<Link href="#">로그아웃</Link>
-						<Link href="#">마이페이지</Link>
-						<Link href="#">프로필 수정</Link>
-					</PopoverContent>
-				</Popover>
+				<Link href="/my-page">
+					<UserAvatar />
+				</Link>
 			</NavigationBar>
 
 			<SessionCurrentWeekBanner />
@@ -48,9 +35,9 @@ const UserPage = () => {
 				className="flex flex-col divide-y-8 divide-background-strong flex-1"
 			>
 				<ul className="gap-x-3 flex items-center mt-5 pb-10">
-					<IconCard icon={IconAttendance} title="출석" />
-					<IconCard icon={IconSession} title="세션" />
-					<IconCard icon={IconSettlement} title="정산" />
+					<IconCard icon={IconAttendance} title="출석" href="/attendance" />
+					<IconCard icon={IconSession} title="세션" href="/session" />
+					<IconCard icon={IconSettlement} title="정산" href="/settlement" />
 				</ul>
 				<SessionList />
 			</motion.div>
@@ -61,12 +48,16 @@ const UserPage = () => {
 interface IconCardProps {
 	icon: StaticImageData;
 	title: string;
+	href: string;
 }
 
-function IconCard({ icon, title }: IconCardProps) {
+function IconCard({ icon, title, href }: IconCardProps) {
 	return (
 		<li className="flex-1">
-			<Link className="flex flex-col items-center text-center gap-y-2 " href="">
+			<Link
+				href={href}
+				className="flex flex-col items-center text-center gap-y-2 hover:scale-105 transition-transform"
+			>
 				<div className="rounded-xl bg-background-strong w-[60px] h-[60px] flex items-center justify-center">
 					<Image src={icon} width={35} height={35} alt={title} />
 				</div>

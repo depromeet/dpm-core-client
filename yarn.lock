@@ -492,6 +492,7 @@ __metadata:
     dayjs: "npm:^1.11.13"
     motion: "npm:^12.23.0"
     next: "npm:15.3.3"
+    next-view-transitions: "npm:^0.3.4"
     react: "npm:^19.0.0"
     react-dom: "npm:^19.0.0"
     react-lottie: "npm:^1.2.10"
@@ -3621,6 +3622,17 @@ __metadata:
   version: 1.0.0
   resolution: "negotiator@npm:1.0.0"
   checksum: 10c0/4c559dd52669ea48e1914f9d634227c561221dd54734070791f999c52ed0ff36e437b2e07d5c1f6e32909fc625fe46491c16e4a8f0572567d4dd15c3a4fda04b
+  languageName: node
+  linkType: hard
+
+"next-view-transitions@npm:^0.3.4":
+  version: 0.3.4
+  resolution: "next-view-transitions@npm:0.3.4"
+  peerDependencies:
+    next: ">=14.0.0"
+    react: ^18.2.0
+    react-dom: ^18.2.0
+  checksum: 10c0/8a566f66de2e98e7c4a5c2ad27bc4121d0042d1a9bc0af350b8568595b4df612d453cd6338cd869ecf98fa7e13692185c4452ce991f22609ded5b2213ceb89d3
   languageName: node
   linkType: hard
 

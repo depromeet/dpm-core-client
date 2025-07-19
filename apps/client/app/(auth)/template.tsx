@@ -1,7 +1,9 @@
+'use client';
+
 import type { PropsWithChildren } from 'react';
 import { AuthProvider } from '@/providers/auth-provider';
 
-const AuthLayout = async ({ children }: PropsWithChildren) => {
+const AuthLayout = ({ children }: PropsWithChildren) => {
 	return <AuthProvider>{children}</AuthProvider>;
 };
 

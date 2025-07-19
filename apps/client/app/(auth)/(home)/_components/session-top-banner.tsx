@@ -19,6 +19,8 @@ const SessionCurrentWeekBannerContainer = () => {
 		queryFn: session.getCurrentWeekSession,
 	});
 
+	console.log(currentWeekSession);
+
 	if (!currentWeekSession) {
 		return null;
 	}

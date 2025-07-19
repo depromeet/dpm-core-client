@@ -4,6 +4,7 @@ import { type Member, member } from '@dpm-core/api';
 import { useQuery } from '@tanstack/react-query';
 import { RedirectType, redirect } from 'next/navigation';
 import { createContext, type PropsWithChildren, useEffect, useState } from 'react';
+import { Loading } from '@/components/lotties/loading';
 
 interface AuthContextType {
 	isAuthenticated: boolean;
@@ -49,7 +50,11 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	}
 
 	if (isLoading) {
-		return <div>Loading...</div>;
+		return (
+			<div className="flex flex-col items-center justify-center min-h-[inherit]">
+				<Loading />
+			</div>
+		);
 	}
 
 	return (

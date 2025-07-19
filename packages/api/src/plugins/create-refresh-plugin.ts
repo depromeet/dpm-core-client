@@ -61,6 +61,9 @@ export function createRefreshPlugin(options?: RefreshPluginOptions): AfterRespon
 						}
 						const data = await res.json();
 						logger.auth('refresh 성공', data);
+						if (localStorage) {
+							localStorage.setItem('accessToken', data.data.token);
+						}
 						request.headers.set('Authorization', `Bearer ${data.data.token}`);
 
 						for (const cb of waitQueue) {
