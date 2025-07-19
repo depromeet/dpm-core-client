@@ -11,6 +11,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { useTransitionRouter } from 'next-view-transitions';
 import { type PropsWithChildren, useState } from 'react';
+import { useAppShell } from '@/providers/app-shell-provider';
 import { logoutMutationOptions } from '@/remotes/mutations/auth';
 import { Pressable } from '../motion';
 
@@ -21,6 +22,7 @@ interface LogoutBottomSheetProps {
 const LogoutBottomSheet = ({ children, disabled }: PropsWithChildren<LogoutBottomSheetProps>) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const router = useTransitionRouter();
+	const { ref } = useAppShell();
 
 	const handleClose = () => {
 		setIsOpen(false);
@@ -42,9 +44,15 @@ const LogoutBottomSheet = ({ children, disabled }: PropsWithChildren<LogoutBotto
 	const isDisabled = isLogoutPending || disabled;
 
 	return (
-		<Drawer open={isOpen} onOpenChange={setIsOpen}>
+		<Drawer activeSnapPoint={1} open={isOpen} onOpenChange={setIsOpen} container={ref.current}>
 			<DrawerTrigger asChild>{children}</DrawerTrigger>
-			<DrawerContent className="!px-2">
+			<DrawerContent
+				className="!px-2 mx-auto"
+				style={{
+					// FIXME: 바텀시트 위치 계산식 분리
+					maxWidth: ref.current?.clientWidth ?? 'auto',
+				}}
+			>
 				<DrawerTitle className="sr-only">로그아웃</DrawerTitle>
 				<DrawerHeader className="!text-left !gap-y-2 items-start">
 					<h3 className="text-title2 font-semibold text-label-normal">로그아웃</h3>

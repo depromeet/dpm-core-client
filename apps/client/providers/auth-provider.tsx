@@ -1,10 +1,11 @@
 'use client';
 
-import { type Member } from '@dpm-core/api';
+import type { Member } from '@dpm-core/api';
 import { useQuery } from '@tanstack/react-query';
-import { RedirectType, redirect } from 'next/navigation';
-import { createContext, type PropsWithChildren, useEffect, useState } from 'react';
+import { type PropsWithChildren, useEffect, useState } from 'react';
 import { Loading } from '@/components/lotties/loading';
+import { UnauthenticatedLayout } from '@/layout/unauthenticated-layout';
+import { createContext } from '@/providers/create-context';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
 interface AuthContextType {
@@ -12,7 +13,7 @@ interface AuthContextType {
 	user: Member | null;
 }
 
-export const AuthContext = createContext<AuthContextType>({
+const [AuthProviderContext, useAuth] = createContext<AuthContextType>('Auth', {
 	isAuthenticated: false,
 	user: null,
 });
@@ -48,19 +49,10 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	}
 
 	return (
-		<AuthContext.Provider
-			value={{
-				isAuthenticated,
-				user,
-			}}
-		>
+		<AuthProviderContext isAuthenticated={isAuthenticated} user={user}>
 			{children}
-		</AuthContext.Provider>
+		</AuthProviderContext>
 	);
 };
 
-export { AuthProvider };
-
-function UnauthenticatedLayout() {
-	return redirect('/login', RedirectType.replace);
-}
+export { AuthProvider, useAuth };

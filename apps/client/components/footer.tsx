@@ -1,8 +1,8 @@
 const Footer = () => {
 	return (
-		<footer className="bg-background-inverse py-[26px] px-4 flex-1 flex flex-col">
+		<footer className="bg-background-inverse py-[26px] px-4 flex flex-col">
 			<h3 className="text-white">DPM CORE (LOGO)</h3>
-			<div className="flex items-center gap-x-2 mt-[18px]">
+			<div className="flex items-center gap-x-2 my-[18px]">
 				<a
 					href="https://depromeet.com/privacy"
 					target="_blank"

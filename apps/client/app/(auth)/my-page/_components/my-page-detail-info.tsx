@@ -23,7 +23,7 @@ const MyPageDetailInfoContainer = () => {
 	return (
 		<motion.div
 			variants={fadeInOutVariatns.variants}
-			className="flex flex-col gap-y-2 p-[30px] px-4"
+			className="flex flex-col gap-y-2 p-[30px] px-4 flex-1"
 		>
 			<MypPageBox className="flex flex-col gap-y-5">
 				<div className="flex flex-col gap-y-2">

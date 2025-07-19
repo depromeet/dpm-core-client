@@ -29,6 +29,7 @@ const MyPageAvatarInfoContainer = () => {
 					alt={myMemberInfo.part}
 					width={120}
 					height={120}
+					priority
 				/>
 			</div>
 			<div className="flex flex-col text-center gap-y-1">
