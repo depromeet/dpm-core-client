@@ -9,6 +9,6 @@
 			"@dpm-core/shared/*": ["./src/*"]
 		}
 	},
-	"include": ["src/**/*"],
+	"include": ["src/**/*", "../../apps/client/components/unauthenticated-layout.tsx"],
 	"exclude": ["dist"]
 }
