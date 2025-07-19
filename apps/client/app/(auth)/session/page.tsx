@@ -1,5 +1,5 @@
+import { AppLayout } from '@dpm-core/shared';
 import { AppHeader } from '@/components/app-header';
-import { AppLayout } from '@/layout/app-layout';
 import { SessionList } from './_components/session-list';
 
 const SessionPage = () => {

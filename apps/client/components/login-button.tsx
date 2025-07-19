@@ -14,7 +14,7 @@ interface LoginButtonProps {
 }
 
 const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
-	({ variant, size, className, ...props }, ref) => {
+	({ variant, size, className }, ref) => {
 		const loginUrl = new URL('https://dev.dpmcore.o-r.kr/login/kakao');
 		return (
 			<MotionButton
