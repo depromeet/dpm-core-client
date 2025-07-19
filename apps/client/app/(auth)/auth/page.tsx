@@ -4,12 +4,10 @@ import { auth } from '@dpm-core/api';
 import { useQuery } from '@tanstack/react-query';
 
 const AuthPage = () => {
-	const { data } = useQuery({
-		queryKey: ['auth'],
-		queryFn: auth.reissue,
-	});
-
-	console.log(data);
+	// const {} = useQuery({
+	// 	queryKey: ['auth'],
+	// 	queryFn: auth.reissue,
+	// });
 
 	return <div>AuthPage</div>;
 };
