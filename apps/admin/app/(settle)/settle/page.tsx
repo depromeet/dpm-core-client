@@ -3,7 +3,7 @@ import MainTemplete from '@/components/settle/templates/MainTemplete';
 
 export default async function SettleMainPage() {
 	return (
-		<div className="relative min-h-screen pt-[96px] ">
+		<div className="relative min-h-screen pt-24 ">
 			<MainTemplete />
 			<CreateSettleBtn />
 		</div>

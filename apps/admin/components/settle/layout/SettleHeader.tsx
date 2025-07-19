@@ -6,6 +6,7 @@ import SettleHeaderFilter from './SettleHeaderFilter';
 
 interface HeaderConfig {
 	title: string;
+
 	withFilter: boolean;
 }
 
@@ -16,6 +17,10 @@ const settleHeaderMap: Record<string, HeaderConfig> = {
 	},
 	'/settle/create': {
 		title: '정산서 만들기',
+		withFilter: false,
+	},
+	'/settle/create/done': {
+		title: '최종 정산서',
 		withFilter: false,
 	},
 };

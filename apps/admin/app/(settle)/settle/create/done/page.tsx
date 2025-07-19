@@ -1,9 +1,9 @@
-import CreateTemplate from '@/components/settle/templates/CreateTemplate';
+import DoneTemplate from '@/components/settle/templates/DoneTemplate';
 
 export default async function SettleCreatePage() {
 	return (
 		<div className="relative pt-12 pb-14">
-			<CreateTemplate />
+			<DoneTemplate />
 		</div>
 	);
 }
