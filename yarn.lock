@@ -470,6 +470,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@dpm-core/api@workspace:packages/api"
   dependencies:
+    "@dpm-core/shared": "workspace:*"
     ky: "npm:^1.8.2"
     tsup: "npm:^8.0.1"
     typescript: "npm:^5"

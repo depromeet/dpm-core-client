@@ -26,8 +26,8 @@
 		"lint": "biome lint --write ."
 	},
 	"dependencies": {
-		"ky": "^1.8.2",
-		"@dpm-core/shared": "workspace:*"
+		"@dpm-core/shared": "workspace:*",
+		"ky": "^1.8.2"
 	},
 	"devDependencies": {
 		"tsup": "^8.0.1",
