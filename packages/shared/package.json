@@ -9,14 +9,15 @@
 	},
 	"scripts": {
 		"build:styles": "tailwindcss -i ./src/shared-styles.css -o ./dist/index.css",
-		"dev:styles": "tailwindcss -i ./src/shared-styles.css -o ./dist/index.css --watch"
+		"dev:styles": "tailwindcss -i ./src/shared-styles.css -o ./dist/index.css --watch",
+    "format": "biome format --write .",
+		"lint": "biome lint --write ."
 	},
 	"files": ["dist"],
 	"dependencies": {
 		"@radix-ui/react-avatar": "^1.1.10",
 		"@radix-ui/react-popover": "^1.1.14",
 		"@radix-ui/react-slot": "^1.2.3",
-		"better-auth": "^1.2.9",
 		"dayjs": "^1.11.13",
 		"lucide-react": "^0.514.0",
 		"motion": "^12.23.0",
@@ -27,10 +28,11 @@
 		"@tailwindcss/postcss": "^4.1.5",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
+		"tailwindcss": "^4",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"tailwind-merge": "^3.3.1",
-		"tailwindcss": "^4.1.5",
+		"tw-animate-css": "^1.3.4",
 		"typescript": "^5"
 	},
 	"peerDependencies": {

@@ -12,12 +12,18 @@
 	"dependencies": {
 		"@dpm-core/api": "workspace:*",
 		"@dpm-core/shared": "workspace:*",
+		"@suspensive/react": "^3.3.0",
 		"@tanstack/react-query": "^5.80.6",
+		"@tanstack/react-query-devtools": "^5.83.0",
+		"dayjs": "^1.11.13",
 		"motion": "^12.23.0",
 		"next": "15.3.3",
+		"next-view-transitions": "^0.3.4",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
-		"react-virtuoso": "^4.13.0"
+		"react-lottie": "^1.2.10",
+		"react-virtuoso": "^4.13.0",
+		"zod": "^4.0.5"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
@@ -25,6 +31,7 @@
 		"@types/node": "^20",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
+		"@types/react-lottie": "^1",
 		"tailwindcss": "^4",
 		"tw-animate-css": "^1.3.4",
 		"typescript": "^5"

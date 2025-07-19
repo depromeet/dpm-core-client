@@ -4,11 +4,28 @@
 	"tasks": {
 		"dev": {
 			"cache": false,
-			"persistent": true
+			"persistent": true,
+			"dependsOn": ["^build"]
 		},
 		"build": {
 			"dependsOn": ["^build"],
-			"outputs": [".next/**", "!.next/cache/**", "dist/**"]
+			"outputs": [".next/**", "!.next/cache/**", "dist/**", "!dist/**/*.map"],
+			"inputs": [
+				"src/**",
+				"app/**",
+				"components/**",
+				"lib/**",
+				"types/**",
+				"constants/**",
+				"hooks/**",
+				"providers/**",
+				"remotes/**",
+				"assets/**",
+				"package.json",
+				"tsconfig.json",
+				"next.config.ts",
+				"tailwind.config.*"
+			]
 		},
 		"start": {
 			"dependsOn": ["build"],
@@ -16,13 +33,18 @@
 			"persistent": true
 		},
 		"lint": {
-			"dependsOn": ["^lint"]
+			"dependsOn": ["^build"]
 		},
 		"format": {
-			"dependsOn": ["^format"]
+			"dependsOn": ["^build"]
 		},
 		"clean": {
 			"cache": false
+		},
+		"type-check": {
+			"dependsOn": ["^build"],
+			"outputs": []
 		}
-	}
+	},
+	"globalDependencies": ["package.json", "yarn.lock", "turbo.json", "tsconfig.base.json"]
 }
