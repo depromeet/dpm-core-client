@@ -450,6 +450,8 @@ __metadata:
   resolution: "@dpm-core/api@workspace:packages/api"
   dependencies:
     "@dpm-core/shared": "workspace:*"
+    "@types/js-cookie": "npm:^3"
+    js-cookie: "npm:^3.0.5"
     ky: "npm:^1.8.2"
     typescript: "npm:^5"
   languageName: unknown
@@ -464,6 +466,7 @@ __metadata:
     "@radix-ui/react-slot": "npm:^1.2.3"
     "@tailwindcss/cli": "npm:^4.1.5"
     "@tailwindcss/postcss": "npm:^4.1.5"
+    "@types/js-cookie": "npm:^3.0.6"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
     class-variance-authority: "npm:^0.7.1"
@@ -1779,7 +1782,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:^5.80.6":
+"@tanstack/react-query@npm:^5.80.6, @tanstack/react-query@npm:^5.83.0":
   version: 5.83.0
   resolution: "@tanstack/react-query@npm:5.83.0"
   dependencies:
@@ -1805,6 +1808,13 @@ __metadata:
   dependencies:
     tslib: "npm:^2.4.0"
   checksum: 10c0/f9fde5c554455019f33af6c8215f1a1435028803dc2a2825b077d812bed4209a1a64444a4ca0ce2ea7e1175c8d88e2f9173a36a33c199e8a5c671aa31de8242d
+  languageName: node
+  linkType: hard
+
+"@types/js-cookie@npm:^3, @types/js-cookie@npm:^3.0.6":
+  version: 3.0.6
+  resolution: "@types/js-cookie@npm:3.0.6"
+  checksum: 10c0/173afaf5ea9d86c22395b9d2a00b6adb0006dcfef165d6dcb0395cdc32f5a5dcf9c3c60f97194119963a15849b8f85121e1ae730b03e40bc0c29b84396ba22f9
   languageName: node
   linkType: hard
 
@@ -1865,12 +1875,16 @@ __metadata:
     "@biomejs/biome": "npm:^1.9.4"
     "@dpm-core/api": "workspace:*"
     "@dpm-core/shared": "workspace:*"
+    "@suspensive/react": "npm:^3.3.0"
     "@tailwindcss/postcss": "npm:^4"
+    "@tanstack/react-query": "npm:^5.83.0"
     "@types/node": "npm:^20"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
+    dayjs: "npm:^1.11.13"
     motion: "npm:^12.23.0"
     next: "npm:15.3.3"
+    next-view-transitions: "npm:^0.3.4"
     react: "npm:^19.0.0"
     react-dom: "npm:^19.0.0"
     react-virtuoso: "npm:^4.13.0"
@@ -2674,6 +2688,13 @@ __metadata:
   bin:
     jiti: lib/jiti-cli.mjs
   checksum: 10c0/4ceac133a08c8faff7eac84aabb917e85e8257f5ad659e843004ce76e981c457c390a220881748ac67ba1b940b9b729b30fb85cbaf6e7989f04b6002c94da331
+  languageName: node
+  linkType: hard
+
+"js-cookie@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "js-cookie@npm:3.0.5"
+  checksum: 10c0/04a0e560407b4489daac3a63e231d35f4e86f78bff9d792011391b49c59f721b513411cd75714c418049c8dc9750b20fcddad1ca5a2ca616c3aca4874cce5b3a
   languageName: node
   linkType: hard
 
