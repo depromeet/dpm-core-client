@@ -10,8 +10,8 @@
 		"lint": "biome lint --write ."
 	},
 	"dependencies": {
-		"@dpm-core/shared": "workspace:*",
 		"@dpm-core/api": "workspace:*",
+		"@dpm-core/shared": "workspace:*",
 		"@suspensive/react": "^3.3.0",
 		"@tanstack/react-query": "^5.80.6",
 		"dayjs": "^1.11.13",
