@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
 @theme inline {
+
+	--color-neutral-5: #F6F9FA;
+
 	/* Blue Colors */
 	--color-blue-50: #eff3ff;
 	--color-blue-100: #dae2ff;
@@ -74,9 +77,10 @@
 	--color-label-subtle: var(--color-gray-600);
 	--color-label-normal: var(--color-gray-800);
 	--color-label-strong: var(--color-gray-900);
+	--color-icon-primary: #160042;
 	--color-icon-noraml: var(--color-gray-400);
 	--color-icon-strong: var(--color-gray-500);
-	--color-line-noraml: --alpha(var(--color-gray-500) / 20%);
+	--color-line-normal: --alpha(var(--color-gray-500) / 20%);
 	--color-line-subtle: --alpha(var(--color-gray-500) / 13%);
 	--color-background-normal: var(--color-gray-0);
 	--color-background-subtle: var(--color-gray-50);

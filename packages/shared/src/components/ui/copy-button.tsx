@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@dpm-core/shared';
+import { cn, toast } from '@dpm-core/shared';
 import { CheckIcon } from 'lucide-react';
 import * as React from 'react';
 import { CopyIcon } from '../icons/copy';
@@ -17,22 +17,30 @@ async function copyToClipboardWithMeta(value: string) {
 
 function CopyButton({ value, className, src, variant = 'none', ...props }: CopyButtonProps) {
 	const [hasCopied, setHasCopied] = React.useState(false);
+	const timeoutIdRef = React.useRef<NodeJS.Timeout | null>(null);
 
-	React.useEffect(() => {
-		setTimeout(() => {
+	const handleDebounceCopiedState = () => {
+		if (timeoutIdRef.current) {
+			clearTimeout(timeoutIdRef.current);
+		}
+		timeoutIdRef.current = setTimeout(() => {
 			setHasCopied(false);
-		}, 2000);
-	}, []);
+		}, 1000);
+	};
+
+	const handleCopy = () => {
+		toast.success('출석 코드를 복사했습니다.');
+		copyToClipboardWithMeta(value);
+		setHasCopied(true);
+		handleDebounceCopiedState();
+	};
 
 	return (
 		<Button
 			size="none"
 			variant={variant}
 			className={cn('relative z-10 h-6 w-6 text-icon-noraml hover:text-icon-strong', className)}
-			onClick={() => {
-				copyToClipboardWithMeta(value);
-				setHasCopied(true);
-			}}
+			onClick={handleCopy}
 			{...props}
 		>
 			<span className="sr-only">Copy</span>
