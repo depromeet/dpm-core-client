@@ -1,11 +1,16 @@
 {
 	"name": "@dpm-core/shared",
 	"version": "0.1.0",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"description": "DPM Core shared components and utilities",
 	"exports": {
-		".": "./src/index.ts",
-		"./theme-styles.css": "./src/theme-styles.css",
-		"./shared-styles.css": "./dist/index.css"
+		".": {
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./styles.css": "./dist/styles.css"
 	},
 	"scripts": {
 		"build:styles": "tailwindcss -i ./src/shared-styles.css -o ./dist/index.css",
@@ -13,9 +18,7 @@
 		"format": "biome format --write .",
 		"lint": "biome lint --write ."
 	},
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"dependencies": {
 		"@hookform/resolvers": "^5.1.1",
 		"@radix-ui/react-avatar": "^1.1.10",
