@@ -44,7 +44,7 @@ export const AttendanceForm = (props: AttendanceFormProps) => {
 	});
 
 	const handleSubmitCode = (data: z.infer<typeof FormSchema>) => {
-		checkAttendance({ sessionId: params.get(sessionId) });
+		checkAttendance({ sessionId, attedanceCode: data.attendanceCode });
 	};
 
 	return (
@@ -55,7 +55,7 @@ export const AttendanceForm = (props: AttendanceFormProps) => {
 			>
 				<FormField
 					control={form.control}
-					name="code"
+					name="attendanceCode"
 					render={({ field }) => (
 						<FormItem className="flex flex-col items-center gap-0">
 							<FormLabel htmlFor="code" className="text-title1 font-bold text-[#1A1C1E] mb-4">

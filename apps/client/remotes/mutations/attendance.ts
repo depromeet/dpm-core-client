@@ -1,11 +1,22 @@
 import { attendance } from '@dpm-core/api';
 import { type MutationOptions, useMutation } from '@tanstack/react-query';
 
-// 출석 체크
+type CheckAttendanceParams = {
+	sessionId: number;
+	attedanceCode: string;
+};
 
-export const useCheckAttendance = (sessionId: number, options?: MutationOptions) => {
-	return useMutation({
+type CheckMutationOptions = MutationOptions<boolean, Error, CheckAttendanceParams>;
+
+export const useCheckAttendance = (options?: CheckMutationOptions) => {
+	return useMutation<boolean, Error, CheckAttendanceParams>({
 		...options,
-		mutationFn: (params: { attedanceCode: string }) => attendance.check({ sessionId, params }),
+		mutationFn: async (params) => {
+			await attendance.check({
+				sessionId: params.sessionId,
+				attendanceCode: params.attedanceCode,
+			});
+			return true;
+		},
 	});
 };
