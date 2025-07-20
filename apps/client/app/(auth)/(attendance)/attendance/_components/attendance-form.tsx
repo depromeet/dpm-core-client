@@ -11,13 +11,39 @@ import {
 	InputOTPGroup,
 	InputOTPSlot,
 	pressInOutVariatns,
+	toast,
 } from '@dpm-core/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ErrorBoundary } from '@suspensive/react';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Loader2Icon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { LoadingBox } from '@/components/loading-box';
 import { MotionButton } from '@/components/motion';
-import { useCheckAttendance } from '@/remotes/mutations/attendance';
+import { calcSessionAttendanceTime, calcSessionLateAttendanceTime } from '@/lib/calc';
+import { formatISOStringHHMM } from '@/lib/date';
+import { checkAttendanceOptions } from '@/remotes/mutations/attendance';
+import { getSessionAttendanceTimeOptions } from '@/remotes/queries/session';
+
+interface AttendanceFormProps {
+	sessionId: number;
+}
+
+const AttendanceFormContainer = ({ sessionId }: AttendanceFormProps) => {
+	const {
+		data: { data: attendance },
+	} = useSuspenseQuery(getSessionAttendanceTimeOptions(sessionId));
+
+	return (
+		<AttendanceFormControl
+			sessionId={sessionId}
+			attendanceStartTime={attendance.attendanceStartTime}
+		/>
+	);
+};
 
 const FormSchema = z.object({
 	attendanceCode: z.string().min(4, {
@@ -25,12 +51,10 @@ const FormSchema = z.object({
 	}),
 });
 
-interface AttendanceFormProps {
-	sessionId: number;
-}
+const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTime: string }) => {
+	const { sessionId, attendanceStartTime } = props;
 
-export const AttendanceForm = (props: AttendanceFormProps) => {
-	const { sessionId } = props;
+	const router = useRouter();
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
@@ -38,13 +62,17 @@ export const AttendanceForm = (props: AttendanceFormProps) => {
 		},
 	});
 
-	const { mutate: checkAttendance, isPending } = useCheckAttendance({
-		onError: () => {},
-		onSuccess: () => {},
-	});
+	const { mutate: checkAttendance, isPending: isPendingCheckAttendance } = useMutation(
+		checkAttendanceOptions(sessionId, {
+			onSuccess: () => {},
+			onError: () => {
+				toast.error('운영진에게 문의해 주세요.');
+			},
+		}),
+	);
 
 	const handleSubmitCode = (data: z.infer<typeof FormSchema>) => {
-		checkAttendance({ sessionId, attedanceCode: data.attendanceCode });
+		checkAttendance(data);
 	};
 
 	return (
@@ -72,9 +100,19 @@ export const AttendanceForm = (props: AttendanceFormProps) => {
 								</InputOTP>
 							</FormControl>
 							<FormDescription className="mt-8 text-body2 font-medium text-label-assistive">
-								<span>출석 시간 : 14:00 ~ 14:05</span>
+								<span>
+									출석 시간 : {formatISOStringHHMM(attendanceStartTime)} ~{' '}
+									{formatISOStringHHMM(
+										calcSessionAttendanceTime(attendanceStartTime).toISOString(),
+									)}
+								</span>
 								<br />
-								<span>지각 시간 : 14:06 ~ 14:36</span>
+								<span>
+									지각 시간 : {formatISOStringHHMM(attendanceStartTime)} ~{' '}
+									{formatISOStringHHMM(
+										calcSessionLateAttendanceTime(attendanceStartTime).toISOString(),
+									)}
+								</span>
 							</FormDescription>
 						</FormItem>
 					)}
@@ -84,12 +122,26 @@ export const AttendanceForm = (props: AttendanceFormProps) => {
 					size="full"
 					className="fixed max-w-lg w-full bottom-0"
 					{...pressInOutVariatns}
-					disabled={!form.formState.isValid || isPending}
+					disabled={
+						!form.formState.isValid || isPendingCheckAttendance || form.formState.isSubmitting
+					}
 				>
-					{isPending && <Loader2Icon className="animate-spin" />}
+					{isPendingCheckAttendance ||
+						(form.formState.isSubmitting && <Loader2Icon className="animate-spin" />)}
 					완료하기
 				</MotionButton>
 			</form>
 		</Form>
+	);
+};
+
+export const AttendanceForm = (props: AttendanceFormProps) => {
+	const { sessionId } = props;
+	return (
+		<ErrorBoundary fallback={() => <section>존재하지 않는 출석 세션입니다.</section>}>
+			<Suspense fallback={<LoadingBox />}>
+				<AttendanceFormContainer sessionId={sessionId} />
+			</Suspense>
+		</ErrorBoundary>
 	);
 };

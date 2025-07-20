@@ -1,11 +1,17 @@
 import { http } from '../http';
-import type { AttendanceBySessionIdReponse, AttendanceReponse } from './types';
+import type {
+	AttendanceBySessionIdReponse,
+	AttendanceCheckReponse,
+	AttendanceReponse,
+} from './types';
 
 export const attendance = {
 	// 세션 출석 채크
 	check: async (params: { sessionId: number; attendanceCode: string }) => {
 		const { sessionId, ...json } = params;
-		const res = await http.post(`v1/sessions/${sessionId}/attendances`, {});
+		const res = await http.post<AttendanceCheckReponse>(`v1/sessions/${sessionId}/attendances`, {
+			json,
+		});
 		return res;
 	},
 

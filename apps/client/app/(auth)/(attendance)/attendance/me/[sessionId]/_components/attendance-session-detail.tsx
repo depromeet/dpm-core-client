@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringToFullDateString } from '@/lib/date';
-import { getAttandanceMeBySessionIdOptions } from '@/remotes/queries/attendance';
+import { getAttendanceMeBySessionIdOptions } from '@/remotes/queries/attendance';
 
 interface AttendanceSessionDetailContainerProps {
 	sessionId: number;
@@ -17,7 +17,7 @@ const AttendanceSessionDetailContainer = ({ sessionId }: AttendanceSessionDetail
 		data: {
 			data: { session, attendance },
 		},
-	} = useSuspenseQuery(getAttandanceMeBySessionIdOptions({ sessionId }));
+	} = useSuspenseQuery(getAttendanceMeBySessionIdOptions({ sessionId }));
 
 	return (
 		<>

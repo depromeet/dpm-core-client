@@ -3,18 +3,18 @@ import { queryOptions } from '@tanstack/react-query';
 
 const QUERY_KEY = 'ATTENDANCE';
 
-export const getAttandanceMeOptions = () =>
+export const getAttendanceMeOptions = () =>
 	queryOptions({
 		queryKey: [QUERY_KEY, 'me'],
 		queryFn: () => attendance.getMe(),
 		retry: false,
 	});
 
-interface getAttandanceMeBySessionIdOptionsParams {
+interface getAttendanceMeBySessionIdOptionsParams {
 	sessionId: number;
 }
-export const getAttandanceMeBySessionIdOptions = (
-	params: getAttandanceMeBySessionIdOptionsParams,
+export const getAttendanceMeBySessionIdOptions = (
+	params: getAttendanceMeBySessionIdOptionsParams,
 ) =>
 	queryOptions({
 		queryKey: [QUERY_KEY, 'me', params],

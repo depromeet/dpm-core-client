@@ -52,4 +52,17 @@ export const session = {
 		});
 		return res;
 	},
+
+	/**
+	 * 세션 출석 시작 시간 조회
+	 * 세션 출석 시작 시간을 조회하는 API입니다.
+	 * @param sessionId 세션 아이디
+	 * @returns 세션 출석 시작 시간
+	 */
+	getSessionAttendanceTime: async (sessionId: number) => {
+		const res = await http.get<Pick<SessionDetail, 'attendanceStartTime'>>(
+			`v1/sessions/${sessionId}/attendance-time`,
+		);
+		return res;
+	},
 };
