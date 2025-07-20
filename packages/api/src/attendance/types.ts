@@ -36,3 +36,8 @@ export interface AttendanceBySessionIdReponse {
 	attendance: { status: AttendanceStatus; attendedAt: string };
 	session: AttendanceSession;
 }
+
+export interface AttendanceCheckReponse {
+	attendanceStatus: AttendanceStatus;
+	attendedAt: string;
+}
