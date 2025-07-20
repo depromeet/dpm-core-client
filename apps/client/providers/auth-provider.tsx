@@ -38,7 +38,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	} = useQuery({
 		queryKey: ['memberInfo', 'reissue'],
 		queryFn: async () => {
-			const { data } = await auth.reissue();
+			await auth.reissue();
 
 			const memberInfo = await queryClient.fetchQuery(getMyMemberInfoQuery);
 			return memberInfo;

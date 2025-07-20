@@ -7,7 +7,6 @@ import { pretendard } from './fonts';
 
 import './globals.css';
 import { AppShell } from '@/providers/app-shell-provider';
-import { AuthProvider } from '@/providers/auth-provider';
 
 export const metadata: Metadata = {
 	title: 'Dpmcore',
@@ -29,9 +28,7 @@ export default function RootLayout({
 			<body className={cn(pretendard.variable)}>
 				<QueryProvider>
 					<ViewTransitions>
-						<AuthProvider>
-							<AppShell>{children}</AppShell>
-						</AuthProvider>
+						<AppShell>{children}</AppShell>
 					</ViewTransitions>
 					<ReactQueryDevtools />
 				</QueryProvider>
