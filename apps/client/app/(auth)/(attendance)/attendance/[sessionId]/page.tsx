@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default async function page({ params }: Props) {
-	const sessionId = await params;
+	const { sessionId } = await params;
 
 	return (
 		<Fragment>

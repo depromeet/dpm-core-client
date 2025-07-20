@@ -10,7 +10,7 @@ export interface AttendanceSession {
 	attendanceStatus: AttendanceStatus;
 }
 
-interface Member {
+export interface AttendanceMember {
 	id: number;
 	name: string;
 	teamNumber: number;
@@ -26,13 +26,13 @@ export interface Attendance {
 }
 
 export interface AttendanceReponse {
-	member: Member;
+	member: AttendanceMember;
 	attendance: Attendance;
 	sessions: AttendanceSession[];
 }
 
 export interface AttendanceBySessionIdReponse {
-	member: Member;
+	member: AttendanceMember;
 	attendance: { status: AttendanceStatus; attendedAt: string };
 	session: AttendanceSession;
 }

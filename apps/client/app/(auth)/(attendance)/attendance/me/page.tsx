@@ -8,14 +8,11 @@ import {
 	DrawerTitle,
 	DrawerTrigger,
 } from '@dpm-core/shared';
-
 import Link from 'next/link';
-
 import { NavigationBar } from '@/components/navigation-bar';
-import { AttendanceSessionList } from '../_components/attendance-session-list';
-import { AttendanceSituationInfo } from '../_components/attendance-situation-info';
+import { AttendanceMe } from '../_components/attendance-me';
 
-export default function page() {
+export default function AttendanceMePage() {
 	return (
 		<AppLayout>
 			<NavigationBar>
@@ -27,8 +24,7 @@ export default function page() {
 				</h1>
 				<Provision />
 			</NavigationBar>
-			<AttendanceSituationInfo />
-			<AttendanceSessionList />
+			<AttendanceMe />
 		</AppLayout>
 	);
 }
@@ -49,6 +45,7 @@ const Provision = () => {
 				<DrawerHeader>
 					<DrawerTitle>출석 규정 안내</DrawerTitle>
 				</DrawerHeader>
+				<div className="mx-5 mt-2 px-6 py-10 bg-background-strong rounded-lg mb-3" />
 			</DrawerContent>
 		</Drawer>
 	);

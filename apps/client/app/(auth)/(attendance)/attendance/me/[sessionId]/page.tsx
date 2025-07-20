@@ -1,9 +1,5 @@
-'use client';
-
-import { ChevronLeft } from '@dpm-core/shared';
-import Link from 'next/link';
 import { Fragment } from 'react';
-import { NavigationBar } from '@/components/navigation-bar';
+import { AppHeader } from '@/components/app-header';
 import { AttendanceSessionDetail } from './_components/attendance-session-detail';
 
 interface AttendanceMeBySessionIdProps {
@@ -15,14 +11,7 @@ export default async function page({ params }: AttendanceMeBySessionIdProps) {
 
 	return (
 		<Fragment>
-			<NavigationBar>
-				<Link href="/attendance/me">
-					<ChevronLeft />
-				</Link>
-				<h1 className="absolute left-1/2 -translate-x-1/2 font-semibold text-body1">
-					내 출석 상세
-				</h1>
-			</NavigationBar>
+			<AppHeader title="내 출석 상세" backHref="/attedance/me" />
 			<AttendanceSessionDetail sessionId={Number(sessionId)} />
 		</Fragment>
 	);

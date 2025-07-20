@@ -13,11 +13,12 @@ import {
 	pressInOutVariatns,
 } from '@dpm-core/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { Loader2Icon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { MotionButton } from '@/components/motion';
-import { useCheckAttendance } from '@/remotes/mutations/attendance';
+import { checkAttendanceOptions } from '@/remotes/mutations/attendance';
 
 const FormSchema = z.object({
 	attendanceCode: z.string().min(4, {
@@ -38,13 +39,12 @@ export const AttendanceForm = (props: AttendanceFormProps) => {
 		},
 	});
 
-	const { mutate: checkAttendance, isPending } = useCheckAttendance({
-		onError: () => {},
-		onSuccess: () => {},
-	});
+	const { mutate: checkAttendance, isPending: isPendingCheckAttendance } = useMutation(
+		checkAttendanceOptions(sessionId, { onSuccess: () => {}, onError: () => {} }),
+	);
 
 	const handleSubmitCode = (data: z.infer<typeof FormSchema>) => {
-		checkAttendance({ sessionId: params.get(sessionId) });
+		checkAttendance(data);
 	};
 
 	return (
@@ -55,7 +55,7 @@ export const AttendanceForm = (props: AttendanceFormProps) => {
 			>
 				<FormField
 					control={form.control}
-					name="code"
+					name="attendanceCode"
 					render={({ field }) => (
 						<FormItem className="flex flex-col items-center gap-0">
 							<FormLabel htmlFor="code" className="text-title1 font-bold text-[#1A1C1E] mb-4">
@@ -84,9 +84,9 @@ export const AttendanceForm = (props: AttendanceFormProps) => {
 					size="full"
 					className="fixed max-w-lg w-full bottom-0"
 					{...pressInOutVariatns}
-					disabled={!form.formState.isValid || isPending}
+					disabled={!form.formState.isValid || isPendingCheckAttendance}
 				>
-					{isPending && <Loader2Icon className="animate-spin" />}
+					{isPendingCheckAttendance && <Loader2Icon className="animate-spin" />}
 					완료하기
 				</MotionButton>
 			</form>
