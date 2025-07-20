@@ -1,8 +1,8 @@
 'use client';
 
-import { CopyButton } from '@dpm-core/shared';
+import { CopyButton, toast } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { type PropsWithChildren, Suspense } from 'react';
 import { ErrorBox } from '@/components/error-box';
 import { Pressable } from '@/components/motion';
@@ -16,8 +16,10 @@ const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
 		data: { data: sessionDetail },
 	} = useSuspenseQuery(getSessionDetailQuery(Number(sessionId)));
 
+	const queryClient = useQueryClient();
+
 	return (
-		<div className="flex flex-col gap-y-5">
+		<div className="flex flex-col gap-y-5 p-4">
 			<h3 className="text-headline2 font-semibold text-label-normal">{sessionDetail.eventName}</h3>
 			<SessionDetailInfoBox label="세션 정보">
 				<p className="text-body2 font-semibold text-label-assistive">세션 주차</p>
@@ -41,8 +43,17 @@ const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
 			<SessionDetailInfoBox
 				label="출석/지각 시간"
 				actions={
-					<EditSessionBottomSheet>
-						<Pressable variant="none">수정</Pressable>
+					<EditSessionBottomSheet
+						attendanceStartTime={sessionDetail.attendanceStartTime}
+						sessionId={sessionId}
+						onSuccess={() => {
+							queryClient.invalidateQueries(getSessionDetailQuery(Number(sessionId)));
+							toast.success('출석 시간이 수정되었습니다.');
+						}}
+					>
+						<Pressable variant="none" className="text-label-assistive text-body1 font-semibold">
+							수정
+						</Pressable>
 					</EditSessionBottomSheet>
 				}
 			>

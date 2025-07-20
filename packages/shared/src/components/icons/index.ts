@@ -1,8 +1,10 @@
 export { ArrowRight } from './arrow-right';
 export { Aesterisk } from './asterisk';
 export { Calender } from './calender';
+export { CheckIcon } from './check';
 export { ChevronLeft } from './chevron-left';
 export { ChevronRight } from './chevron-right';
 export { Clock } from './clock';
+export { CopyIcon } from './copy';
 export { KakaoLogo } from './kakao-logo';
 export { UserAvatar } from './user-avatar';

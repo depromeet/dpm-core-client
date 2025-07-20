@@ -43,4 +43,13 @@ export const session = {
 		const res = await http.get<CurrentWeekSession | null>('v1/sessions/next');
 		return res;
 	},
+
+	editSessionAttendanceTime: async (sessionId: string, attendanceStartTime: string) => {
+		const res = await http.patch(`v1/sessions/${sessionId}/attendance-time`, {
+			json: {
+				attendanceStartTime,
+			},
+		});
+		return res;
+	},
 };

@@ -1,7 +1,7 @@
 import DetailTemplate from '@/components/settle/templates/DetailTemplate';
 
 interface Props {
-	params: { settleId: string };
+	params: Promise<{ settleId: string }>;
 }
 
 export default async function SettleDetailPage({ params }: Props) {

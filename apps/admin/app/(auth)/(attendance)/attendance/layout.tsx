@@ -2,7 +2,7 @@ import { Fragment, type ReactNode } from 'react';
 import { NavigationBar } from '@/components/navigation-bar';
 
 interface LayoutProps {
-	tabs?: ReactNode;
+	tabs: ReactNode;
 }
 
 export default function Layout({ tabs }: LayoutProps) {

@@ -16,7 +16,7 @@ const SessionListContainer = () => {
 	return (
 		<>
 			{data.sessions?.length ? (
-				<div className="my-5 px-4 flex-1">
+				<div className="my-5 px-4 flex-1 flex flex-col gap-y-2">
 					{data.sessions.map((session) => (
 						<SessionCard
 							key={session.id}

@@ -20,6 +20,7 @@ const SessionListContainer = () => {
 	} = useSuspenseQuery(getSessionListQuery);
 	return (
 		<Virtuoso
+			style={{ height: '100%' }}
 			data={sessionResponse.sessions}
 			itemContent={(_, session) => <SessionItem key={session.id} session={session} />}
 			className="flex-1"
@@ -29,7 +30,7 @@ const SessionListContainer = () => {
 
 function SessionItem({ session }: { session: Session }) {
 	return (
-		<Pressable asChild variant="none" className="block">
+		<Pressable asChild variant="none" className="block h-auto">
 			<Link href={`/session/${session.id}`} className="px-4">
 				<div className="px-3 py-4 flex items-center justify-between  border-b border-line-subtle">
 					<div className="flex flex-col">

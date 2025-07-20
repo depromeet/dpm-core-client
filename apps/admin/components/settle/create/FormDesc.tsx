@@ -1,5 +1,3 @@
-import React from 'react';
-
 const FormDesc = () => {
 	return (
 		<div className="flex flex-col gap-2">
@@ -9,7 +7,7 @@ const FormDesc = () => {
 			</div>
 			<textarea
 				placeholder="ex. OT 회식 1차 -3차 정산서입니다. "
-				className="px-4 py-3 rounded-md h-40 rounded-lg text-gray-700 font-medium border text-body2  border-line-noraml outline-none focus:border-gray-600"
+				className="px-4 py-3 rounded-md h-40 rounded-lg text-gray-700 font-medium border text-body2  border-line-normal outline-none focus:border-gray-600"
 			/>
 			<p className="flex justify-end text-gray-600 text-caption1 font-medium ">0/50자</p>
 		</div>

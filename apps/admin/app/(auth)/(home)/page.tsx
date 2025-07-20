@@ -32,7 +32,7 @@ const UserPage = () => {
 				<ul className="gap-x-3 flex items-center mt-5 pb-10">
 					<IconCard icon={IconAttendance} title="출석" href="/attendance" />
 					<IconCard icon={IconSession} title="세션" href="/session" />
-					<IconCard icon={IconSettlement} title="정산" href="/settlement" />
+					<IconCard icon={IconSettlement} title="정산" href="/settle" />
 				</ul>
 				<SessionList />
 			</motion.div>

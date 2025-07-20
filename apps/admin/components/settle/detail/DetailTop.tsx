@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import React from 'react';
 
 const DetailTop = () => {
 	const { settleId } = useParams();
@@ -31,7 +30,7 @@ const DetailTop = () => {
 					</div>
 					<p className="text-gray-500 font-semibold text-caption1">멤버 확정 전</p>
 				</div>
-				<div className="w-px bg-line-noraml h-9 flex items-center" />
+				<div className="w-px bg-line-normal h-9 flex items-center" />
 				<p className="text-gray-600 text-body2 font-medium">
 					초대 멤버 전원이 참석 여부를 제출하면 <br />
 					멤버를 확정할 수 있어요.

@@ -42,7 +42,7 @@ const SessionCard = ({
 			>
 				{title}
 			</h3>
-			<div className="my-4 bg-line-noraml w-full h-px" />
+			<div className="my-4 bg-line-normal w-full h-px" />
 			<div className="gap-y-3 flex flex-col">
 				<div className="gap-x-4 flex">
 					<span className="text-body2 font-semibold text-label-assistive w-[70px]">세션 시간</span>
