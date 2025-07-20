@@ -18,5 +18,9 @@ export const formatDateOnly = (date: Date | string) => {
 };
 
 export const formatTimeOnly = (date: Date | string) => {
-	return dayjs(date).format('HH:mm:ss');
+	return dayjs(date).format('HH:mm');
+};
+
+export const formatDotFullDate = (date: Date | string) => {
+	return dayjs(date).format('YYYY.MM.DD (ddd)');
 };

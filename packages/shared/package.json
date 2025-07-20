@@ -1,16 +1,11 @@
 {
 	"name": "@dpm-core/shared",
 	"version": "0.1.0",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
 	"description": "DPM Core shared components and utilities",
 	"exports": {
-		".": {
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.js",
-			"types": "./dist/index.d.ts"
-		},
-		"./styles.css": "./dist/styles.css"
+		".": "./src/index.ts",
+		"./theme-styles.css": "./src/theme-styles.css",
+		"./shared-styles.css": "./dist/index.css"
 	},
 	"scripts": {
 		"build:styles": "tailwindcss -i ./src/shared-styles.css -o ./dist/index.css",
@@ -18,16 +13,25 @@
 		"format": "biome format --write .",
 		"lint": "biome lint --write ."
 	},
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"dependencies": {
+		"@hookform/resolvers": "^5.1.1",
 		"@radix-ui/react-avatar": "^1.1.10",
+		"@radix-ui/react-checkbox": "^1.3.2",
+		"@radix-ui/react-label": "^2.1.7",
 		"@radix-ui/react-popover": "^1.1.14",
 		"@radix-ui/react-slot": "^1.2.3",
+		"@radix-ui/react-tabs": "^1.1.12",
 		"dayjs": "^1.11.13",
 		"input-otp": "^1.4.2",
 		"lucide-react": "^0.514.0",
 		"motion": "^12.23.0",
-		"vaul": "^1.1.2"
+		"react-hook-form": "^7.60.0",
+		"tailwind-merge": "^3.3.1",
+		"vaul": "^1.1.2",
+		"zod": "^4.0.5"
 	},
 	"devDependencies": {
 		"@tailwindcss/cli": "^4.1.5",

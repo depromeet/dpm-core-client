@@ -27,7 +27,7 @@ const UserPage = () => {
 				className="flex flex-col divide-y-8 divide-background-strong flex-1"
 			>
 				<ul className="gap-x-3 flex items-center mt-5 pb-10">
-					<IconCard icon={IconAttendance} title="출석" href="/attendance" />
+					<IconCard icon={IconAttendance} title="출석" href="/attendance/me" />
 					<IconCard icon={IconSession} title="세션" href="/session" />
 					<IconCard icon={IconSettlement} title="정산" href="/settlement" />
 				</ul>
