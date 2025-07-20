@@ -1,4 +1,5 @@
-export type AttendanceStatus = 'PENDING' | 'PRESENT' | 'LATE' | 'ABSENT' | ' EXCUSED_ABSENT';
+import type { Part } from '../member';
+export type AttendanceStatus = 'PRESENT' | 'LATE' | 'ABSENT' | 'EXCUSED_ABSENT';
 export type MemberAttendanceStatus = 'NORMAL' | 'AT_RISK' | 'IMPOSSIBLE';
 
 export interface AttendanceSession {
@@ -13,7 +14,7 @@ interface Member {
 	id: number;
 	name: string;
 	teamNumber: number;
-	part: string;
+	part: Part;
 	attendanceStatus: MemberAttendanceStatus;
 }
 
@@ -32,6 +33,6 @@ export interface AttendanceReponse {
 
 export interface AttendanceBySessionIdReponse {
 	member: Member;
-	attendance: AttendanceStatus;
-	sessions: AttendanceSession;
+	attendance: { status: AttendanceStatus; attendedAt: string };
+	session: AttendanceSession;
 }

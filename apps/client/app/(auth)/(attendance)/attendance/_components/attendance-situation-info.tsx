@@ -1,31 +1,41 @@
 'use client';
 
-import { attendance } from '@dpm-core/api';
 import { Avatar } from '@dpm-core/shared';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import Image from 'next/image';
+import { Suspense } from 'react';
+import { ErrorBox } from '@/components/error-box';
+import { LoadingBox } from '@/components/loading-box';
+import { cohort } from '@/constants/cohort';
+import { isExistPart } from '@/lib/utils';
+import { getAttandanceMeOptions } from '@/remotes/queries/attendance';
 
-export const AttendanceSitutationInfo = () => {
+const AttendanceContainer = () => {
 	const {
-		data: {
-			data: { member, attendance: attendanceInfo },
-		},
-	} = useSuspenseQuery({
-		queryKey: ['ATTENDANCE_QUERY_KEY', 'ME'],
-		queryFn: () => attendance.getMe(),
-	});
+		data: { data: attendanceInfo },
+	} = useSuspenseQuery(getAttandanceMeOptions());
 
 	return (
 		<section className="px-4 mt-5 mb-4">
 			<div className="flex justify-between items-center mb-4">
 				<div className="flex gap-3 items-center">
 					<Avatar className="bg-background-strong size-15 p-1.5">
-						{/* <Image src="." fill alt="profile" /> */}
+						<Image
+							src={
+								isExistPart(attendanceInfo.member.part)
+									? cohort[attendanceInfo.member.part]
+									: cohort.WEB
+							}
+							fill
+							alt="profile"
+						/>
 					</Avatar>
 					<div className="flex flex-col gap-0.5">
-						<span className="text-body1 font-semibold">{member.name}</span>
+						<span className="text-body1 font-semibold">{attendanceInfo.member.name}</span>
 						<p className="flex gap-3 text-label-assistive text-caption1 font-medium">
-							<span>{member.teamNumber}팀</span>
-							<span>{member.part}</span>
+							<span>{attendanceInfo.member.teamNumber}팀</span>
+							<span>{attendanceInfo.member.part}</span>
 						</p>
 					</div>
 				</div>
@@ -36,21 +46,34 @@ export const AttendanceSitutationInfo = () => {
 			<ul className="bg-background-subtle px-5 py-[18px] flex rounded-xl justify-between text-body2">
 				<li>
 					<span className="mr-2 text-label-assistive font-medium after:content-[':'] ">출석</span>
-					<span className="font-semibold">{attendanceInfo.presentCount}회</span>
+					<span className="font-semibold">{attendanceInfo.attendance.presentCount}회</span>
 				</li>
 				<li>
 					<span className="mr-2 text-label-assistive font-medium after:content-[':']">지각</span>
-					<span className="font-semibold">{attendanceInfo.lateCount}회</span>
+					<span className="font-semibold">{attendanceInfo.attendance.lateCount}회</span>
 				</li>
 				<li>
 					<span className="mr-2 text-label-assistive font-medium after:content-[':']">인정</span>
-					<span className="font-semibold">{attendanceInfo.excusedAbsentCount}회</span>
+					<span className="font-semibold">{attendanceInfo.attendance.excusedAbsentCount}회</span>
 				</li>
 				<li>
 					<span className="mr-2 text-label-assistive font-medium after:content-[':']">결석</span>
-					<span className="font-semibold">{attendanceInfo.absentCount}회</span>
+					<span className="font-semibold">{attendanceInfo.attendance.absentCount}회</span>
 				</li>
 			</ul>
 		</section>
 	);
 };
+
+export const AttendanceSituationInfo = ErrorBoundary.with(
+	{
+		fallback: (props) => {
+			return <ErrorBox onReset={() => props.reset()} />;
+		},
+	},
+	() => (
+		<Suspense fallback={<LoadingBox />}>
+			<AttendanceContainer />
+		</Suspense>
+	),
+);

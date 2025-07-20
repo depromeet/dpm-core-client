@@ -1,4 +1,5 @@
 import {
+	AppLayout,
 	Button,
 	ChevronLeft,
 	Drawer,
@@ -8,22 +9,15 @@ import {
 	DrawerTrigger,
 } from '@dpm-core/shared';
 
-import * as motion from 'motion/react-client';
 import Link from 'next/link';
 
 import { NavigationBar } from '@/components/navigation-bar';
 import { AttendanceSessionList } from '../_components/attendance-session-list';
-import { AttendanceSitutationInfo } from '../_components/attendance-situation-info';
+import { AttendanceSituationInfo } from '../_components/attendance-situation-info';
 
 export default function page() {
 	return (
-		<motion.div
-			initial="initial"
-			animate="animate"
-			transition={{
-				staggerChildren: 0.2,
-			}}
-		>
+		<AppLayout>
 			<NavigationBar>
 				<Link href="/">
 					<ChevronLeft />
@@ -33,9 +27,9 @@ export default function page() {
 				</h1>
 				<Provision />
 			</NavigationBar>
-			<AttendanceSitutationInfo />
+			<AttendanceSituationInfo />
 			<AttendanceSessionList />
-		</motion.div>
+		</AppLayout>
 	);
 }
 
