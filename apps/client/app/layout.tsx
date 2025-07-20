@@ -1,4 +1,4 @@
-import { cn } from '@dpm-core/shared';
+import { cn, Toaster } from '@dpm-core/shared';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { Metadata, Viewport } from 'next';
 import { ViewTransitions } from 'next-view-transitions';
@@ -31,6 +31,14 @@ export default function RootLayout({
 						<AppShell>{children}</AppShell>
 					</ViewTransitions>
 					<ReactQueryDevtools />
+					<Toaster
+						position="top-center"
+						visibleToasts={1}
+						style={{ pointerEvents: 'none' }}
+						toastOptions={{
+							duration: 3_000,
+						}}
+					/>
 				</QueryProvider>
 			</body>
 		</html>

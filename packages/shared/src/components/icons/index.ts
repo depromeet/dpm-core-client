@@ -4,6 +4,7 @@ export { Calender } from './calender';
 export { CheckIcon } from './check';
 export { ChevronLeft } from './chevron-left';
 export { ChevronRight } from './chevron-right';
+export { CircleAlert } from './circle-alert';
 export { Clock } from './clock';
 export { CopyIcon } from './copy';
 export { KakaoLogo } from './kakao-logo';
