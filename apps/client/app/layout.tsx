@@ -1,10 +1,13 @@
 import { cn } from '@dpm-core/shared';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { Metadata, Viewport } from 'next';
+import { ViewTransitions } from 'next-view-transitions';
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
+
 import './globals.css';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { ViewTransitions } from 'next-view-transitions';
+import { AppShell } from '@/providers/app-shell-provider';
+import { AuthProvider } from '@/providers/auth-provider';
 
 export const metadata: Metadata = {
 	title: 'Dpmcore',
@@ -26,7 +29,9 @@ export default function RootLayout({
 			<body className={cn(pretendard.variable)}>
 				<QueryProvider>
 					<ViewTransitions>
-						<main className="max-w-lg mx-auto min-h-dvh">{children}</main>
+						<AuthProvider>
+							<AppShell>{children}</AppShell>
+						</AuthProvider>
 					</ViewTransitions>
 					<ReactQueryDevtools />
 				</QueryProvider>

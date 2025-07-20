@@ -1,4 +1,4 @@
-import { fadeInOutVariatns, UserAvatar } from '@dpm-core/shared';
+import { AppLayout, fadeInOutVariatns, UserAvatar } from '@dpm-core/shared';
 import * as motion from 'motion/react-client';
 import Image, { type StaticImageData } from 'next/image';
 import { Link } from 'next-view-transitions';
@@ -11,15 +11,7 @@ import { SessionCurrentWeekBanner } from './_components/session-top-banner';
 
 const UserPage = () => {
 	return (
-		<motion.div
-			className="w-full flex flex-col min-h-[inherit]"
-			initial="initial"
-			animate="animate"
-			transition={{
-				staggerChildren: 0.2,
-				delay: 1,
-			}}
-		>
+		<AppLayout className="bg-background-normal">
 			<NavigationBar>
 				<h3 className="font-normal ">Dpmcore(Logo)</h3>
 
@@ -41,7 +33,7 @@ const UserPage = () => {
 				</ul>
 				<SessionList />
 			</motion.div>
-		</motion.div>
+		</AppLayout>
 	);
 };
 

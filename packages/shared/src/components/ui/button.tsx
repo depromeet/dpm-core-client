@@ -38,7 +38,7 @@ const buttonVariants = cva(
 	},
 );
 
-interface ButtonProps extends React.ComponentProps<'button'> {
+export interface ButtonProps extends React.ComponentProps<'button'> {
 	variant?: 'primary' | 'secondary' | 'assistive' | 'text' | 'none';
 	size?: 'xs' | 'sm' | 'md' | 'lg' | 'full' | 'none';
 	asChild?: boolean;

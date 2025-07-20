@@ -1,5 +1,7 @@
 import { logger } from '@dpm-core/shared';
 import type { AfterResponseHook } from 'ky';
+import ky from 'ky';
+import { setCookie } from '../auth/cookie';
 
 interface RefreshPluginOptions {
 	whitelist?: (string | RegExp)[];
@@ -41,6 +43,10 @@ export function createRefreshPlugin(options?: RefreshPluginOptions): AfterRespon
 
 		if (isRefreshing && refreshPromise) {
 			logger.debug('이미 refresh 중, 대기열에 추가', { url: request.url });
+			waitQueue.push(() => {
+				logger.debug('QUEUE 실행', { url: request.url });
+				ky(request);
+			});
 			await refreshPromise;
 		} else if (!isRefreshing) {
 			logger.auth('새로운 refresh 시작', { refreshUrl });
@@ -61,9 +67,9 @@ export function createRefreshPlugin(options?: RefreshPluginOptions): AfterRespon
 						}
 						const data = await res.json();
 						logger.auth('refresh 성공', data);
-						if (localStorage) {
-							localStorage.setItem('accessToken', data.data.token);
-						}
+
+						setCookie(data.data.token, data.data.expirationTime);
+
 						request.headers.set('Authorization', `Bearer ${data.data.token}`);
 
 						for (const cb of waitQueue) {
@@ -95,19 +101,5 @@ export function createRefreshPlugin(options?: RefreshPluginOptions): AfterRespon
 		}
 
 		logger.debug('원본 요청 재실행', { url: request.url });
-
-		try {
-			const retryResponse = await fetch(request.url, {
-				method: request.method,
-				headers: request.headers,
-				body: request.body,
-				credentials: 'include',
-			});
-			logger.debug('재시도 성공');
-			return retryResponse;
-		} catch (retryError) {
-			logger.error('재시도 실패', retryError);
-			return response;
-		}
 	};
 }

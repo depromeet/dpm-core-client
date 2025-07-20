@@ -1,2 +1,53 @@
 @import "@dpm-core/shared/theme-styles.css";
 @import "@dpm-core/shared/shared-styles.css";
+
+
+::view-transition-group(root) {
+  z-index: auto !important;
+}
+
+::view-transition-image-pair(root) {
+  isolation: isolate;
+  will-change: transform, opacity, scale;
+  z-index: 1;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+  animation: push-out 400ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+  animation: push-in 500ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+
+@keyframes push-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0.5;
+    transform: translateY(-120px) scale(0.9);
+  }
+}
+
+@keyframes push-in {
+  from {
+		/* opacity: 0.5; */
+    transform: translateY(100%);
+  }
+  to {
+		opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.1s !important;
+  }
+}

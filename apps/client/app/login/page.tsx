@@ -1,6 +1,6 @@
+import Image from 'next/image';
 import Banner from '@/assets/images/login-banner.webp';
 import { LoginButton } from '@/components/login-button';
-import Image from 'next/image';
 
 const LoginPage = () => {
 	return (
@@ -12,7 +12,10 @@ const LoginPage = () => {
 					<br />
 					17기의 모든 네트워킹을 코어에서 서포트합니다
 				</p>
-				<LoginButton className="bg-[#FEE500] rounded-xl px-[15px] py-3.5 font-medium h-auto leading-1" />
+				<LoginButton
+					variant="none"
+					className="bg-[#FEE500] rounded-xl px-[15px] py-3.5 font-medium justify-between h-auto leading-1"
+				/>
 			</div>
 			<div className="relative aspect-[300/250] w-4/5 mx-auto">
 				<Image

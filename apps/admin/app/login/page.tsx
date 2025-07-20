@@ -1,7 +1,6 @@
+import Image from 'next/image';
 import Banner from '@/assets/images/login-banner.webp';
 import { LoginButton } from '@/components/login-button';
-
-import Image from 'next/image';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,7 +8,12 @@ const LoginPage = () => {
 	return (
 		<div className="bg-primary-extralight min-h-dvh flex flex-col justify-center gap-y-10">
 			<div className="mx-auto text-center flex flex-col gap-y-10">
-				<h1 className="uppercase text-headline1 font-semibold text-label-normal">DPM CORE</h1>
+				<h1 className="uppercase text-headline1 font-semibold text-label-normal">
+					DPM CORE
+					<br />
+					<p className="text-primary-strong text-body2 font-semibold lowercase">admin</p>
+				</h1>
+
 				<p>
 					출석, 번개, 커피챗까지
 					<br />

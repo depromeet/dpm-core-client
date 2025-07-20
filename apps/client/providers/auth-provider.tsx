@@ -1,10 +1,12 @@
 'use client';
 
-import { type Member } from '@dpm-core/api';
-import { useQuery } from '@tanstack/react-query';
-import { RedirectType, redirect } from 'next/navigation';
-import { createContext, type PropsWithChildren, useEffect, useState } from 'react';
+import { auth, type Member } from '@dpm-core/api';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { usePathname } from 'next/navigation';
+import { type PropsWithChildren, useEffect, useState } from 'react';
 import { Loading } from '@/components/lotties/loading';
+import { UnauthenticatedLayout } from '@/components/unauthenticated-layout';
+import { createContext } from '@/providers/create-context';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
 interface AuthContextType {
@@ -12,7 +14,7 @@ interface AuthContextType {
 	user: Member | null;
 }
 
-export const AuthContext = createContext<AuthContextType>({
+const [AuthProviderContext, useAuth] = createContext<AuthContextType>('Auth', {
 	isAuthenticated: false,
 	user: null,
 });
@@ -25,8 +27,24 @@ export const AuthContext = createContext<AuthContextType>({
 const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [user, setUser] = useState<Member | null>(null);
+	const pathname = usePathname();
 
-	const { data: { data: memberInfo } = {}, isLoading, error } = useQuery(getMyMemberInfoQuery);
+	const queryClient = useQueryClient();
+
+	const {
+		data: { data: memberInfo } = {},
+		isLoading,
+		error,
+	} = useQuery({
+		queryKey: ['memberInfo', 'reissue'],
+		queryFn: async () => {
+			const { data } = await auth.reissue();
+
+			const memberInfo = await queryClient.fetchQuery(getMyMemberInfoQuery);
+			return memberInfo;
+		},
+		retry: false,
+	});
 
 	useEffect(() => {
 		if (memberInfo) {
@@ -35,32 +53,23 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		}
 	}, [memberInfo]);
 
-	if (error) {
+	if (error && pathname !== '/login') {
 		return <UnauthenticatedLayout />;
 	}
 
 	if (isLoading) {
 		return (
-			<div className="flex flex-col items-center justify-center min-h-[inherit]">
+			<div className="flex flex-col items-center justify-center h-dvh">
 				<Loading />
 			</div>
 		);
 	}
 
 	return (
-		<AuthContext.Provider
-			value={{
-				isAuthenticated,
-				user,
-			}}
-		>
+		<AuthProviderContext isAuthenticated={isAuthenticated} user={user}>
 			{children}
-		</AuthContext.Provider>
+		</AuthProviderContext>
 	);
 };
 
-export { AuthProvider };
-
-function UnauthenticatedLayout() {
-	return redirect('/login', RedirectType.replace);
-}
+export { AuthProvider, useAuth };

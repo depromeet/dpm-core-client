@@ -1,4 +1,5 @@
 import { http } from '../http';
+import { setCookie } from './cookie';
 
 interface ReissueResponse {
 	token: string;
@@ -8,7 +9,7 @@ interface ReissueResponse {
 export const auth = {
 	reissue: async () => {
 		const res = await http.post<ReissueResponse>('v1/reissue');
-
+		setCookie(res.data.token, res.data.expirationTime);
 		return res;
 	},
 

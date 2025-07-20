@@ -1,5 +1,7 @@
 import { logger } from '@dpm-core/shared';
+import Cookies from 'js-cookie';
 import ky, { type KyInstance, type Options } from 'ky';
+import { COOKIE_KEYS } from './constants';
 import { createRefreshPlugin } from './plugins/create-refresh-plugin';
 import type { ApiResponse } from './type';
 
@@ -17,19 +19,18 @@ class Http {
 		this.instance = instance.extend({
 			hooks: {
 				beforeRequest: [
-					(request) => {
+					async (request) => {
 						logger.api(request.method, request.url);
-						if (localStorage) {
-							const token = localStorage.getItem('accessToken');
-							if (token) {
-								request.headers.set('Authorization', `Bearer ${token}`);
-							}
+						const token = Cookies.get(COOKIE_KEYS.ACCESS_TOKEN);
+						if (token) {
+							request.headers.set('Authorization', `Bearer ${token}`);
 						}
 					},
 				],
 				afterResponse: [
-					(request, options, response) => {
+					async (request, options, response) => {
 						logger.api(request.method, request.url, response.status);
+
 						return response;
 					},
 					createRefreshPlugin({
@@ -64,12 +65,12 @@ class Http {
 
 	patch = async <Response = unknown>(url: string, options?: Options) => {
 		const res = await this.instance.patch<ApiResponse<Response>>(url, options);
-		return res.json();
+		return res.text();
 	};
 
 	delete = async <Response = unknown>(url: string, options?: Options) => {
 		const res = await this.instance.delete<ApiResponse<Response>>(url, options);
-		return res.json();
+		return res.text();
 	};
 }
 

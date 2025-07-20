@@ -11,6 +11,8 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { useTransitionRouter } from 'next-view-transitions';
 import { type PropsWithChildren, useState } from 'react';
+import { deleteToken } from '@/lib/utils';
+import { useAppShell } from '@/providers/app-shell-provider';
 import { withdrawMutationOptions } from '@/remotes/mutations/member';
 import { Pressable } from '../motion';
 
@@ -24,18 +26,20 @@ const WithdrawBottomSheet = ({
 }: PropsWithChildren<WithdrawBottomSheetProps>) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const router = useTransitionRouter();
+	const { ref } = useAppShell();
 
 	const handleClose = () => {
 		setIsOpen(false);
 	};
 
 	const redirectToHome = () => {
-		router.replace('/');
+		router.replace('/login');
 	};
 
 	const { mutate: withdrawMutate, isPending: isWithdrawPending } = useMutation(
 		withdrawMutationOptions({
 			onSuccess: () => {
+				deleteToken();
 				handleClose();
 				redirectToHome();
 			},
@@ -45,9 +49,14 @@ const WithdrawBottomSheet = ({
 	const isDisabled = isWithdrawPending || disabled;
 
 	return (
-		<Drawer open={isOpen} onOpenChange={setIsOpen}>
+		<Drawer open={isOpen} onOpenChange={setIsOpen} container={ref.current}>
 			<DrawerTrigger asChild>{children}</DrawerTrigger>
-			<DrawerContent className="!px-2">
+			<DrawerContent
+				className="!px-2 mx-auto"
+				style={{
+					maxWidth: ref.current?.clientWidth ?? 'auto',
+				}}
+			>
 				<DrawerTitle className="sr-only">탈퇴하기</DrawerTitle>
 				<DrawerHeader className="!text-left !gap-y-2 items-start">
 					<h3 className="text-title2 font-semibold text-label-normal">탈퇴하기</h3>
