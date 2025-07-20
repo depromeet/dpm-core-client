@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@dpm-core/shared';
+import { cn } from '../../utils/cn';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import type * as React from 'react';
 

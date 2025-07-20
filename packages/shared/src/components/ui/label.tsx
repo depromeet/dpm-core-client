@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@dpm-core/shared';
+import { cn } from '../../utils/cn';
 import * as LabelPrimitive from '@radix-ui/react-label';
 import type * as React from 'react';
 

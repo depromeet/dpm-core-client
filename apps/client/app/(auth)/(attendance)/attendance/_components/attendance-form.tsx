@@ -1,6 +1,5 @@
 'use client';
 
-import { MotionButton } from '@/components/motion';
 import {
 	Form,
 	FormControl,
@@ -17,23 +16,35 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2Icon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { MotionButton } from '@/components/motion';
+import { useCheckAttendance } from '@/remotes/mutations/attendance';
 
 const FormSchema = z.object({
-	code: z.string().min(4, {
+	attendanceCode: z.string().min(4, {
 		message: '출석코드 4자리를 모두 입력해주세요',
 	}),
 });
 
-export const AttendanceForm = () => {
+interface AttendanceFormProps {
+	sessionId: number;
+}
+
+export const AttendanceForm = (props: AttendanceFormProps) => {
+	const { sessionId } = props;
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
-			code: '',
+			attendanceCode: '',
 		},
 	});
 
+	const { mutate: checkAttendance, isPending } = useCheckAttendance({
+		onError: () => {},
+		onSuccess: () => {},
+	});
+
 	const handleSubmitCode = (data: z.infer<typeof FormSchema>) => {
-		console.log(data);
+		checkAttendance({ sessionId: params.get(sessionId) });
 	};
 
 	return (
@@ -73,9 +84,9 @@ export const AttendanceForm = () => {
 					size="full"
 					className="fixed max-w-lg w-full bottom-0"
 					{...pressInOutVariatns}
-					disabled={!form.formState.isValid}
+					disabled={!form.formState.isValid || isPending}
 				>
-					<Loader2Icon className="animate-spin" />
+					{isPending && <Loader2Icon className="animate-spin" />}
 					완료하기
 				</MotionButton>
 			</form>

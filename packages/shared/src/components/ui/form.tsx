@@ -1,6 +1,5 @@
 'use client';
 
-import { cn } from '@dpm-core/shared';
 import { Label } from '@dpm-core/shared';
 import type * as LabelPrimitive from '@radix-ui/react-label';
 import { Slot } from '@radix-ui/react-slot';
@@ -14,6 +13,7 @@ import {
 	useFormContext,
 	useFormState,
 } from 'react-hook-form';
+import { cn } from '../../utils/cn';
 
 const Form = FormProvider;
 

@@ -1,5 +1,5 @@
-import { NavigationBar } from '@/components/navigation-bar';
 import { Fragment, type ReactNode } from 'react';
+import { NavigationBar } from '@/components/navigation-bar';
 
 interface LayoutProps {
 	tabs?: ReactNode;

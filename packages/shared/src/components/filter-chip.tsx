@@ -1,8 +1,8 @@
 'use client';
 
-import { cn } from '@dpm-core/shared';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import type React from 'react';
+import { cn } from '../utils/cn';
 
 export const FilterChip = ({
 	className,

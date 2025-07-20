@@ -1,10 +1,25 @@
-import { Appbar } from '@/components/Appbar';
+import { ChevronLeft } from '@dpm-core/shared';
+import Link from 'next/link';
 import { Fragment } from 'react';
+import { NavigationBar } from '@/components/navigation-bar';
 
-export default async function page() {
+interface AttendanceMeBySessionIdProps {
+	params: Promise<{ sessionId: string }>;
+}
+
+export default async function page({ params }: AttendanceMeBySessionIdProps) {
+	const { sessionId } = await params;
+
 	return (
 		<Fragment>
-			<Appbar title="내 출석 상세" />
+			<NavigationBar>
+				<Link href="/attendance/me">
+					<ChevronLeft />
+				</Link>
+				<h1 className="absolute left-1/2 -translate-x-1/2 font-semibold text-body1">
+					내 출석 상세
+				</h1>
+			</NavigationBar>
 			<section className="mt-5 px-4 mb-5">
 				<h3 className="text-label-subtle text-body1 font-semibold mb-3">출석 정보</h3>
 				<div className="flex flex-col gap-3 bg-background-subtle py-3 px-5 rouned-lg font-semibold text-body2">
