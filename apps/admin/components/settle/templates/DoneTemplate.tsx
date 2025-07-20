@@ -9,7 +9,7 @@ interface DoneTemplateProps {
 	link: string;
 }
 
-const DoneTemplate = () => {
+export default async function DoneTemplate() {
 	return (
 		<div className="mt-30">
 			<div className="flex items-center justify-center flex-col gap-8">
@@ -72,6 +72,4 @@ const DoneTemplate = () => {
 			<CopyComplete />
 		</div>
 	);
-};
-
-export default DoneTemplate;
+}

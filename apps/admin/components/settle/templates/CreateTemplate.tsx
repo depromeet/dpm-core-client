@@ -1,18 +1,17 @@
 import React from 'react';
 import CreateFormWrapper from '../create/CreateFormWrapper';
 import StepWrapper from '../create/StepWrapper';
+import Devider from '../layout/Devider';
 import FixedBottomBtn from '../layout/FixedBottomBtn';
 
-const CreateTemplate = () => {
+export default async function CreateTemplate() {
 	return (
 		<>
 			<CreateFormWrapper />
-			<div className="h-6" />
+			<Devider />
 			<StepWrapper />
 			<FixedBottomBtn title="정산서 생성하기" />
 			{/* <CreateBottomSheet /> */}
 		</>
 	);
-};
-
-export default CreateTemplate;
+}

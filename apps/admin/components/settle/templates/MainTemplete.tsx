@@ -4,7 +4,7 @@ import { useSettleFilterStore } from '@/store/useSettleFilterStore';
 import { useEffect } from 'react';
 import SettleList from '../main/SettleList';
 
-const MainTemplete = () => {
+export default async function MainTemplete() {
 	const filter = useSettleFilterStore((state) => state.filter);
 
 	useEffect(() => {
@@ -17,6 +17,4 @@ const MainTemplete = () => {
 			{/* <NoSettle/> */}
 		</>
 	);
-};
-
-export default MainTemplete;
+}

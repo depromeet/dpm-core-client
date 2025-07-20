@@ -6,7 +6,6 @@ import SettleHeaderFilter from './SettleHeaderFilter';
 
 interface HeaderConfig {
 	title: string;
-
 	withFilter: boolean;
 }
 
