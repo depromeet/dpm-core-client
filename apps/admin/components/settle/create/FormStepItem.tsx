@@ -1,8 +1,6 @@
-import React from 'react';
-
 const FormStepItem = () => {
 	return (
-		<li className="py-5 relative px-4 border border-line-noraml rounded-lg flex flex-col gap-6">
+		<li className="py-5 relative px-4 border border-line-normal rounded-lg flex flex-col gap-6">
 			<div>
 				{/* 닫기 버튼 */}
 				<div className="w-fit p-1 ml-auto">
@@ -34,7 +32,7 @@ const FormStepItem = () => {
 					<input
 						type="text"
 						placeholder="ex. 1차  - 디프만 포차"
-						className="p-4 rounded-lg text-gray-700 font-medium border text-body2  border-line-noraml outline-none focus:border-gray-600"
+						className="p-4 rounded-lg text-gray-700 font-medium border text-body2  border-line-normal outline-none focus:border-gray-600"
 					/>
 					<div className="flex items-center justify-between text-caption1 font-medium">
 						<p className="text-red-400  invisible">필수 입력 값입니다.</p>
@@ -49,7 +47,7 @@ const FormStepItem = () => {
 				<input
 					type="text"
 					placeholder="금액 입력 (원)"
-					className="outline-none px-3 py-2 text-title2 text-gray-800  font-semibold placeholder:text-gray-300 border-b border-line-noraml focus:border-gray-600"
+					className="outline-none px-3 py-2 text-title2 text-gray-800  font-semibold placeholder:text-gray-300 border-b border-line-normal focus:border-gray-600"
 				/>
 				<p className="text-red-400 invisible text-caption1 font-medium">필수 입력 값입니다.</p>
 			</div>
