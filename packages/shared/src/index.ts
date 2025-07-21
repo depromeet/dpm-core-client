@@ -1,7 +1,8 @@
 // Utils
 
-export * from './components/filter-chip';
 // Components
+export * from './components/badge';
+export * from './components/filter-chip';
 export * from './components/icons';
 export * from './components/ui/avatar';
 export * from './components/ui/button';

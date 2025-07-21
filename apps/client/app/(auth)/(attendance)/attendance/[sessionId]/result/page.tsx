@@ -1,11 +1,15 @@
 import { AppLayout, ChevronLeft } from '@dpm-core/shared';
 import { Link } from 'next-view-transitions';
 import { NavigationBar } from '@/components/navigation-bar';
-import { AttendanceResultContainer } from './_components/attendance-result-container';
-import { AttendanceTimeContainer } from './_components/attendance-time-container';
+import { AttendanceResult } from './_components/attendance-result-container';
 import { FloatingButtonContainer } from './_components/floating-button-container';
 
-const AttendanceCheckResultPage = () => {
+interface Props {
+	params: Promise<{ sessionId: string }>;
+}
+const AttendanceCheckResultPage = async ({ params }: Props) => {
+	const { sessionId } = await params;
+
 	return (
 		<AppLayout className="bg-gray-0">
 			<NavigationBar>
@@ -13,8 +17,7 @@ const AttendanceCheckResultPage = () => {
 					<ChevronLeft />
 				</Link>
 			</NavigationBar>
-			<AttendanceResultContainer />
-			<AttendanceTimeContainer />
+			<AttendanceResult sessionId={Number(sessionId)} />
 			<FloatingButtonContainer />
 		</AppLayout>
 	);

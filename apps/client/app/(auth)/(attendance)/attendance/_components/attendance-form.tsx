@@ -15,7 +15,7 @@ import {
 } from '@dpm-core/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ErrorBoundary } from '@suspensive/react';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { Loader2Icon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
@@ -26,6 +26,10 @@ import { MotionButton } from '@/components/motion';
 import { calcSessionAttendanceTime, calcSessionLateAttendanceTime } from '@/lib/calc';
 import { formatISOStringHHMM } from '@/lib/date';
 import { checkAttendanceOptions } from '@/remotes/mutations/attendance';
+import {
+	getAttendanceMeBySessionIdOptions,
+	getAttendanceMeOptions,
+} from '@/remotes/queries/attendance';
 import { getSessionAttendanceTimeOptions } from '@/remotes/queries/session';
 
 interface AttendanceFormProps {
@@ -55,6 +59,8 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 	const { sessionId, attendanceStartTime } = props;
 
 	const router = useRouter();
+	const queryClient = useQueryClient();
+
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
@@ -64,7 +70,14 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 
 	const { mutate: checkAttendance, isPending: isPendingCheckAttendance } = useMutation(
 		checkAttendanceOptions(sessionId, {
-			onSuccess: () => {},
+			// Todo 서버 에러 코드 나오는 경우 - 에러 핸들링 필요
+			onSuccess: () => {
+				Promise.all([
+					queryClient.invalidateQueries(getAttendanceMeOptions()),
+					queryClient.invalidateQueries(getAttendanceMeBySessionIdOptions({ sessionId })),
+				]);
+				router.replace(`/attendance/${sessionId}/result`);
+			},
 			onError: () => {
 				toast.error('운영진에게 문의해 주세요.');
 			},
