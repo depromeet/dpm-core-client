@@ -1,5 +1,4 @@
 import DetailBottom from '../detail/DetailBottom';
-import DetailBottomSheet from '../detail/DetailBottomSheet';
 import DetailTop from '../detail/DetailTop';
 import Devider from '../layout/Devider';
 import FixedBottomBtn from '../layout/FixedBottomBtn';

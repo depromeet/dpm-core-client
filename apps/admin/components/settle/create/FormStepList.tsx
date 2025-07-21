@@ -1,4 +1,3 @@
-import React from 'react';
 import FormStepItem from './FormStepItem';
 
 const FormStepList = () => {

@@ -1,4 +1,3 @@
-import React from 'react';
 import CreateFormWrapper from '../create/CreateFormWrapper';
 import StepWrapper from '../create/StepWrapper';
 import Devider from '../layout/Devider';

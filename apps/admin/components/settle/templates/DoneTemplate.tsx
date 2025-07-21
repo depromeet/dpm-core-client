@@ -1,4 +1,3 @@
-import React from 'react';
 import CopyComplete from '../layout/CopyComplete';
 import FixedBottomBtn from '../layout/FixedBottomBtn';
 

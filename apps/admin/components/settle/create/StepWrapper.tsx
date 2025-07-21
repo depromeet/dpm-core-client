@@ -1,4 +1,3 @@
-import React from 'react';
 import FormStepList from './FormStepList';
 
 const StepWrapper = () => {

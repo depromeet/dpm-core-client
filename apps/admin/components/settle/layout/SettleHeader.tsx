@@ -1,7 +1,6 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import React from 'react';
 import SettleHeaderFilter from './SettleHeaderFilter';
 
 interface HeaderConfig {

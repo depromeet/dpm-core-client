@@ -1,4 +1,3 @@
-import React from 'react';
 import FormDate from './FormDate';
 import FormDesc from './FormDesc';
 import FormRange from './FormRange';
