@@ -5,6 +5,8 @@ export { CheckIcon } from './check';
 export { ChevronLeft } from './chevron-left';
 export { ChevronRight } from './chevron-right';
 export { CircleAlert } from './circle-alert';
+export { CircleCheck } from './circle-check';
+export { CircleMinus } from './circle-minus';
 export { Clock } from './clock';
 export { CopyIcon } from './copy';
 export { KakaoLogo } from './kakao-logo';
