@@ -8,13 +8,13 @@ import {
 	DrawerTitle,
 	DrawerTrigger,
 } from '@dpm-core/shared';
-import Link from 'next/link';
+import { Link } from 'next-view-transitions';
 import { NavigationBar } from '@/components/navigation-bar';
 import { AttendanceMe } from '../_components/attendance-me';
 
 export default function AttendanceMePage() {
 	return (
-		<AppLayout>
+		<AppLayout className="bg-gray-0">
 			<NavigationBar>
 				<Link href="/">
 					<ChevronLeft />

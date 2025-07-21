@@ -1,7 +1,7 @@
 'use client';
 
 import type { AttendanceReponse } from '@dpm-core/api';
-import { Avatar } from '@dpm-core/shared';
+import { Avatar, Badge } from '@dpm-core/shared';
 import Image from 'next/image';
 import { cohort } from '@/constants/cohort';
 import { isExistPart } from '@/lib/utils';
@@ -10,6 +10,12 @@ interface AttendanceMeInfoProps {
 	member: AttendanceReponse['member'];
 	attendance: AttendanceReponse['attendance'];
 }
+
+const attendanceStatusLabelMap = {
+	NORMAL: '수료 가능',
+	AT_RISK: '수료 위험',
+	IMPOSSIBLE: '수료 불가',
+};
 
 export const AttendanceMeInfo = (props: AttendanceMeInfoProps) => {
 	const { member, attendance } = props;
@@ -33,9 +39,9 @@ export const AttendanceMeInfo = (props: AttendanceMeInfoProps) => {
 						</p>
 					</div>
 				</div>
-				<span className="flex items-center bg-red-100 text-caption1 font-semibold text-red-500 px-[5px] py-[3px] rounded-sm">
-					수료 위험
-				</span>
+				<Badge variant={member.attendanceStatus}>
+					{attendanceStatusLabelMap[member.attendanceStatus]}
+				</Badge>
 			</div>
 			<ul className="bg-background-subtle px-5 py-[18px] flex rounded-xl justify-between text-body2">
 				<li>
