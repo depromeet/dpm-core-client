@@ -16,7 +16,8 @@ interface LoginButtonProps {
 
 const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 	({ variant, size, className }, ref) => {
-		const loginUrl = new URL(`${BASE_URL}/login/kakao`);
+		const loginUrl = new URL(`${BASE_URL}`);
+		loginUrl.pathname = '/login/kakao';
 		return (
 			<MotionButton
 				ref={ref}

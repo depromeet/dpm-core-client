@@ -11,8 +11,9 @@ class Http {
 	private instance: KyInstance;
 
 	constructor() {
+		const apiUrl = new URL(BASE_URL ?? '');
 		const instance = ky.extend({
-			prefixUrl: BASE_URL,
+			prefixUrl: apiUrl.toString(),
 			credentials: 'include',
 			retry: 0,
 			timeout: 10000,
