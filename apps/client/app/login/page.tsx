@@ -3,6 +3,8 @@ import Banner from '@/assets/images/login-banner.webp';
 import { LoginButton } from '@/components/login-button';
 
 const LoginPage = () => {
+	const a = process.env.NEXT_PUBLIC_API_BASE_URL;
+	console.log(a);
 	return (
 		<div className="bg-primary-extralight min-h-dvh flex flex-col justify-center gap-y-10">
 			<div className="mx-auto text-center flex flex-col gap-y-10">
