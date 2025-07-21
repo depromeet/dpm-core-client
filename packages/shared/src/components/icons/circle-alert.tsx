@@ -1,9 +1,5 @@
 import { type ComponentPropsWithoutRef, forwardRef } from 'react';
-
-interface IconProps {
-	size?: number;
-	color?: string;
-}
+import type { IconProps } from './type';
 
 const CircleAlert = forwardRef<SVGSVGElement, ComponentPropsWithoutRef<'svg'> & IconProps>(
 	(props, ref) => {
