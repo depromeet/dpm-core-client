@@ -10,22 +10,7 @@
 		"build": {
 			"dependsOn": ["^build"],
 			"outputs": [".next/**", "!.next/cache/**", "dist/**", "!dist/**/*.map"],
-			"inputs": [
-				"src/**",
-				"app/**",
-				"components/**",
-				"lib/**",
-				"types/**",
-				"constants/**",
-				"hooks/**",
-				"providers/**",
-				"remotes/**",
-				"assets/**",
-				"package.json",
-				"tsconfig.json",
-				"next.config.ts",
-				"tailwind.config.*"
-			]
+			"inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"]
 		},
 		"start": {
 			"dependsOn": ["build"],
@@ -46,5 +31,6 @@
 			"outputs": []
 		}
 	},
-	"globalDependencies": ["package.json", "yarn.lock", "turbo.json", "tsconfig.base.json"]
+	"globalDependencies": ["package.json", "yarn.lock", "turbo.json", "tsconfig.base.json"],
+	"globalEnv": ["NEXT_PUBLIC_STAGE"]
 }

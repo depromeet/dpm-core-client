@@ -1,5 +1,6 @@
 'use client';
 
+import { BASE_URL } from '@dpm-core/api';
 import { Button, KakaoLogo, pressInOutVariatns } from '@dpm-core/shared';
 import { motion } from 'motion/react';
 import { type ComponentPropsWithoutRef, forwardRef } from 'react';
@@ -15,7 +16,7 @@ interface LoginButtonProps {
 
 const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 	({ variant, size, className }, ref) => {
-		const loginUrl = new URL('https://dev.dpmcore.o-r.kr/login/kakao');
+		const loginUrl = new URL(`${BASE_URL}/login/kakao`);
 		return (
 			<MotionButton
 				ref={ref}
