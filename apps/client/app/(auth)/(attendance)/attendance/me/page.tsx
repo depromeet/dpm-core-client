@@ -36,7 +36,7 @@ const Provision = () => {
 				<Button
 					variant="none"
 					size="sm"
-					className="bg-background-normal text-label-subtle border rounded-[100px] border-line-noraml"
+					className="bg-background-normal text-label-subtle border rounded-[100px] border-line-normal"
 				>
 					규정
 				</Button>
