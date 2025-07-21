@@ -1,4 +1,5 @@
-import type { Part } from '@dpm-core/api';
+import { COOKIE_KEYS, type Part } from '@dpm-core/api';
+import Cookies from 'js-cookie';
 
 export { cn } from '@dpm-core/shared';
 
@@ -8,7 +9,6 @@ export const isExistPart = (targetValue: unknown): targetValue is Exclude<Part, 
 };
 
 export const deleteToken = () => {
-	// TODO: COOKIE 로 변경
-	localStorage.removeItem('accessToken');
-	localStorage.removeItem('refreshToken');
+	Cookies.remove(COOKIE_KEYS.ACCESS_TOKEN);
+	Cookies.remove(COOKIE_KEYS.REFRESH_TOKEN);
 };
