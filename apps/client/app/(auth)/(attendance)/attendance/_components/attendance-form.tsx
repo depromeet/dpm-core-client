@@ -139,8 +139,9 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 						!form.formState.isValid || isPendingCheckAttendance || form.formState.isSubmitting
 					}
 				>
-					{isPendingCheckAttendance ||
-						(form.formState.isSubmitting && <Loader2Icon className="animate-spin" />)}
+					{(isPendingCheckAttendance || form.formState.isSubmitting) && (
+						<Loader2Icon className="animate-spin" />
+					)}
 					완료하기
 				</MotionButton>
 			</form>
