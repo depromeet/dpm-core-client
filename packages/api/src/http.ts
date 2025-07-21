@@ -12,7 +12,6 @@ class Http {
 
 	constructor() {
 		const apiUrl = new URL(BASE_URL ?? '');
-		apiUrl.pathname = '/api';
 		const instance = ky.extend({
 			prefixUrl: apiUrl.toString(),
 			credentials: 'include',
