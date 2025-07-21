@@ -5,12 +5,14 @@ import { COOKIE_KEYS } from './constants';
 import { createRefreshPlugin } from './plugins/create-refresh-plugin';
 import type { ApiResponse } from './type';
 
+export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 class Http {
 	private instance: KyInstance;
 
 	constructor() {
 		const instance = ky.extend({
-			prefixUrl: 'https://dev.dpmcore.o-r.kr',
+			prefixUrl: BASE_URL,
 			credentials: 'include',
 			retry: 0,
 			timeout: 10000,
@@ -35,7 +37,7 @@ class Http {
 					},
 					createRefreshPlugin({
 						whitelist: ['/v1/reissue'],
-						refreshUrl: 'https://dev.dpmcore.o-r.kr/v1/reissue',
+						refreshUrl: `${BASE_URL}/v1/reissue`,
 					}),
 				],
 				beforeError: [
