@@ -7,6 +7,6 @@ services:
       - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ./local.dpmcore.o-r.kr.pem:/etc/ssl/certs/local.dpmcore.o-r.kr.pem
-      - ./local.dpmcore.o-r.kr-key.pem:/etc/ssl/private/local.dpmcore.o-r.kr-key.pem
+      - ./local.depromeet-core.shop.pem:/etc/ssl/certs/local.depromeet-core.shop.pem
+      - ./local.depromeet-core.shop-key.pem:/etc/ssl/private/local.depromeet-core.shop-key.pem
     
