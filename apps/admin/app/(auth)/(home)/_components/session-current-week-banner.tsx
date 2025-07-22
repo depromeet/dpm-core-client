@@ -9,7 +9,6 @@ import { Link } from 'next-view-transitions';
 import { Suspense } from 'react';
 import Iconttendance3D from '@/assets/icons/icon_attendance_3d.png';
 import { MotionButton } from '@/components/motion';
-import { formatSessionWeekString } from '@/lib/session/format';
 import { getCurrentWeekSessionQuery } from '@/remotes/queries/session';
 
 const SessionCurrentWeekBannerContainer = () => {
@@ -32,9 +31,6 @@ const SessionCurrentWeekBannerContainer = () => {
 			<div className="bg-background-inverse rounded-[10px] p-5">
 				<div className="flex justify-between">
 					<div>
-						<p className="text-caption1 font-semibold text-label-assistive mb-1">
-							{`${formatSessionWeekString(currentWeekSession.week)} 출석`}
-						</p>
 						<p className="text-headline2 text-white font-bold">
 							멤버들의 출석 현황을
 							<br />
