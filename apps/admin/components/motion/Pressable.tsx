@@ -9,7 +9,7 @@ const Pressable = forwardRef<
 	HTMLButtonElement,
 	HTMLMotionProps<'button'> & ComponentPropsWithoutRef<typeof MotionButton>
 >((props, ref) => {
-	return <MotionButton ref={ref} {...pressInOutVariatns} {...props} />;
+	return <MotionButton {...pressInOutVariatns} ref={ref} {...props} />;
 });
 
 Pressable.displayName = 'Pressable';
