@@ -1,7 +1,5 @@
 'use client';
 
-import Link from 'next/link';
-
 interface SessionCardProps {
 	subtitle: string;
 	title: string;
@@ -19,8 +17,7 @@ const SessionCard = ({ subtitle, title, startTimeInfo, place, id }: SessionCardP
 		: {};
 
 	return (
-		<Link
-			href="/session-detail"
+		<div
 			className="bg-background-subtle flex flex-col rounded-lg p-5 animate-view-transition cursor-pointer hover:bg-background-strong transition-colors"
 			style={cardStyle}
 		>
@@ -49,7 +46,7 @@ const SessionCard = ({ subtitle, title, startTimeInfo, place, id }: SessionCardP
 					<span className="inline-flex text-body2 text-label-subtle font-medium">{place}</span>
 				</div>
 			</div>
-		</Link>
+		</div>
 	);
 };
 
