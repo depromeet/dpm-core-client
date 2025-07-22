@@ -6,26 +6,25 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { Suspense } from 'react';
 import { Loading } from '@/components/lotties/loading';
 import { formatISOStringToFullDateString } from '@/lib/date';
-import { getSessionListQuery } from '@/remotes/queries/session';
+import { getSessionCurrentOptions } from '@/remotes/queries/session';
 import { SessionCard } from './session-card';
 
 const SessionListContainer = () => {
 	const {
-		data: { data },
-	} = useSuspenseQuery(getSessionListQuery);
+		data: { data: currentWeekSession },
+	} = useSuspenseQuery(getSessionCurrentOptions());
+
 	return (
 		<>
-			{data.sessions?.length ? (
+			{currentWeekSession ? (
 				<div className="my-5 px-4 flex-1">
-					{data.sessions.map((session) => (
-						<SessionCard
-							key={session.id}
-							subtitle={`${session.week}주차 세션`}
-							title={session.eventName}
-							startTimeInfo={formatISOStringToFullDateString(session.date)}
-							endTimeInfo={formatISOStringToFullDateString(session.date)}
-						/>
-					))}
+					<SessionCard
+						id={currentWeekSession.sessionId.toString()}
+						subtitle={`${currentWeekSession.week}주차 세션`}
+						title={currentWeekSession.eventName}
+						startTimeInfo={formatISOStringToFullDateString(currentWeekSession.date)}
+						place={currentWeekSession.isOnline ? '온라인' : currentWeekSession.place}
+					/>
 				</div>
 			) : (
 				<div className="flex flex-col items-center justify-center gap-y-3 flex-1">
