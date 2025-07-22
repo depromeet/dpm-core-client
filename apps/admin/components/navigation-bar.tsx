@@ -39,8 +39,8 @@ const NavigationBar = (props: ComponentPropsWithoutRef<'header'>) => {
 		<header
 			{...props}
 			className={cn(
-				'h-12 sticky top-0 py-2 px-4 flex items-center justify-between bg-white transition-transform duration-300 ease-in-out',
-				isHidden && '-translate-y-full',
+				'min-h-12 sticky top-0 transition-transform duration-300 ease-in-out',
+				isHidden && '-translate-y-[40px]',
 				props.className,
 			)}
 		/>

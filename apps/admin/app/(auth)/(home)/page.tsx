@@ -14,14 +14,15 @@ const UserPage = () => {
 	return (
 		<AppLayout className="bg-background-normal">
 			<NavigationBar>
-				<h3 className="font-normal ">Dpmcore(Logo)</h3>
+				<div className="py-2 px-4 flex items-center justify-between bg-white ">
+					<h3 className="font-normal ">Dpmcore(Logo)</h3>
 
-				<Link href="/my-page">
-					<UserAvatar />
-				</Link>
+					<Link href="/my-page">
+						<UserAvatar />
+					</Link>
+				</div>
+				<SessionBanner />
 			</NavigationBar>
-
-			<SessionBanner />
 
 			<SessionCurrentWeekBanner />
 
