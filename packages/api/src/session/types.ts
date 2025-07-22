@@ -113,3 +113,7 @@ export interface CurrentWeekSession {
 	 */
 	attendanceEndTime: string;
 }
+
+export interface SessionWeeksReponse {
+	weeks: number[];
+}
