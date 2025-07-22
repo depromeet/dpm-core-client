@@ -6,9 +6,9 @@ import IconAttendance from '@/assets/icons/icon_attendance.png';
 import IconSession from '@/assets/icons/icon_session.png';
 import IconSettlement from '@/assets/icons/icon_settlement.png';
 import { NavigationBar } from '@/components/navigation-bar';
+import { CurrentWeekSession } from './_components/current-week-session';
 import { SessionBanner } from './_components/session-banner';
 import { SessionCurrentWeekBanner } from './_components/session-current-week-banner';
-import { SessionList } from './_components/session-list';
 
 const UserPage = () => {
 	return (
@@ -30,12 +30,12 @@ const UserPage = () => {
 				variants={fadeInOutVariatns.variants}
 				className="flex flex-col divide-y-8 divide-background-strong flex-1"
 			>
-				<ul className="gap-x-3 flex items-center mt-5 pb-10">
+				<ul className="flex justify-center items-center gap-x-[52px] mt-5 pb-10">
 					<IconCard icon={IconAttendance} title="출석" href="/attendance" />
 					<IconCard icon={IconSession} title="세션" href="/session" />
 					<IconCard icon={IconSettlement} title="정산" href="/settle" />
 				</ul>
-				<SessionList />
+				<CurrentWeekSession />
 			</motion.div>
 		</AppLayout>
 	);
@@ -49,7 +49,7 @@ interface IconCardProps {
 
 function IconCard({ icon, title, href }: IconCardProps) {
 	return (
-		<li className="flex-1">
+		<li>
 			<Link
 				href={href}
 				className="flex flex-col items-center text-center gap-y-2 hover:scale-105 transition-transform"
