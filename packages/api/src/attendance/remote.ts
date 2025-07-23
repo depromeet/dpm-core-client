@@ -1,8 +1,11 @@
 import { http } from '../http';
 import type {
+	AttendanceByMemberReponse,
 	AttendanceBySessionIdReponse,
+	AttendanceBySessionReponse,
 	AttendanceCheckReponse,
 	AttendanceReponse,
+	AttendanceStatus,
 } from './types';
 
 export const attendance = {
@@ -28,5 +31,90 @@ export const attendance = {
 			`v1/sessions/${sessionId}/attendances/me`,
 		);
 		return res;
+	},
+
+	// 세션별 출석 리스트 조회
+	getAttendanceBySession: async (params: {
+		week: number;
+		statuses?: string[];
+		teams?: number[];
+		name?: string;
+		cursorId: number;
+	}) => {
+		const { week, statuses, teams, name, cursorId } = params;
+		const searchParams = new URLSearchParams();
+
+		if (statuses && statuses.length > 0) {
+			statuses.forEach((status) => searchParams.append('statuses', status));
+		}
+
+		if (teams && teams.length > 0) {
+			teams.forEach((team) => searchParams.append('teams', team.toString()));
+		}
+
+		if (name) {
+			searchParams.set('name', name);
+		}
+		searchParams.set('cursorId', cursorId.toString());
+
+		const res = await http.get<AttendanceBySessionReponse>(`v1/sessions/${week}/attendances`, {
+			searchParams,
+		});
+		return res;
+	},
+
+	// 사람별 출석 리스트 조회
+	getAttendanceByMember: async (params: {
+		statuses?: string[];
+		teams?: number[];
+		name?: string;
+		cursorId: number;
+	}) => {
+		const { statuses, teams, name, cursorId } = params;
+		const searchParams = new URLSearchParams();
+
+		if (statuses && statuses.length > 0) {
+			statuses.forEach((status) => searchParams.append('statuses', status));
+		}
+
+		if (teams && teams.length > 0) {
+			teams.forEach((team) => searchParams.append('teams', team.toString()));
+		}
+
+		if (name) {
+			searchParams.set('name', name);
+		}
+		searchParams.set('cursorId', cursorId.toString());
+
+		const res = await http.get<AttendanceByMemberReponse>(`v1/members/attendances`, {
+			searchParams,
+		});
+		return res;
+	},
+
+	// 사람별 출석 상세 조회
+	getAttendanceByMemberDetail: async (params: { memberId: number }) => {
+		const { memberId } = params;
+		return await http.get<AttendanceReponse>(`v1/members/${memberId}/attendances`);
+	},
+
+	// 세션별 개인 출석 상세 조회
+	getAttendanceBySessionDetail: async (params: { memberId: number; sessionId: number }) => {
+		const { memberId, sessionId } = params;
+		return await http.get<AttendanceBySessionIdReponse>(
+			`v1/sessions/${sessionId}/attendances/${memberId}`,
+		);
+	},
+
+	// 출석 상태 갱신
+	modifyAttendanceStatus: async (params: {
+		memberId: number;
+		sessionId: number;
+		attendanceStatus: AttendanceStatus;
+	}) => {
+		const { sessionId, memberId, ...json } = params;
+		return await http.patch(`v1/sessions/${sessionId}/attendances/${memberId}`, {
+			json,
+		});
 	},
 };
