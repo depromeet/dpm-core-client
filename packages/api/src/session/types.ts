@@ -115,5 +115,8 @@ export interface CurrentWeekSession {
 }
 
 export interface SessionWeeksReponse {
-	weeks: number[];
+	sessions: {
+		id: number;
+		week: number;
+	}[];
 }

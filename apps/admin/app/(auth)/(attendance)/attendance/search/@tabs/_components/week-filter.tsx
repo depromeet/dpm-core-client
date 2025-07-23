@@ -5,7 +5,7 @@ import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 
 interface WeekFilterProps {
-	weeks?: number[];
+	weeks?: { id: number; week: number }[];
 }
 
 export const WeekFilter = (props: WeekFilterProps) => {
@@ -30,8 +30,8 @@ export const WeekFilter = (props: WeekFilterProps) => {
 			>
 				{props.weeks.map((week) => (
 					<ToggleGroup.Item
-						key={week}
-						value={week.toString()}
+						key={week.id}
+						value={week.id.toString()}
 						className={cn(
 							'h-7 px-3 py-1 rounded-lg border text-body2 cursor-pointer font-medium',
 							'border-gray-200',
@@ -41,7 +41,7 @@ export const WeekFilter = (props: WeekFilterProps) => {
 							'transform hover:scale-105 active:scale-95',
 						)}
 					>
-						{week}주차
+						{week.week}주차
 					</ToggleGroup.Item>
 				))}
 			</ToggleGroup.Root>

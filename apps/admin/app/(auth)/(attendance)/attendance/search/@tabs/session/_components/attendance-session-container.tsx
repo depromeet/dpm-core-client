@@ -12,16 +12,18 @@ import { WeekFilter } from '../../_components/week-filter';
 import AttendanceList from './attendance-list';
 
 const AttendanceSessionContainer = () => {
-	const { data } = useSuspenseQuery(getSessionWeeks());
+	const {
+		data: { data },
+	} = useSuspenseQuery(getSessionWeeks());
 
-	if (data?.data.weeks.length === 0) {
+	if (data?.sessions.length === 0) {
 		return <EmptyView message="현재 조회된 세션 정보가 없습니다" />;
 	}
 
 	return (
 		<>
 			<section className="px-4 py-2.5 space-y-3.5 sticky top-0 bg-white">
-				<WeekFilter weeks={data?.data.weeks} />
+				<WeekFilter weeks={data.sessions} />
 				<SearchInput placeholder="디퍼 검색" />
 				<AttendanceFilter />
 			</section>

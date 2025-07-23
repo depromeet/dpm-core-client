@@ -31,7 +31,7 @@ const UserPage = () => {
 				className="flex flex-col divide-y-8 divide-background-strong flex-1"
 			>
 				<ul className="flex justify-center items-center gap-x-[52px] mt-5 pb-10">
-					<IconCard icon={IconAttendance} title="출석" href="/attendance/search?week=1" />
+					<IconCard icon={IconAttendance} title="출석" href="/attendance/search/session?week=2" />
 					<IconCard icon={IconSession} title="세션" href="/session" />
 					<IconCard icon={IconSettlement} title="정산" href="/settle" />
 				</ul>
