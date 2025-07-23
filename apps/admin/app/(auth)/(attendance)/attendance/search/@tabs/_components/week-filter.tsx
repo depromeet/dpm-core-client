@@ -20,7 +20,7 @@ export const WeekFilter = (props: WeekFilterProps) => {
 	};
 
 	return (
-		<div className="w-full flex items-center z-10 gap-2 bg-white overflow-x-auto px-0.5 scrollbar-hidden">
+		<div className="w-full flex items-center z-10 gap-2 bg-white overflow-x-auto overflow-y-hidden px-0.5 scrollbar-hidden">
 			<ToggleGroup.Root
 				type="single"
 				aria-label="세션 주차 필터"
@@ -38,7 +38,6 @@ export const WeekFilter = (props: WeekFilterProps) => {
 							'transition duration-150 ease-out',
 							'data-[state=on]:bg-gray-900 data-[state=on]:text-white',
 							'data-[state=off]:bg-white data-[state=off]:text-gray-500',
-							'transform hover:scale-105 active:scale-95',
 						)}
 					>
 						{week.week}주차
