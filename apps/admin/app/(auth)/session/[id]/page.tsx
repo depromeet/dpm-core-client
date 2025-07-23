@@ -13,7 +13,7 @@ const SessionDetailPage = async ({ params }: { params: Promise<{ id: string }> }
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
 			<AppLayout className="bg-background-normal">
-				<AppHeader title="세션 상세" backHref="/session" />
+				<AppHeader title="세션 상세" />
 				<SessionDetailInfo sessionId={id} />
 			</AppLayout>
 		</HydrationBoundary>

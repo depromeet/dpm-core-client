@@ -1,11 +1,9 @@
 'use client';
 
 import { BASE_URL } from '@dpm-core/api';
-import { Button, KakaoLogo, pressInOutVariatns } from '@dpm-core/shared';
-import { motion } from 'motion/react';
+import { type Button, KakaoLogo } from '@dpm-core/shared';
 import { type ComponentPropsWithoutRef, forwardRef } from 'react';
-
-const MotionButton = motion.create(Button);
+import { Pressable } from './motion';
 
 interface LoginButtonProps {
 	href?: string;
@@ -19,9 +17,9 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 		const loginUrl = new URL(BASE_URL ?? '');
 		loginUrl.pathname = '/login/kakao';
 		return (
-			<MotionButton
+			<Pressable
+				whileTap={{ scale: 1.025 }}
 				ref={ref}
-				{...pressInOutVariatns}
 				variant={variant}
 				size={size}
 				className={className}
@@ -31,7 +29,7 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 					<KakaoLogo />
 					<p className="flex-1 text-[#000000] opacity-85">카카오로 시작하기</p>
 				</a>
-			</MotionButton>
+			</Pressable>
 		);
 	},
 );

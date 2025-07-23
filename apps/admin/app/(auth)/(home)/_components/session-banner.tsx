@@ -29,9 +29,8 @@ const SessionBannerContainer = () => {
 	return (
 		<Pressable
 			variant="none"
-			whileHover={{}}
 			// 48px -> 앱 헤더 높이
-			className="py-3 px-4 bg-primary-normal flex items-center justify-between rounded-none sticky top-[48px]"
+			className="py-3 px-4 bg-primary-normal flex items-center justify-between rounded-none sticky top-[48px] h-[42px]"
 			asChild
 		>
 			<Link href={`/session/${currentWeekSession.sessionId}`}>

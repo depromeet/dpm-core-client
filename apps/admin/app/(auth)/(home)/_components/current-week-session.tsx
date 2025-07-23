@@ -6,27 +6,24 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { Suspense } from 'react';
 import { Loading } from '@/components/lotties/loading';
 import { formatISOStringToFullDateString } from '@/lib/date';
-import { getSessionListQuery } from '@/remotes/queries/session';
+import { getCurrentWeekSessionQuery } from '@/remotes/queries/session';
 import { SessionCard } from './session-card';
 
-const SessionListContainer = () => {
+const CurrentWeekSessionContainer = () => {
 	const {
-		data: { data },
-	} = useSuspenseQuery(getSessionListQuery);
+		data: { data: currentWeekSession },
+	} = useSuspenseQuery(getCurrentWeekSessionQuery);
 	return (
 		<>
-			{data.sessions?.length ? (
+			{currentWeekSession ? (
 				<div className="my-5 px-4 flex-1 flex flex-col gap-y-2">
-					{data.sessions.map((session) => (
-						<SessionCard
-							key={session.id}
-							subtitle={`${session.week}주차 세션`}
-							title={session.eventName}
-							startTimeInfo={formatISOStringToFullDateString(session.date)}
-							endTimeInfo={formatISOStringToFullDateString(session.date)}
-							sessionId={session.id.toString()}
-						/>
-					))}
+					<SessionCard
+						subtitle={`${currentWeekSession.week}주차 세션`}
+						title={currentWeekSession.eventName}
+						startTimeInfo={formatISOStringToFullDateString(currentWeekSession.date)}
+						endTimeInfo={formatISOStringToFullDateString(currentWeekSession.date)}
+						sessionId={currentWeekSession.sessionId.toString()}
+					/>
 				</div>
 			) : (
 				<div className="flex flex-col items-center justify-center gap-y-3 flex-1">
@@ -40,7 +37,7 @@ const SessionListContainer = () => {
 	);
 };
 
-const SessionList = ErrorBoundary.with(
+const CurrentWeekSession = ErrorBoundary.with(
 	{
 		fallback: (props) => {
 			return (
@@ -62,9 +59,9 @@ const SessionList = ErrorBoundary.with(
 				</div>
 			}
 		>
-			<SessionListContainer />
+			<CurrentWeekSessionContainer />
 		</Suspense>
 	),
 );
 
-export { SessionList };
+export { CurrentWeekSession };

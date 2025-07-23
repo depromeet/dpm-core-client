@@ -3,9 +3,9 @@ export const pressInOutVariatns = {
 		scale: 0.975,
 		filter: 'brightness(0.8)',
 	},
-	whileHover: {
-		scale: 1.025,
-	},
+	// whileHover: {
+	// 	scale: 1.025,
+	// },
 };
 
 export const fadeInOutVariatns = {

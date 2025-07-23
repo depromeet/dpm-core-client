@@ -6,22 +6,23 @@ import IconAttendance from '@/assets/icons/icon_attendance.png';
 import IconSession from '@/assets/icons/icon_session.png';
 import IconSettlement from '@/assets/icons/icon_settlement.png';
 import { NavigationBar } from '@/components/navigation-bar';
+import { CurrentWeekSession } from './_components/current-week-session';
 import { SessionBanner } from './_components/session-banner';
 import { SessionCurrentWeekBanner } from './_components/session-current-week-banner';
-import { SessionList } from './_components/session-list';
 
 const UserPage = () => {
 	return (
 		<AppLayout className="bg-background-normal">
 			<NavigationBar>
-				<h3 className="font-normal ">Dpmcore(Logo)</h3>
+				<div className="py-2 px-4 flex items-center justify-between bg-white ">
+					<h3 className="font-normal ">Dpmcore(Logo)</h3>
 
-				<Link href="/my-page">
-					<UserAvatar />
-				</Link>
+					<Link href="/my-page">
+						<UserAvatar />
+					</Link>
+				</div>
+				<SessionBanner />
 			</NavigationBar>
-
-			<SessionBanner />
 
 			<SessionCurrentWeekBanner />
 
@@ -34,7 +35,7 @@ const UserPage = () => {
 					<IconCard icon={IconSession} title="세션" href="/session" />
 					<IconCard icon={IconSettlement} title="정산" href="/settle" />
 				</ul>
-				<SessionList />
+				<CurrentWeekSession />
 			</motion.div>
 		</AppLayout>
 	);
@@ -48,7 +49,7 @@ interface IconCardProps {
 
 function IconCard({ icon, title, href }: IconCardProps) {
 	return (
-		<li className="flex-1">
+		<li>
 			<Link
 				href={href}
 				className="flex flex-col items-center text-center gap-y-2 hover:scale-105 transition-transform"
