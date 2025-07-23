@@ -41,3 +41,28 @@ export interface AttendanceCheckReponse {
 	attendanceStatus: AttendanceStatus;
 	attendedAt: string;
 }
+
+// 세션별 출석 조회 타입
+export interface AttendanceBySessionReponse {
+	members: {
+		id: number;
+		name: string;
+		teamNumber: number;
+		part: Part;
+		attendanceStatus: AttendanceStatus;
+	}[];
+	hasNextPage: boolean;
+	nextCursorId: number | null;
+}
+
+export interface AttendanceByMemberReponse {
+	members: {
+		id: number;
+		name: string;
+		teamNumber: number;
+		part: Part;
+		attendanceStatus: MemberAttendanceStatus;
+	}[];
+	hasNextPage: boolean;
+	nextCursorId: number | null;
+}

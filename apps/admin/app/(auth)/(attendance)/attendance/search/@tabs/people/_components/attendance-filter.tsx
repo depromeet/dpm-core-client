@@ -1,9 +1,10 @@
 'use client';
 
-import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
+import type { MemberAttendanceStatus } from '@dpm-core/api';
 import {
 	Button,
 	Checkbox,
+	cn,
 	Drawer,
 	DrawerClose,
 	DrawerContent,
@@ -12,51 +13,63 @@ import {
 	DrawerTitle,
 	DrawerTrigger,
 	FilterChip,
-	cn,
 } from '@dpm-core/shared';
 import { Label } from '@radix-ui/react-label';
 import { ChevronDownIcon, RotateCw } from 'lucide-react';
 import { useMemo, useRef } from 'react';
-import { SearchInput } from './search-input';
+import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
+import { getAttendanceMemberStatus } from '@/lib/attendance/status';
 
-/* 
-  서버에 따라서 변경될 예정
-  검색 - name 
-  출석상태별 - attendance_statuses
-  팀별 - teams
-  수료상태별 - completion_statuses
-  주차별 - week
-  다음페이지 정보 - cursor_id
-*/
+const ATTENDANCE_FILTER = [
+	{ label: '수료 불가', value: 'IMPOSSIBLE' },
+	{ label: '수료 위험', value: 'AT_RISK' },
+	{ label: '수료 가능', value: 'NORMAL' },
+];
 
-const ATTENDANCE_FILTER = ['출석', '지각', '인정', '결석', '미출석'];
 const TEAM_FILTER = ['1', '2', '3', '4', '5', '6'];
 
 export const AttendanceFilter = () => {
 	const customSearchParams = useCustomSearchParams();
 
 	const filterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
+	const teamsFilterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
 	const handleSelectFilter = () => {
-		const checkedIds = filterChipRefs.current
+		const filterChipIds = filterChipRefs.current
 			.filter((chip) => chip?.ariaChecked === 'true')
 			.map((chip) => chip?.id);
 
-		customSearchParams.update({ attendance_statuses: checkedIds.toString() }, 'REPLACE');
+		const teamFilterChipIds = teamsFilterChipRefs.current
+			.filter((chip) => chip?.ariaChecked === 'true')
+			.map((chip) => chip?.id);
+
+		customSearchParams.update(
+			{ statuses: filterChipIds.toString(), teams: teamFilterChipIds.toString() },
+			'REPLACE',
+		);
 	};
 
 	const selectedAttendanceStatuses =
-		customSearchParams.get('attendance_statuses')?.split(',').filter(Boolean) ?? [];
+		customSearchParams.get('statuses')?.split(',').filter(Boolean) ?? [];
 
 	const attendanceFilterLabel = useMemo(() => {
-		if (selectedAttendanceStatuses.length === 0) return '출석상태별';
-		if (selectedAttendanceStatuses.length === 1) return selectedAttendanceStatuses[0];
-		return `${selectedAttendanceStatuses[0]} 외 ${selectedAttendanceStatuses.length - 1}개`;
+		if (selectedAttendanceStatuses.length === 0) return '수료 상태별';
+		if (selectedAttendanceStatuses.length === 1)
+			return getAttendanceMemberStatus(selectedAttendanceStatuses[0] as MemberAttendanceStatus);
+		return `${getAttendanceMemberStatus(selectedAttendanceStatuses[0] as MemberAttendanceStatus)} 외 ${selectedAttendanceStatuses.length - 1}`;
 	}, [selectedAttendanceStatuses]);
+
+	const selectedTeams = customSearchParams.get('teams')?.split(',').filter(Boolean) ?? [];
+
+	const teamsFilterLabel = useMemo(() => {
+		if (selectedTeams.length === 0) return '팀별';
+
+		if (selectedTeams.length === 1) return `${selectedTeams[0]}팀`;
+		return `${selectedTeams[0]}팀 외 ${selectedTeams.length - 1}`;
+	}, [selectedTeams]);
 
 	return (
 		<>
-			<SearchInput id="search-input" />
 			{/* Select Bottom Sheet */}
 			<div className="flex justify-between items-center">
 				<Drawer>
@@ -66,7 +79,7 @@ export const AttendanceFilter = () => {
 								size="xs"
 								className={cn(
 									'bg-background-normal rounded-lg text-label-assistive border border-line-subtle h-7 gap-1 text-body2 font-medium hover:bg-inherit',
-									attendanceFilterLabel !== '출석상태별' &&
+									attendanceFilterLabel !== '수료 상태별' &&
 										'border-primary-normal text-primary-normal',
 								)}
 							>
@@ -77,9 +90,12 @@ export const AttendanceFilter = () => {
 						<DrawerTrigger asChild>
 							<Button
 								size="xs"
-								className="bg-background-normal rounded-lg text-label-assistive border border-line-subtle h-7 gap-1 text-body2 font-medium hover:bg-inherit"
+								className={cn(
+									'bg-background-normal rounded-lg text-label-assistive border border-line-subtle h-7 gap-1 text-body2 font-medium hover:bg-inherit',
+									teamsFilterLabel !== '팀별' && 'border-primary-normal text-primary-normal',
+								)}
 							>
-								팀별
+								{teamsFilterLabel}
 								<ChevronDownIcon className="size-5 text-icon-noraml" />
 							</Button>
 						</DrawerTrigger>
@@ -89,24 +105,23 @@ export const AttendanceFilter = () => {
 							<DrawerTitle>필터</DrawerTitle>
 						</DrawerHeader>
 						<div className="px-6 mt-8">
-							<p className="text-label-normal text-body1 font-semibold mb-2">출석 상태별</p>
+							<p className="text-label-normal text-body1 font-semibold mb-2">수료 상태별</p>
 							<div className="flex gap-2 flex-wrap">
 								{ATTENDANCE_FILTER.map((chip, index) => {
 									const selected = customSearchParams
-										.get('attendance_statuses')
+										.get('statuses')
 										?.split(',')
-										.includes(chip);
-
+										.includes(chip.value);
 									return (
 										<FilterChip
-											key={chip}
-											id={chip}
+											key={chip.value}
+											id={chip.value}
 											defaultChecked={selected}
 											ref={(el) => {
 												filterChipRefs.current[index] = el;
 											}}
 										>
-											{chip}
+											{chip.label}
 										</FilterChip>
 									);
 								})}
@@ -115,11 +130,21 @@ export const AttendanceFilter = () => {
 						<div className="px-6 mt-7.5 mb-40">
 							<p className="text-label-normal text-body1 font-semibold mb-2">팀별</p>
 							<div className="flex gap-2 flex-wrap">
-								{TEAM_FILTER.map((chip) => (
-									<FilterChip key={chip} id={chip}>
-										{chip}팀
-									</FilterChip>
-								))}
+								{TEAM_FILTER.map((chip, index) => {
+									const selected = customSearchParams.get('teams')?.split(',').includes(chip);
+									return (
+										<FilterChip
+											key={chip}
+											id={chip}
+											defaultChecked={selected}
+											ref={(el) => {
+												teamsFilterChipRefs.current[index] = el;
+											}}
+										>
+											{chip}팀
+										</FilterChip>
+									);
+								})}
 							</div>
 						</div>
 						<DrawerFooter className="flex flex-row gap-2 px-4 py-3">
@@ -131,8 +156,8 @@ export const AttendanceFilter = () => {
 									onClick={() =>
 										customSearchParams.update(
 											{
-												attendance_statuses: '',
-												completion_statuses: '',
+												statuses: '',
+												teams: '',
 											},
 											'REPLACE',
 										)
@@ -160,7 +185,7 @@ export const AttendanceFilter = () => {
 						onCheckedChange={(checked) =>
 							customSearchParams.update({ myteam: checked ? 'true' : '' }, 'REPLACE')
 						}
-						className="size-4 border-line-noraml rounded-sm text-gray-0 data-[state=checked]:bg-primary-normal"
+						className="size-4 border-line-normal rounded-sm text-gray-0 data-[state=checked]:bg-primary-normal"
 					/>
 					<Label className="text-label-assistive text-body2 font-medium">내 팀만 보기</Label>
 				</div>

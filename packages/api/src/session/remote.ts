@@ -1,5 +1,5 @@
 import { http } from '../http';
-import type { CurrentWeekSession, Session, SessionDetail } from './types';
+import type { CurrentWeekSession, Session, SessionDetail, SessionWeeksReponse } from './types';
 
 type SessionListResponse = {
 	sessions: Session[];
@@ -63,6 +63,11 @@ export const session = {
 		const res = await http.get<Pick<SessionDetail, 'attendanceStartTime'>>(
 			`v1/sessions/${sessionId}/attendance-time`,
 		);
+		return res;
+	},
+
+	getSessionWeeks: async () => {
+		const res = await http.get<SessionWeeksReponse>(`v1/sessions/weeks`);
 		return res;
 	},
 };

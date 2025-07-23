@@ -13,7 +13,7 @@ export const FilterChip = ({
 	return (
 		<CheckboxPrimitive.Root
 			className={cn(
-				'text-body2 font-medium border rounded-[170px] text-label-assistive border-line-noraml px-3 py-1 data-[state=checked]:border-primary-normal data-[state=checked]:text-primary-normal data-[state=checked]:font-semibold',
+				'text-body2 font-medium border rounded-[170px] text-label-assistive border-line-normal px-3 py-1 data-[state=checked]:border-primary-normal data-[state=checked]:text-primary-normal data-[state=checked]:font-semibold',
 				className,
 			)}
 			{...props}

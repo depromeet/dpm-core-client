@@ -1,0 +1,73 @@
+import { useInfiniteQuery } from '@tanstack/react-query';
+import Link from 'next/link';
+import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
+import { EmptyView } from '@/components/attendance/EmptyView';
+import { Profile } from '@/components/attendance/profile';
+import { LoadingBox } from '@/components/loading-box';
+import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
+import { useIntersect } from '@/hooks/useIntersect';
+import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
+
+const AttendanceList = () => {
+	const customSearchParams = useCustomSearchParams();
+
+	const searchParams = customSearchParams.getAll();
+	const attendanceSearchParams = {
+		week: Number(searchParams.week),
+		statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
+		teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
+		name: searchParams.name,
+	};
+
+	const { data, fetchNextPage, hasNextPage, fetchStatus, isLoading } = useInfiniteQuery(
+		getAttendanceBySessionOptions(attendanceSearchParams),
+	);
+
+	const { targetRef } = useIntersect({
+		onIntersect: (entry, observer) => {
+			if (!hasNextPage) {
+				observer.unobserve(entry.target);
+				return;
+			}
+
+			if (entry.isIntersecting && hasNextPage && fetchStatus !== 'fetching') {
+				fetchNextPage();
+			}
+		},
+	});
+
+	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];
+
+	if (isLoading) {
+		return <LoadingBox />;
+	}
+
+	if (flatData.length === 0) {
+		return <EmptyView message="조건에 맞는 디퍼를 찾을 수 없어요" />;
+	}
+
+	return (
+		<section className="px-4 mt-2 flex-col flex-1">
+			{flatData.map((member) => {
+				return (
+					<Link
+						href={`/attendance/${member.id}/${searchParams.week}`}
+						className="flex justify-between py-3"
+						key={member.id}
+					>
+						<Profile
+							size={40}
+							name={member.name}
+							teamNumber={member.teamNumber}
+							part={member.part}
+						/>
+						<AttendanceStatusLabel status={member.attendanceStatus} />
+					</Link>
+				);
+			})}
+			<div ref={targetRef} />
+		</section>
+	);
+};
+
+export default AttendanceList;

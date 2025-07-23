@@ -20,3 +20,11 @@ export const getSessionDetailQuery = (sessionId: number) =>
 			return session.getSessionById(sessionId);
 		},
 	});
+
+export const getSessionWeeks = () =>
+	queryOptions({
+		queryKey: ['sessions, weeks'],
+		queryFn: async () => {
+			return session.getSessionWeeks();
+		},
+	});

@@ -13,7 +13,7 @@ export const AttendanceTabs = () => {
 	const tab = useSelectedLayoutSegment();
 
 	if (!tab || !CONST_TABS.some(({ value }) => value === tab)) {
-		redirect('/attendance/session');
+		redirect('/attendance/search/session?week=2');
 	}
 
 	return (
@@ -22,7 +22,10 @@ export const AttendanceTabs = () => {
 				{CONST_TABS.map(({ value, label }) => {
 					return (
 						<TabsTrigger key={value} value={value} asChild>
-							<Link href={`/attendance/${value}`} replace>
+							<Link
+								href={`/attendance/search/${value === 'session' ? 'session?week=2' : value}`}
+								replace
+							>
 								{label}
 							</Link>
 						</TabsTrigger>
