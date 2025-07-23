@@ -21,6 +21,8 @@ export * from './components/ui/popover';
 export * from './components/ui/sonner';
 export * from './components/ui/tabs';
 export * from './components/ui/toast';
+export * from './components/ui/toggle';
+export * from './components/ui/toggle-group';
 
 // Layout
 export * from './layout/app-layout';
