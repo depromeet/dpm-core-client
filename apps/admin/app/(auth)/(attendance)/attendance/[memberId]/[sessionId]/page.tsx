@@ -1,5 +1,15 @@
-const page = () => {
-	return <div>출석 상세 페이지</div>;
+import { AttendanceSessionDetailContainer } from './_components/attendance-session-detail-container';
+
+interface AttendanceSessionDetailPageProps {
+	params: Promise<{ memberId: string; sessionId: string }>;
+}
+
+const AttendanceSessionDetailPage = async ({ params }: AttendanceSessionDetailPageProps) => {
+	const { memberId, sessionId } = await params;
+
+	return (
+		<AttendanceSessionDetailContainer memberId={Number(memberId)} sessionId={Number(sessionId)} />
+	);
 };
 
-export default page;
+export default AttendanceSessionDetailPage;
