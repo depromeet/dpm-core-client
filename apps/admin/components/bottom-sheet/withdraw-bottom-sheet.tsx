@@ -9,7 +9,7 @@ import {
 	DrawerTrigger,
 } from '@dpm-core/shared';
 import { useMutation } from '@tanstack/react-query';
-import { useTransitionRouter } from 'next-view-transitions';
+import { useRouter } from 'next/navigation';
 import { type PropsWithChildren, useState } from 'react';
 import { useAppShell } from '@/providers/app-shell-provider';
 import { withdrawMutationOptions } from '@/remotes/mutations/member';
@@ -24,7 +24,7 @@ const WithdrawBottomSheet = ({
 	disabled,
 }: PropsWithChildren<WithdrawBottomSheetProps>) => {
 	const [isOpen, setIsOpen] = useState(false);
-	const router = useTransitionRouter();
+	const router = useRouter();
 	const { ref } = useAppShell();
 
 	const handleClose = () => {

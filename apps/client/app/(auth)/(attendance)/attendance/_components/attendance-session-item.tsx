@@ -1,6 +1,6 @@
 import type { AttendanceStatus } from '@dpm-core/api';
 import { Calender, Clock, formatDotFullDate, formatTimeOnly } from '@dpm-core/shared';
-import { Link } from 'next-view-transitions';
+import Link from 'next/link';
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
 
 interface SessionItemProps {

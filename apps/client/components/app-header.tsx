@@ -1,5 +1,5 @@
 import { ChevronLeft, cn } from '@dpm-core/shared';
-import { Link } from 'next-view-transitions';
+import Link from 'next/link';
 
 interface AppHeaderProps {
 	title: string;

@@ -1,5 +1,5 @@
 import { AppLayout, ChevronLeft } from '@dpm-core/shared';
-import { Link } from 'next-view-transitions';
+import Link from 'next/link';
 import { NavigationBar } from '@/components/navigation-bar';
 import { AttendanceResult } from './_components/attendance-result-container';
 import { FloatingButtonContainer } from './_components/floating-button-container';

@@ -1,7 +1,8 @@
 'use client';
 
 import { ChevronLeft, cn } from '@dpm-core/shared';
-import { Link, useTransitionRouter } from 'next-view-transitions';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface AppHeaderProps {
 	title: string;
@@ -10,7 +11,7 @@ interface AppHeaderProps {
 }
 
 const AppHeader = ({ title, backHref, className }: AppHeaderProps) => {
-	const router = useTransitionRouter();
+	const router = useRouter();
 	return (
 		<div className={cn('h-12 flex items-center justify-center relative px-4 py-3 mb-5', className)}>
 			<Link

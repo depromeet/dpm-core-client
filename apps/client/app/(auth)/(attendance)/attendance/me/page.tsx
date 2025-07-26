@@ -8,7 +8,7 @@ import {
 	DrawerTitle,
 	DrawerTrigger,
 } from '@dpm-core/shared';
-import { Link } from 'next-view-transitions';
+import Link from 'next/link';
 import { NavigationBar } from '@/components/navigation-bar';
 import { AttendanceMe } from '../_components/attendance-me';
 
