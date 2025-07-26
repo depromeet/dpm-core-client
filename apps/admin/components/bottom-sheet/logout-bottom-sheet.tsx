@@ -9,7 +9,7 @@ import {
 	DrawerTrigger,
 } from '@dpm-core/shared';
 import { useMutation } from '@tanstack/react-query';
-import { useTransitionRouter } from 'next-view-transitions';
+import { useRouter } from 'next/navigation';
 import { type PropsWithChildren, useState } from 'react';
 import { useAppShell } from '@/providers/app-shell-provider';
 import { logoutMutationOptions } from '@/remotes/mutations/auth';
@@ -21,7 +21,7 @@ interface LogoutBottomSheetProps {
 
 const LogoutBottomSheet = ({ children, disabled }: PropsWithChildren<LogoutBottomSheetProps>) => {
 	const [isOpen, setIsOpen] = useState(false);
-	const router = useTransitionRouter();
+	const router = useRouter();
 	const { ref } = useAppShell();
 
 	const handleClose = () => {

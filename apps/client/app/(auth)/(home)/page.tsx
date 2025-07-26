@@ -1,7 +1,7 @@
 import { AppLayout, fadeInOutVariatns, UserAvatar } from '@dpm-core/shared';
 import * as motion from 'motion/react-client';
 import Image, { type StaticImageData } from 'next/image';
-import { Link } from 'next-view-transitions';
+import Link from 'next/link';
 import IconAttendance from '@/assets/icons/icon_attendance.png';
 import IconSession from '@/assets/icons/icon_session.png';
 import IconSettlement from '@/assets/icons/icon_settlement.png';

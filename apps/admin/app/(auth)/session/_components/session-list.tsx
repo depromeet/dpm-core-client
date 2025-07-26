@@ -4,7 +4,7 @@ import type { Session } from '@dpm-core/api';
 import { Calender, ChevronRight, Clock } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Link } from 'next-view-transitions';
+import Link from 'next/link';
 import { Suspense } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { ErrorBox } from '@/components/error-box';

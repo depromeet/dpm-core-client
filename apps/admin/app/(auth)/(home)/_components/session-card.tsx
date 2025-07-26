@@ -1,6 +1,4 @@
-'use client';
-
-import { Link } from 'next-view-transitions';
+import Link from 'next/link';
 
 interface SessionCardProps {
 	subtitle: string;
