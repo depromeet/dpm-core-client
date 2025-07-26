@@ -13,17 +13,14 @@ interface ProfileProps extends React.ComponentProps<'div'> {
 }
 
 export const Profile = (props: ProfileProps) => {
-	const { part, name, teamNumber, size = 40 } = props;
+	const { part: partProp, name, teamNumber, size = 40 } = props;
+
+	const part = isExistPart(partProp) ? partProp : 'WEB';
 
 	return (
 		<div className="flex gap-4 items-center">
 			<div className={cn('bg-background-strong rounded-full')}>
-				<Image
-					width={size}
-					height={size}
-					src={isExistPart(part) ? cohort[part] : cohort.WEB}
-					alt={`${part}_프로필_이미지`}
-				/>
+				<Image width={size} height={size} src={cohort[part].icon} alt={`${part}_프로필_이미지`} />
 			</div>
 			<div className="flex flex-col gap-0.5">
 				<span className="text-body1 font-semibold">{name}</span>
