@@ -1,7 +1,7 @@
 'use client';
 
 import React, { type RefObject, useRef } from 'react';
-import { createContext } from '@/providers/create-context';
+import { createContext } from './create-context';
 
 type AppShellContextType = {
 	ref: RefObject<HTMLElement>;
@@ -17,7 +17,13 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
 
 	return (
 		<AppShellProvider ref={ref as RefObject<HTMLElement>}>
-			<main className="max-w-lg mx-auto min-h-dvh relative" ref={ref}>
+			<main
+				className="max-w-lg mx-auto min-h-dvh relative bg-white"
+				ref={ref}
+				style={{
+					boxShadow: '0px -4px 21.1px 0px #0000001F',
+				}}
+			>
 				{children}
 			</main>
 		</AppShellProvider>

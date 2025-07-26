@@ -7,11 +7,11 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 	DrawerTrigger,
+	useAppShell,
 } from '@dpm-core/shared';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { type PropsWithChildren, useState } from 'react';
-import { useAppShell } from '@/providers/app-shell-provider';
 import { logoutMutationOptions } from '@/remotes/mutations/auth';
 import { Pressable } from '../motion';
 

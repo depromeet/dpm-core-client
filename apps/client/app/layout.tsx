@@ -1,11 +1,10 @@
-import { cn, Toaster } from '@dpm-core/shared';
+import { AppShell, cn, Toaster } from '@dpm-core/shared';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { Metadata, Viewport } from 'next';
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
 
 import './globals.css';
-import { AppShell } from '@/providers/app-shell-provider';
 
 export const metadata: Metadata = {
 	title: 'Dpmcore',
