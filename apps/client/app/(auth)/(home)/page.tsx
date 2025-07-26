@@ -1,4 +1,4 @@
-import { AppLayout, fadeInOutVariatns, UserAvatar } from '@dpm-core/shared';
+import { AppLayout, fadeInOutVariatns, TextLogo, UserAvatar } from '@dpm-core/shared';
 import * as motion from 'motion/react-client';
 import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
@@ -13,7 +13,7 @@ const UserPage = () => {
 	return (
 		<AppLayout className="bg-background-normal">
 			<NavigationBar>
-				<h3 className="font-normal ">Dpmcore(Logo)</h3>
+				<TextLogo className="text-gray-400" />
 
 				<Link href="/my-page">
 					<UserAvatar />

@@ -13,6 +13,7 @@ import {
 	InputOTP,
 	InputOTPGroup,
 	InputOTPSlot,
+	useAppShell,
 } from '@dpm-core/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -22,7 +23,6 @@ import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { CtaButton } from '@/components/cta-button';
 import { calcSessionAttendanceTimeByHHmmToISOString } from '@/lib/session/calc';
-import { useAppShell } from '@/providers/app-shell-provider';
 import { editSessionAttendanceTimeMutationOptions } from '@/remotes/mutations/session';
 import { formatAttendanceStartTimeToCode } from '../../_helpers';
 
