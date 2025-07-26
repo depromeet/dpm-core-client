@@ -25,7 +25,6 @@ export * from './components/ui/tabs';
 export * from './components/ui/toast';
 export * from './components/ui/toggle';
 export * from './components/ui/toggle-group';
-
 // Layout
 export * from './layout/app-layout';
 export * from './utils/cn';
@@ -37,5 +36,9 @@ export * from './utils/delay';
 export * from './utils/delay';
 export * from './utils/logger';
 export * from './utils/logger';
+
+// Validators
+export * from './validator';
+
 // Variants
 export * from './variants';

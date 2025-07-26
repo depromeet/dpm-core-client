@@ -32,8 +32,8 @@ const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
 				</p>
 			</SessionDetailInfoBox>
 
-			<SessionDetailInfoBox label="세션 정보">
-				<p className="text-body2 font-semibold text-label-assistive">출석 코드</p>
+			<SessionDetailInfoBox label="출석 코드">
+				<p className="text-body2 leading-none font-semibold text-label-assistive">출석 코드</p>
 				<div className="flex items-center justify-between">
 					<p className="text-body2 font-medium text-label-subtle">{sessionDetail.attendanceCode}</p>
 					<CopyButton value={sessionDetail.attendanceCode} />
@@ -89,12 +89,12 @@ const SessionDetailInfoBox = ({
 }: PropsWithChildren<SessionDetailInfoBoxProps>) => {
 	return (
 		<div className="flex flex-col">
-			<div className="flex justify-between">
-				<span className="text-body1 text-label-subtle font-semibold mb-2">{label}</span>
+			<div className="flex justify-between items-center mb-2">
+				<span className="text-body1 text-label-subtle font-semibold">{label}</span>
 				{actions}
 			</div>
 
-			<div className="rounded-lg bg-background-subtle px-5 py-3 grid grid-cols-[70px_1fr] gap-x-4 gap-y-3">
+			<div className="rounded-lg bg-background-subtle px-5 py-3 grid grid-cols-[70px_1fr] gap-x-4 gap-y-3 items-center">
 				{children}
 			</div>
 		</div>
