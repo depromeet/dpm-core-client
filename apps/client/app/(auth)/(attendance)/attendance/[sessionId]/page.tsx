@@ -1,6 +1,5 @@
 import { ChevronLeft } from '@dpm-core/shared';
 import Link from 'next/link';
-import { Fragment } from 'react';
 import { NavigationBar } from '@/components/navigation-bar';
 import { AttendanceForm } from '../_components/attendance-form';
 
@@ -12,7 +11,7 @@ export default async function page({ params }: Props) {
 	const { sessionId } = await params;
 
 	return (
-		<Fragment>
+		<div className="flex flex-col h-dvh">
 			<NavigationBar>
 				<Link href="/">
 					<ChevronLeft />
@@ -20,6 +19,6 @@ export default async function page({ params }: Props) {
 				<h1 className="absolute left-1/2 -translate-x-1/2 font-semibold text-body1">출석</h1>
 			</NavigationBar>
 			<AttendanceForm sessionId={Number(sessionId)} />
-		</Fragment>
+		</div>
 	);
 }

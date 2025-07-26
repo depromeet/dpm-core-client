@@ -1,6 +1,5 @@
-import { type AttendanceCheckReponse, attendance } from '@dpm-core/api';
+import { type ApiResponse, type AttendanceCheckReponse, attendance } from '@dpm-core/api';
 import { type MutationOptions, mutationOptions } from '@tanstack/react-query';
-import type { ApiResponse } from './../../../../packages/api/src/type';
 
 const MUTATE_KEY = 'ATTENDANCE';
 
