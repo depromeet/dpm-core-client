@@ -21,7 +21,7 @@ const CurrentWeekSessionContainer = () => {
 						subtitle={`${currentWeekSession.week}주차 세션`}
 						title={currentWeekSession.eventName}
 						startTimeInfo={formatISOStringToFullDateString(currentWeekSession.date)}
-						endTimeInfo={formatISOStringToFullDateString(currentWeekSession.date)}
+						place={currentWeekSession.isOnline ? '온라인' : currentWeekSession.place}
 						sessionId={currentWeekSession.sessionId.toString()}
 					/>
 				</div>
