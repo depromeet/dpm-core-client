@@ -10,19 +10,17 @@ import {
 	InputOTP,
 	InputOTPGroup,
 	InputOTPSlot,
-	pressInOutVariatns,
 	toast,
 } from '@dpm-core/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ErrorBoundary } from '@suspensive/react';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { Loader2Icon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { CtaButton } from '@/components/cta-button';
 import { LoadingBox } from '@/components/loading-box';
-import { MotionButton } from '@/components/motion';
 import { calcSessionAttendanceTime, calcSessionLateAttendanceTime } from '@/lib/calc';
 import { formatISOStringHHMM } from '@/lib/date';
 import { checkAttendanceOptions } from '@/remotes/mutations/attendance';
@@ -92,7 +90,8 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(handleSubmitCode)}
-				className="flex justify-center items-center flex-col mt-12 gap-4"
+				id="attendance-form"
+				className="flex justify-center items-center flex-col mt-12 gap-4 flex-1"
 			>
 				<FormField
 					control={form.control}
@@ -130,21 +129,15 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 						</FormItem>
 					)}
 				/>
-				<MotionButton
-					variant="secondary"
-					size="full"
-					className="fixed max-w-lg w-full bottom-0"
-					{...pressInOutVariatns}
-					disabled={
-						!form.formState.isValid || isPendingCheckAttendance || form.formState.isSubmitting
-					}
-				>
-					{(isPendingCheckAttendance || form.formState.isSubmitting) && (
-						<Loader2Icon className="animate-spin" />
-					)}
-					완료하기
-				</MotionButton>
 			</form>
+			<CtaButton
+				className="w-full rounded-none"
+				disabled={!form.formState.isValid || form.formState.isSubmitting}
+				isLoading={isPendingCheckAttendance}
+				text="완료하기"
+				type="submit"
+				form="attendance-form"
+			/>
 		</Form>
 	);
 };

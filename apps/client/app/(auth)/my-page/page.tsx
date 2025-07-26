@@ -7,7 +7,7 @@ import { MyPageDetailInfo } from './_components/my-page-detail-info';
 const MyPage = () => {
 	return (
 		<AppLayout>
-			<AppHeader title="마이페이지" backHref="/" />
+			<AppHeader title="마이페이지" />
 
 			<MyPageAvatarInfo />
 

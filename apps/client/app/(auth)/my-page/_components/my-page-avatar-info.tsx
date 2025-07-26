@@ -17,6 +17,8 @@ const MyPageAvatarInfoContainer = () => {
 		data: { data: myMemberInfo },
 	} = useSuspenseQuery(getMyMemberInfoQuery);
 
+	const part = isExistPart(myMemberInfo.part) ? myMemberInfo.part : 'WEB';
+
 	return (
 		<motion.div
 			variants={fadeInOutVariatns.variants}
@@ -25,7 +27,7 @@ const MyPageAvatarInfoContainer = () => {
 			<div className="w-[120px] h-[120px] rounded-full bg-white overflow-hidden">
 				<Image
 					// FIXME: 유효하지 않은 파트일 경우 디폴트 이미지
-					src={isExistPart(myMemberInfo.part) ? cohort[myMemberInfo.part] : cohort.WEB}
+					src={cohort[part].icon}
 					alt={myMemberInfo.part}
 					width={120}
 					height={120}
@@ -34,7 +36,7 @@ const MyPageAvatarInfoContainer = () => {
 			</div>
 			<div className="flex flex-col text-center gap-y-1">
 				<p className="text-title1 font-semibold text-label-normal">{myMemberInfo.name}</p>
-				<p className="text-xs text-label-assistive">{myMemberInfo.email}</p>
+				<p className="text-xs text-label-assistive">{cohort[part].label}</p>
 			</div>
 		</motion.div>
 	);

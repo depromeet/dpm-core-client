@@ -1,7 +1,7 @@
 import type { Attendance, AttendanceMember } from '@dpm-core/api';
 import { Badge } from '@dpm-core/shared';
 import { Profile } from '@/components/attendance/profile';
-import { getAttendanceMemberStatus } from '@/lib/attendance/status';
+import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
 
 interface AttendanceMemberInfoProps {
 	member: AttendanceMember;
@@ -16,7 +16,7 @@ export const AttendanceMemberInfo = (props: AttendanceMemberInfoProps) => {
 			<div className="flex justify-between items-center mb-4">
 				<Profile size={60} name={member.name} part={member.part} teamNumber={member.teamNumber} />
 				<Badge variant={member.attendanceStatus}>
-					{getAttendanceMemberStatus(member.attendanceStatus)}
+					{getAttendanceMemberStatusLabel(member.attendanceStatus)}
 				</Badge>
 			</div>
 			{attendance && (

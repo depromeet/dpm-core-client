@@ -8,13 +8,14 @@ export interface AttendanceSession {
 	eventName: string;
 	date: string;
 	attendanceStatus: AttendanceStatus;
+	place: string;
 }
 
 export interface AttendanceMember {
 	id: number;
 	name: string;
 	teamNumber: number;
-	part: Part;
+	part: Exclude<Part, 'ETC'>;
 	attendanceStatus: MemberAttendanceStatus;
 }
 
@@ -48,10 +49,10 @@ export interface AttendanceBySessionReponse {
 		id: number;
 		name: string;
 		teamNumber: number;
-		part: Part;
+		part: Exclude<Part, 'ETC'>;
 		attendanceStatus: AttendanceStatus;
 	}[];
-	hasNextPage: boolean;
+	hasNext: boolean;
 	nextCursorId: number | null;
 }
 
@@ -60,9 +61,9 @@ export interface AttendanceByMemberReponse {
 		id: number;
 		name: string;
 		teamNumber: number;
-		part: Part;
+		part: Exclude<Part, 'ETC'>;
 		attendanceStatus: MemberAttendanceStatus;
 	}[];
-	hasNextPage: boolean;
+	hasNext: boolean;
 	nextCursorId: number | null;
 }

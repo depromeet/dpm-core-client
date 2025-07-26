@@ -8,7 +8,7 @@ import { Profile } from '@/components/attendance/profile';
 import { LoadingBox } from '@/components/loading-box';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { useIntersect } from '@/hooks/useIntersect';
-import { getAttendanceMemberStatus } from '@/lib/attendance/status';
+import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
 import { getAttendanceByMemberOptions } from '@/remotes/queries/attendance';
 
 export const AttendanceList = () => {
@@ -64,7 +64,7 @@ export const AttendanceList = () => {
 							part={member.part}
 						/>
 						<Badge variant={member.attendanceStatus}>
-							{getAttendanceMemberStatus(member.attendanceStatus)}
+							{getAttendanceMemberStatusLabel(member.attendanceStatus)}
 						</Badge>
 					</Link>
 				);

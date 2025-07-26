@@ -1,12 +1,10 @@
-import { cn, Toaster } from '@dpm-core/shared';
+import { AppShell, cn, Toaster } from '@dpm-core/shared';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { Metadata, Viewport } from 'next';
-import { ViewTransitions } from 'next-view-transitions';
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
 
 import './globals.css';
-import { AppShell } from '@/providers/app-shell-provider';
 
 export const metadata: Metadata = {
 	title: 'Dpmcore',
@@ -28,9 +26,7 @@ export default function RootLayout({
 		<html lang="ko">
 			<body className={cn(pretendard.variable)}>
 				<QueryProvider>
-					<ViewTransitions>
-						<AppShell>{children}</AppShell>
-					</ViewTransitions>
+					<AppShell>{children}</AppShell>
 					<ReactQueryDevtools />
 					<Toaster
 						position="top-center"

@@ -1,7 +1,7 @@
-import { AppLayout, fadeInOutVariatns, UserAvatar } from '@dpm-core/shared';
+import { AppLayout, fadeInOutVariatns, TextLogo, UserAvatar } from '@dpm-core/shared';
 import * as motion from 'motion/react-client';
 import Image, { type StaticImageData } from 'next/image';
-import { Link } from 'next-view-transitions';
+import Link from 'next/link';
 import IconAttendance from '@/assets/icons/icon_attendance.png';
 import IconSession from '@/assets/icons/icon_session.png';
 import IconSettlement from '@/assets/icons/icon_settlement.png';
@@ -15,7 +15,7 @@ const UserPage = () => {
 		<AppLayout className="bg-background-normal">
 			<NavigationBar>
 				<div className="py-2 px-4 flex items-center justify-between bg-white ">
-					<h3 className="font-normal ">Dpmcore(Logo)</h3>
+					<TextLogo className="text-gray-400" />
 
 					<Link href="/my-page">
 						<UserAvatar />

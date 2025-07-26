@@ -1,7 +1,7 @@
-import { AppLayout, fadeInOutVariatns, UserAvatar } from '@dpm-core/shared';
+import { AppLayout, fadeInOutVariatns, TextLogo, UserAvatar } from '@dpm-core/shared';
 import * as motion from 'motion/react-client';
 import Image, { type StaticImageData } from 'next/image';
-import { Link } from 'next-view-transitions';
+import Link from 'next/link';
 import IconAttendance from '@/assets/icons/icon_attendance.png';
 import IconSession from '@/assets/icons/icon_session.png';
 import IconSettlement from '@/assets/icons/icon_settlement.png';
@@ -13,7 +13,7 @@ const UserPage = () => {
 	return (
 		<AppLayout className="bg-background-normal">
 			<NavigationBar>
-				<h3 className="font-normal ">Dpmcore(Logo)</h3>
+				<TextLogo className="text-gray-400" />
 
 				<Link href="/my-page">
 					<UserAvatar />
@@ -26,7 +26,7 @@ const UserPage = () => {
 				variants={fadeInOutVariatns.variants}
 				className="flex flex-col divide-y-8 divide-background-strong flex-1"
 			>
-				<ul className="gap-x-3 flex items-center mt-5 pb-10">
+				<ul className="flex justify-center items-center gap-x-[52px] mt-5 pb-10">
 					<IconCard icon={IconAttendance} title="출석" href="/attendance/me" />
 					<IconCard icon={IconSession} title="세션" href="/session" />
 					<IconCard icon={IconSettlement} title="정산" href="/settlement" />
@@ -45,7 +45,7 @@ interface IconCardProps {
 
 function IconCard({ icon, title, href }: IconCardProps) {
 	return (
-		<li className="flex-1">
+		<li>
 			<Link
 				href={href}
 				className="flex flex-col items-center text-center gap-y-2 hover:scale-105 transition-transform"

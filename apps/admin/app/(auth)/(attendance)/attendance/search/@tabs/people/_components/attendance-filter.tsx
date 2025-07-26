@@ -18,7 +18,7 @@ import { Label } from '@radix-ui/react-label';
 import { ChevronDownIcon, RotateCw } from 'lucide-react';
 import { useMemo, useRef } from 'react';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
-import { getAttendanceMemberStatus } from '@/lib/attendance/status';
+import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
 
 const ATTENDANCE_FILTER = [
 	{ label: '수료 불가', value: 'IMPOSSIBLE' },
@@ -55,8 +55,10 @@ export const AttendanceFilter = () => {
 	const attendanceFilterLabel = useMemo(() => {
 		if (selectedAttendanceStatuses.length === 0) return '수료 상태별';
 		if (selectedAttendanceStatuses.length === 1)
-			return getAttendanceMemberStatus(selectedAttendanceStatuses[0] as MemberAttendanceStatus);
-		return `${getAttendanceMemberStatus(selectedAttendanceStatuses[0] as MemberAttendanceStatus)} 외 ${selectedAttendanceStatuses.length - 1}`;
+			return getAttendanceMemberStatusLabel(
+				selectedAttendanceStatuses[0] as MemberAttendanceStatus,
+			);
+		return `${getAttendanceMemberStatusLabel(selectedAttendanceStatuses[0] as MemberAttendanceStatus)} 외 ${selectedAttendanceStatuses.length - 1}`;
 	}, [selectedAttendanceStatuses]);
 
 	const selectedTeams = customSearchParams.get('teams')?.split(',').filter(Boolean) ?? [];

@@ -31,7 +31,7 @@ const AttendanceSessionDetailContainer = ({ sessionId }: AttendanceSessionDetail
 					</div>
 					<div className="flex gap-4">
 						<p className="w-17.5 text-label-assistive">출석 시간</p>
-						<p className="text-label-subtle">
+						<p className="text-label-subtle font-medium">
 							{formatISOStringToFullDateString(attendance.attendedAt)}
 						</p>
 					</div>
@@ -42,20 +42,21 @@ const AttendanceSessionDetailContainer = ({ sessionId }: AttendanceSessionDetail
 				<div className="flex flex-col gap-3 bg-background-subtle py-3 px-5 rounded-lg font-semibold text-body2">
 					<div className="flex gap-4">
 						<p className="w-17.5 text-label-assistive">세션 주차</p>
-						<p className="text-label-subtle">{session.week}주차</p>
+						<p className="text-label-subtle font-medium">{session.week}주차</p>
 					</div>
 					<div className="flex gap-4">
 						<p className="w-17.5 text-label-assistive">세션명</p>
-						<p className="text-label-subtle">{session.eventName}</p>
+						<p className="text-label-subtle font-medium">{session.eventName}</p>
 					</div>
 					<div className="flex gap-4">
 						<p className="w-17.5 text-label-assistive">세션 날짜</p>
-						<p className="text-label-subtle">{formatISOStringToFullDateString(session.date)}</p>
+						<p className="text-label-subtle font-medium">
+							{formatISOStringToFullDateString(session.date)}
+						</p>
 					</div>
-					{/* Fix: 세션 장소 데이터 필요 */}
 					<div className="flex gap-4">
 						<p className="w-17.5 text-label-assistive">세션 장소</p>
-						<p className="text-label-subtle">-</p>
+						<p className="text-label-subtle font-medium">{session.place ?? '-'}</p>
 					</div>
 				</div>
 			</article>

@@ -12,4 +12,5 @@ export { CircleX } from './circle-x';
 export { Clock } from './clock';
 export { CopyIcon } from './copy';
 export { KakaoLogo } from './kakao-logo';
+export { TextLogo } from './text-logo';
 export { UserAvatar } from './user-avatar';
