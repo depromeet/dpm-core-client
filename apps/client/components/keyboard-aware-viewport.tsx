@@ -12,15 +12,15 @@ export const KeyboardAwareViewport = ({
 
 	useEffect(() => {
 		const handleResize = (event: Event) => {
-			if (!ref.current) return;
-			const visualViewport = event.target as VisualViewport;
-			ref.current.style.height = `${visualViewport.height}px`;
 			setTimeout(() => {
+				if (!ref.current) return;
+				const visualViewport = event.target as VisualViewport;
+				ref.current.style.height = `${visualViewport.height}px`;
 				window.scrollTo({
 					top: 0,
 					behavior: 'smooth',
 				});
-			});
+			}, 100);
 		};
 
 		visualViewport?.addEventListener('resize', handleResize);
