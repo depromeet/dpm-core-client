@@ -457,6 +457,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@dpm-core/domains@workspace:packages/domains":
+  version: 0.0.0-use.local
+  resolution: "@dpm-core/domains@workspace:packages/domains"
+  dependencies:
+    "@dpm-core/shared": "workspace:*"
+    "@types/js-cookie": "npm:^3"
+    typescript: "npm:^5"
+  languageName: unknown
+  linkType: soft
+
 "@dpm-core/shared@workspace:*, @dpm-core/shared@workspace:packages/shared":
   version: 0.0.0-use.local
   resolution: "@dpm-core/shared@workspace:packages/shared"
