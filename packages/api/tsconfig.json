@@ -1,11 +1,5 @@
 {
-	"extends": "../../tsconfig.base.json",
-	"compilerOptions": {
-		"noEmit": false,
-		"jsx": "react-jsx",
-		"declaration": true,
-		"outDir": "dist"
-	},
+	"extends": "@dpm-core/typescript-config/react-library.json",
 	"include": ["src"],
 	"exclude": ["dist"]
 }
