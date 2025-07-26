@@ -1,39 +1,11 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
-import SettleHeaderFilter from './SettleHeaderFilter';
+import { useRouter } from 'next/navigation';
 
-interface HeaderConfig {
-	title: string;
-	withFilter: boolean;
-}
-
-const settleHeaderMap: Record<string, HeaderConfig> = {
-	'/settle': {
-		title: '정산',
-		withFilter: true,
-	},
-	'/settle/create': {
-		title: '정산서 만들기',
-		withFilter: false,
-	},
-	'/settle/create/done': {
-		title: '최종 정산서',
-		withFilter: false,
-	},
-};
-
-const SettleHeader = () => {
-	const pathname = usePathname();
+const DetailHeader = () => {
 	const router = useRouter();
 
-	const config = settleHeaderMap[pathname] ?? {
-		title: '정산',
-		withToggle: true,
-	};
-
 	return (
-	
 		<header className="max-w-lg mx-auto fixed top-0 left-0 right-0 z-10 px-4 bg-white h-12">
 			{/* header content */}
 			<div className="h-12 flex items-center justify-center relative">
@@ -56,15 +28,10 @@ const SettleHeader = () => {
 						/>
 					</svg>
 				</button>
-				<h1 className="text-body1 font-semibold text-gray-900">{config.title}</h1>
+				<h1 className="text-body1 font-semibold text-gray-900">정산서</h1>
 			</div>
-
-			{/* toggle group */}
-			{config.withFilter && <SettleHeaderFilter />}
 		</header>
-		
-		
 	);
 };
 
-export default SettleHeader;
+export default DetailHeader;

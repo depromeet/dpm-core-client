@@ -17,7 +17,7 @@ export default function SettleHeaderFilter() {
 	const { filter, setFilter } = useSettleFilterStore();
 
 	return (
-		<div className="h-12 min-w- flex items-center z-10 gap-2 bg-white overflow-x-auto px-0.5">
+		<div className="h-12 max-w-lg mx-auto flex items-center z-10 gap-2 bg-white -px-4 overflow-x-auto">
 			<ToggleGroup.Root
 				type="single"
 				value={filter}

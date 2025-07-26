@@ -1,8 +1,6 @@
-import React from 'react';
-
 const DetailBottomSheet = () => {
 	return (
-		<div className="max-w-lg mx-auto fixed bottom-0 z-9999 relative bg-white">
+		<div className="max-w-lg mx-auto fixed bottom-0 z-9999 w-full bg-white">
 			<div className="px-5 pt-[30px] pb-5 rounded-t-[20px] flex flex-col gap-8">
 				<div className="flex flex-col gap-3 ">
 					<h2 className="text-title2 text-gray-800 font-semibold">제출 전 확인</h2>

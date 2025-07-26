@@ -4,6 +4,7 @@ const SettleListItem1 = () => {
 			className="p-4 flex items-center cursor-pointer gap-6 border-b border-b-line-subtle transition-transform duration-300 ease-in-out 
                hover:scale-[1.03]"
 		>
+			
 			{/* 왼쪽 */}
 			<div className="w-16 flex flex-col items-center justify-center gap-[6px]">
 				<div className="size-8 bg-gray-200 rounded-full flex items-center justify-center">
