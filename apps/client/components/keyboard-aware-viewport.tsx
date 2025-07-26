@@ -20,7 +20,7 @@ export const KeyboardAwareViewport = ({
 					top: 0,
 					behavior: 'smooth',
 				});
-			}, 100);
+			});
 		};
 
 		visualViewport?.addEventListener('resize', handleResize);
