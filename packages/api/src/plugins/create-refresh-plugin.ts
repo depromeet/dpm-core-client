@@ -23,7 +23,7 @@ export function createRefreshPlugin(options?: RefreshPluginOptions): AfterRespon
 		});
 
 		// FIXME: 미인증 반환 코드 확인 후 변경
-		if (response.ok || response.status < 400) {
+		if (response.status === 404 || response.ok || response.status < 400) {
 			return response;
 		}
 
