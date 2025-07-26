@@ -15,6 +15,12 @@ export const KeyboardAwareViewport = ({
 			if (!ref.current) return;
 			const visualViewport = event.target as VisualViewport;
 			ref.current.style.height = `${visualViewport.height}px`;
+			setTimeout(() => {
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth',
+				});
+			}, 100);
 		};
 
 		visualViewport?.addEventListener('resize', handleResize);
