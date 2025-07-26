@@ -1,10 +1,8 @@
 'use client';
 
 import type { AttendanceReponse } from '@dpm-core/api';
-import { Avatar, Badge } from '@dpm-core/shared';
-import Image from 'next/image';
-import { cohort } from '@/constants/cohort';
-import { isExistPart } from '@/lib/utils';
+import { Badge } from '@dpm-core/shared';
+import { Profile } from '@/components/attendance/profile';
 
 interface AttendanceMeInfoProps {
 	member: AttendanceReponse['member'];
@@ -23,22 +21,7 @@ export const AttendanceMeInfo = (props: AttendanceMeInfoProps) => {
 	return (
 		<section className="px-4 mt-5 mb-4">
 			<div className="flex justify-between items-center mb-4">
-				<div className="flex gap-3 items-center">
-					<Avatar className="bg-background-strong size-15 p-1.5">
-						<Image
-							src={isExistPart(member.part) ? cohort[member.part] : cohort.WEB}
-							fill
-							alt="profile"
-						/>
-					</Avatar>
-					<div className="flex flex-col gap-0.5">
-						<span className="text-body1 font-semibold">{member.name}</span>
-						<p className="flex gap-3 text-label-assistive text-caption1 font-medium">
-							<span>{member.teamNumber}팀</span>
-							<span>{member.part}</span>
-						</p>
-					</div>
-				</div>
+				<Profile size={60} name={member.name} part={member.part} teamNumber={member.teamNumber} />
 				<Badge variant={member.attendanceStatus}>
 					{attendanceStatusLabelMap[member.attendanceStatus]}
 				</Badge>

@@ -41,7 +41,7 @@ const _AttendanceSessionDetailContainer = (props: AttendanceSessionDetailContain
 						</div>
 						<div className="flex gap-4">
 							<p className="w-17.5 text-label-assistive">출석 시간</p>
-							<p className="text-label-subtle">
+							<p className="text-label-subtle font-medium">
 								{formatISOStringToFullDateString(data?.attendance.attendedAt)}
 							</p>
 						</div>
@@ -52,15 +52,15 @@ const _AttendanceSessionDetailContainer = (props: AttendanceSessionDetailContain
 					<div className="flex flex-col gap-3 bg-background-subtle py-3 px-5 rounded-lg font-semibold text-body2">
 						<div className="flex gap-4">
 							<p className="w-17.5 text-label-assistive">세션 주차</p>
-							<p className="text-label-subtle">{data?.session.week}주차</p>
+							<p className="text-label-subtle font-medium">{data?.session.week}주차</p>
 						</div>
 						<div className="flex gap-4">
 							<p className="w-17.5 text-label-assistive">세션명</p>
-							<p className="text-label-subtle">{data?.session.eventName}</p>
+							<p className="text-label-subtle font-medium">{data?.session.eventName}</p>
 						</div>
 						<div className="flex gap-4">
 							<p className="w-17.5 text-label-assistive">세션 날짜</p>
-							<p className="text-label-subtle">
+							<p className="text-label-subtle font-medium">
 								{formatISOStringToFullDateString(data?.session.date)}
 							</p>
 						</div>

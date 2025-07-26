@@ -14,10 +14,10 @@ export const ATTENDANCE_MEMBER_LABEL_MAP: Record<MemberAttendanceStatus, string>
 	IMPOSSIBLE: '수료 불가',
 };
 
-export const getAttendanceStatus = (status: AttendanceStatus): string => {
+export const getAttendanceStatusLabelLabel = (status: AttendanceStatus): string => {
 	return ATTENDANCE_LABEL_MAP[status] ?? '-';
 };
 
-export const getAttendanceMemberStatus = (status: MemberAttendanceStatus): string => {
+export const getAttendanceMemberStatusLabelLabel = (status: MemberAttendanceStatus): string => {
 	return ATTENDANCE_MEMBER_LABEL_MAP[status] ?? '-';
 };

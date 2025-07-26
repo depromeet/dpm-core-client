@@ -11,7 +11,7 @@ export default async function page({ params }: AttendanceMeBySessionIdProps) {
 
 	return (
 		<Fragment>
-			<AppHeader title="내 출석 상세" backHref="/attendance/me" />
+			<AppHeader title="내 출석 상세" />
 			<AttendanceSessionDetail sessionId={Number(sessionId)} />
 		</Fragment>
 	);

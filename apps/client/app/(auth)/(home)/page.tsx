@@ -26,7 +26,7 @@ const UserPage = () => {
 				variants={fadeInOutVariatns.variants}
 				className="flex flex-col divide-y-8 divide-background-strong flex-1"
 			>
-				<ul className="gap-x-3 flex items-center mt-5 pb-10">
+				<ul className="flex justify-center items-center gap-x-[52px] mt-5 pb-10">
 					<IconCard icon={IconAttendance} title="출석" href="/attendance/me" />
 					<IconCard icon={IconSession} title="세션" href="/session" />
 					<IconCard icon={IconSettlement} title="정산" href="/settlement" />
@@ -45,7 +45,7 @@ interface IconCardProps {
 
 function IconCard({ icon, title, href }: IconCardProps) {
 	return (
-		<li className="flex-1">
+		<li>
 			<Link
 				href={href}
 				className="flex flex-col items-center text-center gap-y-2 hover:scale-105 transition-transform"

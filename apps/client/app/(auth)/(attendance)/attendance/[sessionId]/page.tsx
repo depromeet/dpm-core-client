@@ -16,7 +16,6 @@ export default async function page({ params }: Props) {
 				<Link href="/">
 					<ChevronLeft />
 				</Link>
-				<h1 className="absolute left-1/2 -translate-x-1/2 font-semibold text-body1">출석</h1>
 			</NavigationBar>
 			<AttendanceForm sessionId={Number(sessionId)} />
 		</div>
