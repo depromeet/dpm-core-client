@@ -9,7 +9,10 @@ dayjs.locale('ko');
  * @example
  * formatISOStringToFullDateString('2025-07-09T10:00:00.000Z') // 2025년 07월 09일 (화) 10:00
  */
-export const formatISOStringToFullDateString = (isoString: string) => {
+export const formatISOStringToFullDateString = (isoString: string | null) => {
+	if (!isoString) {
+		return '-';
+	}
 	return dayjs(isoString).format('YYYY년 MM월 DD일 (ddd) HH:mm');
 };
 

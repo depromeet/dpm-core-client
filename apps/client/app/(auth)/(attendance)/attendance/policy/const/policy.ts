@@ -17,7 +17,7 @@ export const ATTENDANCE_POLICY = [
 		blocks: [
 			{
 				title: '지각',
-				items: ['세션 시작 30분 후'],
+				items: ['세션 시작 30분 후 부터'],
 			},
 			{
 				title: '조퇴',
