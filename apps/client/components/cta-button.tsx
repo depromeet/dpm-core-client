@@ -16,7 +16,7 @@ const CtaButton = ({ text, isLoading, ...props }: CtaButtonProps) => {
 	return (
 		<MotionButton
 			variant="secondary"
-			size="lg"
+			size="full"
 			{...props}
 			className={cn('rounded-none', props.className)}
 			onClick={(event) => {
