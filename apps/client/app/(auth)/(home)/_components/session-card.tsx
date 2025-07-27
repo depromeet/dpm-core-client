@@ -18,7 +18,7 @@ const SessionCard = ({ subtitle, title, startTimeInfo, place, id }: SessionCardP
 
 	return (
 		<div
-			className="bg-background-subtle flex flex-col rounded-lg p-5 animate-view-transition cursor-pointer hover:bg-background-strong transition-colors"
+			className="bg-background-subtle flex flex-col rounded-lg p-5 animate-view-transition"
 			style={cardStyle}
 		>
 			<small
