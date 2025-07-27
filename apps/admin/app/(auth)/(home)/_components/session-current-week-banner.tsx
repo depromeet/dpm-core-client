@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, fadeInOutVariatns } from '@dpm-core/shared';
+import { ArrowRight, Button, fadeInOutVariatns } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
@@ -8,7 +8,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import Iconttendance3D from '@/assets/icons/icon_attendance_3d.png';
-import { Pressable } from '@/components/motion';
 import { getCurrentWeekSessionQuery } from '@/remotes/queries/session';
 
 const SessionCurrentWeekBannerContainer = () => {
@@ -45,12 +44,12 @@ const SessionCurrentWeekBannerContainer = () => {
 						className="mt-2.5"
 					/>
 				</div>
-				<Pressable className="mt-5 w-full" variant="primary" size="lg" asChild>
+				<Button className="mt-5 w-full" variant="primary" size="lg" asChild>
 					<Link href={`/attendance/${currentWeekSession.sessionId}`}>
 						출석 현황 확인하기
 						<ArrowRight />
 					</Link>
-				</Pressable>
+				</Button>
 			</div>
 		</motion.div>
 	);
