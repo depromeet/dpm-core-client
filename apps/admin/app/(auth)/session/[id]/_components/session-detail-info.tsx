@@ -3,6 +3,7 @@
 import { CopyButton, toast } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import { type PropsWithChildren, Suspense } from 'react';
 import { ErrorBox } from '@/components/error-box';
 import { Pressable } from '@/components/motion';
@@ -61,13 +62,18 @@ const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
 				<p className="text-body2 font-medium text-label-subtle">
 					{formatISOStringHHMM(sessionDetail.attendanceStartTime)} -{' '}
 					{formatISOStringHHMM(
-						calcSessionAttendanceTime(sessionDetail.attendanceStartTime).toISOString(),
+						calcSessionAttendanceTime(
+							dayjs(sessionDetail.attendanceStartTime).subtract(1, 'minute').toString(),
+						).toISOString(),
 					)}
 				</p>
 
 				<p className="text-body2 font-semibold text-label-assistive">지각 시간</p>
 				<p className="text-body2 font-medium text-label-subtle">
-					{formatISOStringHHMM(sessionDetail.attendanceStartTime)} -{' '}
+					{formatISOStringHHMM(
+						calcSessionAttendanceTime(sessionDetail.attendanceStartTime).toISOString(),
+					)}{' '}
+					-{' '}
 					{formatISOStringHHMM(
 						calcSessionLateAttendanceTime(sessionDetail.attendanceStartTime).toISOString(),
 					)}

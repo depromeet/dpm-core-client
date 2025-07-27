@@ -48,6 +48,8 @@ function InputOTPSlot({
 			data-active={isActive}
 			className={cn(
 				'rounded-sm bg-background-strong relative flex h-16 w-14 text-label-normal items-center justify-center text-title1 font-bold transition-all outline-none data-[active=true]:z-10',
+				!hasFakeCaret &&
+					'data-[active=true]:after:content-[""] data-[active=true]:after:animate-caret-blink data-[active=true]:after:absolute data-[active=true]:after:w-px data-[active=true]:after:h-4.5 data-[active=true]:after:bg-[#638AFF] data-[active=true]:after:-right-1 data-[active=true]:after:-translate-x-1/2',
 				className,
 			)}
 			{...props}
