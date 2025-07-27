@@ -3,7 +3,7 @@ import { TextLogo } from '@dpm-core/shared';
 const Footer = () => {
 	return (
 		<footer className="bg-background-inverse py-[26px] px-4 flex flex-col">
-			<TextLogo />
+			<TextLogo className="text-gray-0" />
 			<div className="flex items-center gap-x-2 my-[18px]">
 				<a
 					href="https://depromeet.com/privacy"
