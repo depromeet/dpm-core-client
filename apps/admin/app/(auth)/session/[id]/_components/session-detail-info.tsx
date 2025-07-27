@@ -1,6 +1,11 @@
 'use client';
 
-import { CopyButton, toast } from '@dpm-core/shared';
+import {
+	CopyButton,
+	calcSessionAttendanceTime,
+	calcSessionLateAttendanceTime,
+	toast,
+} from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
@@ -8,7 +13,6 @@ import { type PropsWithChildren, Suspense } from 'react';
 import { ErrorBox } from '@/components/error-box';
 import { Pressable } from '@/components/motion';
 import { formatISOStringHHMM, formatISOStringToFullDateString } from '@/lib/date';
-import { calcSessionAttendanceTime, calcSessionLateAttendanceTime } from '@/lib/session/calc';
 import { getSessionDetailQuery } from '@/remotes/queries/session';
 import { EditSessionBottomSheet } from './edit-session-bottom-sheet';
 

@@ -2,6 +2,7 @@
 
 import { SESSION_ATTENDANCE_TIME_CODE_LENGTH } from '@dpm-core/api';
 import {
+	calcSessionAttendanceTimeByHHmmToISOString,
 	Drawer,
 	DrawerContent,
 	DrawerDescription,
@@ -23,7 +24,7 @@ import { type PropsWithChildren, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { CtaButton } from '@/components/cta-button';
-import { calcSessionAttendanceTimeByHHmmToISOString } from '@/lib/session/calc';
+
 import { editSessionAttendanceTimeMutationOptions } from '@/remotes/mutations/session';
 import { formatAttendanceStartTimeToCode } from '../../_helpers';
 

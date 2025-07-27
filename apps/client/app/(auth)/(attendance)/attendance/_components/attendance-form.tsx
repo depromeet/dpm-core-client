@@ -1,6 +1,8 @@
 'use client';
 
 import {
+	calcSessionAttendanceTime,
+	calcSessionLateAttendanceTime,
 	Form,
 	FormControl,
 	FormDescription,
@@ -15,13 +17,13 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ErrorBoundary } from '@suspensive/react';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { CtaButton } from '@/components/cta-button';
 import { LoadingBox } from '@/components/loading-box';
-import { calcSessionAttendanceTime, calcSessionLateAttendanceTime } from '@/lib/calc';
 import { formatISOStringHHMM } from '@/lib/date';
 import { checkAttendanceOptions } from '@/remotes/mutations/attendance';
 import {
@@ -113,14 +115,20 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 							</FormControl>
 							<FormDescription className="mt-8 text-body2 font-medium text-label-assistive">
 								<span>
-									출석 시간 : {formatISOStringHHMM(attendanceStartTime)} ~{' '}
+									출석 시간 : {formatISOStringHHMM(attendanceStartTime)} -{' '}
 									{formatISOStringHHMM(
-										calcSessionAttendanceTime(attendanceStartTime).toISOString(),
+										calcSessionAttendanceTime(
+											dayjs(attendanceStartTime).subtract(1, 'minute').toString(),
+										).toISOString(),
 									)}
 								</span>
 								<br />
 								<span>
-									지각 시간 : {formatISOStringHHMM(attendanceStartTime)} ~{' '}
+									지각 시간 :{' '}
+									{formatISOStringHHMM(
+										calcSessionAttendanceTime(attendanceStartTime).toISOString(),
+									)}{' '}
+									-{' '}
 									{formatISOStringHHMM(
 										calcSessionLateAttendanceTime(attendanceStartTime).toISOString(),
 									)}
