@@ -44,8 +44,16 @@ export const AttendanceFilter = () => {
 			.filter((chip) => chip?.ariaChecked === 'true')
 			.map((chip) => chip?.id);
 
+		const hasSelectedTeams = teamFilterChipIds.length > 0;
+		const existingOnlyMyTeam = customSearchParams.get('onlyMyTeam');
+		const onlyMyTeamParams = hasSelectedTeams ? '' : (existingOnlyMyTeam ?? '');
+
 		customSearchParams.update(
-			{ statuses: filterChipIds.toString(), teams: teamFilterChipIds.toString() },
+			{
+				statuses: filterChipIds.toString(),
+				teams: teamFilterChipIds.toString(),
+				onlyMyTeam: onlyMyTeamParams,
+			},
 			'REPLACE',
 		);
 	};
@@ -75,9 +83,9 @@ export const AttendanceFilter = () => {
 				<div className="flex gap-2">
 					<DrawerTrigger asChild>
 						<Button
-							size="xs"
+							size="none"
 							className={cn(
-								'bg-background-normal rounded-lg text-label-assistive border border-line-subtle h-7 gap-1 text-body2 font-medium hover:bg-inherit',
+								'bg-background-normal rounded-lg text-label-assistive border border-line-normal py-1 px-2.5 gap-1 text-body2 font-medium hover:bg-inherit',
 								attendanceFilterLabel !== '출석 상태별' &&
 									'border-primary-normal text-primary-normal',
 							)}
@@ -88,9 +96,9 @@ export const AttendanceFilter = () => {
 					</DrawerTrigger>
 					<DrawerTrigger asChild>
 						<Button
-							size="xs"
+							size="none"
 							className={cn(
-								'bg-background-normal rounded-lg text-label-assistive border border-line-subtle h-7 gap-1 text-body2 font-medium hover:bg-inherit',
+								'bg-background-normal rounded-lg text-label-assistive border border-line-normal py-1 px-2.5 gap-1 text-body2 font-medium hover:bg-inherit',
 								teamsFilterLabel !== '팀별' && 'border-primary-normal text-primary-normal',
 							)}
 						>
@@ -182,8 +190,9 @@ export const AttendanceFilter = () => {
 			<div className="flex items-center gap-1.5">
 				<Checkbox
 					id="my-team"
+					checked={customSearchParams.get('onlyMyTeam') === 'true' && true}
 					onCheckedChange={(checked) =>
-						customSearchParams.update({ myteam: checked ? 'true' : '' }, 'REPLACE')
+						customSearchParams.update({ onlyMyTeam: checked ? 'true' : '', teams: '' }, 'REPLACE')
 					}
 					className="size-4 border-line-normal rounded-sm text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 				/>
