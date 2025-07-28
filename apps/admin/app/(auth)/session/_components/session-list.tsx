@@ -53,7 +53,7 @@ function SessionItem({ session }: { session: Session }) {
 							</p>
 						</div>
 					</div>
-					<ChevronRight />
+					<ChevronRight className="text-icon-noraml" />
 				</div>
 			</Link>
 		</Pressable>
