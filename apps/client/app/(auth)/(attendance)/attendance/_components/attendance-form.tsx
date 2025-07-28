@@ -19,7 +19,7 @@ import { ErrorBoundary } from '@suspensive/react';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
-import { Suspense, useEffect, useRef } from 'react';
+import { Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { CtaButton } from '@/components/cta-button';
@@ -60,14 +60,6 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 
 	const router = useRouter();
 	const queryClient = useQueryClient();
-	const inputRef = useRef<HTMLInputElement | null>(null);
-
-	useEffect(() => {
-		inputRef.current?.click();
-		setTimeout(() => {
-			inputRef.current?.focus();
-		}, 100);
-	}, []);
 
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
@@ -78,7 +70,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 
 	const { mutate: checkAttendance, isPending: isPendingCheckAttendance } = useMutation(
 		checkAttendanceOptions(sessionId, {
-			// Todo 서버 에러 코드 나오는 경우 - 에러 핸들링 필요
+			// Todo 커스텀 에러로 처리 예정
 			onSuccess: () => {
 				Promise.all([
 					queryClient.invalidateQueries(getAttendanceMeOptions()),
@@ -86,8 +78,15 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 				]);
 				router.replace(`/attendance/${sessionId}/result`);
 			},
-			onError: () => {
-				toast.error('운영진에게 문의해 주세요.');
+			onError: async (error) => {
+				const serverError = await error.response.json();
+				if (serverError.code === 'SESSION-400-04') {
+					toast.error('이미 출석을 체크했습니다.');
+				} else if (serverError.code === 'SESSION-400-02') {
+					toast.error('코드가 일치하지 않습니다.');
+				} else {
+					toast.error('운영진에게 문의해 주세요.');
+				}
 			},
 		}),
 	);
@@ -101,7 +100,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 			<form
 				onSubmit={form.handleSubmit(handleSubmitCode)}
 				id="attendance-form"
-				className="flex justify-center items-center flex-col mt-12 gap-4 flex-1"
+				className="flex justify-center items-center flex-col gap-4 flex-1"
 			>
 				<FormField
 					control={form.control}
@@ -112,15 +111,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 								출석코드를 입력해 주세요
 							</FormLabel>
 							<FormControl>
-								<InputOTP
-									maxLength={4}
-									id="code"
-									{...field}
-									ref={(el) => {
-										field.ref(el);
-										inputRef.current = el;
-									}}
-								>
+								<InputOTP maxLength={4} id="code" {...field}>
 									<InputOTPGroup>
 										<InputOTPSlot index={0} />
 										<InputOTPSlot index={1} />
