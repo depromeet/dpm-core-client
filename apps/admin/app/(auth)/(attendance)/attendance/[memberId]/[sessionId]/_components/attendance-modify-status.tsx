@@ -69,7 +69,7 @@ export const AttendanceModifyStatus = (props: AttendanceModifyStatusProps) => {
 					수정하기
 				</MotionButton>
 			</DrawerTrigger>
-			<DrawerContent>
+			<DrawerContent className="mx-auto max-w-lg">
 				<DrawerHeader className="px-5 mb-8">
 					<DrawerTitle>출석 규정 안내</DrawerTitle>
 				</DrawerHeader>

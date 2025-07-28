@@ -99,7 +99,7 @@ export const AttendanceFilter = () => {
 						</Button>
 					</DrawerTrigger>
 				</div>
-				<DrawerContent>
+				<DrawerContent className="mx-auto max-w-lg">
 					<DrawerHeader>
 						<DrawerTitle>필터</DrawerTitle>
 					</DrawerHeader>

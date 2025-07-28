@@ -71,127 +71,123 @@ export const AttendanceFilter = () => {
 	}, [selectedTeams]);
 
 	return (
-		<>
-			{/* Select Bottom Sheet */}
-			<div className="flex justify-between items-center">
-				<Drawer>
-					<div className="flex gap-2">
-						<DrawerTrigger asChild>
-							<Button
-								size="xs"
-								className={cn(
-									'bg-background-normal rounded-lg text-label-assistive border border-line-subtle h-7 gap-1 text-body2 font-medium hover:bg-inherit',
-									attendanceFilterLabel !== '수료 상태별' &&
-										'border-primary-normal text-primary-normal',
-								)}
-							>
-								{attendanceFilterLabel}
-								<ChevronDownIcon className="size-5 text-icon-noraml" />
-							</Button>
-						</DrawerTrigger>
-						<DrawerTrigger asChild>
-							<Button
-								size="xs"
-								className={cn(
-									'bg-background-normal rounded-lg text-label-assistive border border-line-subtle h-7 gap-1 text-body2 font-medium hover:bg-inherit',
-									teamsFilterLabel !== '팀별' && 'border-primary-normal text-primary-normal',
-								)}
-							>
-								{teamsFilterLabel}
-								<ChevronDownIcon className="size-5 text-icon-noraml" />
-							</Button>
-						</DrawerTrigger>
-					</div>
-					<DrawerContent>
-						<DrawerHeader>
-							<DrawerTitle>필터</DrawerTitle>
-						</DrawerHeader>
-						<div className="px-6 mt-8">
-							<p className="text-label-normal text-body1 font-semibold mb-2">수료 상태별</p>
-							<div className="flex gap-2 flex-wrap">
-								{ATTENDANCE_FILTER.map((chip, index) => {
-									const selected = customSearchParams
-										.get('statuses')
-										?.split(',')
-										.includes(chip.value);
-									return (
-										<FilterChip
-											key={chip.value}
-											id={chip.value}
-											defaultChecked={selected}
-											ref={(el) => {
-												filterChipRefs.current[index] = el;
-											}}
-										>
-											{chip.label}
-										</FilterChip>
-									);
-								})}
-							</div>
-						</div>
-						<div className="px-6 mt-7.5 mb-40">
-							<p className="text-label-normal text-body1 font-semibold mb-2">팀별</p>
-							<div className="flex gap-2 flex-wrap">
-								{TEAM_FILTER.map((chip, index) => {
-									const selected = customSearchParams.get('teams')?.split(',').includes(chip);
-									return (
-										<FilterChip
-											key={chip}
-											id={chip}
-											defaultChecked={selected}
-											ref={(el) => {
-												teamsFilterChipRefs.current[index] = el;
-											}}
-										>
-											{chip}팀
-										</FilterChip>
-									);
-								})}
-							</div>
-						</div>
-						<DrawerFooter className="flex flex-row gap-2 px-4 py-3">
-							<DrawerClose asChild>
-								<Button
-									variant="none"
-									size="none"
-									className="bg-background-strong p-3.5 flex items-center rounded-lg"
-									onClick={() =>
-										customSearchParams.update(
-											{
-												statuses: '',
-												teams: '',
-											},
-											'REPLACE',
-										)
-									}
-								>
-									<RotateCw className="text-icon-noraml size-5" />
-								</Button>
-							</DrawerClose>
-							<DrawerClose asChild>
-								<Button
-									className="flex-1 rounded-lg"
-									size="lg"
-									variant="secondary"
-									onClick={handleSelectFilter}
-								>
-									적용하기
-								</Button>
-							</DrawerClose>
-						</DrawerFooter>
-					</DrawerContent>
-				</Drawer>
-				{/* 체크박스 */}
-				<div className="flex items-center gap-1.5">
-					<Checkbox
-						onCheckedChange={(checked) =>
-							customSearchParams.update({ myteam: checked ? 'true' : '' }, 'REPLACE')
-						}
-						className="size-4 border-line-normal rounded-sm text-gray-0 data-[state=checked]:bg-primary-normal"
-					/>
-					<Label className="text-label-assistive text-body2 font-medium">내 팀만 보기</Label>
+		<div className="flex justify-between items-center">
+			<Drawer>
+				<div className="flex gap-2">
+					<DrawerTrigger asChild>
+						<Button
+							size="xs"
+							className={cn(
+								'bg-background-normal rounded-lg text-label-assistive border border-line-subtle h-7 gap-1 text-body2 font-medium hover:bg-inherit',
+								attendanceFilterLabel !== '수료 상태별' &&
+									'border-primary-normal text-primary-normal',
+							)}
+						>
+							{attendanceFilterLabel}
+							<ChevronDownIcon className="size-5 text-icon-noraml" />
+						</Button>
+					</DrawerTrigger>
+					<DrawerTrigger asChild>
+						<Button
+							size="xs"
+							className={cn(
+								'bg-background-normal rounded-lg text-label-assistive border border-line-subtle h-7 gap-1 text-body2 font-medium hover:bg-inherit',
+								teamsFilterLabel !== '팀별' && 'border-primary-normal text-primary-normal',
+							)}
+						>
+							{teamsFilterLabel}
+							<ChevronDownIcon className="size-5 text-icon-noraml" />
+						</Button>
+					</DrawerTrigger>
 				</div>
+				<DrawerContent className="mx-auto max-w-lg">
+					<DrawerHeader>
+						<DrawerTitle>필터</DrawerTitle>
+					</DrawerHeader>
+					<div className="px-6 mt-8">
+						<p className="text-label-normal text-body1 font-semibold mb-2">수료 상태별</p>
+						<div className="flex gap-2 flex-wrap">
+							{ATTENDANCE_FILTER.map((chip, index) => {
+								const selected = customSearchParams
+									.get('statuses')
+									?.split(',')
+									.includes(chip.value);
+								return (
+									<FilterChip
+										key={chip.value}
+										id={chip.value}
+										defaultChecked={selected}
+										ref={(el) => {
+											filterChipRefs.current[index] = el;
+										}}
+									>
+										{chip.label}
+									</FilterChip>
+								);
+							})}
+						</div>
+					</div>
+					<div className="px-6 mt-7.5 mb-40">
+						<p className="text-label-normal text-body1 font-semibold mb-2">팀별</p>
+						<div className="flex gap-2 flex-wrap">
+							{TEAM_FILTER.map((chip, index) => {
+								const selected = customSearchParams.get('teams')?.split(',').includes(chip);
+								return (
+									<FilterChip
+										key={chip}
+										id={chip}
+										defaultChecked={selected}
+										ref={(el) => {
+											teamsFilterChipRefs.current[index] = el;
+										}}
+									>
+										{chip}팀
+									</FilterChip>
+								);
+							})}
+						</div>
+					</div>
+					<DrawerFooter className="flex flex-row gap-2 px-4 py-3">
+						<DrawerClose asChild>
+							<Button
+								variant="none"
+								size="none"
+								className="bg-background-strong p-3.5 flex items-center rounded-lg"
+								onClick={() =>
+									customSearchParams.update(
+										{
+											statuses: '',
+											teams: '',
+										},
+										'REPLACE',
+									)
+								}
+							>
+								<RotateCw className="text-icon-noraml size-5" />
+							</Button>
+						</DrawerClose>
+						<DrawerClose asChild>
+							<Button
+								className="flex-1 rounded-lg"
+								size="lg"
+								variant="secondary"
+								onClick={handleSelectFilter}
+							>
+								적용하기
+							</Button>
+						</DrawerClose>
+					</DrawerFooter>
+				</DrawerContent>
+			</Drawer>
+			<div className="flex items-center gap-1.5">
+				<Checkbox
+					onCheckedChange={(checked) =>
+						customSearchParams.update({ myteam: checked ? 'true' : '' }, 'REPLACE')
+					}
+					className="size-4 border-line-normal rounded-sm text-gray-0 data-[state=checked]:bg-primary-normal"
+				/>
+				<Label className="text-label-assistive text-body2 font-medium">내 팀만 보기</Label>
 			</div>
-		</>
+		</div>
 	);
 };
