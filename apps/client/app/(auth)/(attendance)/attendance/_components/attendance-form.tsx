@@ -19,7 +19,7 @@ import { ErrorBoundary } from '@suspensive/react';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { CtaButton } from '@/components/cta-button';
@@ -60,6 +60,14 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 
 	const router = useRouter();
 	const queryClient = useQueryClient();
+	const inputRef = useRef<HTMLInputElement | null>(null);
+
+	useEffect(() => {
+		inputRef.current?.click();
+		setTimeout(() => {
+			inputRef.current?.focus();
+		}, 100);
+	}, []);
 
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
@@ -104,7 +112,15 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 								출석코드를 입력해 주세요
 							</FormLabel>
 							<FormControl>
-								<InputOTP maxLength={4} id="code" autoFocus {...field}>
+								<InputOTP
+									maxLength={4}
+									id="code"
+									{...field}
+									ref={(el) => {
+										field.ref(el);
+										inputRef.current = el;
+									}}
+								>
 									<InputOTPGroup>
 										<InputOTPSlot index={0} />
 										<InputOTPSlot index={1} />
