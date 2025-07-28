@@ -1,19 +1,23 @@
-import Image from 'next/image';
-import Banner from '@/assets/images/login-banner.webp';
+import { DpmText } from '@dpm-core/shared';
+
 import { LoginButton } from '@/components/login-button';
+import { CoreLogo } from '@/components/lotties/core-logo';
 
 export const dynamic = 'force-dynamic';
 
 const LoginPage = () => {
 	return (
-		<div className="bg-primary-extralight min-h-dvh flex flex-col justify-center gap-y-10">
+		<div className="bg-background-subtle min-h-dvh flex flex-col justify-center gap-y-10">
 			<div className="mx-auto text-center flex flex-col gap-y-10">
-				<h1 className="uppercase text-headline1 font-semibold text-label-normal">
-					DPM CORE
-					<br />
-					<p className="text-primary-strong text-body2 font-semibold lowercase">admin</p>
-				</h1>
-
+				<div className="flex flex-col items-center gap-y-4">
+					<CoreLogo />
+					<div className="uppercase text-headline1 font-semibold text-label-normal flex mx-auto gap-x-2.5 items-start">
+						<DpmText className="text-gray-800 w-fit" />
+						<p className="text-primary-strong text-body2 font-semibold lowercase leading-none">
+							admin
+						</p>
+					</div>
+				</div>
 				<p>
 					출석, 번개, 커피챗까지
 					<br />
@@ -22,15 +26,6 @@ const LoginPage = () => {
 				<LoginButton
 					variant="assistive"
 					className="bg-[#FEE500] rounded-xl px-[15px] py-3.5 font-medium h-auto leading-1"
-				/>
-			</div>
-			<div className="relative aspect-[300/250] w-4/5 mx-auto">
-				<Image
-					src={Banner}
-					alt="login-banner"
-					fill
-					placeholder="blur"
-					blurDataURL={Banner.blurDataURL}
 				/>
 			</div>
 		</div>

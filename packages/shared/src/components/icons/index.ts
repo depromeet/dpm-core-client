@@ -11,6 +11,7 @@ export { CircleMinus } from './circle-minus';
 export { CircleX } from './circle-x';
 export { Clock } from './clock';
 export { CopyIcon } from './copy';
+export { DpmText } from './dpm-text';
 export { KakaoLogo } from './kakao-logo';
 export { TextLogo } from './text-logo';
 export { UserAvatar } from './user-avatar';
