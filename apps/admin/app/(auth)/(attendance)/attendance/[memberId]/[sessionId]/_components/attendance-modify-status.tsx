@@ -2,6 +2,7 @@
 
 import type { AttendanceMember, AttendanceStatus } from '@dpm-core/api';
 import {
+	Button,
 	Drawer,
 	DrawerClose,
 	DrawerContent,
@@ -9,14 +10,12 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 	DrawerTrigger,
-	pressInOutVariatns,
 	toast,
 } from '@dpm-core/shared';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Profile } from '@/components/attendance/profile';
-import { MotionButton } from '@/components/motion';
 import { modifyAttendanceStatusOptions } from '@/remotes/mutations/attendance';
 
 const ATTENDANCE_STATUS = [
@@ -60,14 +59,9 @@ export const AttendanceModifyStatus = (props: AttendanceModifyStatusProps) => {
 	return (
 		<Drawer>
 			<DrawerTrigger asChild>
-				<MotionButton
-					variant="secondary"
-					size="full"
-					className="fixed max-w-lg w-full bottom-0"
-					{...pressInOutVariatns}
-				>
+				<Button variant="secondary" size="full" className="fixed max-w-lg w-full bottom-0">
 					수정하기
-				</MotionButton>
+				</Button>
 			</DrawerTrigger>
 			<DrawerContent className="mx-auto max-w-lg">
 				<DrawerHeader className="px-5 mb-8">
@@ -94,15 +88,14 @@ export const AttendanceModifyStatus = (props: AttendanceModifyStatusProps) => {
 
 				<DrawerFooter className="p-0">
 					<DrawerClose asChild>
-						<MotionButton
+						<Button
 							variant="secondary"
 							size="full"
 							disabled={selectedStatus === attendanceStatus}
-							{...pressInOutVariatns}
 							onClick={handleModifyStatus}
 						>
 							저장하기
-						</MotionButton>
+						</Button>
 					</DrawerClose>
 				</DrawerFooter>
 			</DrawerContent>
