@@ -104,9 +104,9 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 								출석코드를 입력해 주세요
 							</FormLabel>
 							<FormControl>
-								<InputOTP maxLength={4} id="code" {...field}>
+								<InputOTP maxLength={4} id="code" autoFocus {...field}>
 									<InputOTPGroup>
-										<InputOTPSlot index={0} className="min-h-16 min-w-[54px]" />
+										<InputOTPSlot index={0} />
 										<InputOTPSlot index={1} />
 										<InputOTPSlot index={2} />
 										<InputOTPSlot index={3} />
