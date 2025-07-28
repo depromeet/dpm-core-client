@@ -70,7 +70,7 @@ export const AttendanceModifyStatus = (props: AttendanceModifyStatusProps) => {
 				<section className="mx-5 mb-5">
 					<Profile size={60} name={member.name} part={member.part} teamNumber={member.teamNumber} />
 					<RadioGroup.Root
-						defaultValue={attendanceStatus}
+						value={selectedStatus}
 						className="w-full mt-3 flex border border-line-normal rounded-lg"
 						onValueChange={(value) => setSelectedStatus(value as AttendanceStatus)}
 					>

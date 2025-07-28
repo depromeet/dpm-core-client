@@ -8,7 +8,7 @@ interface LayoutProps {
 export default function Layout({ tabs }: LayoutProps) {
 	return (
 		<div className="flex flex-col min-h-dvh">
-			<AppHeader title="출석" backHref="/" className="mb-2" />
+			<AppHeader title="출석" className="mb-2" />
 			{tabs}
 		</div>
 	);
