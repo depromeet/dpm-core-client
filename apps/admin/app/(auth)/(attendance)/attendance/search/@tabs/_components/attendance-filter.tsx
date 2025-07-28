@@ -181,12 +181,15 @@ export const AttendanceFilter = () => {
 
 			<div className="flex items-center gap-1.5">
 				<Checkbox
+					id="my-team"
 					onCheckedChange={(checked) =>
 						customSearchParams.update({ myteam: checked ? 'true' : '' }, 'REPLACE')
 					}
-					className="size-4 border-line-normal rounded-sm text-gray-0 data-[state=checked]:bg-primary-normal"
+					className="size-4 border-line-normal rounded-sm text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 				/>
-				<Label className="text-label-assistive text-body2 font-medium">내 팀만 보기</Label>
+				<Label htmlFor="my-team" className="text-label-assistive text-body2 font-medium">
+					내 팀만 보기
+				</Label>
 			</div>
 		</div>
 	);
