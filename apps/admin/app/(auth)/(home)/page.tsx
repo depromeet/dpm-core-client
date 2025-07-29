@@ -1,4 +1,4 @@
-import { AppLayout, fadeInOutVariatns, TextLogo, UserAvatar } from '@dpm-core/shared';
+import { AppLayout, ChevronRight, fadeInOutVariatns, TextLogo, UserAvatar } from '@dpm-core/shared';
 import * as motion from 'motion/react-client';
 import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
@@ -35,7 +35,25 @@ const UserPage = () => {
 					<IconCard icon={IconSession} title="세션" href="/session" />
 					<IconCard icon={IconSettlement} title="정산" href="/settle" />
 				</ul>
-				<CurrentWeekSession />
+
+				<div className="flex flex-col my-5 px-4 w-full gap-y-5 flex-1">
+					<CurrentWeekSession />
+					<Link
+						href="https://forms.gle/yV88T98WsADu6VNc6"
+						target="_blank"
+						className="bg-primary-extralight rounded-[10px] p-5 flex justify-between items-center"
+					>
+						<div>
+							<h3 className="text-title2 font-bold text-primary-normal">디프만 코어 VOC 수집중!</h3>
+							<p className="text-body2 text-label-assistive mt-2">
+								디프만 코어, 어떻게 느끼고 계신가요?
+								<br />
+								여러분의 의견을 기다리고 있어요!
+							</p>
+						</div>
+						<ChevronRight />
+					</Link>
+				</div>
 			</motion.div>
 		</AppLayout>
 	);

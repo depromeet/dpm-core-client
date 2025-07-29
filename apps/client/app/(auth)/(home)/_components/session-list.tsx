@@ -17,22 +17,20 @@ const SessionListContainer = () => {
 	return (
 		<>
 			{currentWeekSession ? (
-				<div className="my-5 px-4 flex-1">
-					<SessionCard
-						id={currentWeekSession.sessionId.toString()}
-						subtitle={`${currentWeekSession.week}주차 세션`}
-						title={currentWeekSession.eventName}
-						startTimeInfo={formatISOStringToFullDateString(currentWeekSession.date)}
-						place={currentWeekSession.isOnline ? '온라인' : currentWeekSession.place}
-					/>
-				</div>
+				<SessionCard
+					id={currentWeekSession.sessionId.toString()}
+					subtitle={`${currentWeekSession.week}주차 세션`}
+					title={currentWeekSession.eventName}
+					startTimeInfo={formatISOStringToFullDateString(currentWeekSession.date)}
+					place={currentWeekSession.isOnline ? '온라인' : currentWeekSession.place}
+				/>
 			) : (
-				<div className="flex flex-col items-center justify-center gap-y-3 flex-1">
+				<>
 					<Aesterisk />
 					<p className="text-body1 font-semibold text-label-assistive">
 						아직 등록된 세션 정보가 없어요
 					</p>
-				</div>
+				</>
 			)}
 		</>
 	);
@@ -52,13 +50,7 @@ const SessionList = ErrorBoundary.with(
 		},
 	},
 	() => (
-		<Suspense
-			fallback={
-				<div className="flex flex-col items-center justify-center gap-y-3 flex-1">
-					<Loading />
-				</div>
-			}
-		>
+		<Suspense fallback={<Loading />}>
 			<SessionListContainer />
 		</Suspense>
 	),

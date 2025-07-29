@@ -16,22 +16,20 @@ const CurrentWeekSessionContainer = () => {
 	return (
 		<>
 			{currentWeekSession ? (
-				<div className="my-5 px-4 flex-1 flex flex-col gap-y-2">
-					<SessionCard
-						subtitle={`${currentWeekSession.week}주차 세션`}
-						title={currentWeekSession.eventName}
-						startTimeInfo={formatISOStringToFullDateString(currentWeekSession.date)}
-						place={currentWeekSession.isOnline ? '온라인' : currentWeekSession.place}
-						sessionId={currentWeekSession.sessionId.toString()}
-					/>
-				</div>
+				<SessionCard
+					subtitle={`${currentWeekSession.week}주차 세션`}
+					title={currentWeekSession.eventName}
+					startTimeInfo={formatISOStringToFullDateString(currentWeekSession.date)}
+					place={currentWeekSession.isOnline ? '온라인' : currentWeekSession.place}
+					sessionId={currentWeekSession.sessionId.toString()}
+				/>
 			) : (
-				<div className="flex flex-col items-center justify-center gap-y-3 flex-1">
+				<>
 					<Aesterisk />
 					<p className="text-body1 font-semibold text-label-assistive">
 						아직 등록된 세션 정보가 없어요
 					</p>
-				</div>
+				</>
 			)}
 		</>
 	);
@@ -52,13 +50,7 @@ const CurrentWeekSession = ErrorBoundary.with(
 		},
 	},
 	() => (
-		<Suspense
-			fallback={
-				<div className="flex flex-col items-center justify-center gap-y-3 flex-1">
-					<Loading />
-				</div>
-			}
-		>
+		<Suspense fallback={<Loading />}>
 			<CurrentWeekSessionContainer />
 		</Suspense>
 	),
