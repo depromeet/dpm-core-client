@@ -129,7 +129,7 @@ const EditSessionBottomSheet = ({
 									control={form.control}
 									name="attendanceStartTime"
 									render={({ field }) => (
-										<div className="flex items-center gap-x-2 w-full max-w-[215px] py-[14px] h-fit bg-background-strong rounded-lg justify-center focus-within:ring focus-within:ring-gray-900 transition-[box-shadow]">
+										<div className="flex items-center gap-x-2 w-full max-w-[215px] py-[14px] h-fit bg-background-strong rounded-lg justify-center focus-within:ring focus-within:ring-gray-900 focus-within:ring-offset-1 transition-[box-shadow]">
 											<InputOTP
 												id="start-time-input"
 												maxLength={4}

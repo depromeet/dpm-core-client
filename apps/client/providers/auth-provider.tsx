@@ -5,7 +5,6 @@ import { createContext } from '@dpm-core/shared';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { usePathname } from 'next/navigation';
 import { type PropsWithChildren, useEffect, useState } from 'react';
-import { Loading } from '@/components/lotties/loading';
 import { UnauthenticatedLayout } from '@/components/unauthenticated-layout';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
@@ -58,11 +57,12 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	}
 
 	if (isLoading) {
-		return (
-			<div className="flex flex-col items-center justify-center h-dvh">
-				<Loading />
-			</div>
-		);
+		// return (
+		// 	<div className="flex flex-col items-center justify-center h-dvh">
+		// 		<Loading />
+		// 	</div>
+		// );
+		return null;
 	}
 
 	return (
