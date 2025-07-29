@@ -1,6 +1,8 @@
 'use client';
 
 import {
+	calcSessionAttendanceTime,
+	calcSessionLateAttendanceTime,
 	Form,
 	FormControl,
 	FormDescription,
@@ -15,13 +17,13 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ErrorBoundary } from '@suspensive/react';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { CtaButton } from '@/components/cta-button';
 import { LoadingBox } from '@/components/loading-box';
-import { calcSessionAttendanceTime, calcSessionLateAttendanceTime } from '@/lib/calc';
 import { formatISOStringHHMM } from '@/lib/date';
 import { checkAttendanceOptions } from '@/remotes/mutations/attendance';
 import {
@@ -68,7 +70,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 
 	const { mutate: checkAttendance, isPending: isPendingCheckAttendance } = useMutation(
 		checkAttendanceOptions(sessionId, {
-			// Todo 서버 에러 코드 나오는 경우 - 에러 핸들링 필요
+			// Todo 커스텀 에러로 처리 예정
 			onSuccess: () => {
 				Promise.all([
 					queryClient.invalidateQueries(getAttendanceMeOptions()),
@@ -76,8 +78,15 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 				]);
 				router.replace(`/attendance/${sessionId}/result`);
 			},
-			onError: () => {
-				toast.error('운영진에게 문의해 주세요.');
+			onError: async (error) => {
+				const serverError = await error.response.json();
+				if (serverError.code === 'SESSION-400-04') {
+					toast.error('이미 출석을 체크했습니다.');
+				} else if (serverError.code === 'SESSION-400-02') {
+					toast.error('코드가 일치하지 않습니다.');
+				} else {
+					toast.error('운영진에게 문의해 주세요.');
+				}
 			},
 		}),
 	);
@@ -91,7 +100,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 			<form
 				onSubmit={form.handleSubmit(handleSubmitCode)}
 				id="attendance-form"
-				className="flex justify-center items-center flex-col mt-12 gap-4 flex-1"
+				className="flex justify-center items-center flex-col gap-4 flex-1"
 			>
 				<FormField
 					control={form.control}
@@ -104,7 +113,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 							<FormControl>
 								<InputOTP maxLength={4} id="code" {...field}>
 									<InputOTPGroup>
-										<InputOTPSlot index={0} className="min-h-16 min-w-[54px]" />
+										<InputOTPSlot index={0} />
 										<InputOTPSlot index={1} />
 										<InputOTPSlot index={2} />
 										<InputOTPSlot index={3} />
@@ -113,14 +122,20 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 							</FormControl>
 							<FormDescription className="mt-8 text-body2 font-medium text-label-assistive">
 								<span>
-									출석 시간 : {formatISOStringHHMM(attendanceStartTime)} ~{' '}
+									출석 시간 : {formatISOStringHHMM(attendanceStartTime)} -{' '}
 									{formatISOStringHHMM(
-										calcSessionAttendanceTime(attendanceStartTime).toISOString(),
+										calcSessionAttendanceTime(
+											dayjs(attendanceStartTime).subtract(1, 'minute').toString(),
+										).toISOString(),
 									)}
 								</span>
 								<br />
 								<span>
-									지각 시간 : {formatISOStringHHMM(attendanceStartTime)} ~{' '}
+									지각 시간 :{' '}
+									{formatISOStringHHMM(
+										calcSessionAttendanceTime(attendanceStartTime).toISOString(),
+									)}{' '}
+									-{' '}
 									{formatISOStringHHMM(
 										calcSessionLateAttendanceTime(attendanceStartTime).toISOString(),
 									)}

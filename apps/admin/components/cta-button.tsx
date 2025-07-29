@@ -13,7 +13,7 @@ const CtaButton = ({ text, ...props }: CtaButtonProps) => {
 	return (
 		<MotionButton
 			variant="secondary"
-			size="lg"
+			size="full"
 			className="rounded-none"
 			{...props}
 			onTapStart={() => setIsButtonPressed(true)}

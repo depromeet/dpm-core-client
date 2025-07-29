@@ -2,6 +2,7 @@
 
 import { SESSION_ATTENDANCE_TIME_CODE_LENGTH } from '@dpm-core/api';
 import {
+	calcSessionAttendanceTimeByHHmmToISOString,
 	Drawer,
 	DrawerContent,
 	DrawerDescription,
@@ -14,6 +15,7 @@ import {
 	InputOTPGroup,
 	InputOTPSlot,
 	useAppShell,
+	validateHHMM,
 } from '@dpm-core/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -22,7 +24,7 @@ import { type PropsWithChildren, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { CtaButton } from '@/components/cta-button';
-import { calcSessionAttendanceTimeByHHmmToISOString } from '@/lib/session/calc';
+
 import { editSessionAttendanceTimeMutationOptions } from '@/remotes/mutations/session';
 import { formatAttendanceStartTimeToCode } from '../../_helpers';
 
@@ -83,7 +85,13 @@ const EditSessionBottomSheet = ({
 		);
 	};
 
-	const isDisabled = !form.formState.isDirty || isPending || form.formState.isSubmitting;
+	const attendanceStartTimeWatch = form.watch('attendanceStartTime');
+
+	const isDisabled =
+		!form.formState.isDirty ||
+		isPending ||
+		form.formState.isSubmitting ||
+		!validateHHMM(attendanceStartTimeWatch);
 
 	return (
 		<Drawer
@@ -132,20 +140,20 @@ const EditSessionBottomSheet = ({
 											>
 												<InputOTPGroup>
 													<InputOTPSlot
-														className="size-2.5 text-body2 outline-none !border-none !shadow-none font-medium text-label-normal !ring-0"
+														className="size-2.5 text-body2 font-medium text-label-normal !ring-0"
 														index={0}
 													/>
 													<InputOTPSlot
-														className="size-2.5 text-body2 outline-none !border-none !shadow-none font-medium text-label-normal !ring-0"
+														className="size-2.5 text-body2 font-medium text-label-normal !ring-0"
 														index={1}
 													/>
 													<p className="text-label-assistive text-body2 font-medium mx-1">시</p>
 													<InputOTPSlot
-														className="size-2.5 text-body2 outline-none !border-none !shadow-none font-medium text-label-normal !ring-0"
+														className="size-2.5 text-body2 font-medium text-label-normal !ring-0"
 														index={2}
 													/>
 													<InputOTPSlot
-														className="size-2.5 text-body2 outline-none !border-none !shadow-none font-medium text-label-normal !ring-0"
+														className="size-2.5 text-body2 font-medium text-label-normal !ring-0"
 														index={3}
 													/>
 													<p className="text-label-assistive text-body2 font-medium ml-1">
@@ -158,7 +166,9 @@ const EditSessionBottomSheet = ({
 								/>
 							</label>
 						</div>
-						<div className="my-3 bg-line-normal h-px w-full mx-5" />
+						<div className="px-5">
+							<div className="my-3 bg-line-normal h-px" />
+						</div>
 						<p className="text-label-subtle text-caption1 font-medium px-5 mb-5">
 							정해진 규정에 따라 출석/지각 시간이 자동 계산됩니다.
 							<br />- 출석 가능: 세션 시작부터 5분간

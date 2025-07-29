@@ -17,14 +17,7 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 		const loginUrl = new URL(BASE_URL ?? '');
 		loginUrl.pathname = '/login/kakao';
 		return (
-			<Pressable
-				whileTap={{ scale: 1.025 }}
-				ref={ref}
-				variant={variant}
-				size={size}
-				className={className}
-				asChild
-			>
+			<Pressable ref={ref} variant={variant} size={size} className={className} asChild>
 				<a href={loginUrl.toString()} className="flex items-center gap-2 text-sm font-medium">
 					<KakaoLogo />
 					<p className="flex-1 text-[#000000] opacity-85">카카오로 시작하기</p>

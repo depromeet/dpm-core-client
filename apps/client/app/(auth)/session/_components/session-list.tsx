@@ -1,14 +1,14 @@
 'use client';
 
 import type { Session } from '@dpm-core/api';
-import { Calender, Clock } from '@dpm-core/shared';
+import { Calender, Clock, formatDotFullDate } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Suspense } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
-import { formatISOStringHHMM, formatISOStringToCompactDateString } from '@/lib/date';
+import { formatISOStringHHMM } from '@/lib/date';
 import { formatSessionWeekString } from '@/lib/session/format';
 import { getSessionListQuery } from '@/remotes/queries/session';
 
@@ -36,7 +36,7 @@ function SessionItem({ session }: { session: Session }) {
 				<div className="flex items-center gap-x-1">
 					<Calender />
 					<p className="text-caption1 font-medium text-label-assistive ml-0.5">
-						{formatISOStringToCompactDateString(session.date)}
+						{formatDotFullDate(session.date)}
 					</p>
 
 					<Clock className="ml-2" />

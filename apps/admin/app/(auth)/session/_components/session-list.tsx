@@ -1,7 +1,7 @@
 'use client';
 
 import type { Session } from '@dpm-core/api';
-import { Calender, ChevronRight, Clock } from '@dpm-core/shared';
+import { Calender, ChevronRight, Clock, formatDotFullDate } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import Link from 'next/link';
@@ -10,7 +10,7 @@ import { Virtuoso } from 'react-virtuoso';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { Pressable } from '@/components/motion';
-import { formatISOStringHHMM, formatISOStringToCompactDateString } from '@/lib/date';
+import { formatISOStringHHMM } from '@/lib/date';
 import { formatSessionWeekString } from '@/lib/session/format';
 import { getSessionListQuery } from '@/remotes/queries/session';
 
@@ -43,7 +43,7 @@ function SessionItem({ session }: { session: Session }) {
 						<div className="flex items-center gap-x-1">
 							<Calender />
 							<p className="text-caption1 font-medium text-label-assistive ml-0.5">
-								{formatISOStringToCompactDateString(session.date)}
+								{formatDotFullDate(session.date)}
 							</p>
 
 							<Clock className="ml-2" />
@@ -53,7 +53,7 @@ function SessionItem({ session }: { session: Session }) {
 							</p>
 						</div>
 					</div>
-					<ChevronRight />
+					<ChevronRight className="text-icon-noraml" />
 				</div>
 			</Link>
 		</Pressable>
