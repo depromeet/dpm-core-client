@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import Iconttendance3D from '@/assets/icons/icon_attendance_3d.png';
+import { formatSessionWeekString } from '@/lib/session/format';
 import { getCurrentWeekSessionQuery } from '@/remotes/queries/session';
 
 const SessionCurrentWeekBannerContainer = () => {
@@ -28,6 +29,9 @@ const SessionCurrentWeekBannerContainer = () => {
 			className="pt-5 px-4 pb-[30px]"
 		>
 			<div className="bg-background-inverse rounded-[10px] p-5">
+				<p className="mb- text-label-assistive text-caption1 font-semibold">
+					{formatSessionWeekString(currentWeekSession.week)} 출석
+				</p>
 				<div className="flex justify-between">
 					<div>
 						<p className="text-headline2 text-white font-bold">
@@ -45,7 +49,7 @@ const SessionCurrentWeekBannerContainer = () => {
 					/>
 				</div>
 				<Button className="mt-5 w-full" variant="primary" size="lg" asChild>
-					<Link href={`/attendance/${currentWeekSession.sessionId}`}>
+					<Link href={`/attendance/search/session/?week=${currentWeekSession.sessionId}`}>
 						출석 현황 확인하기
 						<ArrowRight />
 					</Link>

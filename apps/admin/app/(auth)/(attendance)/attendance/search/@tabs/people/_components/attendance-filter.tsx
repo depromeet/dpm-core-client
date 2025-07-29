@@ -1,6 +1,5 @@
 'use client';
 
-import type { MemberAttendanceStatus } from '@dpm-core/api';
 import {
 	Button,
 	Checkbox,
@@ -18,48 +17,55 @@ import { Label } from '@radix-ui/react-label';
 import { ChevronDownIcon, RotateCw } from 'lucide-react';
 import { useMemo, useRef } from 'react';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
-import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
 
-const ATTENDANCE_FILTER = [
-	{ label: '수료 불가', value: 'IMPOSSIBLE' },
-	{ label: '수료 위험', value: 'AT_RISK' },
-	{ label: '수료 가능', value: 'NORMAL' },
-];
+// const ATTENDANCE_FILTER = [
+// 	{ label: '수료 불가', value: 'IMPOSSIBLE' },
+// 	{ label: '수료 위험', value: 'AT_RISK' },
+// 	{ label: '수료 가능', value: 'NORMAL' },
+// ];
 
 const TEAM_FILTER = ['1', '2', '3', '4', '5', '6'];
 
 export const AttendanceFilter = () => {
 	const customSearchParams = useCustomSearchParams();
 
-	const filterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
+	// const filterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
 	const teamsFilterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
 	const handleSelectFilter = () => {
-		const filterChipIds = filterChipRefs.current
-			.filter((chip) => chip?.ariaChecked === 'true')
-			.map((chip) => chip?.id);
+		// const filterChipIds = filterChipRefs.current
+		// 	.filter((chip) => chip?.ariaChecked === 'true')
+		// 	.map((chip) => chip?.id);
 
 		const teamFilterChipIds = teamsFilterChipRefs.current
 			.filter((chip) => chip?.ariaChecked === 'true')
 			.map((chip) => chip?.id);
 
+		const hasSelectedTeams = teamFilterChipIds.length > 0;
+		const existingOnlyMyTeam = customSearchParams.get('onlyMyTeam');
+		const onlyMyTeamParams = hasSelectedTeams ? '' : (existingOnlyMyTeam ?? '');
+
 		customSearchParams.update(
-			{ statuses: filterChipIds.toString(), teams: teamFilterChipIds.toString() },
+			{
+				// statuses: filterChipIds.toString(),
+				teams: teamFilterChipIds.toString(),
+				onlyMyTeam: onlyMyTeamParams,
+			},
 			'REPLACE',
 		);
 	};
 
-	const selectedAttendanceStatuses =
-		customSearchParams.get('statuses')?.split(',').filter(Boolean) ?? [];
+	// const selectedAttendanceStatuses =
+	// 	customSearchParams.get('statuses')?.split(',').filter(Boolean) ?? [];
 
-	const attendanceFilterLabel = useMemo(() => {
-		if (selectedAttendanceStatuses.length === 0) return '수료 상태별';
-		if (selectedAttendanceStatuses.length === 1)
-			return getAttendanceMemberStatusLabel(
-				selectedAttendanceStatuses[0] as MemberAttendanceStatus,
-			);
-		return `${getAttendanceMemberStatusLabel(selectedAttendanceStatuses[0] as MemberAttendanceStatus)} 외 ${selectedAttendanceStatuses.length - 1}`;
-	}, [selectedAttendanceStatuses]);
+	// const attendanceFilterLabel = useMemo(() => {
+	// 	if (selectedAttendanceStatuses.length === 0) return '수료 상태별';
+	// 	if (selectedAttendanceStatuses.length === 1)
+	// 		return getAttendanceMemberStatusLabel(
+	// 			selectedAttendanceStatuses[0] as MemberAttendanceStatus,
+	// 		);
+	// 	return `${getAttendanceMemberStatusLabel(selectedAttendanceStatuses[0] as MemberAttendanceStatus)} 외 ${selectedAttendanceStatuses.length - 1}`;
+	// }, [selectedAttendanceStatuses]);
 
 	const selectedTeams = customSearchParams.get('teams')?.split(',').filter(Boolean) ?? [];
 
@@ -74,11 +80,11 @@ export const AttendanceFilter = () => {
 		<div className="flex justify-between items-center">
 			<Drawer>
 				<div className="flex gap-2">
-					<DrawerTrigger asChild>
+					{/* <DrawerTrigger asChild>
 						<Button
-							size="xs"
+							size="none"
 							className={cn(
-								'bg-background-normal rounded-lg text-label-assistive border border-line-subtle h-7 gap-1 text-body2 font-medium hover:bg-inherit',
+								'bg-background-normal rounded-lg text-label-assistive border border-line-normal py-1 px-2.5 gap-1 text-body2 font-medium hover:bg-inherit',
 								attendanceFilterLabel !== '수료 상태별' &&
 									'border-primary-normal text-primary-normal',
 							)}
@@ -86,12 +92,12 @@ export const AttendanceFilter = () => {
 							{attendanceFilterLabel}
 							<ChevronDownIcon className="size-5 text-icon-noraml" />
 						</Button>
-					</DrawerTrigger>
+					</DrawerTrigger> */}
 					<DrawerTrigger asChild>
 						<Button
-							size="xs"
+							size="none"
 							className={cn(
-								'bg-background-normal rounded-lg text-label-assistive border border-line-subtle h-7 gap-1 text-body2 font-medium hover:bg-inherit',
+								'bg-background-normal rounded-lg text-label-assistive border border-line-normal py-1 px-2.5 gap-1 text-body2 font-medium hover:bg-inherit',
 								teamsFilterLabel !== '팀별' && 'border-primary-normal text-primary-normal',
 							)}
 						>
@@ -104,7 +110,7 @@ export const AttendanceFilter = () => {
 					<DrawerHeader>
 						<DrawerTitle>필터</DrawerTitle>
 					</DrawerHeader>
-					<div className="px-6 mt-8">
+					{/* <div className="px-6 mt-8">
 						<p className="text-label-normal text-body1 font-semibold mb-2">수료 상태별</p>
 						<div className="flex gap-2 flex-wrap">
 							{ATTENDANCE_FILTER.map((chip, index) => {
@@ -126,7 +132,7 @@ export const AttendanceFilter = () => {
 								);
 							})}
 						</div>
-					</div>
+					</div> */}
 					<div className="px-6 mt-7.5 mb-40">
 						<p className="text-label-normal text-body1 font-semibold mb-2">팀별</p>
 						<div className="flex gap-2 flex-wrap">
@@ -156,7 +162,7 @@ export const AttendanceFilter = () => {
 								onClick={() =>
 									customSearchParams.update(
 										{
-											statuses: '',
+											// statuses: '',
 											teams: '',
 										},
 										'REPLACE',
@@ -182,8 +188,9 @@ export const AttendanceFilter = () => {
 			<div className="flex items-center gap-1.5">
 				<Checkbox
 					id="my-team"
+					checked={customSearchParams.get('onlyMyTeam') === 'true' && true}
 					onCheckedChange={(checked) =>
-						customSearchParams.update({ myteam: checked ? 'true' : '' }, 'REPLACE')
+						customSearchParams.update({ onlyMyTeam: checked ? 'true' : '', teams: '' }, 'REPLACE')
 					}
 					className="size-4 border-line-normal rounded-sm text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 				/>

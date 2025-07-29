@@ -1,5 +1,11 @@
-import { type ApiResponse, type AttendanceCheckReponse, attendance } from '@dpm-core/api';
+import {
+	type ApiErrorReponse,
+	type ApiResponse,
+	type AttendanceCheckReponse,
+	attendance,
+} from '@dpm-core/api';
 import { type MutationOptions, mutationOptions } from '@tanstack/react-query';
+import type { HTTPError } from 'ky';
 
 const MUTATE_KEY = 'ATTENDANCE';
 
@@ -9,7 +15,7 @@ interface CheckAttendanceParams {
 
 type CheckAttendanceOptions = MutationOptions<
 	ApiResponse<AttendanceCheckReponse>,
-	Error,
+	HTTPError<ApiErrorReponse>,
 	CheckAttendanceParams,
 	unknown
 >;
