@@ -171,7 +171,7 @@ const EditSessionBottomSheet = ({
 						</div>
 						<p className="text-label-subtle text-caption1 font-medium px-5 mb-5">
 							정해진 규정에 따라 출석/지각 시간이 자동 계산됩니다.
-							<br />- 출석 가능: 세션 시작부터 5분간
+							<br />- 출석 가능: 세션 시작부터 30분간
 							<br />- 지각 가능: 출석 가능 시간 이후 30분간
 						</p>
 					</form>

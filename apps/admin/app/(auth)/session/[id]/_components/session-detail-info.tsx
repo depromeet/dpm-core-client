@@ -16,6 +16,10 @@ import { formatISOStringHHMM, formatISOStringToFullDateString } from '@/lib/date
 import { getSessionDetailQuery } from '@/remotes/queries/session';
 import { EditSessionBottomSheet } from './edit-session-bottom-sheet';
 
+function calcMinusOneMinute(date: string) {
+	return dayjs(date).subtract(1, 'minute').toISOString();
+}
+
 const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
 	const {
 		data: { data: sessionDetail },
@@ -67,7 +71,7 @@ const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
 					{formatISOStringHHMM(sessionDetail.attendanceStartTime)} -{' '}
 					{formatISOStringHHMM(
 						calcSessionAttendanceTime(
-							dayjs(sessionDetail.attendanceStartTime).subtract(1, 'minute').toString(),
+							calcMinusOneMinute(sessionDetail.attendanceStartTime),
 						).toISOString(),
 					)}
 				</p>
@@ -79,7 +83,9 @@ const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
 					)}{' '}
 					-{' '}
 					{formatISOStringHHMM(
-						calcSessionLateAttendanceTime(sessionDetail.attendanceStartTime).toISOString(),
+						calcSessionLateAttendanceTime(
+							calcMinusOneMinute(sessionDetail.attendanceStartTime),
+						).toISOString(),
 					)}
 				</p>
 			</SessionDetailInfoBox>
