@@ -1,13 +1,9 @@
 {
-	"extends": "../../tsconfig.base.json",
+	"extends": "@dpm-core/typescript-config/react-library.json",
 	"compilerOptions": {
-		"noEmit": false,
-		"jsx": "react-jsx",
-		"declaration": true,
 		"paths": {
 			"@dpm-core/shared/*": ["./src/*"]
-		},
-		"rootDir": "src"
+		}
 	},
 	"include": ["src"],
 	"exclude": ["dist"]
