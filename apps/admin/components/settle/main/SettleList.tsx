@@ -1,15 +1,26 @@
-import SettleListItem1 from './SettleListItem1';
-import SettleListItem2 from './SettleListItem2';
-import SettleListItem3 from './SettleListItem3';
+'use client';
 
-const SettleList = () => {
+import type { Bill } from '@dpm-core/api';
+import { useSettleFilterStore } from '@/store/useSettleFilterStore';
+import SettleListItem from './SettleListItem';
+
+interface SettleListProps {
+	settleList: Bill[];
+}
+
+const SettleList = ({ settleList }: SettleListProps) => {
+	const filter = useSettleFilterStore((state) => state.filter);
+
+	const filteredList = settleList.filter((bill) => {
+		if (filter === 'ALL') return true;
+		return bill.billStatus === filter;
+	});
+
 	return (
 		<ul className="flex flex-col">
-			{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
-				<SettleListItem1 key={item} />
+			{filteredList.map((bill) => (
+				<SettleListItem key={bill.billId} bill={bill} />
 			))}
-			<SettleListItem2 />
-			<SettleListItem3 />
 		</ul>
 	);
 };

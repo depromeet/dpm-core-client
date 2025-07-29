@@ -1,7 +1,7 @@
 import CreateSettleBtn from '@/components/settle/layout/CreateSettleBtn';
 import MainTemplete from '@/components/settle/templates/MainTemplete';
 
-export default function SettleMainPage() {
+export default async function SettleMainPage() {
 	return (
 		<div className="relative min-h-screen pt-24 px-4">
 			<MainTemplete />

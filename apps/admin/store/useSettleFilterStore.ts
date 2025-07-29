@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type FilterValue = 'all' | 'before' | 'progress' | 'done';
+type FilterValue = 'ALL' | 'OPEN' | 'IN_PROGRESS' | 'COMPLETED';
 
 interface SettleFilterStore {
 	filter: FilterValue;
@@ -8,6 +8,6 @@ interface SettleFilterStore {
 }
 
 export const useSettleFilterStore = create<SettleFilterStore>((set) => ({
-	filter: 'all',
+	filter: 'ALL',
 	setFilter: (value) => set({ filter: value }),
 }));

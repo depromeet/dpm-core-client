@@ -87,10 +87,7 @@ function Calendar({
 				range_start: cn('rounded-l-md bg-accent', defaultClassNames.range_start),
 				range_middle: cn('rounded-none', defaultClassNames.range_middle),
 				range_end: cn('rounded-r-md bg-accent', defaultClassNames.range_end),
-				today: cn(
-					'bg-accent text-accent-foreground rounded-md data-[selected=true]:rounded-none',
-					defaultClassNames.today,
-				),
+				today: 'text-accent-foreground',
 				outside: cn(
 					'text-muted-foreground aria-selected:text-muted-foreground',
 					defaultClassNames.outside,
@@ -117,7 +114,7 @@ function Calendar({
 				DayButton: (props) => (
 					<CalendarDayButton
 						{...props}
-						className="data-[selected-single=true]:bg-gray-800 data-[selected-single=true]:text-white"
+						className="data-[selected-single=true]:!bg-gray-800 data-[selected-single=true]:!text-white"
 					/>
 				),
 				WeekNumber: ({ children, ...props }) => {
@@ -143,11 +140,18 @@ function CalendarDayButton({
 	...props
 }: React.ComponentProps<typeof DayButton>) {
 	const defaultClassNames = getDefaultClassNames();
-
 	const ref = React.useRef<HTMLButtonElement>(null);
+
 	React.useEffect(() => {
 		if (modifiers.focused) ref.current?.focus();
 	}, [modifiers.focused]);
+
+	const isSelectedToday =
+		modifiers.selected &&
+		modifiers.today &&
+		!modifiers.range_start &&
+		!modifiers.range_middle &&
+		!modifiers.range_end;
 
 	return (
 		<Button
@@ -165,14 +169,22 @@ function CalendarDayButton({
 			data-range-end={modifiers.range_end}
 			data-range-middle={modifiers.range_middle}
 			className={cn(
-				'flex items-center justify-center w-full h-[48px] text-body2 font-medium text-gray-600',
-				'data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground',
-				'data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground',
-				'data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground',
-				'data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground',
+				'flex items-center justify-center text-body2 font-medium',
 				'[&>span]:block [&>span]:leading-none',
-				'inline-flex:flex items-center justify-center text-center',
-				modifiers.outside && 'text-gray-300 hover:text-gray-500 cursor-default',
+				'min-w-[48px] min-h-[48px] w-full h-full',
+				isSelectedToday && '!bg-gray-800 !text-white',
+
+				!isSelectedToday && modifiers.selected && '!bg-gray-800 !text-white',
+
+				modifiers.range_start && 'bg-primary text-white',
+				modifiers.range_middle && 'bg-accent text-accent-foreground',
+				modifiers.range_end && 'bg-primary text-white',
+
+				!modifiers.selected && modifiers.today && 'text-gray-600',
+
+				modifiers.outside && '!text-gray-200',
+				!modifiers.outside && !modifiers.today && !modifiers.selected && 'text-gray-600',
+
 				defaultClassNames.day,
 				className,
 			)}

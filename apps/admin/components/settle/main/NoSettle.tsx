@@ -1,5 +1,3 @@
-import React from 'react';
-
 const NoSettle = () => {
 	return (
 		<div className="flex flex-col items-center justify-center gap-3 mt-[220px]">
