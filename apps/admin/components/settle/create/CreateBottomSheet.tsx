@@ -1,5 +1,3 @@
-import React from 'react';
-
 const CreateBottomSheet = () => {
 	return (
 		<div className="max-w-lg mx-auto fixed bottom-0 z-9999 relative bg-white">
@@ -39,14 +37,14 @@ const CreateBottomSheet = () => {
 				>
 					<title>icon</title>
 					<path
-						fill-rule="evenodd"
-						clip-rule="evenodd"
+						fillRule="evenodd"
+						clipRule="evenodd"
 						d="M11.2803 0.209721C11.5732 0.502614 11.5732 0.977488 11.2803 1.27038L1.28033 11.2704C0.987437 11.5633 0.512563 11.5633 0.21967 11.2704C-0.0732233 10.9775 -0.0732233 10.5026 0.21967 10.2097L10.2197 0.209721C10.5126 -0.083172 10.9874 -0.083172 11.2803 0.209721Z"
 						fill="#9CA3AF"
 					/>
 					<path
-						fill-rule="evenodd"
-						clip-rule="evenodd"
+						fillRule="evenodd"
+						clipRule="evenodd"
 						d="M0.21967 0.209721C0.512563 -0.083172 0.987437 -0.083172 1.28033 0.209721L11.2803 10.2097C11.5732 10.5026 11.5732 10.9775 11.2803 11.2704C10.9874 11.5633 10.5126 11.5633 10.2197 11.2704L0.21967 1.27038C-0.0732233 0.977488 -0.0732233 0.502614 0.21967 0.209721Z"
 						fill="#9CA3AF"
 					/>
