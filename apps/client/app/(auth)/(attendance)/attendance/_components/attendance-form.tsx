@@ -70,12 +70,9 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 
 	const { mutate: checkAttendance, isPending: isPendingCheckAttendance } = useMutation(
 		checkAttendanceOptions(sessionId, {
-			// Todo 커스텀 에러로 처리 예정
 			onSuccess: () => {
-				Promise.all([
-					queryClient.invalidateQueries(getAttendanceMeOptions()),
-					queryClient.invalidateQueries(getAttendanceMeBySessionIdOptions({ sessionId })),
-				]);
+				queryClient.invalidateQueries(getAttendanceMeBySessionIdOptions({ sessionId }));
+				queryClient.invalidateQueries(getAttendanceMeOptions());
 				router.replace(`/attendance/${sessionId}/result`);
 			},
 			onError: async (error) => {
