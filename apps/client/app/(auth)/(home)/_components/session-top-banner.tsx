@@ -1,7 +1,7 @@
 'use client';
 
 import { session } from '@dpm-core/api';
-import { ArrowRight, delay, fadeInOutVariatns, pressInOutVariatns } from '@dpm-core/shared';
+import { ArrowRight, fadeInOutVariatns, pressInOutVariatns } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
@@ -10,20 +10,31 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import Iconttendance3D from '@/assets/icons/icon_attendance_3d.png';
 import { MotionButton } from '@/components/motion';
+import { showAttendanceBanner } from '@/lib/attendance/banner';
 import { formatSessionWeekString } from '@/lib/session/format';
 
 const SessionCurrentWeekBannerContainer = () => {
-	const {
-		data: { data: currentWeekSession },
-	} = useSuspenseQuery({
-		queryKey: ['session-current-week'],
+	const { data: currentWeekSession } = useSuspenseQuery({
+		queryKey: ['session-current-week', 'session-attendance-time'],
 		queryFn: async () => {
-			await delay(1000);
-			return session.getCurrentWeekSession();
+			const { data: currentWeekSession } = await session.getCurrentWeekSession();
+			if (!currentWeekSession) return null;
+			const { data: attendanceTime } = await session.getSessionAttendanceTime(
+				currentWeekSession.sessionId,
+			);
+			return {
+				...currentWeekSession,
+				...attendanceTime,
+			};
 		},
+		gcTime: 0,
 	});
 
 	if (!currentWeekSession) {
+		return null;
+	}
+
+	if (!showAttendanceBanner(currentWeekSession.attendanceStartTime)) {
 		return null;
 	}
 

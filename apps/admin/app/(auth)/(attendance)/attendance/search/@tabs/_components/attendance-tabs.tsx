@@ -13,7 +13,7 @@ export const AttendanceTabs = () => {
 	const tab = useSelectedLayoutSegment();
 
 	if (!tab || !CONST_TABS.some(({ value }) => value === tab)) {
-		redirect('/attendance/search/session?week=2');
+		redirect('/attendance/search/session?week=3');
 	}
 
 	return (
