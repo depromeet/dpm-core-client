@@ -1,14 +1,16 @@
+import { ATTENDANCE_GAP_DURATION, ATTENDANCE_LATE_DURATION } from '@dpm-core/shared';
+
 export const ATTENDANCE_POLICY = [
 	{
 		title: '수료 기준',
 		blocks: [
 			{
 				title: '수료 가능',
-				items: ['80% 이상 출석 필수', '정규 세션 17주 중에 13주 참석 필수'],
+				items: ['80% 이상 출석 필수', 'ex) 정규 세션 17주 중에 13주 참석 필수'],
 			},
 			{
 				title: '수료 불가',
-				items: ['5회 결석시', '오프라인 활동 3회 불참시'],
+				items: ['정규 세션 5회 이상 불참시', '정규 세션 중 오프라인 활동 3회 이상 불참시'],
 			},
 		],
 	},
@@ -17,15 +19,19 @@ export const ATTENDANCE_POLICY = [
 		blocks: [
 			{
 				title: '지각',
-				items: ['세션 시작 30분 후 부터'],
+				items: [`세션 시작 ${ATTENDANCE_GAP_DURATION / (1000 * 60)}분 후 부터`],
+			},
+			{
+				title: '결석',
+				items: [
+					`세션 시작 ${ATTENDANCE_GAP_DURATION / (1000 * 60) + ATTENDANCE_LATE_DURATION / (1000 * 60)}분 후 부터`,
+					'정규 세션 불참시',
+					'지각 및 조퇴는 결석 0.5회 처리',
+				],
 			},
 			{
 				title: '조퇴',
 				items: ['정규 세션 2시간 이상 참석 이후 귀가시'],
-			},
-			{
-				title: '결석',
-				items: ['세션 시작 1시간 후 부터', '정규 세션 불참', '지각 및 조퇴는 결석 0.5회 처리'],
 			},
 		],
 	},
