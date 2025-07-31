@@ -1,8 +1,10 @@
 import { TextLogo } from '@dpm-core/shared';
+import Image from 'next/image';
+import CopyRight from '@/assets/images/copyright.png';
 
 const Footer = () => {
 	return (
-		<footer className="bg-background-inverse py-[26px] px-4 flex flex-col">
+		<footer className="bg-background-inverse py-[26px] px-4 flex flex-col min-h-[223px]">
 			<TextLogo className="text-gray-0" />
 			<div className="flex items-center gap-x-2 my-[18px]">
 				<a
@@ -69,6 +71,7 @@ const Footer = () => {
 						LinkedIn
 					</a>
 				</div>
+				<Image src={CopyRight} width={167} height={6} alt="copyright" className="mt-1.5" />
 			</div>
 		</footer>
 	);
