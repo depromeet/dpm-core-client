@@ -36,6 +36,10 @@ interface AttendanceFormProps {
 	sessionId: number;
 }
 
+function addOneMinute(date: string) {
+	return dayjs(date).add(1, 'minute').toISOString();
+}
+
 const AttendanceFormContainer = ({ sessionId }: AttendanceFormProps) => {
 	const {
 		data: { data: attendance },
@@ -121,16 +125,14 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 								<span>
 									출석 시간 : {formatISOStringHHMM(attendanceStartTime)} -{' '}
 									{formatISOStringHHMM(
-										calcSessionAttendanceTime(
-											dayjs(attendanceStartTime).subtract(1, 'minute').toString(),
-										).toISOString(),
+										calcSessionAttendanceTime(attendanceStartTime).toISOString(),
 									)}
 								</span>
 								<br />
 								<span>
 									지각 시간 :{' '}
 									{formatISOStringHHMM(
-										calcSessionAttendanceTime(attendanceStartTime).toISOString(),
+										calcSessionAttendanceTime(addOneMinute(attendanceStartTime)).toISOString(),
 									)}{' '}
 									-{' '}
 									{formatISOStringHHMM(

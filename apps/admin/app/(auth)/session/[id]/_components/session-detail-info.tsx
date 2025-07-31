@@ -16,8 +16,8 @@ import { formatISOStringHHMM, formatISOStringToFullDateString } from '@/lib/date
 import { getSessionDetailQuery } from '@/remotes/queries/session';
 import { EditSessionBottomSheet } from './edit-session-bottom-sheet';
 
-function calcMinusOneMinute(date: string) {
-	return dayjs(date).subtract(1, 'minute').toISOString();
+function addOneMinute(date: string) {
+	return dayjs(date).add(1, 'minute').toISOString();
 }
 
 const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
@@ -70,22 +70,20 @@ const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
 				<p className="text-body2 font-medium text-label-subtle">
 					{formatISOStringHHMM(sessionDetail.attendanceStartTime)} -{' '}
 					{formatISOStringHHMM(
-						calcSessionAttendanceTime(
-							calcMinusOneMinute(sessionDetail.attendanceStartTime),
-						).toISOString(),
+						calcSessionAttendanceTime(sessionDetail.attendanceStartTime).toISOString(),
 					)}
 				</p>
 
 				<p className="text-body2 font-semibold text-label-assistive">지각 시간</p>
 				<p className="text-body2 font-medium text-label-subtle">
 					{formatISOStringHHMM(
-						calcSessionAttendanceTime(sessionDetail.attendanceStartTime).toISOString(),
+						calcSessionAttendanceTime(
+							addOneMinute(sessionDetail.attendanceStartTime),
+						).toISOString(),
 					)}{' '}
 					-{' '}
 					{formatISOStringHHMM(
-						calcSessionLateAttendanceTime(
-							calcMinusOneMinute(sessionDetail.attendanceStartTime),
-						).toISOString(),
+						calcSessionLateAttendanceTime(sessionDetail.attendanceStartTime).toISOString(),
 					)}
 				</p>
 			</SessionDetailInfoBox>

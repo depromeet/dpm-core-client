@@ -26,8 +26,6 @@ export const formatDotFullDate = (date: Date | string) => {
 	return dayjs(date).format('YYYY.MM.DD (ddd)');
 };
 
-export const SESSION_ATTENDANCE_TIME = 30;
-
 export const calcSessionAttendanceTime = (attendanceStartTime: string) =>
 	dayjs(new Date(attendanceStartTime).getTime() + ATTENDANCE_GAP_DURATION);
 
