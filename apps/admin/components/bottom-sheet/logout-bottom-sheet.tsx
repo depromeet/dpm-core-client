@@ -28,15 +28,15 @@ const LogoutBottomSheet = ({ children, disabled }: PropsWithChildren<LogoutBotto
 		setIsOpen(false);
 	};
 
-	const redirectToHome = () => {
-		router.replace('/');
+	const redirectToLogin = () => {
+		router.replace('/login');
 	};
 
 	const { mutate: logoutMutate, isPending: isLogoutPending } = useMutation(
 		logoutMutationOptions({
 			onSuccess: () => {
 				handleClose();
-				redirectToHome();
+				redirectToLogin();
 			},
 		}),
 	);

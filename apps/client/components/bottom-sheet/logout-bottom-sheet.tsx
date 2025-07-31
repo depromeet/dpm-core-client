@@ -12,6 +12,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { type PropsWithChildren, useState } from 'react';
+import { deleteToken } from '@/lib/utils';
 import { logoutMutationOptions } from '@/remotes/mutations/auth';
 import { Pressable } from '../motion';
 
@@ -28,15 +29,16 @@ const LogoutBottomSheet = ({ children, disabled }: PropsWithChildren<LogoutBotto
 		setIsOpen(false);
 	};
 
-	const redirectToHome = () => {
-		router.replace('/');
+	const redirectToLogin = () => {
+		router.replace('/login');
 	};
 
 	const { mutate: logoutMutate, isPending: isLogoutPending } = useMutation(
 		logoutMutationOptions({
 			onSuccess: () => {
+				deleteToken();
 				handleClose();
-				redirectToHome();
+				redirectToLogin();
 			},
 		}),
 	);
