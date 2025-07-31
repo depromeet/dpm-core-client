@@ -1,5 +1,6 @@
 export * from './attendance';
 export * from './auth';
+export * from './bill';
 export * from './constants';
 export * from './http';
 export * from './member';
