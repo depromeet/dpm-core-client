@@ -7,6 +7,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { Pressable } from '@/components/motion';
+import { showAttendanceCodeBanner } from '@/lib/attendance/banner';
 import { formatSessionWeekString } from '@/lib/session/format';
 
 const SessionBannerContainer = () => {
@@ -25,6 +26,8 @@ const SessionBannerContainer = () => {
 	});
 
 	if (!currentWeekSession) return null;
+
+	if (!showAttendanceCodeBanner(currentWeekSession.date)) return null;
 
 	return (
 		<Pressable

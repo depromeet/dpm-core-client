@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import Iconttendance3D from '@/assets/icons/icon_attendance_3d.png';
+import { showAttendanceBanner } from '@/lib/attendance/banner';
 import { formatSessionWeekString } from '@/lib/session/format';
 import { getCurrentWeekSessionQuery } from '@/remotes/queries/session';
 
@@ -17,6 +18,10 @@ const SessionCurrentWeekBannerContainer = () => {
 	} = useSuspenseQuery(getCurrentWeekSessionQuery);
 
 	if (!currentWeekSession) {
+		return null;
+	}
+
+	if (!showAttendanceBanner(currentWeekSession.date)) {
 		return null;
 	}
 
