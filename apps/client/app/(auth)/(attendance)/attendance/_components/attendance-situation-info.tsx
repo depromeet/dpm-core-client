@@ -22,9 +22,11 @@ export const AttendanceMeInfo = (props: AttendanceMeInfoProps) => {
 		<section className="px-4 mt-5 mb-4">
 			<div className="flex justify-between items-center mb-4">
 				<Profile size={60} name={member.name} part={member.part} teamNumber={member.teamNumber} />
-				<Badge variant={member.attendanceStatus}>
-					{attendanceStatusLabelMap[member.attendanceStatus]}
-				</Badge>
+				{member.attendanceStatus !== 'NORMAL' && (
+					<Badge variant={member.attendanceStatus}>
+						{attendanceStatusLabelMap[member.attendanceStatus]}
+					</Badge>
+				)}
 			</div>
 			<ul className="bg-background-subtle px-5 py-[18px] flex rounded-xl justify-between text-body2">
 				<li>

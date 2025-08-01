@@ -63,9 +63,11 @@ export const AttendanceList = () => {
 							teamNumber={member.teamNumber}
 							part={member.part}
 						/>
-						<Badge variant={member.attendanceStatus}>
-							{getAttendanceMemberStatusLabel(member.attendanceStatus)}
-						</Badge>
+						{member.attendanceStatus !== 'NORMAL' && (
+							<Badge variant={member.attendanceStatus}>
+								{getAttendanceMemberStatusLabel(member.attendanceStatus)}
+							</Badge>
+						)}
 					</Link>
 				);
 			})}
