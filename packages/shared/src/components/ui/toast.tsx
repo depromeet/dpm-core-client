@@ -27,12 +27,23 @@ const ErrorToast = ({ toastId, message }: ToastProps) => {
 	);
 };
 
+const InfoToast = ({ toastId, message }: ToastProps) => {
+	return (
+		<div className="flex items-center py-3 px-4 rounded-full bg-gray-800/90 gap-x-2 pointer-events-none select-none">
+			<p className="text-body2 font-medium text-neutral-5">{message}</p>
+		</div>
+	);
+};
+
 const toast = {
 	success: (message: string, options?: ExternalToast) => {
 		toastify.custom((id) => <Toast toastId={id} message={message} />, options);
 	},
 	error: (message: string, options?: ExternalToast) => {
 		toastify.custom((id) => <ErrorToast toastId={id} message={message} />, options);
+	},
+	info: (message: string, options?: ExternalToast) => {
+		toastify.custom((id) => <InfoToast toastId={id} message={message} />, options);
 	},
 };
 

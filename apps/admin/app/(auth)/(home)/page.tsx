@@ -6,6 +6,8 @@ import IconAttendance from '@/assets/icons/icon_attendance.png';
 import IconSession from '@/assets/icons/icon_session.png';
 import IconSettlement from '@/assets/icons/icon_settlement.png';
 import { NavigationBar } from '@/components/navigation-bar';
+import { SESSION_ID } from '../(attendance)/attendance/search/@tabs/const/const';
+import { FeatureComingSoon } from './_components/coming-soon';
 import { CurrentWeekSession } from './_components/current-week-session';
 import { SessionBanner } from './_components/session-banner';
 import { SessionCurrentWeekBanner } from './_components/session-current-week-banner';
@@ -14,7 +16,7 @@ const UserPage = () => {
 	return (
 		<AppLayout className="bg-background-normal">
 			<NavigationBar>
-				<div className="py-2 px-4 flex items-center justify-between bg-white ">
+				<div className="py-2 px-4 flex items-center justify-between bg-white">
 					<TextLogo className="text-gray-400" />
 
 					<Link href="/my-page">
@@ -31,9 +33,15 @@ const UserPage = () => {
 				className="flex flex-col divide-y-8 divide-background-strong flex-1"
 			>
 				<ul className="flex justify-center items-center gap-x-[52px] mt-5 pb-10">
-					<IconCard icon={IconAttendance} title="출석" href="/attendance/search/session?week=3" />
+					<IconCard
+						icon={IconAttendance}
+						title="출석"
+						href={`/attendance/search/session?week=${SESSION_ID}`}
+					/>
 					<IconCard icon={IconSession} title="세션" href="/session" />
-					<IconCard icon={IconSettlement} title="정산" href="/settlement" />
+					<FeatureComingSoon>
+						<IconCard icon={IconSettlement} title="정산" href="#" />
+					</FeatureComingSoon>
 				</ul>
 
 				<div className="flex flex-col my-5 px-4 w-full gap-y-5 flex-1">
