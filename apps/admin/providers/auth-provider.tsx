@@ -2,10 +2,11 @@
 
 import { auth, type Member } from '@dpm-core/api';
 import { createContext } from '@dpm-core/shared';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { usePathname } from 'next/navigation';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { redirect, usePathname } from 'next/navigation';
 import { type PropsWithChildren, useEffect, useState } from 'react';
 import { UnauthenticatedLayout } from '@/components/unauthenticated-layout';
+import { logoutMutationOptions } from '@/remotes/mutations/auth';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
 interface AuthContextType {
@@ -45,12 +46,18 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		retry: false,
 	});
 
+	const { mutate: logoutMutate } = useMutation(logoutMutationOptions());
+
 	useEffect(() => {
 		if (memberInfo) {
+			if (!memberInfo.isAdmin) {
+				logoutMutate();
+				redirect('/login');
+			}
 			setIsAuthenticated(true);
 			setUser(memberInfo);
 		}
-	}, [memberInfo]);
+	}, [memberInfo, logoutMutate]);
 
 	if (error && pathname !== '/login') {
 		return <UnauthenticatedLayout />;

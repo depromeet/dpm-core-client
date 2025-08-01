@@ -10,4 +10,6 @@ export interface Member {
 	cohort: string;
 
 	part: Part;
+
+	isAdmin: boolean;
 }
