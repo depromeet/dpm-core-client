@@ -29,7 +29,7 @@ const ErrorToast = ({ toastId, message }: ToastProps) => {
 
 const InfoToast = ({ toastId, message }: ToastProps) => {
 	return (
-		<div className="flex items-center py-3 px-4 rounded-full bg-gray-800/90 gap-x-2 pointer-events-none select-none">
+		<div className="flex items-center py-3 px-4 rounded-full bg-gray-800/90 w-fit mx-auto gap-x-2 pointer-events-none select-none">
 			<p className="text-body2 font-medium text-neutral-5">{message}</p>
 		</div>
 	);
