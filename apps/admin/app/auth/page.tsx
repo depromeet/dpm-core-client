@@ -20,7 +20,7 @@ const AuthPage = () => {
 				/>
 			</svg>
 			<h1 className="mt-8 mb-4 text-title1 font-bold text-label-strong text-center">
-				초대되지 않은 계정입니다.
+				운영진 권한이 없습니다.
 			</h1>
 			<p className="text-body2 font-medium text-label-assistive text-center">
 				디프만 운영진이라면
@@ -28,7 +28,7 @@ const AuthPage = () => {
 				회/부회장에게 접근 권한을 요청해 주세요.
 			</p>
 			<Button className="fixed max-w-lg bottom-0" variant="secondary" size="full" asChild>
-				<Link href="/login">로그인 화면으로</Link>
+				<Link href="/login">메인 화면으로</Link>
 			</Button>
 		</div>
 	);
