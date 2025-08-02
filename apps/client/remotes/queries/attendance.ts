@@ -18,7 +18,7 @@ export const getAttendanceMeOptions = () =>
 						message: string;
 						status: string;
 					};
-					if (errorResponse.code === 'A404') {
+					if (errorResponse.code === 'ATTENDANCE-404-01') {
 						return {
 							isError: true,
 							...errorResponse,
