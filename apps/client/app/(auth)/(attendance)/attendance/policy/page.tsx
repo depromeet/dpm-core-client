@@ -13,9 +13,11 @@ export default function AttendancePolicyPage() {
 							{section.blocks.map((block, blockIdx) => (
 								<div key={Number(blockIdx)}>
 									<p className="mb-1.5">{block.title}</p>
-									<ul className="font-medium space-y-1.5 list-disc list-inside">
+									<ul className="font-medium space-y-1.5 list-disc">
 										{block.items.map((item, itemIdx) => (
-											<li key={Number(itemIdx)}>{item}</li>
+											<li key={Number(itemIdx)} className="ml-5">
+												{item}
+											</li>
 										))}
 									</ul>
 								</div>
