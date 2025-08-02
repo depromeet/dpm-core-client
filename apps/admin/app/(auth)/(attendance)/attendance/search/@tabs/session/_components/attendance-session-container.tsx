@@ -16,7 +16,7 @@ const AttendanceSessionContainer = () => {
 		data: { data },
 	} = useSuspenseQuery(getSessionWeeks());
 
-	if (data?.sessions.length === 0) {
+	if (data?.sessions?.length === 0) {
 		return <EmptyView message="현재 조회된 세션 정보가 없습니다" />;
 	}
 
