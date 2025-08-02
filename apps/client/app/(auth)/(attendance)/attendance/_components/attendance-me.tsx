@@ -5,10 +5,12 @@ import { Button } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { Suspense } from 'react';
+import { Fragment, Suspense } from 'react';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { getAttendanceMeOptions } from '@/remotes/queries/attendance';
+import { AttendanceSessionList } from './attendance-session-list';
+import { AttendanceMeInfo } from './attendance-situation-info';
 
 const AttendanceMeContainer = () => {
 	const { data: response } = useSuspenseQuery(getAttendanceMeOptions());
@@ -45,6 +47,12 @@ const AttendanceMeContainer = () => {
 	}
 
 	const { data } = response as ApiResponse<AttendanceReponse>;
+	return (
+		<Fragment>
+			<AttendanceMeInfo attendance={data.attendance} member={data.member} />
+			<AttendanceSessionList sessions={data.sessions} />
+		</Fragment>
+	);
 };
 
 export const AttendanceMe = () => {
