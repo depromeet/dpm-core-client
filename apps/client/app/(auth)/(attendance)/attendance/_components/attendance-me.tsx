@@ -5,18 +5,16 @@ import { Button } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { Fragment, Suspense } from 'react';
+import { Suspense } from 'react';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { getAttendanceMeOptions } from '@/remotes/queries/attendance';
-import { AttendanceSessionList } from './attendance-session-list';
-import { AttendanceMeInfo } from './attendance-situation-info';
 
 const AttendanceMeContainer = () => {
 	const { data: response } = useSuspenseQuery(getAttendanceMeOptions());
 
 	// FIXME: 출석 이력이 없는 경우 처리
-	if (response.code) {
+	if (response.isError) {
 		return (
 			<div className="relative w-full h-dvh flex flex-col items-center justify-center">
 				<svg
@@ -47,12 +45,6 @@ const AttendanceMeContainer = () => {
 	}
 
 	const { data } = response as ApiResponse<AttendanceReponse>;
-	return (
-		<Fragment>
-			<AttendanceMeInfo attendance={data.attendance} member={data.member} />
-			<AttendanceSessionList sessions={data.sessions} />
-		</Fragment>
-	);
 };
 
 export const AttendanceMe = () => {

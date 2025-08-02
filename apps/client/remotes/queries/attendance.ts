@@ -9,7 +9,7 @@ export const getAttendanceMeOptions = () =>
 		queryFn: async () => {
 			try {
 				const response = await attendance.getMe();
-				return response;
+				return { ...response, isError: false };
 			} catch (error) {
 				// FIXME: 출석 이력이 없는 경우 처리
 				if (error && typeof error === 'object' && 'response' in error) {
@@ -19,8 +19,8 @@ export const getAttendanceMeOptions = () =>
 						status: string;
 					};
 					if (errorResponse.code === 'A404') {
-						console.log(errorResponse, '<<errorResponse');
 						return {
+							isError: true,
 							...errorResponse,
 						};
 					}
