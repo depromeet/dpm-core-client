@@ -24,12 +24,12 @@ const CurrentWeekSessionContainer = () => {
 					sessionId={currentWeekSession.sessionId.toString()}
 				/>
 			) : (
-				<>
+				<div className="flex flex-col items-center justify-center flex-1">
 					<Aesterisk />
 					<p className="text-body1 font-semibold text-label-assistive">
 						아직 등록된 세션 정보가 없어요
 					</p>
-				</>
+				</div>
 			)}
 		</>
 	);
