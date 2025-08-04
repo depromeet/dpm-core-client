@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Form, useAppShell } from '@dpm-core/shared';
+import { Button, Form, Input, useAppShell } from '@dpm-core/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -24,7 +24,7 @@ const BillDetailContainer = ({ billId }: { billId: number }) => {
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(console.log)} id={formId}>
-				BillDetail
+				<Input />
 			</form>
 			<BillDetailSubmitButton formId={formId} />
 		</Form>
