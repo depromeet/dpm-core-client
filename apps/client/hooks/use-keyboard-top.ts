@@ -34,17 +34,18 @@ function isMobileFirefox(): boolean | undefined {
 const WINDOW_TOP_OFFSET = 26;
 
 const useKeyboardTop = <T extends HTMLElement>() => {
-	const keyboardIsOpen = useRef(false);
-	const previousDiffFromInitial = useRef(0);
 	const ref = useRef<T>(null);
-	const initialDrawerHeight = useRef(0);
 
 	useEffect(() => {
+		let keyboardIsOpen = false;
+		let previousDiffFromInitial = 0;
+		let initialDrawerHeight = 0;
+
 		function onVisualViewportChange() {
 			if (!ref.current) return;
 
 			const focusedElement = document.activeElement as HTMLElement;
-			if (isInput(focusedElement) || keyboardIsOpen.current) {
+			if (isInput(focusedElement) || keyboardIsOpen) {
 				const visualViewportHeight = window.visualViewport?.height || 0;
 				const totalHeight = window.innerHeight;
 				// This is the height of the keyboard
@@ -53,23 +54,23 @@ const useKeyboardTop = <T extends HTMLElement>() => {
 				// Adjust drawer height only if it's tall enough
 				const isTallEnough = drawerHeight > totalHeight * 0.8;
 
-				if (!initialDrawerHeight.current) {
-					initialDrawerHeight.current = drawerHeight;
+				if (!initialDrawerHeight) {
+					initialDrawerHeight = drawerHeight;
 				}
 				const offsetFromTop = ref.current.getBoundingClientRect().top;
 
 				// visualViewport height may change due to somq e subtle changes to the keyboard. Checking if the height changed by 60 or more will make sure that they keyboard really changed its open state.
-				if (Math.abs(previousDiffFromInitial.current - diffFromInitial) > 60) {
-					keyboardIsOpen.current = !keyboardIsOpen.current;
+				if (Math.abs(previousDiffFromInitial - diffFromInitial) > 60) {
+					keyboardIsOpen = !keyboardIsOpen;
 				}
 
 				// if (snapPoints && snapPoints.length > 0 && snapPointsOffset && activeSnapPointIndex) {
 				// 	const activeSnapPointHeight = snapPointsOffset[activeSnapPointIndex] || 0;
 				// 	diffFromInitial += activeSnapPointHeight;
 				// }
-				previousDiffFromInitial.current = diffFromInitial;
+				previousDiffFromInitial = diffFromInitial;
 				// We don't have to change the height if the input is in view, when we are here we are in the opened keyboard state so we can correctly check if the input is in view
-				if (drawerHeight > visualViewportHeight || keyboardIsOpen.current) {
+				if (drawerHeight > visualViewportHeight || keyboardIsOpen) {
 					const height = ref.current.getBoundingClientRect().height;
 					let newDrawerHeight = height;
 
@@ -80,9 +81,9 @@ const useKeyboardTop = <T extends HTMLElement>() => {
 
 					ref.current.style.height = `${Math.max(newDrawerHeight, visualViewportHeight - offsetFromTop)}px`;
 				} else if (!isMobileFirefox()) {
-					ref.current.style.height = `${initialDrawerHeight.current}px`;
+					ref.current.style.height = `${initialDrawerHeight}px`;
 				}
-				if (!keyboardIsOpen.current) {
+				if (!keyboardIsOpen) {
 					ref.current.style.bottom = `0px`;
 					document.body.style.overflow = '';
 				} else {
