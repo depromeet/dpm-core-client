@@ -12,6 +12,7 @@
 	"dependencies": {
 		"@dpm-core/api": "workspace:*",
 		"@dpm-core/shared": "workspace:*",
+		"@hookform/resolvers": "^5.1.1",
 		"@radix-ui/react-dialog": "^1.1.14",
 		"@radix-ui/react-toggle-group": "^1.1.10",
 		"@suspensive/react": "^3.3.0",
@@ -22,6 +23,7 @@
 		"next": "15.3.3",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
+		"react-hook-form": "^7.60.0",
 		"react-lottie": "^1.2.10",
 		"react-virtuoso": "^4.13.0",
 		"zod": "^4.0.5"
