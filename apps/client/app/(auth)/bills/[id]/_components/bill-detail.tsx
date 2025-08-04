@@ -84,9 +84,9 @@ const BillDetailSubmitButton = ({ formId }: { formId: string }) => {
 				// Adjust drawer height only if it's tall enough
 				const isTallEnough = drawerHeight > totalHeight * 0.8;
 
-				// if (!initialDrawerHeight.current) {
-				// 	initialDrawerHeight.current = drawerHeight;
-				// }
+				if (!initialDrawerHeight.current) {
+					initialDrawerHeight.current = drawerHeight;
+				}
 				const offsetFromTop = buttonRef.current.getBoundingClientRect().top;
 
 				// visualViewport height may change due to somq e subtle changes to the keyboard. Checking if the height changed by 60 or more will make sure that they keyboard really changed its open state.
