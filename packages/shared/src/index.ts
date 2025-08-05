@@ -30,6 +30,7 @@ export * from './constants/attendance';
 export * from './hooks';
 // Layout
 export * from './layout/app-layout';
+export * from './utils/browser';
 export * from './utils/cn';
 // Types
 export * from './utils/cn';

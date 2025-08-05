@@ -1,6 +1,6 @@
 'use client';
 
-import { usePreventScroll } from '@dpm-core/shared';
+import { isInput, isMobileFirefox, usePreventScroll } from '@dpm-core/shared';
 import { useEffect, useRef, useState } from 'react';
 
 const nonTextInputTypes = new Set([
@@ -14,23 +14,6 @@ const nonTextInputTypes = new Set([
 	'submit',
 	'reset',
 ]);
-
-function isInput(target: Element) {
-	return (
-		(target instanceof HTMLInputElement && !nonTextInputTypes.has(target.type)) ||
-		target instanceof HTMLTextAreaElement ||
-		(target instanceof HTMLElement && target.isContentEditable)
-	);
-}
-
-function isMobileFirefox(): boolean | undefined {
-	const userAgent = navigator.userAgent;
-	return (
-		typeof window !== 'undefined' &&
-		((/Firefox/.test(userAgent) && /Mobile/.test(userAgent)) || // Android Firefox
-			/FxiOS/.test(userAgent)) // iOS Firefox
-	);
-}
 
 const WINDOW_TOP_OFFSET = 26;
 

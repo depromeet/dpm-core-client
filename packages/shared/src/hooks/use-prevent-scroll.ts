@@ -4,7 +4,7 @@
 // This code comes from https://github.com/adobe/react-spectrum/blob/main/packages/%40react-aria/overlays/src/usePreventScroll.ts
 
 import { useEffect, useLayoutEffect } from 'react';
-import { isIOS } from './browser';
+import { isIOS } from '../utils/browser';
 
 const KEYBOARD_BUFFER = 24;
 

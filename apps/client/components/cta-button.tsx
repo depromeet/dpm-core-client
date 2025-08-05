@@ -1,11 +1,10 @@
 'use client';
 
-import { cn, useAppShell } from '@dpm-core/shared';
+import { cn, useAppShell, useKeyboardTop } from '@dpm-core/shared';
 import { Loader2Icon } from 'lucide-react';
 import { type HTMLMotionProps, motion } from 'motion/react';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useKeyboardTop } from '@/hooks/use-keyboard-top';
 import { MotionButton } from './motion';
 
 interface CtaButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
