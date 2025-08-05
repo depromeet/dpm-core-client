@@ -91,9 +91,9 @@ const useKeyboardTop = <T extends HTMLElement>(options?: UseKeyboardTopOptions) 
 					// transition timing is 0.3s + 0.3s
 					// 하단 전환이 완료된 후 스크롤 비활성화
 					setTimeout(() => {
+						onKeyboardOpen?.();
 						setIsKeyboardOpen(true);
 					}, 300 + 300);
-					onKeyboardOpen?.();
 				}
 			}
 		}
