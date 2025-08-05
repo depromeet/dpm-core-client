@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { usePreventScroll } from '@dpm-core/shared';
+import { useEffect, useRef, useState } from 'react';
 
 const nonTextInputTypes = new Set([
 	'checkbox',
@@ -40,6 +41,8 @@ interface UseKeyboardTopOptions {
 
 const useKeyboardTop = <T extends HTMLElement>(options?: UseKeyboardTopOptions) => {
 	const ref = useRef<T>(null);
+	const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+	usePreventScroll({ isDisabled: !isKeyboardOpen });
 	const { onKeyboardOpen, onKeyboardClose } = options || {};
 
 	useEffect(() => {
@@ -92,11 +95,16 @@ const useKeyboardTop = <T extends HTMLElement>(options?: UseKeyboardTopOptions) 
 				if (!keyboardIsOpen) {
 					ref.current.style.bottom = `0px`;
 					document.body.style.overflow = '';
+					ref.current.style.transition = '';
+					ref.current.style.transitionDelay = '';
+					setIsKeyboardOpen(false);
 					onKeyboardClose?.();
 				} else {
 					// Negative bottom value would never make sense
+					ref.current.style.transition = 'bottom 0.3s ease-in-out';
+					ref.current.style.transitionDelay = '0.5s';
 					ref.current.style.bottom = `${Math.max(diffFromInitial, 0)}px`;
-					document.body.style.overflow = 'hidden';
+					setIsKeyboardOpen(true);
 					onKeyboardOpen?.();
 				}
 			}

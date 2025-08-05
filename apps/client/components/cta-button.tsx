@@ -33,6 +33,10 @@ const CtaButton = ({
 			variant="secondary"
 			size="full"
 			{...props}
+			style={{
+				...props.style,
+				maxWidth: ref.current.clientWidth,
+			}}
 			className={cn('rounded-none', props.className)}
 			onClick={(event) => {
 				if (isLoading) {

@@ -157,7 +157,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 				/>
 			</form>
 			<CtaButton
-				className="w-full rounded-none fixed bottom-0"
+				className="w-full mx-auto rounded-none fixed bottom-0"
 				disabled={!form.formState.isValid || form.formState.isSubmitting}
 				isLoading={isPendingCheckAttendance}
 				text="완료하기"
@@ -165,8 +165,9 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 				form="attendance-form"
 				onKeyboardOpen={() => {
 					fieldRef.current?.focus();
-					fieldRef.current?.scrollIntoView({ behavior: 'smooth' });
-					console.log('keyboard open');
+					fieldRef.current?.scrollIntoView({
+						behavior: 'smooth',
+					});
 				}}
 			/>
 		</Form>
