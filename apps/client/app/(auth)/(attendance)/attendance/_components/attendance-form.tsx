@@ -145,7 +145,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 				/>
 			</form>
 			<CtaButton
-				className="w-full rounded-none"
+				className="w-full rounded-none fixed bottom-0"
 				disabled={!form.formState.isValid || form.formState.isSubmitting}
 				isLoading={isPendingCheckAttendance}
 				text="완료하기"

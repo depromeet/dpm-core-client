@@ -1,9 +1,11 @@
 'use client';
 
-import { cn } from '@dpm-core/shared';
+import { cn, useAppShell } from '@dpm-core/shared';
 import { Loader2Icon } from 'lucide-react';
 import { type HTMLMotionProps, motion } from 'motion/react';
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
+import { useKeyboardTop } from '@/hooks/use-keyboard-top';
 import { MotionButton } from './motion';
 
 interface CtaButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
@@ -13,7 +15,9 @@ interface CtaButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
 
 const CtaButton = ({ text, isLoading, ...props }: CtaButtonProps) => {
 	const [isButtonPressed, setIsButtonPressed] = useState(false);
-	return (
+	const { ref } = useAppShell();
+	const buttonRef = useKeyboardTop<HTMLButtonElement>();
+	return createPortal(
 		<MotionButton
 			variant="secondary"
 			size="full"
@@ -29,13 +33,15 @@ const CtaButton = ({ text, isLoading, ...props }: CtaButtonProps) => {
 			onTapStart={() => setIsButtonPressed(true)}
 			onTap={() => setIsButtonPressed(false)}
 			onTapCancel={() => setIsButtonPressed(false)}
+			ref={buttonRef}
 		>
 			{isLoading ? (
 				<Loader2Icon className="animate-spin" />
 			) : (
 				<motion.p animate={{ scale: isButtonPressed ? 0.9 : 1 }}>{text}</motion.p>
 			)}
-		</MotionButton>
+		</MotionButton>,
+		ref.current,
 	);
 };
 
