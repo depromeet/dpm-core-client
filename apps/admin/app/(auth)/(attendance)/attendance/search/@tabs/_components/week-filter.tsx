@@ -36,7 +36,7 @@ export const WeekFilter = (props: WeekFilterProps) => {
 							'h-7 px-3 py-1 rounded-lg border text-body2 cursor-pointer font-medium',
 							'border-gray-200',
 							'transition duration-150 ease-out',
-							'data-[state=on]:bg-gray-900 data-[state=on]:text-white',
+							'data-[state=on]:bg-gray-900 data-[state=on]:border-transparent data-[state=on]:text-white',
 							'data-[state=off]:bg-white data-[state=off]:text-gray-500',
 						)}
 					>
