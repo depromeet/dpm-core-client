@@ -4,6 +4,7 @@ import type { AttendanceStatus } from '@dpm-core/api';
 import {
 	Button,
 	Checkbox,
+	ChevronDown,
 	cn,
 	Drawer,
 	DrawerClose,
@@ -15,7 +16,7 @@ import {
 	FilterChip,
 } from '@dpm-core/shared';
 import { Label } from '@radix-ui/react-label';
-import { ChevronDownIcon, RotateCw } from 'lucide-react';
+import { RotateCw } from 'lucide-react';
 import { useMemo, useRef } from 'react';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { getAttendanceStatusLabel } from '@/lib/attendance/status';
@@ -91,7 +92,7 @@ export const AttendanceFilter = () => {
 							)}
 						>
 							{attendanceFilterLabel}
-							<ChevronDownIcon className="size-5 text-icon-noraml" />
+							<ChevronDown />
 						</Button>
 					</DrawerTrigger>
 					<DrawerTrigger asChild>
@@ -103,7 +104,7 @@ export const AttendanceFilter = () => {
 							)}
 						>
 							{teamsFilterLabel}
-							<ChevronDownIcon className="size-5 text-icon-noraml" />
+							<ChevronDown />
 						</Button>
 					</DrawerTrigger>
 				</div>

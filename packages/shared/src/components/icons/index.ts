@@ -2,6 +2,7 @@ export { ArrowRight } from './arrow-right';
 export { Aesterisk } from './asterisk';
 export { Calender } from './calender';
 export { CheckIcon } from './check';
+export { ChevronDown } from './chevron-down';
 export { ChevronLeft } from './chevron-left';
 export { ChevronRight } from './chevron-right';
 export { CircleAlert } from './circle-alert';
