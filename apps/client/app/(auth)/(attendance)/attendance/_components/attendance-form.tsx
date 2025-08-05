@@ -14,6 +14,7 @@ import {
 	InputOTPGroup,
 	InputOTPSlot,
 	toast,
+	usePreventScroll,
 } from '@dpm-core/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ErrorBoundary } from '@suspensive/react';
@@ -73,6 +74,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 			attendanceCode: '',
 		},
 	});
+	usePreventScroll({ isDisabled: !keyboardOpen });
 
 	const { mutate: checkAttendance, isPending: isPendingCheckAttendance } = useMutation(
 		checkAttendanceOptions(sessionId, {
@@ -158,8 +160,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 				text="완료하기"
 				type="submit"
 				form="attendance-form"
-				onKeyboardOpen={() => setKeyboardOpen(true)}
-				onKeyboardClose={() => setKeyboardOpen(false)}
+				onKeyboardStateChange={setKeyboardOpen}
 			/>
 		</Form>
 	);

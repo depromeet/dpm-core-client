@@ -1,7 +1,7 @@
 'use client';
 
-import { isInput, isMobileFirefox, usePreventScroll } from '@dpm-core/shared';
-import { useEffect, useRef, useState } from 'react';
+import { isInput, isMobileFirefox } from '@dpm-core/shared';
+import { useEffect, useRef } from 'react';
 
 const nonTextInputTypes = new Set([
 	'checkbox',
@@ -18,15 +18,12 @@ const nonTextInputTypes = new Set([
 const WINDOW_TOP_OFFSET = 26;
 
 interface UseKeyboardTopOptions {
-	onKeyboardOpen?: () => void;
-	onKeyboardClose?: () => void;
+	onKeyboardStateChange?: (isKeyboardOpen: boolean) => void;
 }
 
 const useKeyboardTop = <T extends HTMLElement>(options?: UseKeyboardTopOptions) => {
 	const ref = useRef<T>(null);
-	const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-	usePreventScroll({ isDisabled: !isKeyboardOpen, focusCallback() {} });
-	const { onKeyboardOpen, onKeyboardClose } = options || {};
+	const { onKeyboardStateChange } = options || {};
 
 	useEffect(() => {
 		let keyboardIsOpen = false;
@@ -80,23 +77,23 @@ const useKeyboardTop = <T extends HTMLElement>(options?: UseKeyboardTopOptions) 
 					document.body.style.overflow = '';
 					ref.current.style.transition = '';
 					ref.current.style.transitionDelay = '';
-					setIsKeyboardOpen(false);
-					onKeyboardClose?.();
+
+					onKeyboardStateChange?.(false);
 				} else {
 					// Negative bottom value would never make sense
 					ref.current.style.transition = 'bottom 0.3s ease-in-out';
 					ref.current.style.transitionDelay = '0.3s';
 
 					ref.current.style.bottom = `${Math.max(diffFromInitial, 0)}px`;
-					setIsKeyboardOpen(true);
-					onKeyboardOpen?.();
+
+					onKeyboardStateChange?.(true);
 				}
 			}
 		}
 
 		window.visualViewport?.addEventListener('resize', onVisualViewportChange);
 		return () => window.visualViewport?.removeEventListener('resize', onVisualViewportChange);
-	}, [onKeyboardOpen, onKeyboardClose]);
+	}, [onKeyboardStateChange]);
 
 	return ref;
 };
