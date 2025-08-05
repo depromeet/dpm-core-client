@@ -107,7 +107,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 				id="attendance-form"
 				className={cn(
 					'flex justify-center items-center flex-col gap-4 flex-1',
-					keyboardOpen && 'pb-20',
+					keyboardOpen && 'pb-56',
 				)}
 			>
 				<FormField
