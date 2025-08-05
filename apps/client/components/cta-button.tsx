@@ -11,12 +11,23 @@ import { MotionButton } from './motion';
 interface CtaButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
 	text: string;
 	isLoading?: boolean;
+	onKeyboardOpen?: () => void;
+	onKeyboardClose?: () => void;
 }
 
-const CtaButton = ({ text, isLoading, ...props }: CtaButtonProps) => {
+const CtaButton = ({
+	text,
+	isLoading,
+	onKeyboardOpen,
+	onKeyboardClose,
+	...props
+}: CtaButtonProps) => {
 	const [isButtonPressed, setIsButtonPressed] = useState(false);
 	const { ref } = useAppShell();
-	const buttonRef = useKeyboardTop<HTMLButtonElement>();
+	const buttonRef = useKeyboardTop<HTMLButtonElement>({
+		onKeyboardOpen,
+		onKeyboardClose,
+	});
 	return createPortal(
 		<MotionButton
 			variant="secondary"

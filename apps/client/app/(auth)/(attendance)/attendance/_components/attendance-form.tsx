@@ -19,7 +19,7 @@ import { ErrorBoundary } from '@suspensive/react';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { CtaButton } from '@/components/cta-button';
@@ -72,6 +72,8 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 		},
 	});
 
+	const fieldRef = useRef<HTMLInputElement>(null);
+
 	const { mutate: checkAttendance, isPending: isPendingCheckAttendance } = useMutation(
 		checkAttendanceOptions(sessionId, {
 			onSuccess: () => {
@@ -106,42 +108,52 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 				<FormField
 					control={form.control}
 					name="attendanceCode"
-					render={({ field }) => (
-						<FormItem className="flex flex-col items-center gap-0">
-							<FormLabel htmlFor="code" className="text-title1 font-bold text-[#1A1C1E] mb-4">
-								출석코드를 입력해 주세요
-							</FormLabel>
-							<FormControl>
-								<InputOTP maxLength={4} id="code" {...field}>
-									<InputOTPGroup>
-										<InputOTPSlot index={0} />
-										<InputOTPSlot index={1} />
-										<InputOTPSlot index={2} />
-										<InputOTPSlot index={3} />
-									</InputOTPGroup>
-								</InputOTP>
-							</FormControl>
-							<FormDescription className="mt-8 text-body2 font-medium text-label-assistive">
-								<span>
-									출석 시간 : {formatISOStringHHMM(attendanceStartTime)} -{' '}
-									{formatISOStringHHMM(
-										calcSessionAttendanceTime(attendanceStartTime).toISOString(),
-									)}
-								</span>
-								<br />
-								<span>
-									지각 시간 :{' '}
-									{formatISOStringHHMM(
-										calcSessionAttendanceTime(addOneMinute(attendanceStartTime)).toISOString(),
-									)}{' '}
-									-{' '}
-									{formatISOStringHHMM(
-										calcSessionLateAttendanceTime(attendanceStartTime).toISOString(),
-									)}
-								</span>
-							</FormDescription>
-						</FormItem>
-					)}
+					render={({ field }) => {
+						return (
+							<FormItem className="flex flex-col items-center gap-0">
+								<FormLabel htmlFor="code" className="text-title1 font-bold text-[#1A1C1E] mb-4">
+									출석코드를 입력해 주세요
+								</FormLabel>
+								<FormControl>
+									<InputOTP
+										maxLength={4}
+										id="code"
+										{...field}
+										ref={(ref) => {
+											field.ref(ref);
+											fieldRef.current = ref;
+										}}
+									>
+										<InputOTPGroup>
+											<InputOTPSlot index={0} />
+											<InputOTPSlot index={1} />
+											<InputOTPSlot index={2} />
+											<InputOTPSlot index={3} />
+										</InputOTPGroup>
+									</InputOTP>
+								</FormControl>
+								<FormDescription className="mt-8 text-body2 font-medium text-label-assistive">
+									<span>
+										출석 시간 : {formatISOStringHHMM(attendanceStartTime)} -{' '}
+										{formatISOStringHHMM(
+											calcSessionAttendanceTime(attendanceStartTime).toISOString(),
+										)}
+									</span>
+									<br />
+									<span>
+										지각 시간 :{' '}
+										{formatISOStringHHMM(
+											calcSessionAttendanceTime(addOneMinute(attendanceStartTime)).toISOString(),
+										)}{' '}
+										-{' '}
+										{formatISOStringHHMM(
+											calcSessionLateAttendanceTime(attendanceStartTime).toISOString(),
+										)}
+									</span>
+								</FormDescription>
+							</FormItem>
+						);
+					}}
 				/>
 			</form>
 			<CtaButton
@@ -151,6 +163,11 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 				text="완료하기"
 				type="submit"
 				form="attendance-form"
+				onKeyboardOpen={() => {
+					fieldRef.current?.focus();
+					fieldRef.current?.scrollIntoView({ behavior: 'smooth' });
+					console.log('keyboard open');
+				}}
 			/>
 		</Form>
 	);

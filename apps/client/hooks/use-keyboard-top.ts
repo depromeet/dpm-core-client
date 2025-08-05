@@ -33,8 +33,14 @@ function isMobileFirefox(): boolean | undefined {
 
 const WINDOW_TOP_OFFSET = 26;
 
-const useKeyboardTop = <T extends HTMLElement>() => {
+interface UseKeyboardTopOptions {
+	onKeyboardOpen?: () => void;
+	onKeyboardClose?: () => void;
+}
+
+const useKeyboardTop = <T extends HTMLElement>(options?: UseKeyboardTopOptions) => {
 	const ref = useRef<T>(null);
+	const { onKeyboardOpen, onKeyboardClose } = options || {};
 
 	useEffect(() => {
 		let keyboardIsOpen = false;
@@ -86,17 +92,19 @@ const useKeyboardTop = <T extends HTMLElement>() => {
 				if (!keyboardIsOpen) {
 					ref.current.style.bottom = `0px`;
 					document.body.style.overflow = '';
+					onKeyboardClose?.();
 				} else {
 					// Negative bottom value would never make sense
 					ref.current.style.bottom = `${Math.max(diffFromInitial, 0)}px`;
 					document.body.style.overflow = 'hidden';
+					onKeyboardOpen?.();
 				}
 			}
 		}
 
 		window.visualViewport?.addEventListener('resize', onVisualViewportChange);
 		return () => window.visualViewport?.removeEventListener('resize', onVisualViewportChange);
-	}, []);
+	}, [onKeyboardOpen, onKeyboardClose]);
 
 	return ref;
 };
