@@ -9,7 +9,7 @@ import { formatISOStringToFullDateString } from '@/lib/date';
 import { getSessionCurrentOptions } from '@/remotes/queries/session';
 import { SessionCard } from './session-card';
 
-const SessionListContainer = () => {
+const CurrentWeekSessionContainer = () => {
 	const {
 		data: { data: currentWeekSession },
 	} = useSuspenseQuery(getSessionCurrentOptions());
@@ -25,7 +25,7 @@ const SessionListContainer = () => {
 					place={currentWeekSession.isOnline ? '온라인' : currentWeekSession.place}
 				/>
 			) : (
-				<div className="flex flex-col items-center justify-center flex-1">
+				<div className="flex flex-col items-center justify-center h-[166px]">
 					<Aesterisk />
 					<p className="text-body1 font-semibold text-label-assistive">
 						아직 등록된 세션 정보가 없어요
@@ -36,7 +36,7 @@ const SessionListContainer = () => {
 	);
 };
 
-const SessionList = ErrorBoundary.with(
+const CurrentWeekSession = ErrorBoundary.with(
 	{
 		fallback: (props) => {
 			return (
@@ -51,9 +51,9 @@ const SessionList = ErrorBoundary.with(
 	},
 	() => (
 		<Suspense fallback={<Loading />}>
-			<SessionListContainer />
+			<CurrentWeekSessionContainer />
 		</Suspense>
 	),
 );
 
-export { SessionList };
+export { CurrentWeekSession };
