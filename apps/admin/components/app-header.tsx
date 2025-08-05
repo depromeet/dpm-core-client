@@ -13,7 +13,9 @@ interface AppHeaderProps {
 const AppHeader = ({ title, backHref, className }: AppHeaderProps) => {
 	const router = useRouter();
 	return (
-		<div className={cn('h-12 flex items-center justify-center relative px-4 py-3 mb-5', className)}>
+		<header
+			className={cn('h-12 flex items-center justify-center relative px-4 py-3 mb-5', className)}
+		>
 			<Link
 				href={backHref ?? '#'}
 				onClick={(event) => {
@@ -26,7 +28,7 @@ const AppHeader = ({ title, backHref, className }: AppHeaderProps) => {
 				<ChevronLeft />
 			</Link>
 			<h3 className="text-body1 font-semibold text-label-strong">{title}</h3>
-		</div>
+		</header>
 	);
 };
 

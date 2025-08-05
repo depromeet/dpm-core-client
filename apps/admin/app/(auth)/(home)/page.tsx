@@ -7,7 +7,6 @@ import IconSession from '@/assets/icons/icon_session.png';
 import IconSettlement from '@/assets/icons/icon_settlement.png';
 import { NavigationBar } from '@/components/navigation-bar';
 import { SESSION_ID } from '../(attendance)/attendance/search/@tabs/const/const';
-import { FeatureComingSoon } from './_components/coming-soon';
 import { CurrentWeekSession } from './_components/current-week-session';
 import { SessionBanner } from './_components/session-banner';
 import { SessionCurrentWeekBanner } from './_components/session-current-week-banner';
@@ -39,9 +38,7 @@ const UserPage = () => {
 						href={`/attendance/search/session?week=${SESSION_ID}`}
 					/>
 					<IconCard icon={IconSession} title="세션" href="/session" />
-					<FeatureComingSoon>
-						<IconCard icon={IconSettlement} title="정산" href="#" />
-					</FeatureComingSoon>
+					<IconCard icon={IconSettlement} title="정산" href="/bills" />
 				</ul>
 
 				<div className="flex flex-col my-5 px-4 w-full gap-y-5 flex-1">
