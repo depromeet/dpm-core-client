@@ -102,9 +102,14 @@ const useKeyboardTop = <T extends HTMLElement>(options?: UseKeyboardTopOptions) 
 				} else {
 					// Negative bottom value would never make sense
 					ref.current.style.transition = 'bottom 0.3s ease-in-out';
-					ref.current.style.transitionDelay = '0.5s';
+					ref.current.style.transitionDelay = '0.3s';
+
 					ref.current.style.bottom = `${Math.max(diffFromInitial, 0)}px`;
-					setIsKeyboardOpen(true);
+					// transition timing is 0.3s + 0.3s
+					// 하단 전환이 완료된 후 스크롤 비활성화
+					setTimeout(() => {
+						setIsKeyboardOpen(true);
+					}, 300 + 300);
 					onKeyboardOpen?.();
 				}
 			}
