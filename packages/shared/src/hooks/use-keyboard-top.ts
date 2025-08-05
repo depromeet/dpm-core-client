@@ -25,7 +25,7 @@ interface UseKeyboardTopOptions {
 const useKeyboardTop = <T extends HTMLElement>(options?: UseKeyboardTopOptions) => {
 	const ref = useRef<T>(null);
 	const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-	usePreventScroll({ isDisabled: !isKeyboardOpen });
+	usePreventScroll({ isDisabled: !isKeyboardOpen, focusCallback() {} });
 	const { onKeyboardOpen, onKeyboardClose } = options || {};
 
 	useEffect(() => {
@@ -88,12 +88,8 @@ const useKeyboardTop = <T extends HTMLElement>(options?: UseKeyboardTopOptions) 
 					ref.current.style.transitionDelay = '0.3s';
 
 					ref.current.style.bottom = `${Math.max(diffFromInitial, 0)}px`;
-					// transition timing is 0.3s + 0.3s
-					// 하단 전환이 완료된 후 스크롤 비활성화
+					setIsKeyboardOpen(true);
 					onKeyboardOpen?.();
-					setTimeout(() => {
-						setIsKeyboardOpen(true);
-					}, 300 + 300);
 				}
 			}
 		}

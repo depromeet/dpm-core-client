@@ -3,6 +3,7 @@
 import {
 	calcSessionAttendanceTime,
 	calcSessionLateAttendanceTime,
+	cn,
 	Form,
 	FormControl,
 	FormDescription,
@@ -19,7 +20,7 @@ import { ErrorBoundary } from '@suspensive/react';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
-import { Suspense, useRef } from 'react';
+import { Suspense, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { CtaButton } from '@/components/cta-button';
@@ -61,6 +62,7 @@ const FormSchema = z.object({
 
 const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTime: string }) => {
 	const { sessionId, attendanceStartTime } = props;
+	const [keyboardOpen, setKeyboardOpen] = useState(false);
 
 	const router = useRouter();
 	const queryClient = useQueryClient();
@@ -71,8 +73,6 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 			attendanceCode: '',
 		},
 	});
-
-	const fieldRef = useRef<HTMLInputElement>(null);
 
 	const { mutate: checkAttendance, isPending: isPendingCheckAttendance } = useMutation(
 		checkAttendanceOptions(sessionId, {
@@ -103,7 +103,10 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 			<form
 				onSubmit={form.handleSubmit(handleSubmitCode)}
 				id="attendance-form"
-				className="flex justify-center items-center flex-col gap-4 flex-1"
+				className={cn(
+					'flex justify-center items-center flex-col gap-4 flex-1',
+					keyboardOpen && 'pb-20',
+				)}
 			>
 				<FormField
 					control={form.control}
@@ -115,15 +118,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 									출석코드를 입력해 주세요
 								</FormLabel>
 								<FormControl>
-									<InputOTP
-										maxLength={4}
-										id="code"
-										{...field}
-										ref={(ref) => {
-											field.ref(ref);
-											fieldRef.current = ref;
-										}}
-									>
+									<InputOTP maxLength={4} id="code" {...field}>
 										<InputOTPGroup>
 											<InputOTPSlot index={0} />
 											<InputOTPSlot index={1} />
@@ -163,12 +158,8 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 				text="완료하기"
 				type="submit"
 				form="attendance-form"
-				onKeyboardOpen={() => {
-					fieldRef.current?.focus();
-					fieldRef.current?.scrollIntoView({
-						behavior: 'smooth',
-					});
-				}}
+				onKeyboardOpen={() => setKeyboardOpen(true)}
+				onKeyboardClose={() => setKeyboardOpen(false)}
 			/>
 		</Form>
 	);
