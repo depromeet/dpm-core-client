@@ -57,7 +57,7 @@ const BillListContainer = () => {
 	);
 };
 
-const BillLsit = ErrorBoundary.with(
+const BillList = ErrorBoundary.with(
 	{
 		fallback: (props) => <ErrorBox onReset={() => props.reset()} />,
 	},
@@ -68,7 +68,7 @@ const BillLsit = ErrorBoundary.with(
 	),
 );
 
-export { BillLsit };
+export { BillList };
 
 function AddButton() {
 	const { ref } = useAppShell();
