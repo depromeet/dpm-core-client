@@ -39,3 +39,17 @@ export interface Bill {
 	inviteAuthorities: InviteAuthority[];
 	gatherings: Gathering[];
 }
+
+export interface CreateBillParams {
+	title: string;
+	description?: string;
+	billAccountId: number;
+	invitedAuthorityIds: number[];
+	gatherings: {
+		roundNumber: number;
+		heldAt: string;
+		receipt: {
+			amount: number;
+		};
+	}[];
+}
