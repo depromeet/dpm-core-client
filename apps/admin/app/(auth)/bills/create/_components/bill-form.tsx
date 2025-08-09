@@ -58,7 +58,7 @@ export const BillForm = () => {
 	const { mutate: createBillMutate, isPending } = useMutation(
 		createBillMutationOptions({
 			onSuccess: (response) => {
-				router.replace(`settle/create/${response.data.billId}`);
+				router.replace(`/bills/create/${response.data.billId}`);
 			},
 			onError: () => {
 				console.log('에러');
