@@ -39,3 +39,8 @@ export interface Bill {
 	inviteAuthorities: InviteAuthority[];
 	gatherings: Gathering[];
 }
+
+export interface GatheringJoin {
+	gatheringId: number;
+	isJoined: boolean;
+}
