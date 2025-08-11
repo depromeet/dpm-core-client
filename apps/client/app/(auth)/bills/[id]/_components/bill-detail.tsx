@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Form, Input, useAppShell } from '@dpm-core/shared';
+import { Button, Form, Input, useAppShell, useKeyboardTop } from '@dpm-core/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -9,7 +9,6 @@ import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { LoadingBox } from '@/components/loading-box';
-import { useKeyboardTop } from '@/hooks/use-keyboard-top';
 import { getBillDetailByIdQueryOptions } from '@/remotes/queries/bill';
 
 const BillDetailContainer = ({ billId }: { billId: number }) => {

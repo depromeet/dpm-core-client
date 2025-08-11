@@ -24,7 +24,7 @@ const CurrentWeekSessionContainer = () => {
 					sessionId={currentWeekSession.sessionId.toString()}
 				/>
 			) : (
-				<div className="flex flex-col items-center justify-center flex-1">
+				<div className="flex flex-col items-center justify-center h-[166px]">
 					<Aesterisk />
 					<p className="text-body1 font-semibold text-label-assistive">
 						아직 등록된 세션 정보가 없어요

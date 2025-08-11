@@ -1,5 +1,6 @@
 'use client';
 
+import { isInput, isMobileFirefox } from '@dpm-core/shared';
 import { useEffect, useRef } from 'react';
 
 const nonTextInputTypes = new Set([
@@ -14,27 +15,15 @@ const nonTextInputTypes = new Set([
 	'reset',
 ]);
 
-function isInput(target: Element) {
-	return (
-		(target instanceof HTMLInputElement && !nonTextInputTypes.has(target.type)) ||
-		target instanceof HTMLTextAreaElement ||
-		(target instanceof HTMLElement && target.isContentEditable)
-	);
-}
-
-function isMobileFirefox(): boolean | undefined {
-	const userAgent = navigator.userAgent;
-	return (
-		typeof window !== 'undefined' &&
-		((/Firefox/.test(userAgent) && /Mobile/.test(userAgent)) || // Android Firefox
-			/FxiOS/.test(userAgent)) // iOS Firefox
-	);
-}
-
 const WINDOW_TOP_OFFSET = 26;
 
-const useKeyboardTop = <T extends HTMLElement>() => {
+interface UseKeyboardTopOptions {
+	onKeyboardStateChange?: (isKeyboardOpen: boolean) => void;
+}
+
+const useKeyboardTop = <T extends HTMLElement>(options?: UseKeyboardTopOptions) => {
 	const ref = useRef<T>(null);
+	const { onKeyboardStateChange } = options || {};
 
 	useEffect(() => {
 		let keyboardIsOpen = false;
@@ -86,17 +75,25 @@ const useKeyboardTop = <T extends HTMLElement>() => {
 				if (!keyboardIsOpen) {
 					ref.current.style.bottom = `0px`;
 					document.body.style.overflow = '';
+					ref.current.style.transition = '';
+					ref.current.style.transitionDelay = '';
+
+					onKeyboardStateChange?.(false);
 				} else {
 					// Negative bottom value would never make sense
+					ref.current.style.transition = 'bottom 0.3s ease-in-out';
+					ref.current.style.transitionDelay = '0.3s';
+
 					ref.current.style.bottom = `${Math.max(diffFromInitial, 0)}px`;
-					document.body.style.overflow = 'hidden';
+
+					onKeyboardStateChange?.(true);
 				}
 			}
 		}
 
 		window.visualViewport?.addEventListener('resize', onVisualViewportChange);
 		return () => window.visualViewport?.removeEventListener('resize', onVisualViewportChange);
-	}, []);
+	}, [onKeyboardStateChange]);
 
 	return ref;
 };

@@ -29,7 +29,7 @@ export const Profile = (props: ProfileProps) => {
 				<span className="text-body1 font-semibold">{name}</span>
 				<div className="flex gap-1.5 text-caption1 text-label-assistive">
 					<span>{teamNumber}팀</span>
-					<span className="border border-line-subtle" />
+					<span className="border-l border-line-subtle" />
 					<span>{getMemberPartLabel(part)}</span>
 				</div>
 			</div>
