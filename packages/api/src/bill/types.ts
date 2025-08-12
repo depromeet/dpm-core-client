@@ -1,5 +1,5 @@
 export interface InviteAuthority {
-	invitedAuthorityId: number;
+	inviteAuthorityId: number;
 	authorityName: string;
 	authorityMemberCount: number;
 }
@@ -34,7 +34,7 @@ export interface Bill {
 	createdAt: string;
 	billAccountId: number;
 	invitedMemberCount: number;
-	invitationConfirmedCount: number;
+	invitationSubmittedCount: number;
 	invitationCheckedMemberCount: number;
 	inviteAuthorities: InviteAuthority[];
 	gatherings: Gathering[];
