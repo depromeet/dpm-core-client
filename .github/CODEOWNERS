@@ -1,19 +1,19 @@
 # Global owners for all files in the repository
-* @LeeJeongHooo @raymondanythings @banhogu
+* @LeeJeongHooo @raymondanythings @semnil5202
 
 # Package-specific owners
-/packages/ @LeeJeongHooo @raymondanythings @banhogu
-/apps/ @LeeJeongHooo @raymondanythings @banhogu
+/packages/ @LeeJeongHooo @raymondanythings @semnil5202
+/apps/ @LeeJeongHooo @raymondanythings @semnil5202
 
 # Configuration files
-package.json @LeeJeongHooo @raymondanythings @banhogu
-tsconfig*.json @LeeJeongHooo @raymondanythings @banhogu
-turbo.json @LeeJeongHooo @raymondanythings @banhogu
-biome.json @LeeJeongHooo @raymondanythings @banhogu
+package.json @LeeJeongHooo @raymondanythings @semnil5202
+tsconfig*.json @LeeJeongHooo @raymondanythings @semnil5202
+turbo.json @LeeJeongHooo @raymondanythings @semnil5202
+biome.json @LeeJeongHooo @raymondanythings @semnil5202
 
 # GitHub configurations
-/.github/ @LeeJeongHooo @raymondanythings @banhogu
+/.github/ @LeeJeongHooo @raymondanythings @semnil5202
 
 # Documentation
-README.md @LeeJeongHooo @raymondanythings @banhogu
-*.md @LeeJeongHooo @raymondanythings @banhogu 
+README.md @LeeJeongHooo @raymondanythings @semnil5202
+*.md @LeeJeongHooo @raymondanythings @semnil5202 
