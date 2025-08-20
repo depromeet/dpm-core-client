@@ -45,7 +45,10 @@ const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
 				<p className="text-body2 leading-none font-semibold text-label-assistive">출석 코드</p>
 				<div className="flex items-center justify-between">
 					<p className="text-body2 font-medium text-label-subtle">{sessionDetail.attendanceCode}</p>
-					<CopyButton value={sessionDetail.attendanceCode} />
+					<CopyButton
+						value={sessionDetail.attendanceCode}
+						onCopy={() => toast.success('출석 코드를 복사했습니다.')}
+					/>
 				</div>
 			</SessionDetailInfoBox>
 

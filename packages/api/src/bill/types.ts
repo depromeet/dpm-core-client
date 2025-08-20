@@ -17,6 +17,12 @@ export interface Gathering {
 	splitAmount: number;
 }
 
+/**
+ * 정산 상태
+ * OPEN("멤버 확정 전")
+ * IN_PROGRESS("정산 중")
+ * COMPLETED("정산 끝")
+ */
 export type BillStatus = 'OPEN' | 'IN_PROGRESS' | 'COMPLETED';
 
 export interface Bill {
@@ -24,12 +30,6 @@ export interface Bill {
 	title: string;
 	description: string;
 	billTotalAmount: number;
-	/**
-	 * 정산 상태
-	 * OPEN("멤버 확정 전")
-	 * IN_PROGRESS("정산 중")
-	 * COMPLETED("정산 끝")
-	 */
 	billStatus: BillStatus;
 	createdAt: string;
 	billAccountId: number;

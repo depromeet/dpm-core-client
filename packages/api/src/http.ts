@@ -1,6 +1,6 @@
 import { logger } from '@dpm-core/shared';
 import Cookies from 'js-cookie';
-import ky, { type KyInstance, type Options } from 'ky';
+import ky, { HTTPError, type KyInstance, type Options } from 'ky';
 import { COOKIE_KEYS } from './constants';
 import { createRefreshPlugin } from './plugins/create-refresh-plugin';
 import type { ApiResponse } from './type';
@@ -78,3 +78,7 @@ class Http {
 }
 
 export const http = new Http();
+
+export const isHttpError = (error: unknown): error is HTTPError => {
+	return error instanceof HTTPError;
+};

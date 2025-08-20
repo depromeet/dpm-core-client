@@ -1,4 +1,6 @@
-import { type Bill, bill } from '@dpm-core/api';
+'use client';
+
+import { type Bill, bill, isHttpError } from '@dpm-core/api';
 import {
 	Button,
 	CheckBlue,
@@ -13,6 +15,7 @@ import {
 	Form,
 	FormField,
 	formatDotFullDate,
+	toast,
 	useAppShell,
 	XIcon,
 	XRed,
@@ -49,16 +52,19 @@ const BillOpenDetail = ({ billDetail }: { billDetail: Bill }) => {
 	});
 
 	const { mutate, isPending } = useMutation({
-		mutationFn: (data: z.infer<typeof gatheringStatusSchema>) => {
+		mutationFn: async (data: z.infer<typeof gatheringStatusSchema>) => {
 			//TODO: 정합성 ok?
-			return Promise.all([
-				bill.patchBillGatheringJoins(billDetail.billId, data.gatheringJoins),
-				bill.patchBillParticipationConfirm(billDetail.billId),
-			]);
+			await bill.patchBillGatheringJoins(billDetail.billId, data.gatheringJoins);
+			await bill.patchBillParticipationConfirm(billDetail.billId);
+			return true;
 		},
-		onError(error) {
-			//TODO: 에러 처리
-			console.log(error.message);
+		async onError(error) {
+			let message = '회식 참석 조사 제출에 실패했어요.';
+			if (isHttpError(error)) {
+				const res = await error.response.json<{ message: string }>();
+				message = res.message;
+			}
+			toast.error(message);
 		},
 	});
 
