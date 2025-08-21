@@ -6,7 +6,7 @@ const next = require('next');
 const fs = require('fs');
 const path = require('path');
 
-const port = 3000;
+const port = 443;
 const hostname = 'local.depromeet-core.shop';
 const dev = process.env.NODE_ENV !== 'production';
 
