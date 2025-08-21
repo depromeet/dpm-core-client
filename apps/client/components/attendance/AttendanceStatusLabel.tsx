@@ -18,6 +18,10 @@ const STATUS_MAP = {
 		icon: <CircleMinus color="#3EA32C" size={16} />,
 		label: '인정',
 	},
+	EARLY_LEAVE: {
+		icon: <CircleMinus color="#FFC06E" size={16} />,
+		label: '조퇴',
+	},
 	PENDING: {
 		icon: <CircleDot color="#9CA3AF" size={16} />,
 		label: '미출석',

@@ -6,6 +6,7 @@ export const ATTENDANCE_LABEL_MAP: Record<AttendanceStatus, string> = {
 	LATE: '지각',
 	EXCUSED_ABSENT: '인정',
 	PENDING: '미출석',
+	EARLY_LEAVE: '조퇴',
 };
 
 export const ATTENDANCE_MEMBER_LABEL_MAP: Record<MemberAttendanceStatus, string> = {

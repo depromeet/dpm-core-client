@@ -20,9 +20,10 @@ import { modifyAttendanceStatusOptions } from '@/remotes/mutations/attendance';
 
 const ATTENDANCE_STATUS = [
 	{ label: '출석', value: 'PRESENT' },
+	{ label: '결석', value: 'ABSENT' },
 	{ label: '지각', value: 'LATE' },
 	{ label: '인정', value: 'EXCUSED_ABSENT' },
-	{ label: '결석', value: 'ABSENT' },
+	{ label: '조퇴', value: 'EARLY_LEAVE' },
 ];
 
 interface AttendanceModifyStatusProps {
