@@ -1,4 +1,4 @@
-import { AppShell, cn, Toaster } from '@dpm-core/shared';
+import { AppShell, Toaster } from '@dpm-core/shared';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { Metadata, Viewport } from 'next';
 import { QueryProvider } from '../providers/query-provider';
@@ -32,7 +32,7 @@ export default function RootLayout({
 				<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 				<link rel="manifest" href="/site.webmanifest" />
 			</head>
-			<body className={cn(pretendard.variable)} suppressHydrationWarning>
+			<body className={pretendard.variable} suppressHydrationWarning>
 				<QueryProvider>
 					<AppShell>{children}</AppShell>
 					<ReactQueryDevtools />
