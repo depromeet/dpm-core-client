@@ -1,5 +1,5 @@
 import type { Part } from '../member';
-export type AttendanceStatus = 'PRESENT' | 'LATE' | 'ABSENT' | 'EXCUSED_ABSENT' | 'PENDING';
+export type AttendanceStatus = 'PRESENT' | 'LATE' | 'ABSENT' | 'EXCUSED_ABSENT' | 'PENDING' | 'EARLY_LEAVE';
 export type MemberAttendanceStatus = 'NORMAL' | 'AT_RISK' | 'IMPOSSIBLE';
 
 export interface AttendanceSession {
@@ -24,6 +24,7 @@ export interface Attendance {
 	lateCount: number;
 	excusedAbsentCount: number;
 	absentCount: number;
+	earlyLeaveCount: number;
 }
 
 export interface AttendanceReponse {
