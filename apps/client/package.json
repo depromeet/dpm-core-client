@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack",
+		"dev:local": "node ../../scripts/local-client-server.js",
 		"build": "next build",
 		"start": "next start",
 		"format": "biome format --write .",

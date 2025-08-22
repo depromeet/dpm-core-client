@@ -9,11 +9,10 @@ export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 class Http {
 	private instance: KyInstance;
-
+	private apiUrl: URL = new URL(BASE_URL ?? '');
 	constructor() {
-		const apiUrl = new URL(BASE_URL ?? '');
 		const instance = ky.extend({
-			prefixUrl: apiUrl.toString(),
+			prefixUrl: this.apiUrl.toString(),
 			credentials: 'include',
 			retry: 0,
 			timeout: 10000,
@@ -38,7 +37,7 @@ class Http {
 					},
 					createRefreshPlugin({
 						whitelist: ['/v1/reissue'],
-						refreshUrl: `${BASE_URL}/v1/reissue`,
+						refreshUrl: `${this.apiUrl.toString()}/v1/reissue`,
 					}),
 				],
 				beforeError: [

@@ -17,13 +17,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Profile } from '@/components/attendance/profile';
 import { modifyAttendanceStatusOptions } from '@/remotes/mutations/attendance';
-
-const ATTENDANCE_STATUS = [
-	{ label: '출석', value: 'PRESENT' },
-	{ label: '지각', value: 'LATE' },
-	{ label: '인정', value: 'EXCUSED_ABSENT' },
-	{ label: '결석', value: 'ABSENT' },
-];
+import { ATTENDANCE_STATUS_OPTIONS } from '@dpm-core/shared';
 
 interface AttendanceModifyStatusProps {
 	sessionId: number;
@@ -74,7 +68,7 @@ export const AttendanceModifyStatus = (props: AttendanceModifyStatusProps) => {
 						className="w-full mt-3 flex border border-line-normal rounded-lg"
 						onValueChange={(value) => setSelectedStatus(value as AttendanceStatus)}
 					>
-						{ATTENDANCE_STATUS.map((status) => (
+						{ATTENDANCE_STATUS_OPTIONS.map((status) => (
 							<RadioGroup.Item
 								key={status.value}
 								value={status.value}
