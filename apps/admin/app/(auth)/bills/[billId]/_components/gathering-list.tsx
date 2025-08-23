@@ -1,10 +1,12 @@
-import type { Gathering } from '@dpm-core/api';
+import type { BillStatus, Gathering } from '@dpm-core/api';
 import { GatheringItem } from './gathering-item';
 
 export const GatheringList = ({
+	billStatus,
 	gatherings,
 	invitationSubmittedCount,
 }: {
+	billStatus: BillStatus;
 	gatherings: Gathering[];
 	invitationSubmittedCount: number;
 }) => {
@@ -16,6 +18,7 @@ export const GatheringList = ({
 					<GatheringItem
 						key={gathering.gatheringId}
 						gathering={gathering}
+						billStatus={billStatus}
 						invitationSubmittedCount={invitationSubmittedCount}
 					/>
 				))}

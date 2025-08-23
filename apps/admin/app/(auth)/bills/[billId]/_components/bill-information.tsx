@@ -1,10 +1,18 @@
+'use client';
+
 import type { Bill } from '@dpm-core/api';
 import { Badge, Button, ChevronRight, CopyIcon, toast } from '@dpm-core/shared';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { formatISOStringToCompactYearDate } from '@/lib/date';
+import { getBillAccountbyId } from '@/remotes/queries/bill';
 import { CopyToClipBoard } from '../../create/[billId]/_components/copy-to-clipboard';
 
 export const BillInformation = ({ bill }: { bill: Bill }) => {
+	const {
+		data: { data: billAccount },
+	} = useSuspenseQuery(getBillAccountbyId(bill.billAccountId));
+
 	const invitedMemberCount = bill.inviteAuthorities.reduce(
 		(acc, inviteAuthority) => acc + inviteAuthority.authorityMemberCount,
 		0,
@@ -40,14 +48,16 @@ export const BillInformation = ({ bill }: { bill: Bill }) => {
 					</div>
 				</li>
 				{/* 송금 계좌 */}
-				{/* TODO : 송금 계좌 API 추가 */}
-				{/* bill.billStatus === 'IN_PROGRESS' && */}
-				{
+				{bill.billStatus === 'IN_PROGRESS' && (
 					<li className="flex items-center gap-4">
 						<p className="w-[70px] text-body2 text-label-assistive font-semibold">송금 계좌</p>
-						<p className="flex-1 text-body2 text-label-subtle font-medium">{bill.billAccountId}</p>
+						<p className="flex-1 text-body2 text-label-subtle font-medium flex gap-1">
+							<span>{billAccount.billAccountValue}</span>
+							<span>{billAccount.bankName}</span>
+							<span>{billAccount.accountHolderName}</span>
+						</p>
 						<CopyToClipBoard
-							text="송금계좌"
+							text={billAccount.billAccountValue}
 							onCopy={() => toast.success('계좌번호를 복사했습니다.')}
 						>
 							<Button className="text-icon-noraml mr-1" size="none" variant="none" asChild>
@@ -55,7 +65,7 @@ export const BillInformation = ({ bill }: { bill: Bill }) => {
 							</Button>
 						</CopyToClipBoard>
 					</li>
-				}
+				)}
 			</ul>
 
 			{/* 회식 인원 */}
@@ -92,7 +102,7 @@ export const BillInformation = ({ bill }: { bill: Bill }) => {
 				</Link>
 			) : (
 				<Link
-					href={'#'}
+					href={`/bills/${bill.billId}/final-amount`}
 					className="px-4 h-12 cursor-pointer flex items-center justify-between bg-gray-100 rounded-[10px] "
 				>
 					<div className="flex items-center gap-1">

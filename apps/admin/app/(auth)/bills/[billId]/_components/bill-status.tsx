@@ -19,6 +19,7 @@ export const BillStatusInformation = ({ billStatus }: Props) => {
 				</p>
 			</div>
 			{billStatus === 'IN_PROGRESS' && (
+				// TODO : 최종 정산 링크 복사 Client 주소 추가
 				<CopyToClipBoard text="" onCopy={() => toast.success('최종 정산 링크를 복사했습니다.')}>
 					<Button variant="none" className="bg-background-strong">
 						<svg
@@ -58,7 +59,7 @@ export const BillStatusInformation = ({ billStatus }: Props) => {
 
 const BillStatusBadge = ({ billStatus }: { billStatus: BillStatus }) => {
 	return (
-		<div className="flex flex-col gap-y-1.5 items-center">
+		<div className="flex flex-col gap-y-1.5 items-center min-w-16">
 			{(() => {
 				switch (billStatus) {
 					case 'OPEN':
