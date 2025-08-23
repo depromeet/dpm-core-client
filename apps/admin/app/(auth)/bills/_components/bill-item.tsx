@@ -111,7 +111,7 @@ function BillItem({ bill }: { bill: Bill }) {
 
 function BillStatusBadge({ status }: { status: BillStatus }) {
 	return (
-		<div className="flex flex-col gap-y-1.5 items-center">
+		<div className="flex flex-col gap-y-1.5 items-center min-w-16">
 			{(() => {
 				switch (status) {
 					case 'OPEN':
