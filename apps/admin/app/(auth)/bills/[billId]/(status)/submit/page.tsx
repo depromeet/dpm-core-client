@@ -1,5 +1,5 @@
 import { AppHeader } from '@/components/app-header';
-import { SubmitList } from './_components/submit-list';
+import { SubmittedMemberList } from './_components/submitted-member-list';
 
 interface Props {
 	params: Promise<{ billId: string }>;
@@ -8,7 +8,6 @@ interface Props {
 export default async function BillMemberSubmitPage({ params }: Props) {
 	const { billId } = await params;
 
-	console.log(billId);
 	return (
 		<>
 			<AppHeader title="제출 현황" className="mb-1.5" />
@@ -18,7 +17,7 @@ export default async function BillMemberSubmitPage({ params }: Props) {
 				</div>
 			</section>
 
-			<SubmitList />
+			<SubmittedMemberList billId={Number(billId)} />
 		</>
 	);
 }
