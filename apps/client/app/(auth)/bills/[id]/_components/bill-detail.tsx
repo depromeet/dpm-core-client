@@ -1,10 +1,10 @@
 'use client';
 
-import type { Bill } from '@dpm-core/api';
+import { type Bill, bill } from '@dpm-core/api';
 import { Form, Input } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Suspense, useId } from 'react';
+import { Suspense, useEffect, useId } from 'react';
 import { useForm } from 'react-hook-form';
 import { LoadingBox } from '@/components/loading-box';
 import { getBillDetailByIdQueryOptions } from '@/remotes/queries/bill';
@@ -31,6 +31,14 @@ function BillDetailContainer({ billId }: { billId: number }) {
 	const {
 		data: { data: billDetail },
 	} = useSuspenseQuery(getBillDetailByIdQueryOptions(billId));
+
+	useEffect(() => {
+		async function checkBill() {
+			await bill.patchBillCheck(billId);
+		}
+		checkBill();
+	}, [billId]);
+
 	switch (billDetail.billStatus) {
 		case 'OPEN':
 			return <BillOpenDetail billDetail={billDetail} />;

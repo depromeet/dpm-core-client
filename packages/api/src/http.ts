@@ -37,7 +37,7 @@ class Http {
 					},
 					createRefreshPlugin({
 						whitelist: ['/v1/reissue'],
-						refreshUrl: `${this.apiUrl.toString()}/v1/reissue`,
+						refreshUrl: new URL('/v1/reissue', this.apiUrl.toString()).toString(),
 					}),
 				],
 				beforeError: [

@@ -27,4 +27,5 @@ export const bill = {
 		const res = await http.patch(`v1/bills/${id}/participation-confirm`);
 		return res;
 	},
+	patchBillCheck: async (id: number) => http.patch(`v1/bills/${id}/check`),
 };
