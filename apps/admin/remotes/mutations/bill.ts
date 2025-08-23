@@ -11,3 +11,12 @@ export const createBillMutationOptions = (
 		mutationFn: (params: CreateBillParams) => bill.createBill(params),
 		...options,
 	});
+
+export const closeBillParticipationMutationOptions = (
+	options?: MutationOptions<string, unknown, { billId: number }, unknown>,
+) =>
+	mutationOptions({
+		mutationKey: [MUTATE_KEY],
+		mutationFn: (params: { billId: number }) => bill.closeBillParticipation(params),
+		...options,
+	});

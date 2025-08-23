@@ -8,7 +8,9 @@ interface GetGatheringMembersResponse {
 export const gathering = {
 	getGatheringMembers: async (params: { gatheringId: number }) => {
 		const { gatheringId } = params;
-		const res = await http.get<GetGatheringMembersResponse>(`v1/gatherings/${gatheringId}/members`);
+		const res = await http.get<GetGatheringMembersResponse>(
+			`v1/gatherings/${gatheringId}/participant-members`,
+		);
 		return res;
 	},
 };

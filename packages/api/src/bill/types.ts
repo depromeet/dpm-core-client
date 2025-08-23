@@ -1,3 +1,5 @@
+import type { Part } from '../member';
+
 export interface InviteAuthority {
 	inviteAuthorityId: number;
 	authorityName: string;
@@ -52,4 +54,27 @@ export interface CreateBillParams {
 			amount: number;
 		};
 	}[];
+}
+
+interface Member {
+	name: string;
+	teamNumber: number;
+	authority: string;
+	part: Exclude<Part, 'ETC'>;
+}
+
+export interface SubmittedMember extends Member {
+	isInvitationSubmitted: boolean;
+}
+
+export interface FinalAmountByMember extends Member {
+	splitAmount: number;
+}
+
+export interface BillAccount {
+	accountHolderName: string;
+	accountType: string;
+	bankName: string;
+	billAccountValue: string;
+	id: number;
 }
