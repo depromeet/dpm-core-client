@@ -30,20 +30,24 @@ export const AttendanceMeInfo = (props: AttendanceMeInfoProps) => {
 			</div>
 			<ul className="bg-background-subtle px-5 py-[18px] flex rounded-xl justify-between text-body2">
 				<li>
-					<span className="mr-2 text-label-assistive font-medium after:content-[':'] ">출석</span>
-					<span className="font-semibold">{attendance.presentCount}회</span>
+					<span className="mr-1 text-label-assistive font-medium">출석</span>
+					<span className="font-semibold text-label-subtle">{attendance.presentCount ?? 0}</span>
 				</li>
 				<li>
-					<span className="mr-2 text-label-assistive font-medium after:content-[':']">지각</span>
-					<span className="font-semibold">{attendance.lateCount}회</span>
+					<span className="mr-1 text-label-assistive font-medium">결석</span>
+					<span className="font-semibold text-label-subtle">{attendance.absentCount ?? 0}</span>
 				</li>
 				<li>
-					<span className="mr-2 text-label-assistive font-medium after:content-[':']">인정</span>
-					<span className="font-semibold">{attendance.excusedAbsentCount}회</span>
+					<span className="mr-1 text-label-assistive font-medium">지각</span>
+					<span className="font-semibold text-label-subtle">{attendance.lateCount ?? 0}</span>
 				</li>
 				<li>
-					<span className="mr-2 text-label-assistive font-medium after:content-[':']">결석</span>
-					<span className="font-semibold">{attendance.absentCount}회</span>
+					<span className="mr-1 text-label-assistive font-medium">인정</span>
+					<span className="font-semibold text-label-subtle">{attendance.excusedAbsentCount ?? 0}</span>
+				</li>
+				<li>
+					<span className="mr-1 text-label-assistive font-medium">조퇴</span>
+					<span className="font-semibold text-label-subtle">{attendance.earlyLeaveCount ?? 0}</span>
 				</li>
 			</ul>
 		</section>
