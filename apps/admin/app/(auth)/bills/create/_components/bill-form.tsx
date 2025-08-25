@@ -1,12 +1,12 @@
 'use client';
 
-import { Form } from '@dpm-core/shared';
+import { Divider, Form } from '@dpm-core/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
-import Devider from '@/components/settle/layout/Devider';
+
 import { createBillMutationOptions } from '@/remotes/mutations/bill';
 import { BillCreateButton } from './bill-create-button';
 import { InformationFormItem } from './information-form-item';
@@ -90,7 +90,7 @@ export const BillForm = () => {
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(handleSubmitSettle)} id={FORM_ID} className="pb-14">
 				<InformationFormItem />
-				<Devider />
+				<Divider className="h-2" />
 				<StepFormItem />
 				<BillCreateButton isLoading={isPending} disabled={isDisabled} form={FORM_ID} />
 			</form>
