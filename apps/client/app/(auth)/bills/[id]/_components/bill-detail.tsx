@@ -1,25 +1,20 @@
 'use client';
 
-import { Button, Form, Input, useAppShell, useKeyboardTop } from '@dpm-core/shared';
-import { zodResolver } from '@hookform/resolvers/zod';
+import type { Bill } from '@dpm-core/api';
+import { Form, Input } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Suspense, useId } from 'react';
-import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
-import z from 'zod';
 import { LoadingBox } from '@/components/loading-box';
 import { getBillDetailByIdQueryOptions } from '@/remotes/queries/bill';
+import { BillDetailSubmitButton } from './bill-detail-submit-button';
+import { BillOpenDetail } from './bill-open-detail';
 
-const BillDetailContainer = ({ billId }: { billId: number }) => {
-	const { data } = useSuspenseQuery(getBillDetailByIdQueryOptions(billId));
+const BillCompletedDetail = ({ billDetail }: { billDetail: Bill }) => {
 	const formId = useId();
 	const form = useForm({
-		resolver: zodResolver(
-			z.object({
-				name: z.string().min(1),
-			}),
-		),
+		defaultValues: {},
 	});
 	return (
 		<Form {...form}>
@@ -31,27 +26,36 @@ const BillDetailContainer = ({ billId }: { billId: number }) => {
 	);
 };
 
-const BillDetailSubmitButton = ({ formId }: { formId: string }) => {
-	const { ref } = useAppShell();
-
-	const buttonRef = useKeyboardTop<HTMLButtonElement>();
-
-	return createPortal(
-		<Button
-			ref={buttonRef}
-			className="fixed bottom-0 w-full mx-auto"
-			variant="secondary"
-			size="full"
-			style={{
-				maxWidth: ref.current.clientWidth,
-			}}
-			form={formId}
-		>
-			참석여부 제출하기
-		</Button>,
-		ref.current,
+const BillInProgressDetail = ({ billDetail }: { billDetail: Bill }) => {
+	const formId = useId();
+	const form = useForm({
+		defaultValues: {},
+	});
+	return (
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(console.log)} id={formId}>
+				<Input />
+			</form>
+			<BillDetailSubmitButton formId={formId} />
+		</Form>
 	);
 };
+
+function BillDetailContainer({ billId }: { billId: number }) {
+	const {
+		data: { data: billDetail },
+	} = useSuspenseQuery(getBillDetailByIdQueryOptions(billId));
+	switch (billDetail.billStatus) {
+		case 'OPEN':
+			return <BillOpenDetail billDetail={billDetail} />;
+		case 'COMPLETED':
+			return <BillCompletedDetail billDetail={billDetail} />;
+		case 'IN_PROGRESS':
+			return <BillInProgressDetail billDetail={billDetail} />;
+		default:
+			billDetail.billStatus satisfies never;
+	}
+}
 
 const BillDetail = ErrorBoundary.with({ fallback: <></> }, (props: { billId: number }) => (
 	<Suspense fallback={<LoadingBox />}>

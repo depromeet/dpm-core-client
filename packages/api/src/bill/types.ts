@@ -78,3 +78,8 @@ export interface BillAccount {
 	billAccountValue: string;
 	id: number;
 }
+
+export interface GatheringJoin {
+	gatheringId: number;
+	isJoined: boolean;
+}

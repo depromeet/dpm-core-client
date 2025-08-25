@@ -4,6 +4,7 @@ import type {
 	BillAccount,
 	CreateBillParams,
 	FinalAmountByMember,
+	GatheringJoin,
 	SubmittedMember,
 } from './types';
 
@@ -58,6 +59,16 @@ export const bill = {
 
 	getBillAccountById: async (accountId: number) => {
 		const res = await http.get<GetBillAccountReponse>(`v1/bills/accounts/${accountId}`);
+		return res;
+	},
+
+	patchBillGatheringJoins: async (id: number, data: GatheringJoin[]) => {
+		const res = await http.patch(`v1/bills/${id}/join`, { json: { gatheringJoins: data } });
+		return res;
+	},
+
+	patchBillParticipationConfirm: async (id: number) => {
+		const res = await http.patch(`v1/bills/${id}/participation-confirm`);
 		return res;
 	},
 };
