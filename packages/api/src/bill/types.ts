@@ -1,7 +1,7 @@
 import type { Part } from '../member';
 
 export interface InviteAuthority {
-	inviteAuthorityId: number;
+	invitedAuthorityId: number;
 	authorityName: string;
 	authorityMemberCount: number;
 }

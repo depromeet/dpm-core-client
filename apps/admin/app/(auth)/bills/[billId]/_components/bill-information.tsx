@@ -7,16 +7,12 @@ import Link from 'next/link';
 import { formatISOStringToCompactYearDate } from '@/lib/date';
 import { getBillAccountbyId } from '@/remotes/queries/bill';
 import { CopyToClipBoard } from '../../create/[billId]/_components/copy-to-clipboard';
+import { formatAuthorityName } from '../utils/formatAuthorityName';
 
 export const BillInformation = ({ bill }: { bill: Bill }) => {
 	const {
 		data: { data: billAccount },
 	} = useSuspenseQuery(getBillAccountbyId(bill.billAccountId));
-
-	const invitedMemberCount = bill.inviteAuthorities.reduce(
-		(acc, inviteAuthority) => acc + inviteAuthority.authorityMemberCount,
-		0,
-	);
 
 	return (
 		<div className="flex flex-col gap-5">
@@ -40,13 +36,16 @@ export const BillInformation = ({ bill }: { bill: Bill }) => {
 					<p className="w-[70px] text-body2 text-label-assistive font-semibold">초대 범위</p>
 					<div className="flex items-center gap-1">
 						{bill.inviteAuthorities.map((inviteAuthoritie) => (
-							<Badge key={inviteAuthoritie.inviteAuthorityId} className="bg-background-strong">
+							<Badge key={inviteAuthoritie.invitedAuthorityId} className="bg-background-strong">
 								<span className="text-label-assistive mr-1">@</span>
-								<span className="text-gray-500">{inviteAuthoritie.authorityName}</span>
+								<span className="text-gray-500">
+									{formatAuthorityName(inviteAuthoritie.authorityName)}
+								</span>
 							</Badge>
 						))}
 					</div>
 				</li>
+
 				{/* 송금 계좌 */}
 				{bill.billStatus === 'IN_PROGRESS' && (
 					<li className="flex items-center gap-4">
@@ -95,7 +94,7 @@ export const BillInformation = ({ bill }: { bill: Bill }) => {
 						<div className="flex items-center gap-[2px] text-body2 font-semibold">
 							<p className="text-primary-normal">{bill.invitationSubmittedCount}</p>
 							<span>/</span>
-							<p className="text-label-subtle">{invitedMemberCount}명 제출</p>
+							<p className="text-label-subtle">{bill.invitedMemberCount}명 제출</p>
 						</div>
 					</div>
 					<ChevronRight className="text-icon-noraml" />

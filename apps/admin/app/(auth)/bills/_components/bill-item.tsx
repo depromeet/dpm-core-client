@@ -2,13 +2,13 @@ import type { Bill, BillStatus } from '@dpm-core/api';
 import Link from 'next/link';
 
 function formatInvitationCount(
-	invitationConfirmedCount: number,
 	invitedMemberCount: number,
+	invitationSubmittedCount: number,
 	billStatus: BillStatus,
 ) {
 	switch (billStatus) {
 		case 'OPEN':
-			return `${invitationConfirmedCount}/${invitedMemberCount}명 제출`;
+			return `${invitationSubmittedCount}/${invitedMemberCount}명 제출`;
 		case 'IN_PROGRESS':
 		case 'COMPLETED':
 			return `대상자 ${invitedMemberCount}명`;
@@ -97,7 +97,7 @@ function BillItem({ bill }: { bill: Bill }) {
 							<span className="text-caption1 font-medium text-label-assistive">
 								{formatInvitationCount(
 									bill.invitedMemberCount,
-									bill.invitedMemberCount,
+									bill.invitationSubmittedCount,
 									bill.billStatus,
 								)}
 							</span>

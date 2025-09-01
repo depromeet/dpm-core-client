@@ -21,7 +21,7 @@ const _BillDetailContainer = ({ billId }: { billId: number }) => {
 		<>
 			<BillHeader billStatus={bill.billStatus} />
 			<section className="flex flex-col gap-8 p-4">
-				<BillStatusInformation billStatus={bill.billStatus} />
+				<BillStatusInformation billStatus={bill.billStatus} billId={bill.billId} />
 				<BillInformation bill={bill} />
 			</section>
 			<div className="my-2 h-2 bg-gray-100 w-full" />

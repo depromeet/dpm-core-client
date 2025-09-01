@@ -1,11 +1,11 @@
 import { Button } from '@dpm-core/shared';
 import Link from 'next/link';
 
-interface FloatingButtonContainer {
+interface FloatingButtonContainerProps {
 	billId: number;
 }
 
-export const FloatingButtonContainer = (props: FloatingButtonContainer) => {
+export const FloatingButtonContainer = (props: FloatingButtonContainerProps) => {
 	const { billId } = props;
 
 	return (

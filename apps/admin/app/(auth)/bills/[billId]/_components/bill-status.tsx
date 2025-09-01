@@ -6,9 +6,11 @@ import { CopyToClipBoard } from '../../create/[billId]/_components/copy-to-clipb
 
 interface Props {
 	billStatus: BillStatus;
+	billId: number;
 }
 
-export const BillStatusInformation = ({ billStatus }: Props) => {
+export const BillStatusInformation = ({ billStatus, billId }: Props) => {
+	const billLink = `${process.env.NEXT_PUBLIC_CLIENT_BASE_URL}/bills/${billId}`;
 	return (
 		<div className="flex flex-col gap-2.5">
 			<div className="px-4 py-3 flex items-center gap-5 bg-background-subtle rounded-lg">
@@ -19,8 +21,10 @@ export const BillStatusInformation = ({ billStatus }: Props) => {
 				</p>
 			</div>
 			{billStatus === 'IN_PROGRESS' && (
-				// TODO : 최종 정산 링크 복사 Client 주소 추가
-				<CopyToClipBoard text="" onCopy={() => toast.success('최종 정산 링크를 복사했습니다.')}>
+				<CopyToClipBoard
+					text={billLink}
+					onCopy={() => toast.success('최종 정산 링크를 복사했습니다.')}
+				>
 					<Button variant="none" className="bg-background-strong">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"

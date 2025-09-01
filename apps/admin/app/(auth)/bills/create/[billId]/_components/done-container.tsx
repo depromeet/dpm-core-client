@@ -7,13 +7,9 @@ interface DoneContainerProps {
 	billId: number;
 }
 
-export const CLIENT_BASE_URL = process.env.NEXT_PUBLIC_CLIENT_BASE_URL;
-
 export const DoneContainer = (props: DoneContainerProps) => {
 	const { billId } = props;
-
-	// TODO env로 환경 변수 관리
-	const copyLink = `${CLIENT_BASE_URL}/bills/${billId}`;
+	const participationLink = `${process.env.NEXT_PUBLIC_CLIENT_BASE_URL}/bills/${billId}`;
 
 	return (
 		<div className="flex-1 flex items-center justify-center">
@@ -40,7 +36,7 @@ export const DoneContainer = (props: DoneContainerProps) => {
 					</div>
 
 					<CopyToClipBoard
-						text={copyLink}
+						text={participationLink}
 						onCopy={() => toast.success('정산 링크를 복사했습니다.')}
 					>
 						<Button size="md" variant="none" className="bg-background-strong">
