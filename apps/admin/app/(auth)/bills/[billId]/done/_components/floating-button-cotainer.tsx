@@ -1,0 +1,16 @@
+import { Button } from '@dpm-core/shared';
+import Link from 'next/link';
+
+interface FloatingButtonContainerProps {
+	billId: number;
+}
+
+export const FloatingButtonContainer = (props: FloatingButtonContainerProps) => {
+	const { billId } = props;
+
+	return (
+		<Button size="full" variant="secondary" asChild>
+			<Link href={`/bills/${billId}`}>최종 정산서 상세보기</Link>
+		</Button>
+	);
+};

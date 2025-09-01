@@ -13,9 +13,11 @@ import {
 	DrawerTrigger,
 	useAppShell,
 } from '@dpm-core/shared';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { closeBillParticipationMutationOptions } from '@/remotes/mutations/bill';
+import { getBillDetailByIdQueryOptions } from '@/remotes/queries/bill';
 
 export const BillFooterAction = ({
 	billStatus,
@@ -24,22 +26,28 @@ export const BillFooterAction = ({
 	billStatus: BillStatus;
 	billId: number;
 }) => {
-	// TODO : 성공 시 라우트 이동 및 정산 종료 핸들러 추가
+	const router = useRouter();
+	const queryClient = useQueryClient();
+
 	const { mutate: closeBillParticipationMutate, isPending } = useMutation(
 		closeBillParticipationMutationOptions({
-			onSuccess: () => {},
+			onSuccess: () => {
+				queryClient.invalidateQueries(getBillDetailByIdQueryOptions(billId));
+				router.push(`/bills/${billId}/done`);
+			},
+			onError: () => {},
 		}),
 	);
-
 	const handleCloseBillParticipation = () => {
 		closeBillParticipationMutate({ billId });
 	};
 
+	// TODO : 정산 종료 API 추가
 	switch (billStatus) {
 		case 'OPEN':
 			return <OpenStatusButton onClick={handleCloseBillParticipation} disabled={isPending} />;
 		case 'IN_PROGRESS':
-			return <InProgressStatusButton disabled={isPending} />;
+			return <InProgressStatusButton />;
 		case 'COMPLETED':
 			return null;
 		default:
