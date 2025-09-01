@@ -1,4 +1,4 @@
-import { AppShell, Toaster } from '@dpm-core/shared';
+import { AppShell, Toaster, AnalyticScript } from '@dpm-core/shared';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { Metadata, Viewport } from 'next';
 import { QueryProvider } from '../providers/query-provider';
@@ -26,6 +26,7 @@ export default function RootLayout({
 	return (
 		<html lang="ko">
 			<head>
+				<AnalyticScript />
 				<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 				<link rel="shortcut icon" href="/favicon.ico" />
