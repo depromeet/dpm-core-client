@@ -1,6 +1,7 @@
 // Utils
 
 // Components
+export * from './components/analytic-script';
 export * from './components/app-shell-provider';
 export * from './components/badge';
 export * from './components/create-context';
@@ -34,6 +35,7 @@ export * from './utils/cn';
 export * from './utils/date';
 export * from './utils/delay';
 export * from './utils/logger';
+export * from './utils/analytics';
 
 // Validators
 export * from './validator';

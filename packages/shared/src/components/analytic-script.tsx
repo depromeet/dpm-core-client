@@ -2,9 +2,8 @@
 
 import Script from 'next/script';
 import { useEffect } from 'react';
+import { GA_ID } from '../constants/analytics';
 import { initGA } from '../utils/analytics';
-
-const GA_ID = 'G-NX5RGT9VXM';
 
 export const AnalyticScript = () => {
 	const gtagConfigScript = `

@@ -8,7 +8,6 @@
 	"files": [
 		"dist"
 	],
-
 	"dependencies": {
 		"@dpm-core/shared": "workspace:*",
 		"js-cookie": "^3.0.5",
