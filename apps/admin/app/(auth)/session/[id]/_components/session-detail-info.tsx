@@ -5,7 +5,7 @@ import {
 	calcSessionAttendanceTime,
 	calcSessionLateAttendanceTime,
 	toast,
-	PageTracker,
+	GAPageTracker,
 } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
@@ -30,7 +30,7 @@ const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
 
 	return (
 		<div className="flex flex-col gap-y-5 p-4">
-			<PageTracker type="session-detail" sessionId={sessionId} />
+			<GAPageTracker type="session-detail" sessionId={sessionId} />
 			<h3 className="text-headline2 font-semibold text-label-normal">{sessionDetail.eventName}</h3>
 			<SessionDetailInfoBox label="세션 정보">
 				<p className="text-body2 font-semibold text-label-assistive">세션 주차</p>

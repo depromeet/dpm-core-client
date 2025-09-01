@@ -2,10 +2,10 @@
 
 import Script from 'next/script';
 import { useEffect } from 'react';
-import { GA_ID } from '../../constants/analytics';
-import { initGA } from '../../utils/analytics';
+import { GA_ID } from '../../constants/google-analytics';
+import { gaInit } from '../../utils/google-analytics';
 
-export const AnalyticScript = () => {
+export const GAScript = () => {
 	const gtagConfigScript = `
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -14,7 +14,7 @@ export const AnalyticScript = () => {
   `;
 
 	useEffect(() => {
-		initGA();
+		gaInit();
 	}, []);
 
 	return (
