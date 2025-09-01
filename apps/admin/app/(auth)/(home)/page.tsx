@@ -1,4 +1,4 @@
-import { AppLayout, ChevronRight, fadeInOutVariatns, TextLogo, UserAvatar } from '@dpm-core/shared';
+import { AppLayout, ChevronRight, fadeInOutVariatns, TextLogo, UserAvatar, PageTracker } from '@dpm-core/shared';
 import * as motion from 'motion/react-client';
 import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
@@ -15,6 +15,7 @@ import { SessionCurrentWeekBanner } from './_components/session-current-week-ban
 const UserPage = () => {
 	return (
 		<AppLayout className="bg-background-normal">
+			<PageTracker type="home" />
 			<NavigationBar>
 				<div className="py-2 px-4 flex items-center justify-between bg-white">
 					<TextLogo className="text-gray-400" />

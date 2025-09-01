@@ -1,7 +1,7 @@
 // Utils
 
 // Components
-export * from './components/analytic-script';
+export * from './components/analytics';
 export * from './components/app-shell-provider';
 export * from './components/badge';
 export * from './components/create-context';
