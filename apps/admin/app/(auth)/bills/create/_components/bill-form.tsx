@@ -92,7 +92,7 @@ export const BillForm = () => {
 				<InformationFormItem />
 				<Divider className="h-2" />
 				<StepFormItem />
-				<BillCreateButton isLoading={isPending} disabled={isDisabled} form={FORM_ID} />
+				<BillCreateButton disabled={isDisabled} form={FORM_ID} />
 			</form>
 		</Form>
 	);
