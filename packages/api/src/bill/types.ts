@@ -1,3 +1,5 @@
+import type { Part } from '../member';
+
 export interface InviteAuthority {
 	invitedAuthorityId: number;
 	authorityName: string;
@@ -34,10 +36,47 @@ export interface Bill {
 	createdAt: string;
 	billAccountId: number;
 	invitedMemberCount: number;
-	invitationConfirmedCount: number;
+	invitationSubmittedCount: number;
 	invitationCheckedMemberCount: number;
 	inviteAuthorities: InviteAuthority[];
 	gatherings: Gathering[];
+}
+
+export interface CreateBillParams {
+	title: string;
+	description?: string;
+	billAccountId: number;
+	invitedAuthorityIds: number[];
+	gatherings: {
+		roundNumber: number;
+		heldAt: string;
+		receipt: {
+			amount: number;
+		};
+	}[];
+}
+
+interface Member {
+	name: string;
+	teamNumber: number;
+	authority: string;
+	part: Exclude<Part, 'ETC'>;
+}
+
+export interface SubmittedMember extends Member {
+	isInvitationSubmitted: boolean;
+}
+
+export interface FinalAmountByMember extends Member {
+	splitAmount: number;
+}
+
+export interface BillAccount {
+	accountHolderName: string;
+	accountType: string;
+	bankName: string;
+	billAccountValue: string;
+	id: number;
 }
 
 export interface GatheringJoin {
