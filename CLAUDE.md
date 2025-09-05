@@ -79,6 +79,8 @@ The `@dpm-core/shared` package exports:
 
 ## Development Guidelines
 
+For additional development rules and conventions, please refer to the **`.cursor/rules/`** directory which contains detailed guidelines for code style, patterns, and best practices.
+
 ### TypeScript & React
 - Use functional and declarative programming patterns
 - Prefer interfaces over types

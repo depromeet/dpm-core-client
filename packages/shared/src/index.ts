@@ -1,6 +1,7 @@
 // Utils
 
 // Components
+export * from './components/google-analytics';
 export * from './components/app-shell-provider';
 export * from './components/badge';
 export * from './components/create-context';
@@ -25,6 +26,7 @@ export * from './components/ui/tabs';
 export * from './components/ui/toast';
 export * from './components/ui/toggle';
 export * from './components/ui/toggle-group';
+export * from './constants/google-analytics';
 export * from './constants/attendance';
 // Layout
 export * from './layout/app-layout';
@@ -34,6 +36,7 @@ export * from './utils/cn';
 export * from './utils/date';
 export * from './utils/delay';
 export * from './utils/logger';
+export * from './utils/google-analytics';
 
 // Validators
 export * from './validator';
