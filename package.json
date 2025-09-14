@@ -22,12 +22,11 @@
 		"@changesets/cli": "^2.29.5",
 		"turbo": "^2.3.5"
 	},
-	"packageManager": "yarn@4.9.2",
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	],
 	"dependencies": {
 		"zustand": "^5.0.6"
+	},
+	"packageManager": "pnpm@8.15.6",
+	"engines": {
+		"node": ">=18"
 	}
 }
