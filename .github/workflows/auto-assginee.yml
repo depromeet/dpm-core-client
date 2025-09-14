@@ -1,8 +1,8 @@
-name: Auto Assignee Label PR
+name: Auto Assignee PR
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, ready_for_review]
 
 jobs:
   assign:
