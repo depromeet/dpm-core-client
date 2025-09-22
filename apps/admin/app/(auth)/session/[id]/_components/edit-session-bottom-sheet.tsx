@@ -18,6 +18,9 @@ import {
 	InputOTPSlot,
 	useAppShell,
 	validateHHMM,
+	gaTrackAttendanceTimeSet,
+	formatAttendanceTimeFromCode,
+	calculateLateTimeFromStartTime,
 } from '@dpm-core/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -68,6 +71,11 @@ const EditSessionBottomSheet = ({
 	);
 
 	const handleSuccess = () => {
+		const inputTime = form.getValues('attendanceStartTime');
+		const startTime = formatAttendanceTimeFromCode(inputTime);
+		const lateTime = calculateLateTimeFromStartTime(inputTime);
+		gaTrackAttendanceTimeSet(sessionId, startTime, lateTime);
+		
 		onSuccess?.();
 		setIsOpen(false);
 	};
