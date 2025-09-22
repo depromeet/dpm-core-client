@@ -9,11 +9,13 @@ import { NavigationBar } from '@/components/navigation-bar';
 import { FeatureComingSoon } from './_components/coming-soon';
 import { SessionList } from './_components/session-list';
 import { SessionCurrentWeekBanner } from './_components/session-top-banner';
+import { HomePageTracker } from './_components/home-page-tracker';
 
 const UserPage = () => {
 	return (
 		<AppLayout className="bg-background-normal">
 			<GAPageTracker type="home" />
+			<HomePageTracker />
 			<NavigationBar>
 				<TextLogo className="text-gray-400" />
 

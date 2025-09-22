@@ -11,11 +11,13 @@ import { FeatureComingSoon } from './_components/coming-soon';
 import { CurrentWeekSession } from './_components/current-week-session';
 import { SessionBanner } from './_components/session-banner';
 import { SessionCurrentWeekBanner } from './_components/session-current-week-banner';
+import { HomePageTracker } from './_components/home-page-tracker';
 
 const UserPage = () => {
 	return (
 		<AppLayout className="bg-background-normal">
 			<GAPageTracker type="home" />
+			<HomePageTracker />
 			<NavigationBar>
 				<div className="py-2 px-4 flex items-center justify-between bg-white">
 					<TextLogo className="text-gray-400" />

@@ -11,6 +11,7 @@ import {
 	DrawerTitle,
 	DrawerTrigger,
 	toast,
+	gaTrackAttendanceOverride,
 } from '@dpm-core/shared';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -34,6 +35,13 @@ export const AttendanceModifyStatus = (props: AttendanceModifyStatusProps) => {
 	const { mutate: modifyStatus } = useMutation(
 		modifyAttendanceStatusOptions(sessionId, member.id, {
 			onSuccess: async () => {
+				gaTrackAttendanceOverride(
+					sessionId.toString(),
+					member.id.toString(),
+					attendanceStatus,
+					selectedStatus,
+				);
+				
 				queryClient.invalidateQueries({
 					queryKey: ['ATTENDANCE'],
 				});
