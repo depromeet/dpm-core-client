@@ -29,10 +29,8 @@ jobs:
       matrix:
         include:
           - name: admin
-            path: ./apps/admin
             project_env: VERCEL_PROJECT_ID_ADMIN
           - name: client
-            path: ./apps/client
             project_env: VERCEL_PROJECT_ID_CLIENT
 
     steps:
@@ -52,7 +50,7 @@ jobs:
 
       - name: Pull Vercel Environment
         run: pnpm dlx vercel@latest pull --yes --token=$VERCEL_TOKEN
-        working-directory: ${{ matrix.path }}
+        
         env:
           VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -60,7 +58,6 @@ jobs:
 
       - name: Build Project
         run: pnpm dlx vercel@latest build --token=$VERCEL_TOKEN
-        working-directory: ${{ matrix.path }}
         env:
           VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -79,7 +76,6 @@ jobs:
           else
             vercel deploy --prebuilt --token=$VERCEL_TOKEN
           fi
-        working-directory: ${{ matrix.path }}
         env:
           VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
