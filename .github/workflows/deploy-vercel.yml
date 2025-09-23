@@ -6,7 +6,7 @@ on:
       user_name:
         required: true
         type: string
-      stage:
+      stage: # preview | production
         required: true
         type: string
       app:
@@ -34,29 +34,33 @@ jobs:
             project_env: VERCEL_PROJECT_ID_CLIENT
 
     steps:
-      - name: Checkout repository
+      - name: checkout repository 
         uses: actions/checkout@v4
 
-      - name: Setup Node.js and PNPM
-        run: |
-          corepack enable
-          corepack prepare pnpm@8 --activate
-        shell: bash
-        env:
-          NODE_VERSION: 22
+      - name: setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
 
-      - name: Install dependencies
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Pull Vercel Environment
-        run: pnpm dlx vercel@latest pull --yes --token=$VERCEL_TOKEN
-        
+        if: ${{ inputs.app == matrix.name || inputs.app == 'all' }}
+        run: pnpm dlx vercel@latest pull --yes --environment=${{ inputs.stage }} --token=$VERCEL_TOKEN
         env:
           VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
-      - name: Build Project
+      - name: Build Project (Prebuilt)
+        if: ${{ inputs.app == matrix.name || inputs.app == 'all' }}
         run: pnpm dlx vercel@latest build --token=$VERCEL_TOKEN
         env:
           VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
@@ -70,11 +74,11 @@ jobs:
             if [ "$GITHUB_REF" = "refs/heads/main" ]; then
               pnpm dlx vercel@latest deploy --prebuilt --prod --token=$VERCEL_TOKEN
             else
-              echo "Production 배포는 main 브랜치에서만 가능합니다."
+              echo "❌ Production 배포는 main 브랜치에서만 가능합니다."
               exit 1
             fi
           else
-            vercel deploy --prebuilt --token=$VERCEL_TOKEN
+            pnpm dlx vercel@latest deploy --prebuilt --token=$VERCEL_TOKEN
           fi
         env:
           VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}

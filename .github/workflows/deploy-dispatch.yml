@@ -12,7 +12,7 @@ on:
         type: choice
         options:
           - production
-          - develop
+          - preview
       app:
         description: 배포할 앱
         required: true
