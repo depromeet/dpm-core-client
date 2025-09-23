@@ -29,10 +29,10 @@ jobs:
       matrix:
         include:
           - name: admin
-            path: apps/admin
+            path: ./apps/admin
             project_env: VERCEL_PROJECT_ID_ADMIN
           - name: client
-            path: apps/client
+            path: ./apps/client
             project_env: VERCEL_PROJECT_ID_CLIENT
 
     steps:
@@ -71,7 +71,7 @@ jobs:
         run: |
           if [ "${{ inputs.stage }}" = "production" ]; then
             if [ "$GITHUB_REF" = "refs/heads/main" ]; then
-              pnpm dlx vercel@latest deploy --prebuilt --prod --token=$VERCEL_TOKEN --cwd ${{ matrix.path }}
+              pnpm dlx vercel@latest deploy --prebuilt --prod --token=$VERCEL_TOKEN
             else
               echo "Production 배포는 main 브랜치에서만 가능합니다."
               exit 1
