@@ -15,7 +15,9 @@ export const WeekFilter = (props: WeekFilterProps) => {
 		return null;
 	}
 
+	const weekFilter = customSearchParams.get('week');
 	const handleFilterWeek = (week: string) => {
+		if (!week) return;
 		customSearchParams.update({ week }, 'REPLACE');
 	};
 
@@ -24,7 +26,7 @@ export const WeekFilter = (props: WeekFilterProps) => {
 			<ToggleGroup.Root
 				type="single"
 				aria-label="세션 주차 필터"
-				defaultValue={customSearchParams.get('week')?.toString()}
+				value={weekFilter?.toString()}
 				onValueChange={handleFilterWeek}
 				className="flex items-center gap-2 whitespace-nowrap w-max"
 			>
@@ -36,7 +38,7 @@ export const WeekFilter = (props: WeekFilterProps) => {
 							'h-7 px-3 py-1 rounded-lg border text-body2 cursor-pointer font-medium',
 							'border-gray-200',
 							'transition duration-150 ease-out',
-							'data-[state=on]:bg-gray-900 data-[state=on]:text-white',
+							'data-[state=on]:bg-gray-900 data-[state=on]:border-transparent data-[state=on]:text-white',
 							'data-[state=off]:bg-white data-[state=off]:text-gray-500',
 						)}
 					>
