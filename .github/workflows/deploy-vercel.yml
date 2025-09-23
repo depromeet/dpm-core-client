@@ -1,0 +1,83 @@
+name: Deploy Vercel
+
+on:
+  workflow_call:
+    inputs:
+      user_name:
+        required: true
+        type: string
+      stage:
+        required: true
+        type: string
+      app:
+        required: false
+        type: string
+    secrets:
+      VERCEL_TOKEN:
+        required: true
+      VERCEL_PROJECT_ID_ADMIN:
+        required: true
+      VERCEL_PROJECT_ID_CLIENT:
+        required: true
+      VERCEL_ORG_ID:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: admin
+            path: apps/admin
+            project_env: VERCEL_PROJECT_ID_ADMIN
+          - name: client
+            path: apps/client
+            project_env: VERCEL_PROJECT_ID_CLIENT
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and PNPM
+        run: |
+          corepack enable
+          corepack prepare pnpm@8 --activate
+        shell: bash
+        env:
+          NODE_VERSION: 22
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Pull Vercel Environment
+        run: vercel pull --yes --token=$VERCEL_TOKEN --cwd ${{ matrix.path }}
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project
+        run: vercel build --token=$VERCEL_TOKEN --cwd ${{ matrix.path }}
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Prebuilt to Vercel
+        if: ${{ inputs.app == matrix.name || inputs.app == 'all' }}
+        run: |
+          if [ "${{ inputs.stage }}" = "production" ]; then
+            if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+              vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN --cwd ${{ matrix.path }}
+            else
+              echo "Production 배포는 main 브랜치에서만 가능합니다."
+              exit 1
+            fi
+          else
+            vercel deploy --prebuilt --token=$VERCEL_TOKEN --cwd ${{ matrix.path }}
+          fi
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
