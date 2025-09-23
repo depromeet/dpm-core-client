@@ -51,14 +51,16 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Pull Vercel Environment
-        run: vercel pull --yes --token=$VERCEL_TOKEN --cwd ${{ matrix.path }}
+        run: pnpm dlx vercel@latest pull --yes --token=$VERCEL_TOKEN
+        working-directory: ${{ matrix.path }}
         env:
           VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
       - name: Build Project
-        run: vercel build --token=$VERCEL_TOKEN --cwd ${{ matrix.path }}
+        run: pnpm dlx vercel@latest build --token=$VERCEL_TOKEN
+        working-directory: ${{ matrix.path }}
         env:
           VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -69,14 +71,15 @@ jobs:
         run: |
           if [ "${{ inputs.stage }}" = "production" ]; then
             if [ "$GITHUB_REF" = "refs/heads/main" ]; then
-              vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN --cwd ${{ matrix.path }}
+              pnpm dlx vercel@latest deploy --prebuilt --prod --token=$VERCEL_TOKEN --cwd ${{ matrix.path }}
             else
               echo "Production 배포는 main 브랜치에서만 가능합니다."
               exit 1
             fi
           else
-            vercel deploy --prebuilt --token=$VERCEL_TOKEN --cwd ${{ matrix.path }}
+            vercel deploy --prebuilt --token=$VERCEL_TOKEN
           fi
+        working-directory: ${{ matrix.path }}
         env:
           VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
