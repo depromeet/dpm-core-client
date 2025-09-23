@@ -1,0 +1,38 @@
+name: Deploy Workflow Dispatch
+
+on:
+  workflow_dispatch:
+    inputs:
+      user_name:
+        description: 배포한 사용자
+        required: true
+        type: string
+      stage_choice:
+        description: 배포 유형
+        type: choice
+        options:
+          - production
+          - develop
+      app:
+        description: 배포할 앱
+        required: true
+        type: choice
+        options:
+          - admin
+          - client
+          - all
+
+run-name: '${{inputs.user_name}} runs workflow for ${{inputs.stage_choice}} deploy ${{inputs.app}}'
+
+jobs:
+  deploy:
+    uses: './.github/workflows/deploy-vercel.yml'
+    with:
+      user_name: ${{ inputs.user_name }}
+      stage: ${{ inputs.stage_choice }}
+      app: ${{ inputs.app }}
+    secrets:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_PROJECT_ID_ADMIN: ${{ secrets.VERCEL_PROJECT_ID_ADMIN }}
+      VERCEL_PROJECT_ID_CLIENT: ${{ secrets.VERCEL_PROJECT_ID_CLIENT }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
