@@ -6,7 +6,7 @@ on:
       user_name:
         required: true
         type: string
-      stage: # preview | production
+      stage:
         required: true
         type: string
       app:
@@ -27,48 +27,46 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include:
-          - name: admin
-            project_env: VERCEL_PROJECT_ID_ADMIN
-          - name: client
-            project_env: VERCEL_PROJECT_ID_CLIENT
+        app: ${{ fromJSON(inputs.app) }}
+
+    env:
+      VERCEL_PROJECT_ID: ${{ secrets[matrix.app == 'admin' && 'VERCEL_PROJECT_ID_ADMIN' || 'VERCEL_PROJECT_ID_CLIENT'] }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
     steps:
-      - name: checkout repository 
+      - name: Checkout repository 
         uses: actions/checkout@v4
 
-      - name: setup pnpm
+      - name: Setup pnpm environment
         uses: pnpm/action-setup@v4
         with:
           run_install: false
 
-      - name: setup node
+      - name: Setup node environment
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: 'pnpm'
 
-      - name: install dependencies
+      - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Set the stage
+        id: set-stage
+        run: |
+          if [ "${{ github.event.inputs.stage }}" = "develop" ]; then
+            echo "STAGE=preview" >> $GITHUB_OUTPUT
+          else
+            echo "STAGE=production" >> $GITHUB_OUTPUT
+
       - name: Pull Vercel Environment
-        if: ${{ inputs.app == matrix.name || inputs.app == 'all' }}
-        run: pnpm dlx vercel@latest pull --yes --environment=${{ inputs.stage }} --token=$VERCEL_TOKEN
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: pnpm dlx vercel@latest pull --yes --environment=${{ steps.set-stage.outputs.STAGE }} --token=$VERCEL_TOKEN
 
-      - name: Build Project (Prebuilt)
-        if: ${{ inputs.app == matrix.name || inputs.app == 'all' }}
+      - name: Build
         run: pnpm dlx vercel@latest build --token=$VERCEL_TOKEN
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
-      - name: Deploy Prebuilt to Vercel
-        if: ${{ inputs.app == matrix.name || inputs.app == 'all' }}
+      - name: Deploy
         run: |
           if [ "${{ inputs.stage }}" = "production" ]; then
             if [ "$GITHUB_REF" = "refs/heads/main" ]; then
@@ -78,9 +76,6 @@ jobs:
               exit 1
             fi
           else
-            pnpm dlx vercel@latest deploy --prebuilt --token=$VERCEL_TOKEN
+            pnpm dlx vercel@latest deploy --prebuilt --token=$VERCEL_TOKEN --branch=develop
           fi
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      

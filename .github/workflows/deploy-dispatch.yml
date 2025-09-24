@@ -1,4 +1,4 @@
-name: Deploy Workflow Dispatch
+name: Deploy App with Vercel
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ on:
         type: choice
         options:
           - production
-          - preview
+          - develop
       app:
         description: 배포할 앱
         required: true
@@ -30,9 +30,5 @@ jobs:
     with:
       user_name: ${{ inputs.user_name }}
       stage: ${{ inputs.stage_choice }}
-      app: ${{ inputs.app }}
-    secrets:
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_PROJECT_ID_ADMIN: ${{ secrets.VERCEL_PROJECT_ID_ADMIN }}
-      VERCEL_PROJECT_ID_CLIENT: ${{ secrets.VERCEL_PROJECT_ID_CLIENT }}
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      app: ${{ inputs.app == 'all' && '["admin","client"]' || format('["{0}"]', inputs.app) }}
+    secrets: inherit
