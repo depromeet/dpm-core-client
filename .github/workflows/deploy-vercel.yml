@@ -3,9 +3,6 @@ name: Deploy Vercel
 on:
   workflow_call:
     inputs:
-      user_name:
-        required: true
-        type: string
       stage:
         required: true
         type: string
@@ -26,58 +23,53 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        include:
-          - name: admin
-            path: apps/admin
-            project_env: VERCEL_PROJECT_ID_ADMIN
-          - name: client
-            path: apps/client
-            project_env: VERCEL_PROJECT_ID_CLIENT
+        app: ${{ fromJSON(inputs.app) }}
+
+    env:
+      VERCEL_PROJECT_ID: ${{ secrets[matrix.app == 'admin' && 'VERCEL_PROJECT_ID_ADMIN' || 'VERCEL_PROJECT_ID_CLIENT'] }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repository 
         uses: actions/checkout@v4
 
-      - name: Setup Node.js and PNPM
-        run: |
-          corepack enable
-          corepack prepare pnpm@8 --activate
-        shell: bash
-        env:
-          NODE_VERSION: 22
+      - name: Setup pnpm environment
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
 
-      - name: Install dependencies
+      - name: Setup node environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x 
+          cache: 'pnpm'
+
+      - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Pull Vercel Environment
-        run: vercel pull --yes --token=$VERCEL_TOKEN --cwd ${{ matrix.path }}
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: pnpm dlx vercel@latest pull --yes --environment=${{ inputs.stage }} --token=$VERCEL_TOKEN
 
-      - name: Build Project
-        run: vercel build --token=$VERCEL_TOKEN --cwd ${{ matrix.path }}
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      - name: Build
+        run: |
+          if [ "${{ inputs.stage }}" = "production" ]; then
+            pnpm dlx vercel@latest build --token=$VERCEL_TOKEN --prod
+          else
+            pnpm dlx vercel@latest build --token=$VERCEL_TOKEN
+          fi
 
-      - name: Deploy Prebuilt to Vercel
-        if: ${{ inputs.app == matrix.name || inputs.app == 'all' }}
+      - name: Deploy
         run: |
           if [ "${{ inputs.stage }}" = "production" ]; then
             if [ "$GITHUB_REF" = "refs/heads/main" ]; then
-              vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN --cwd ${{ matrix.path }}
+              pnpm dlx vercel@latest deploy --prebuilt --prod --token=$VERCEL_TOKEN
             else
               echo "Production 배포는 main 브랜치에서만 가능합니다."
               exit 1
             fi
           else
-            vercel deploy --prebuilt --token=$VERCEL_TOKEN --cwd ${{ matrix.path }}
+            pnpm dlx vercel@latest deploy --prebuilt --token=$VERCEL_TOKEN
           fi
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets[matrix.project_env] }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
