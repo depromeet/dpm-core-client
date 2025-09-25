@@ -55,7 +55,7 @@ jobs:
       - name: Set the stage
         id: set-stage
         run: |
-          if [ "${{ github.event.inputs.stage }}" = "develop" ]; then
+          if [ "${{ inputs.stage }}" = "develop" ]; then
             echo "STAGE=preview" >> $GITHUB_OUTPUT
           else
             echo "STAGE=production" >> $GITHUB_OUTPUT
