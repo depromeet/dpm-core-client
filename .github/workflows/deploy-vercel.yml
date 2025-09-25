@@ -26,6 +26,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         app: ${{ fromJSON(inputs.app) }}
 
@@ -77,6 +78,6 @@ jobs:
               exit 1
             fi
           else
-            pnpm dlx vercel@latest deploy --prebuilt --token=$VERCEL_TOKEN --branch=develop
+            pnpm dlx vercel@latest deploy --prebuilt --token=$VERCEL_TOKEN
           fi
       
