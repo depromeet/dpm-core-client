@@ -3,9 +3,6 @@ name: Deploy Vercel
 on:
   workflow_call:
     inputs:
-      user_name:
-        required: true
-        type: string
       stage:
         required: true
         type: string
@@ -53,20 +50,16 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Set the stage
-        id: set-stage
-        run: |
-          if [ "${{ inputs.stage }}" = "develop" ]; then
-            echo "STAGE=preview" >> $GITHUB_OUTPUT
-          else
-            echo "STAGE=production" >> $GITHUB_OUTPUT
-          fi
-
       - name: Pull Vercel Environment
-        run: pnpm dlx vercel@latest pull --yes --environment=${{ steps.set-stage.outputs.STAGE }} --token=$VERCEL_TOKEN
+        run: pnpm dlx vercel@latest pull --yes --environment=${{ inputs.stage }} --token=$VERCEL_TOKEN
 
       - name: Build
-        run: pnpm dlx vercel@latest build --token=$VERCEL_TOKEN
+        run: |
+          if [ "${{ inputs.stage }}" = "production" ]; then
+            pnpm dlx vercel@latest build --token=$VERCEL_TOKEN --prod
+          else
+            pnpm dlx vercel@latest build --token=$VERCEL_TOKEN
+          fi
 
       - name: Deploy
         run: |
@@ -74,7 +67,7 @@ jobs:
             if [ "$GITHUB_REF" = "refs/heads/main" ]; then
               pnpm dlx vercel@latest deploy --prebuilt --prod --token=$VERCEL_TOKEN
             else
-              echo "❌ Production 배포는 main 브랜치에서만 가능합니다."
+              echo "Production 배포는 main 브랜치에서만 가능합니다."
               exit 1
             fi
           else
