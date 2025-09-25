@@ -46,7 +46,7 @@ jobs:
       - name: Setup node environment
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: 22.x 
           cache: 'pnpm'
 
       - name: Install Dependencies
@@ -59,6 +59,7 @@ jobs:
             echo "STAGE=preview" >> $GITHUB_OUTPUT
           else
             echo "STAGE=production" >> $GITHUB_OUTPUT
+          fi
 
       - name: Pull Vercel Environment
         run: pnpm dlx vercel@latest pull --yes --environment=${{ steps.set-stage.outputs.STAGE }} --token=$VERCEL_TOKEN
