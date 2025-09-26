@@ -1,9 +1,9 @@
 'use client';
 
-import { Aesterisk } from '@dpm-core/shared';
+import { Aesterisk, gaTrackHomeEnter } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { Loading } from '@/components/lotties/loading';
 import { formatISOStringToFullDateString } from '@/lib/date';
 import { getSessionCurrentOptions } from '@/remotes/queries/session';
@@ -13,6 +13,11 @@ const CurrentWeekSessionContainer = () => {
 	const {
 		data: { data: currentWeekSession },
 	} = useSuspenseQuery(getSessionCurrentOptions());
+
+	useEffect(() => {
+		const sessionId = currentWeekSession?.sessionId?.toString() || 'home';
+		gaTrackHomeEnter(sessionId);
+	}, [currentWeekSession]);
 
 	return (
 		<>

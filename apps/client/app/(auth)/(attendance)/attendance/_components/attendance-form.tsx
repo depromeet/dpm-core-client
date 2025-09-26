@@ -14,6 +14,9 @@ import {
 	InputOTPGroup,
 	InputOTPSlot,
 	toast,
+	gaTrackAttendanceEnter,
+	gaTrackAttendanceSubmit,
+	gaTrackSessionStart,
 	usePreventScroll,
 } from '@dpm-core/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,7 +24,7 @@ import { ErrorBoundary } from '@suspensive/react';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { CtaButton } from '@/components/cta-button';
@@ -68,6 +71,11 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
+	useEffect(() => {
+		gaTrackAttendanceEnter(sessionId.toString());
+		gaTrackSessionStart(sessionId.toString());
+	}, [sessionId]);
+
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
@@ -79,11 +87,15 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 	const { mutate: checkAttendance, isPending: isPendingCheckAttendance } = useMutation(
 		checkAttendanceOptions(sessionId, {
 			onSuccess: () => {
+				gaTrackAttendanceSubmit(sessionId.toString(), 'success');
+
 				queryClient.invalidateQueries(getAttendanceMeBySessionIdOptions({ sessionId }));
 				queryClient.invalidateQueries(getAttendanceMeOptions());
 				router.replace(`/attendance/${sessionId}/result`);
 			},
 			onError: async (error) => {
+				gaTrackAttendanceSubmit(sessionId.toString(), 'fail');
+				
 				const serverError = await error.response.json();
 				if (serverError.code === 'SESSION-400-04') {
 					toast.error('이미 출석을 체크했습니다.');
