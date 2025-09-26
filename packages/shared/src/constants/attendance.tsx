@@ -1,9 +1,12 @@
-import type { AttendanceStatus, MemberAttendanceStatus } from '@dpm-core/api';
+
 import { CircleCheck, CircleX, CircleMinus, CircleDot } from '../components/icons';
 
 export const ONE_MINUTE = 1000 * 60;
 export const ATTENDANCE_GAP_DURATION = ONE_MINUTE * 15; // 15 minutes
 export const ATTENDANCE_LATE_DURATION = ONE_MINUTE * 15; // 15 minutes
+
+type AttendanceStatus = 'PRESENT' | 'LATE' | 'ABSENT' | 'EXCUSED_ABSENT' | 'PENDING' | 'EARLY_LEAVE';
+type MemberAttendanceStatus = 'NORMAL' | 'AT_RISK' | 'IMPOSSIBLE';
 
 export const ATTENDANCE_LABEL_MAP: Record<AttendanceStatus, string> = {
 	PRESENT: '출석',

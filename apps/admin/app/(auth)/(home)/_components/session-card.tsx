@@ -38,11 +38,13 @@ const SessionCard = ({ subtitle, title, startTimeInfo, place, sessionId }: Sessi
 			<div className="gap-y-3 flex flex-col">
 				<div className="gap-x-4 flex">
 					<span className="text-body2 font-semibold text-label-assistive w-[70px]">세션 시간</span>
-					<span className="inline-flex text-body2 text-label-subtle">{startTimeInfo}</span>
+					<span className="inline-flex text-body2 text-label-subtle font-medium">
+						{startTimeInfo}
+					</span>
 				</div>
 				<div className="gap-x-4 flex">
 					<span className="text-body2 font-semibold text-label-assistive w-[70px]">세션 장소</span>
-					<span className="inline-flex text-body2 text-label-subtle">{place}</span>
+					<span className="inline-flex text-body2 text-label-subtle font-medium">{place}</span>
 				</div>
 			</div>
 		</Link>

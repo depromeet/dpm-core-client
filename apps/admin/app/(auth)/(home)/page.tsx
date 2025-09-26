@@ -60,7 +60,7 @@ const UserPage = () => {
 								여러분의 의견을 기다리고 있어요!
 							</p>
 						</div>
-						<ChevronRight />
+						<ChevronRight className="text-icon-noraml" />
 					</Link>
 				</div>
 			</motion.div>
