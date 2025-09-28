@@ -2,9 +2,8 @@
 	"name": "dpm-core-monorepo",
 	"private": true,
 	"scripts": {
-		"dev": "turbo dev",
-		"setup:local": "scripts/local-server-setup.sh",
-		"dev:local": "turbo dev:local",
+		"dev": "turbo dev:local",
+		"setup": "scripts/local-server-setup.sh",
 		"dev:client": "node scripts/local-client-server.js",
 		"dev:admin": "node scripts/local-admin-server.js",
 		"build": "turbo build",
