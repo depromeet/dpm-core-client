@@ -1,0 +1,75 @@
+name: Deploy Vercel
+
+on:
+  workflow_call:
+    inputs:
+      stage:
+        required: true
+        type: string
+      app:
+        required: false
+        type: string
+    secrets:
+      VERCEL_TOKEN:
+        required: true
+      VERCEL_PROJECT_ID_ADMIN:
+        required: true
+      VERCEL_PROJECT_ID_CLIENT:
+        required: true
+      VERCEL_ORG_ID:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJSON(inputs.app) }}
+
+    env:
+      VERCEL_PROJECT_ID: ${{ secrets[matrix.app == 'admin' && 'VERCEL_PROJECT_ID_ADMIN' || 'VERCEL_PROJECT_ID_CLIENT'] }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+    steps:
+      - name: Checkout repository 
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm environment
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Setup node environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x 
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Pull Vercel Environment
+        run: pnpm dlx vercel@latest pull --yes --environment=${{ inputs.stage }} --token=$VERCEL_TOKEN
+
+      - name: Build
+        run: |
+          if [ "${{ inputs.stage }}" = "production" ]; then
+            pnpm dlx vercel@latest build --token=$VERCEL_TOKEN --prod
+          else
+            pnpm dlx vercel@latest build --token=$VERCEL_TOKEN
+          fi
+
+      - name: Deploy
+        run: |
+          if [ "${{ inputs.stage }}" = "production" ]; then
+            if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+              pnpm dlx vercel@latest deploy --prebuilt --prod --token=$VERCEL_TOKEN
+            else
+              echo "Production 배포는 main 브랜치에서만 가능합니다."
+              exit 1
+            fi
+          else
+            pnpm dlx vercel@latest deploy --prebuilt --token=$VERCEL_TOKEN
+          fi

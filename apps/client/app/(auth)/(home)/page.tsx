@@ -6,8 +6,7 @@ import IconAttendance from '@/assets/icons/icon_attendance.png';
 import IconSession from '@/assets/icons/icon_session.png';
 import IconSettlement from '@/assets/icons/icon_settlement.png';
 import { NavigationBar } from '@/components/navigation-bar';
-import { FeatureComingSoon } from './_components/coming-soon';
-import { SessionList } from './_components/session-list';
+import { CurrentWeekSession } from './_components/current-week-session';
 import { SessionCurrentWeekBanner } from './_components/session-top-banner';
 
 const UserPage = () => {
@@ -31,12 +30,10 @@ const UserPage = () => {
 				<ul className="flex justify-center items-center gap-x-[52px] mt-5 pb-10">
 					<IconCard icon={IconAttendance} title="출석" href="/attendance/me" />
 					<IconCard icon={IconSession} title="세션" href="/session" />
-					<FeatureComingSoon>
-						<IconCard icon={IconSettlement} title="정산" href="#" />
-					</FeatureComingSoon>
+					<IconCard icon={IconSettlement} title="정산" href="/bills" />
 				</ul>
 				<div className="flex flex-col my-5 px-4 w-full gap-y-5 flex-1">
-					<SessionList />
+					<CurrentWeekSession />
 					<Link
 						href="https://forms.gle/yV88T98WsADu6VNc6"
 						target="_blank"
@@ -50,7 +47,7 @@ const UserPage = () => {
 								여러분의 의견을 기다리고 있어요!
 							</p>
 						</div>
-						<ChevronRight />
+						<ChevronRight className="text-icon-noraml" />
 					</Link>
 				</div>
 			</motion.div>
