@@ -4,8 +4,8 @@
 	"scripts": {
 		"dev": "turbo dev:local",
 		"setup": "scripts/local-server-setup.sh",
-		"dev:client": "node scripts/local-client-server.js",
-		"dev:admin": "node scripts/local-admin-server.js",
+		"dev:client": "pnpm --filter client dev:local",
+		"dev:admin": "pnpm --filter admin dev:local",
 		"build": "turbo build",
 		"start": "turbo start",
 		"format": "biome format --write .",

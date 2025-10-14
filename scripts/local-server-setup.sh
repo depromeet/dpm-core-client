@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # 로컬 호스트명 설정
-CLIENT_HOST="local-core.depromeet-core.shop"
-ADMIN_HOST="local-admin.depromeet-core.shop"
+CLIENT_HOST="local-core.depromeet.shop"
+ADMIN_HOST="local-admin.depromeet.shop"
 # /etc/hosts 파일 경로
 HOSTS_FILE="/etc/hosts"
 
