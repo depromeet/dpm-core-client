@@ -4,8 +4,8 @@
 	"scripts": {
 		"dev": "turbo dev",
 		"setup": "scripts/local-server-setup.sh",
-		"dev:client": "pnpm --filter client dev",
-		"dev:admin": "pnpm --filter admin dev",
+		"dev:client": "turbo --filter client dev",
+		"dev:admin": "turbo --filter admin dev",
 		"build": "turbo build",
 		"start": "turbo start",
 		"format": "turbo format",
