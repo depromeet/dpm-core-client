@@ -1,20 +1,22 @@
 'use client';
 
+import { type PropsWithChildren, Suspense } from 'react';
+import { ErrorBoundary } from '@suspensive/react';
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import {
 	CopyButton,
 	calcSessionAttendanceTime,
 	calcSessionLateAttendanceTime,
-	toast,
 	GAPageTracker,
+	toast,
 } from '@dpm-core/shared';
-import { ErrorBoundary } from '@suspensive/react';
-import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import dayjs from 'dayjs';
-import { type PropsWithChildren, Suspense } from 'react';
+
 import { ErrorBox } from '@/components/error-box';
 import { Pressable } from '@/components/motion';
 import { formatISOStringHHMM, formatISOStringToFullDateString } from '@/lib/date';
 import { getSessionDetailQuery } from '@/remotes/queries/session';
+
 import { EditSessionBottomSheet } from './edit-session-bottom-sheet';
 
 function addOneMinute(date: string) {
@@ -31,22 +33,22 @@ const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
 	return (
 		<div className="flex flex-col gap-y-5 p-4">
 			<GAPageTracker type="session-detail" sessionId={sessionId} />
-			<h3 className="text-headline2 font-semibold text-label-normal">{sessionDetail.eventName}</h3>
+			<h3 className="font-semibold text-headline2 text-label-normal">{sessionDetail.eventName}</h3>
 			<SessionDetailInfoBox label="세션 정보">
-				<p className="text-body2 font-semibold text-label-assistive">세션 주차</p>
-				<p className="text-body2 font-medium text-label-subtle">{`${sessionDetail.week}주차`}</p>
-				<p className="text-body2 font-semibold text-label-assistive">세션명</p>
-				<p className="text-body2 font-medium text-label-subtle">{sessionDetail.eventName}</p>
-				<p className="text-body2 font-semibold text-label-assistive">세션 날짜</p>
-				<p className="text-body2 font-medium text-label-subtle">
+				<p className="font-semibold text-body2 text-label-assistive">세션 주차</p>
+				<p className="font-medium text-body2 text-label-subtle">{`${sessionDetail.week}주차`}</p>
+				<p className="font-semibold text-body2 text-label-assistive">세션명</p>
+				<p className="font-medium text-body2 text-label-subtle">{sessionDetail.eventName}</p>
+				<p className="font-semibold text-body2 text-label-assistive">세션 날짜</p>
+				<p className="font-medium text-body2 text-label-subtle">
 					{formatISOStringToFullDateString(sessionDetail.attendanceStartTime)}
 				</p>
 			</SessionDetailInfoBox>
 
 			<SessionDetailInfoBox label="출석 코드">
-				<p className="text-body2 leading-none font-semibold text-label-assistive">출석 코드</p>
+				<p className="font-semibold text-body2 text-label-assistive leading-none">출석 코드</p>
 				<div className="flex items-center justify-between">
-					<p className="text-body2 font-medium text-label-subtle">{sessionDetail.attendanceCode}</p>
+					<p className="font-medium text-body2 text-label-subtle">{sessionDetail.attendanceCode}</p>
 					<CopyButton value={sessionDetail.attendanceCode} />
 				</div>
 			</SessionDetailInfoBox>
@@ -62,22 +64,22 @@ const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
 							toast.success('출석 시간이 수정되었습니다.');
 						}}
 					>
-						<Pressable variant="none" className="text-label-assistive text-body1 font-semibold">
+						<Pressable variant="none" className="font-semibold text-body1 text-label-assistive">
 							수정
 						</Pressable>
 					</EditSessionBottomSheet>
 				}
 			>
-				<p className="text-body2 font-semibold text-label-assistive">출석 시간</p>
-				<p className="text-body2 font-medium text-label-subtle">
+				<p className="font-semibold text-body2 text-label-assistive">출석 시간</p>
+				<p className="font-medium text-body2 text-label-subtle">
 					{formatISOStringHHMM(sessionDetail.attendanceStartTime)} -{' '}
 					{formatISOStringHHMM(
 						calcSessionAttendanceTime(sessionDetail.attendanceStartTime).toISOString(),
 					)}
 				</p>
 
-				<p className="text-body2 font-semibold text-label-assistive">지각 시간</p>
-				<p className="text-body2 font-medium text-label-subtle">
+				<p className="font-semibold text-body2 text-label-assistive">지각 시간</p>
+				<p className="font-medium text-body2 text-label-subtle">
 					{formatISOStringHHMM(
 						calcSessionAttendanceTime(
 							addOneMinute(sessionDetail.attendanceStartTime),
@@ -105,12 +107,12 @@ const SessionDetailInfoBox = ({
 }: PropsWithChildren<SessionDetailInfoBoxProps>) => {
 	return (
 		<div className="flex flex-col">
-			<div className="flex justify-between items-center mb-2">
-				<span className="text-body1 text-label-subtle font-semibold">{label}</span>
+			<div className="mb-2 flex items-center justify-between">
+				<span className="font-semibold text-body1 text-label-subtle">{label}</span>
 				{actions}
 			</div>
 
-			<div className="rounded-lg bg-background-subtle px-5 py-3 grid grid-cols-[70px_1fr] gap-x-4 gap-y-3 items-center">
+			<div className="grid grid-cols-[70px_1fr] items-center gap-x-4 gap-y-3 rounded-lg bg-background-subtle px-5 py-3">
 				{children}
 			</div>
 		</div>

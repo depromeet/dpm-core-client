@@ -12,11 +12,13 @@
 			"cache": false,
 			"persistent": true
 		},
-		"format": {
-			"dependsOn": []
-		},
+		"format": {},
 		"lint": {
 			"dependsOn": ["^lint"]
+		},
+		"//#lint-and-format": {},
+		"//#lint-and-format:fix": {
+			"cache": false
 		},
 		"check-types": {
 			"dependsOn": ["^check-types"]

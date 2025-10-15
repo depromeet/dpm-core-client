@@ -9,7 +9,7 @@ const BillFilter = () => {
 	return (
 		<BillTypeFilter
 			onChange={(filterValue) => handleChange(filterValue)}
-			className="flex gap-x-2 py-2.5 px-4"
+			className="flex gap-x-2 px-4 py-2.5"
 			value={billStatus}
 		>
 			<BillTypeFilterItem label="전체" value="ALL" />

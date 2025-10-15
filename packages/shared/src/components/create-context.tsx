@@ -8,7 +8,7 @@ export function createContext<ContextValueType extends object | null>(
 
 	const Provider: React.FC<ContextValueType & { children: React.ReactNode }> = (props) => {
 		const { children, ...context } = props;
-		// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+		// biome-ignore lint/correctness/useExhaustiveDependencies: context object is stable for this usage
 		const value = React.useMemo(() => context, Object.values(context)) as ContextValueType;
 		return <Context.Provider value={value}>{children}</Context.Provider>;
 	};

@@ -1,4 +1,5 @@
 import { type ComponentPropsWithoutRef, forwardRef } from 'react';
+
 import type { IconProps } from './type';
 
 const CircleMinus = forwardRef<SVGSVGElement, ComponentPropsWithoutRef<'svg'> & IconProps>(

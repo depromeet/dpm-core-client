@@ -1,19 +1,7 @@
 'use client';
 
-import { isInput, isMobileFirefox } from '@dpm-core/shared';
 import { useEffect, useRef } from 'react';
-
-const nonTextInputTypes = new Set([
-	'checkbox',
-	'radio',
-	'range',
-	'color',
-	'file',
-	'image',
-	'button',
-	'submit',
-	'reset',
-]);
+import { isInput, isMobileFirefox } from '@dpm-core/shared';
 
 const WINDOW_TOP_OFFSET = 26;
 

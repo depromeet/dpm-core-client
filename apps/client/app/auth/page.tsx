@@ -1,9 +1,9 @@
-import { Button } from '@dpm-core/shared';
 import Link from 'next/link';
+import { Button } from '@dpm-core/shared';
 
 const AuthPage = () => {
 	return (
-		<div className="relative w-full h-dvh flex flex-col items-center justify-center">
+		<div className="relative flex h-dvh w-full flex-col items-center justify-center">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="33"
@@ -19,13 +19,13 @@ const AuthPage = () => {
 					fill="#FFC06E"
 				/>
 			</svg>
-			<h1 className="mt-8 mb-4 text-title1 font-bold text-label-strong text-center">
+			<h1 className="mt-8 mb-4 text-center font-bold text-label-strong text-title1">
 				가입 요청 완료
 			</h1>
-			<p className="text-body2 font-medium text-label-assistive text-center">
+			<p className="text-center font-medium text-body2 text-label-assistive">
 				운영진 확인 후 가입이 승인됩니다.
 			</p>
-			<Button className="fixed max-w-lg bottom-0" variant="secondary" size="full" asChild>
+			<Button className="fixed bottom-0 max-w-lg" variant="secondary" size="full" asChild>
 				<Link href="/login">로그인 화면으로</Link>
 			</Button>
 		</div>

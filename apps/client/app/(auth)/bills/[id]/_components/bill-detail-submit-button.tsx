@@ -1,8 +1,8 @@
 'use client';
 
-import { Button, cn, useAppShell, useKeyboardTop } from '@dpm-core/shared';
 import type { ComponentPropsWithoutRef } from 'react';
 import { createPortal } from 'react-dom';
+import { Button, cn, useAppShell, useKeyboardTop } from '@dpm-core/shared';
 
 interface BillDetailSubmitButtonProps extends ComponentPropsWithoutRef<typeof Button> {
 	formId?: string;
@@ -17,7 +17,7 @@ const BillDetailSubmitButton = ({ formId, ...props }: BillDetailSubmitButtonProp
 		<Button
 			{...props}
 			ref={buttonRef}
-			className={cn('fixed bottom-0 w-full mx-auto', props.className)}
+			className={cn('fixed bottom-0 mx-auto w-full', props.className)}
 			variant="secondary"
 			size="full"
 			style={{

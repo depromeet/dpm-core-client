@@ -20,6 +20,7 @@
 		"ky": "^1.8.2"
 	},
 	"devDependencies": {
+		"@types/node": "^20.19.14",
 		"@dpm-core/typescript-config": "workspace:*",
 		"@types/js-cookie": "^3",
 		"typescript": "^5"

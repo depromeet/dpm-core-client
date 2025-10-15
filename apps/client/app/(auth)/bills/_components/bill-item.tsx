@@ -1,5 +1,5 @@
-import type { Bill, BillStatus } from '@dpm-core/api';
 import Link from 'next/link';
+import type { Bill, BillStatus } from '@dpm-core/api';
 
 function formatInvitationCount(
 	invitationConfirmedCount: number,
@@ -20,11 +20,11 @@ function BillItem({ bill }: { bill: Bill }) {
 		<li>
 			<Link
 				href={`/bills/${bill.billId}`}
-				className="flex items-center gap-x-6 p-4 flex-1 border-b border-b-line-subtle"
+				className="flex flex-1 items-center gap-x-6 border-b border-b-line-subtle p-4"
 			>
 				<BillStatusBadge status={bill.billStatus} />
 				<div className="flex flex-col gap-y-2">
-					<p className="text-body1 font-semibold text-label-normal">{bill.title}</p>
+					<p className="font-semibold text-body1 text-label-normal">{bill.title}</p>
 					<div className="flex flex-col">
 						<div className="flex items-center py-1">
 							<svg
@@ -42,7 +42,7 @@ function BillItem({ bill }: { bill: Bill }) {
 									fill="#9CA3AF"
 								/>
 							</svg>
-							<span className="text-caption1 font-medium text-label-assistive leading-tight">
+							<span className="font-medium text-caption1 text-label-assistive leading-tight">
 								{bill.title}
 							</span>
 						</div>
@@ -63,10 +63,10 @@ function BillItem({ bill }: { bill: Bill }) {
 								/>
 							</svg>
 
-							<span className="text-caption1 font-medium text-label-assistive">
+							<span className="font-medium text-caption1 text-label-assistive">
 								~{bill.gatherings.length}차
 							</span>
-							<div className="w-px h-2.5 bg-line-subtle mx-2" />
+							<div className="mx-2 h-2.5 w-px bg-line-subtle" />
 							<svg
 								width="12"
 								height="12"
@@ -94,7 +94,7 @@ function BillItem({ bill }: { bill: Bill }) {
 									strokeLinejoin="round"
 								/>
 							</svg>
-							<span className="text-caption1 font-medium text-label-assistive">
+							<span className="font-medium text-caption1 text-label-assistive">
 								{formatInvitationCount(
 									bill.invitedMemberCount,
 									bill.invitedMemberCount,
@@ -111,7 +111,7 @@ function BillItem({ bill }: { bill: Bill }) {
 
 function BillStatusBadge({ status }: { status: BillStatus }) {
 	return (
-		<div className="flex flex-col gap-y-1.5 items-center">
+		<div className="flex flex-col items-center gap-y-1.5">
 			{(() => {
 				switch (status) {
 					case 'OPEN':
@@ -136,7 +136,7 @@ function BillStatusBadge({ status }: { status: BillStatus }) {
 										fill="#9CA3AF"
 									/>
 								</svg>
-								<span className="text-caption1 font-semibold text-label-assistive">
+								<span className="font-semibold text-caption1 text-label-assistive">
 									멤버 확정 전
 								</span>
 							</>
@@ -158,7 +158,7 @@ function BillStatusBadge({ status }: { status: BillStatus }) {
 									<circle cx="16.5" cy="16.5" r="1.5" fill="white" />
 									<circle cx="23.5" cy="16.5" r="1.5" fill="white" />
 								</svg>
-								<span className="text-caption1 font-semibold text-primary-normal">정산 중</span>
+								<span className="font-semibold text-caption1 text-primary-normal">정산 중</span>
 							</>
 						);
 					case 'COMPLETED':
@@ -182,7 +182,7 @@ function BillStatusBadge({ status }: { status: BillStatus }) {
 										strokeLinejoin="round"
 									/>
 								</svg>
-								<span className="text-caption1 font-semibold text-label-assistive">정산 끝</span>
+								<span className="font-semibold text-caption1 text-label-assistive">정산 끝</span>
 							</>
 						);
 					default:

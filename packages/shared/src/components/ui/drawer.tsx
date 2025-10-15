@@ -1,8 +1,9 @@
 'use client';
 
-import { XIcon } from 'lucide-react';
 import type * as React from 'react';
+import { XIcon } from 'lucide-react';
 import { Drawer as DrawerPrimitive } from 'vaul';
+
 import { cn } from '../../utils/cn';
 
 function Drawer({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
@@ -29,7 +30,7 @@ function DrawerOverlay({
 		<DrawerPrimitive.Overlay
 			data-slot="drawer-overlay"
 			className={cn(
-				'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-background-dimmer',
+				'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-background-dimmer data-[state=closed]:animate-out data-[state=open]:animate-in',
 				className,
 			)}
 			{...props}
@@ -48,7 +49,7 @@ function DrawerContent({
 			<DrawerPrimitive.Content
 				data-slot="drawer-content"
 				className={cn(
-					'group/drawer-content bg-background fixed z-50 flex h-auto flex-col',
+					'group/drawer-content fixed z-50 flex h-auto flex-col bg-background',
 					'data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-[20px]',
 					'data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-[20px]',
 					'data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=right]:sm:max-w-sm',
@@ -81,7 +82,7 @@ function DrawerHeader({
 			{...props}
 		>
 			{showCloseButton && (
-				<DrawerClose className="absolute right-4 top-5 p-1.5 rounded-full bg-background-strong">
+				<DrawerClose className="absolute top-5 right-4 rounded-full bg-background-strong p-1.5">
 					<XIcon className="text-gray-500" size={16} />
 				</DrawerClose>
 			)}
@@ -104,7 +105,7 @@ function DrawerTitle({ className, ...props }: React.ComponentProps<typeof Drawer
 	return (
 		<DrawerPrimitive.Title
 			data-slot="drawer-title"
-			className={cn('text-title2 font-semibold text-left', className)}
+			className={cn('text-left font-semibold text-title2', className)}
 			{...props}
 		/>
 	);

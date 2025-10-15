@@ -1,8 +1,9 @@
 'use client';
 
+import * as React from 'react';
 import { OTPInput, OTPInputContext } from 'input-otp';
 import { MinusIcon } from 'lucide-react';
-import * as React from 'react';
+
 import { cn } from '../../utils/cn';
 
 function InputOTP({
@@ -16,7 +17,7 @@ function InputOTP({
 		<OTPInput
 			data-slot="input-otp"
 			containerClassName={cn('flex items-center gap-2 has-disabled:opacity-40', containerClassName)}
-			className={cn('disabled:cursor-not-allowed !opacity-0', className)}
+			className={cn('!opacity-0 disabled:cursor-not-allowed', className)}
 			{...props}
 		/>
 	);
@@ -47,7 +48,7 @@ function InputOTPSlot({
 			data-slot="input-otp-slot"
 			data-active={isActive}
 			className={cn(
-				'rounded-sm bg-background-strong relative flex h-16 w-14 text-label-normal items-center justify-center text-title1 font-bold transition-all outline-none data-[active=true]:z-10',
+				'relative flex h-16 w-14 items-center justify-center rounded-sm bg-background-strong font-bold text-label-normal text-title1 outline-none transition-all data-[active=true]:z-10',
 				className,
 			)}
 			{...props}
@@ -60,7 +61,7 @@ function InputOTPSlot({
 						isActive && !hasFakeCaret && '-mr-[0.6em]',
 					)}
 				>
-					<div className="animate-caret-blink h-[1em] w-px duration-1000 bg-background-inverse" />
+					<div className="h-[1em] w-px animate-caret-blink bg-background-inverse duration-1000" />
 				</div>
 			)}
 		</div>

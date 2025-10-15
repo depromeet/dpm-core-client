@@ -1,11 +1,13 @@
 'use client';
 
+import { Suspense } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Suspense } from 'react';
+
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { ErrorBox } from '@/components/error-box';
 import { getSessionWeeks } from '@/remotes/queries/session';
+
 import { AttendanceFilter } from '../../_components/attendance-filter';
 import { SearchInput } from '../../_components/search-input';
 import { WeekFilter } from '../../_components/week-filter';
@@ -22,7 +24,7 @@ const AttendanceSessionContainer = () => {
 
 	return (
 		<>
-			<section className="px-4 py-2.5 space-y-3.5 sticky top-0 bg-white">
+			<section className="sticky top-0 space-y-3.5 bg-white px-4 py-2.5">
 				<WeekFilter weeks={data.sessions} />
 				<SearchInput placeholder="디퍼 검색" />
 				<AttendanceFilter />

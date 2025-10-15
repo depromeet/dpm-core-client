@@ -35,7 +35,6 @@
 		"zod": "^4.0.5"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
 		"@types/js-cookie": "^3",
 		"@dpm-core/typescript-config": "workspace:*",
 		"@tailwindcss/postcss": "^4",

@@ -1,9 +1,7 @@
 'use client';
 
-// ref: https://github.dev/emilkowalski/vaul
-// This code comes from https://github.com/adobe/react-spectrum/blob/main/packages/%40react-aria/overlays/src/usePreventScroll.ts
-
 import { useEffect, useLayoutEffect } from 'react';
+
 import { isIOS } from '../utils/browser';
 
 const KEYBOARD_BUFFER = 24;
@@ -17,8 +15,10 @@ interface PreventScrollOptions {
 	focusCallback?: () => void;
 }
 
-function chain(...callbacks: any[]): (...args: any[]) => void {
-	return (...args: any[]) => {
+function chain(
+	...callbacks: Array<((...args: unknown[]) => void) | undefined>
+): (...args: unknown[]) => void {
+	return (...args: unknown[]) => {
 		for (const callback of callbacks) {
 			if (typeof callback === 'function') {
 				callback(...args);
@@ -27,7 +27,6 @@ function chain(...callbacks: any[]): (...args: any[]) => void {
 	};
 }
 
-// @ts-ignore
 const visualViewport = typeof document !== 'undefined' && window.visualViewport;
 
 export function isScrollable(node: Element): boolean {
@@ -250,13 +249,13 @@ function preventScrollMobileSafari() {
 // Sets a CSS property on an element, and returns a function to revert it to the previous value.
 function setStyle(element: HTMLElement, style: keyof React.CSSProperties, value: string) {
 	// https://github.com/microsoft/TypeScript/issues/17827#issuecomment-391663310
-	// @ts-ignore
+	// @ts-expect-error
 	const cur = element.style[style];
-	// @ts-ignore
+	// @ts-expect-error
 	element.style[style] = value;
 
 	return () => {
-		// @ts-ignore
+		// @ts-expect-error
 		element.style[style] = cur;
 	};
 }
@@ -265,14 +264,14 @@ function setStyle(element: HTMLElement, style: keyof React.CSSProperties, value:
 function addEvent<K extends keyof GlobalEventHandlersEventMap>(
 	target: EventTarget,
 	event: K,
-	handler: (this: Document, ev: GlobalEventHandlersEventMap[K]) => any,
+	handler: (this: Document, ev: GlobalEventHandlersEventMap[K]) => void,
 	options?: boolean | AddEventListenerOptions,
 ) {
-	// @ts-ignore
+	// @ts-expect-error
 	target.addEventListener(event, handler, options);
 
 	return () => {
-		// @ts-ignore
+		// @ts-expect-error
 		target.removeEventListener(event, handler, options);
 	};
 }
@@ -298,7 +297,7 @@ function scrollIntoView(target: Element) {
 			}
 		}
 
-		// @ts-ignore
+		// @ts-expect-error
 		target = scrollable.parentElement;
 	}
 }

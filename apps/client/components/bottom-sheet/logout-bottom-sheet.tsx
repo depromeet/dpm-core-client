@@ -1,5 +1,8 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { type PropsWithChildren, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import {
 	Drawer,
 	DrawerContent,
@@ -9,11 +12,10 @@ import {
 	DrawerTrigger,
 	useAppShell,
 } from '@dpm-core/shared';
-import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { type PropsWithChildren, useState } from 'react';
+
 import { deleteToken } from '@/lib/utils';
 import { logoutMutationOptions } from '@/remotes/mutations/auth';
+
 import { Pressable } from '../motion';
 
 interface LogoutBottomSheetProps {
@@ -57,8 +59,8 @@ const LogoutBottomSheet = ({ children, disabled }: PropsWithChildren<LogoutBotto
 			>
 				<DrawerTitle className="sr-only">로그아웃</DrawerTitle>
 				<DrawerHeader className="!text-left !gap-y-2 items-start">
-					<h3 className="text-title2 font-semibold text-label-normal">로그아웃</h3>
-					<p className="text-body2 text-label-assistive font-medium">정말 로그아웃할까요?</p>
+					<h3 className="font-semibold text-label-normal text-title2">로그아웃</h3>
+					<p className="font-medium text-body2 text-label-assistive">정말 로그아웃할까요?</p>
 				</DrawerHeader>
 				<DrawerFooter>
 					<Pressable

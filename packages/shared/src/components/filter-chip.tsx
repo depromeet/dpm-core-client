@@ -1,7 +1,8 @@
 'use client';
 
-import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import type React from 'react';
+import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
+
 import { cn } from '../utils/cn';
 
 export const FilterChip = ({
@@ -13,7 +14,7 @@ export const FilterChip = ({
 	return (
 		<CheckboxPrimitive.Root
 			className={cn(
-				'text-body2 font-medium border rounded-[170px] text-label-assistive border-line-normal px-3 py-1 data-[state=checked]:border-primary-normal data-[state=checked]:text-primary-normal data-[state=checked]:font-semibold',
+				'rounded-[170px] border border-line-normal px-3 py-1 font-medium text-body2 text-label-assistive data-[state=checked]:border-primary-normal data-[state=checked]:font-semibold data-[state=checked]:text-primary-normal',
 				className,
 			)}
 			{...props}
