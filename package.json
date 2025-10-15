@@ -2,10 +2,10 @@
 	"name": "dpm-core-monorepo",
 	"private": true,
 	"scripts": {
-		"dev": "turbo dev:local",
+		"dev": "turbo dev",
 		"setup": "scripts/local-server-setup.sh",
-		"dev:client": "pnpm --filter client dev:local",
-		"dev:admin": "pnpm --filter admin dev:local",
+		"dev:client": "pnpm --filter client dev",
+		"dev:admin": "pnpm --filter admin dev",
 		"build": "turbo build",
 		"start": "turbo start",
 		"format": "biome format --write .",
