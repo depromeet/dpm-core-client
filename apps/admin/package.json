@@ -3,8 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev --turbopack --port 3001",
-		"dev:local": "node ../../scripts/local-admin-server.js",
+		"dev": "node scripts/local-admin-server.js",
 		"build": "next build",
 		"start": "next start --turbopack --port 3001",
 		"format": "biome format --write .",

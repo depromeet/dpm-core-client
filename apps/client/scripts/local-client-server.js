@@ -7,15 +7,15 @@ const fs = require('fs');
 const path = require('path');
 
 const port = 3010;
-const hostname = 'local-core.depromeet-core.shop';
+const hostname = 'local-core.depromeet.shop';
 const dev = process.env.NODE_ENV !== 'production';
 
-// 클라이언트 앱 디렉토리 지정
-const appDir = path.join(__dirname, '..', 'apps', 'client');
+// 클라이언트 앱 디렉토리 지정 (상위 디렉토리)
+const appDir = path.join(__dirname, '..');
 
-const app = next({ 
-  port, 
-  dev, 
+const app = next({
+  port,
+  dev,
   hostname,
   dir: appDir
 });
@@ -26,8 +26,8 @@ console.log(' 🚀 클라이언트 로컬 서버 시작중...');
 app.prepare().then(() => {
   const localServer = createServer(
     {
-      key: fs.readFileSync(path.join(__dirname, '..', 'local-core.depromeet-core.shop-key.pem')),
-      cert: fs.readFileSync(path.join(__dirname, '..', 'local-core.depromeet-core.shop.pem')),
+      key: fs.readFileSync(path.join(__dirname, '..', '..', '..', 'local-core.depromeet.shop-key.pem')),
+      cert: fs.readFileSync(path.join(__dirname, '..', '..', '..', 'local-core.depromeet.shop.pem')),
     },
     (req, res) => {
       const parsedUrl = parse(req.url, true);
