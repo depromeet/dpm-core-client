@@ -4,9 +4,11 @@
 	"scripts": {
 		"dev": "turbo dev",
 		"setup": "scripts/local-server-setup.sh",
-		"dev:client": "turbo --filter client dev",
-		"dev:admin": "turbo --filter admin dev",
+		"dev:client": "turbo dev --filter client",
+		"dev:admin": "turbo dev --filter admin",
 		"build": "turbo build",
+		"build:client": "turbo build --filter client",
+		"build:admin": "turbo build --filter admin",
 		"start": "turbo start",
 		"format": "turbo format",
 		"lint": "turbo lint",
