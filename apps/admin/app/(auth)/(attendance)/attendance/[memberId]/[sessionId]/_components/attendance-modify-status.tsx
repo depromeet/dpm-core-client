@@ -14,8 +14,8 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 	DrawerTrigger,
-	toast,
 	gaTrackAttendanceOverride,
+	toast,
 } from '@dpm-core/shared';
 
 import { Profile } from '@/components/attendance/profile';
@@ -42,7 +42,7 @@ export const AttendanceModifyStatus = (props: AttendanceModifyStatusProps) => {
 					attendanceStatus,
 					selectedStatus,
 				);
-				
+
 				queryClient.invalidateQueries({
 					queryKey: ['ATTENDANCE'],
 				});

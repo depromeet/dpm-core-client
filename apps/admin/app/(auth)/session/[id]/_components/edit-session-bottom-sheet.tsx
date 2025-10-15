@@ -11,6 +11,7 @@ import {
 	ATTENDANCE_GAP_DURATION,
 	ATTENDANCE_LATE_DURATION,
 	calcSessionAttendanceTimeByHHmmToISOString,
+	calculateLateTimeFromStartTime,
 	Drawer,
 	DrawerContent,
 	DrawerDescription,
@@ -19,14 +20,13 @@ import {
 	DrawerTrigger,
 	Form,
 	FormField,
+	formatAttendanceTimeFromCode,
+	gaTrackAttendanceTimeSet,
 	InputOTP,
 	InputOTPGroup,
 	InputOTPSlot,
 	useAppShell,
 	validateHHMM,
-	gaTrackAttendanceTimeSet,
-	formatAttendanceTimeFromCode,
-	calculateLateTimeFromStartTime,
 } from '@dpm-core/shared';
 
 import { CtaButton } from '@/components/cta-button';
@@ -76,7 +76,7 @@ const EditSessionBottomSheet = ({
 		const startTime = formatAttendanceTimeFromCode(inputTime);
 		const lateTime = calculateLateTimeFromStartTime(inputTime);
 		gaTrackAttendanceTimeSet(sessionId, startTime, lateTime);
-		
+
 		onSuccess?.();
 		setIsOpen(false);
 	};

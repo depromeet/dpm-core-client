@@ -1,14 +1,15 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-
-const { createServer } = require('https');
-const { parse } = require('url');
-const next = require('next');
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import { createServer } from 'node:https';
+import path from 'node:path';
+import { fileURLToPath, parse } from 'node:url';
+import next from 'next';
 
 const port = 3010;
 const hostname = 'local-core.depromeet.shop';
 const dev = process.env.NODE_ENV !== 'production';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // 클라이언트 앱 디렉토리 지정 (상위 디렉토리)
 const appDir = path.join(__dirname, '..');

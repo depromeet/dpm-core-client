@@ -1,7 +1,7 @@
 'use client';
 
-import { gaTrackMyPageEnter } from '@dpm-core/shared';
 import { useEffect } from 'react';
+import { gaTrackMyPageEnter } from '@dpm-core/shared';
 
 export const MyPageTracker = () => {
 	useEffect(() => {
