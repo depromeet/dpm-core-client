@@ -2,38 +2,35 @@
 	"$schema": "https://turbo.build/schema.json",
 	"ui": "tui",
 	"tasks": {
-		"dev": {
-			"cache": false,
-			"persistent": true,
-			"dependsOn": ["^build"]
-		},
-		"dev:local": {
-			"cache": false,
-			"persistent": true,
-			"dependsOn": ["^build"]
-		},
 		"build": {
 			"dependsOn": ["^build"],
-			"outputs": [".next/**", "!.next/cache/**", "dist/**", "!dist/**/*.map"],
-			"inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"]
+			"inputs": ["$TURBO_DEFAULT$", ".env", ".env.*"],
+			"outputs": [".next/**", "!.next/cache/**"]
 		},
 		"start": {
 			"dependsOn": ["build"],
 			"cache": false,
 			"persistent": true
 		},
-		"lint": {
-			"dependsOn": ["^build"]
-		},
 		"format": {
-			"dependsOn": ["^build"]
+			"dependsOn": []
+		},
+		"lint": {
+			"dependsOn": ["^lint"]
+		},
+		"check-types": {
+			"dependsOn": ["^check-types"]
 		},
 		"clean": {
 			"cache": false
 		},
-		"type-check": {
-			"dependsOn": ["^build"],
-			"outputs": []
+		"dev": {
+			"cache": false,
+			"persistent": true
+		},
+		"dev:local": {
+			"cache": false,
+			"persistent": true
 		}
 	},
 	"globalDependencies": ["package.json", "yarn.lock", "turbo.json", "tsconfig.base.json"],

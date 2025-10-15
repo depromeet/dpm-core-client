@@ -2,6 +2,12 @@
 	"name": "@dpm-core/api",
 	"version": "0.1.0",
 	"description": "DPM Core API client and utilities",
+	"scripts": {
+		"format": "biome format --write .",
+		"lint": "biome lint --write .",
+		"check-types": "tsc --noEmit",
+		"clean": "rm -rf node_modules"
+	},
 	"exports": {
 		".": "./src/index.ts"
 	},
