@@ -2,6 +2,7 @@
 
 import Script from 'next/script';
 import { useEffect } from 'react';
+
 import { GA_ID } from '../../constants/google-analytics';
 import { gaInit } from '../../utils/google-analytics';
 

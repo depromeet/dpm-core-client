@@ -1,8 +1,9 @@
 'use client';
 
-import { cn, toast } from '@dpm-core/shared';
-import { CheckIcon } from 'lucide-react';
 import * as React from 'react';
+import { CheckIcon } from 'lucide-react';
+import { cn, toast } from '@dpm-core/shared';
+
 import { CopyIcon } from '../icons/copy';
 import { Button, type ButtonProps } from './button';
 

@@ -1,5 +1,5 @@
-import { attendance } from '@dpm-core/api';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
+import { attendance } from '@dpm-core/api';
 
 const QUERY_KEY = 'ATTENDANCE';
 

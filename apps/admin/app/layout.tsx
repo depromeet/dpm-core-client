@@ -1,6 +1,7 @@
-import { AppShell, Toaster, GAScript } from '@dpm-core/shared';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { Metadata, Viewport } from 'next';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { AppShell, GAScript, Toaster } from '@dpm-core/shared';
+
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
 

@@ -1,5 +1,6 @@
-import type { Part } from '@dpm-core/api';
 import type { StaticImageData } from 'next/image';
+import type { Part } from '@dpm-core/api';
+
 import ANDROID from '@/assets/icons/aos.webp';
 import DESIGN from '@/assets/icons/design.webp';
 import IOS from '@/assets/icons/ios.webp';

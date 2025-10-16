@@ -7,13 +7,13 @@ export const dynamic = 'force-dynamic';
 
 const LoginPage = () => {
 	return (
-		<div className="bg-primary-extralight min-h-dvh flex flex-col justify-center gap-y-10">
-			<div className="mx-auto text-center flex flex-col gap-y-10">
+		<div className="flex min-h-dvh flex-col justify-center gap-y-10 bg-primary-extralight">
+			<div className="mx-auto flex flex-col gap-y-10 text-center">
 				<div className="flex flex-col items-center gap-y-[18px]">
 					<CoreLogo />
-					<div className="uppercase text-headline1 font-semibold text-label-normal flex mx-auto gap-x-2.5 items-start relative">
-						<DpmText className="text-gray-800 w-fit" />
-						<p className="text-primary-strong text-body2 font-semibold lowercase leading-none absolute left-[105%]">
+					<div className="relative mx-auto flex items-start gap-x-2.5 font-semibold text-headline1 text-label-normal uppercase">
+						<DpmText className="w-fit text-gray-800" />
+						<p className="absolute left-[105%] font-semibold text-body2 text-primary-strong lowercase leading-none">
 							admin
 						</p>
 					</div>
@@ -25,7 +25,7 @@ const LoginPage = () => {
 				</p>
 				<LoginButton
 					variant="assistive"
-					className="bg-[#FEE500] rounded-xl px-[15px] py-3.5 font-medium h-auto leading-1"
+					className="h-auto rounded-xl bg-[#FEE500] px-[15px] py-3.5 font-medium leading-1"
 				/>
 			</div>
 		</div>

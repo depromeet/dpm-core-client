@@ -1,7 +1,11 @@
 'use client';
 
+import { useState } from 'react';
+import * as RadioGroup from '@radix-ui/react-radio-group';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { AttendanceMember, AttendanceStatus } from '@dpm-core/api';
 import {
+	ATTENDANCE_STATUS_OPTIONS,
 	Button,
 	Drawer,
 	DrawerClose,
@@ -10,15 +14,12 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 	DrawerTrigger,
-	toast,
 	gaTrackAttendanceOverride,
+	toast,
 } from '@dpm-core/shared';
-import * as RadioGroup from '@radix-ui/react-radio-group';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+
 import { Profile } from '@/components/attendance/profile';
 import { modifyAttendanceStatusOptions } from '@/remotes/mutations/attendance';
-import { ATTENDANCE_STATUS_OPTIONS } from '@dpm-core/shared';
 
 interface AttendanceModifyStatusProps {
 	sessionId: number;
@@ -41,7 +42,7 @@ export const AttendanceModifyStatus = (props: AttendanceModifyStatusProps) => {
 					attendanceStatus,
 					selectedStatus,
 				);
-				
+
 				queryClient.invalidateQueries({
 					queryKey: ['ATTENDANCE'],
 				});
@@ -61,19 +62,19 @@ export const AttendanceModifyStatus = (props: AttendanceModifyStatusProps) => {
 	return (
 		<Drawer>
 			<DrawerTrigger asChild>
-				<Button variant="secondary" size="full" className="fixed max-w-lg w-full bottom-0">
+				<Button variant="secondary" size="full" className="fixed bottom-0 w-full max-w-lg">
 					수정하기
 				</Button>
 			</DrawerTrigger>
 			<DrawerContent className="mx-auto max-w-lg">
-				<DrawerHeader className="px-5 mb-8">
+				<DrawerHeader className="mb-8 px-5">
 					<DrawerTitle>출석 규정 안내</DrawerTitle>
 				</DrawerHeader>
 				<section className="mx-5 mb-5">
 					<Profile size={60} name={member.name} part={member.part} teamNumber={member.teamNumber} />
 					<RadioGroup.Root
 						value={selectedStatus}
-						className="w-full mt-3 flex border border-line-normal rounded-lg"
+						className="mt-3 flex w-full rounded-lg border border-line-normal"
 						onValueChange={(value) => setSelectedStatus(value as AttendanceStatus)}
 					>
 						{ATTENDANCE_STATUS_OPTIONS.map((status) => (
@@ -82,7 +83,7 @@ export const AttendanceModifyStatus = (props: AttendanceModifyStatusProps) => {
 								value={status.value}
 								className="flex-1 px-3 py-2.5 data-[state=checked]:bg-primary-extralight data-[state=checked]:text-primary-normal"
 							>
-								<span className="text-body2 font-semibold whitespace-nowrap">{status.label}</span>
+								<span className="whitespace-nowrap font-semibold text-body2">{status.label}</span>
 							</RadioGroup.Item>
 						))}
 					</RadioGroup.Root>

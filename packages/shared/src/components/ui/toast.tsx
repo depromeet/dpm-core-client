@@ -1,49 +1,49 @@
 import { type ExternalToast, toast as toastify } from 'sonner';
+
 import { CheckIcon, CircleAlert } from '../icons';
 
 interface ToastProps {
-	toastId: string | number;
 	message?: string;
 }
 
-const Toast = ({ toastId, message }: ToastProps) => {
+const Toast = ({ message }: ToastProps) => {
 	return (
-		<div className="flex items-center py-3 px-4 rounded-full bg-gray-800/90 w-fit mx-auto gap-x-2 pointer-events-none select-none">
+		<div className="pointer-events-none mx-auto flex w-fit select-none items-center gap-x-2 rounded-full bg-gray-800/90 px-4 py-3">
 			<CheckIcon
-				className="size-6 bg-blue-300 flex items-center justify-center rounded-full"
+				className="flex size-6 items-center justify-center rounded-full bg-blue-300"
 				size={16}
 			/>
-			<p className="text-body2 font-medium text-neutral-5">{message}</p>
+			<p className="font-medium text-body2 text-neutral-5">{message}</p>
 		</div>
 	);
 };
 
-const ErrorToast = ({ toastId, message }: ToastProps) => {
+const ErrorToast = ({ message }: ToastProps) => {
 	return (
-		<div className="flex items-center py-3 px-4 rounded-full bg-gray-800/90 w-fit mx-auto gap-x-2 pointer-events-none select-none">
+		<div className="pointer-events-none mx-auto flex w-fit select-none items-center gap-x-2 rounded-full bg-gray-800/90 px-4 py-3">
 			<CircleAlert />
-			<p className="text-body2 font-medium text-neutral-5">{message}</p>
+			<p className="font-medium text-body2 text-neutral-5">{message}</p>
 		</div>
 	);
 };
 
-const InfoToast = ({ toastId, message }: ToastProps) => {
+const InfoToast = ({ message }: ToastProps) => {
 	return (
-		<div className="flex items-center py-3 px-4 rounded-full bg-gray-800/90 w-fit mx-auto gap-x-2 pointer-events-none select-none">
-			<p className="text-body2 font-medium text-neutral-5">{message}</p>
+		<div className="pointer-events-none mx-auto flex w-fit select-none items-center gap-x-2 rounded-full bg-gray-800/90 px-4 py-3">
+			<p className="font-medium text-body2 text-neutral-5">{message}</p>
 		</div>
 	);
 };
 
 const toast = {
 	success: (message: string, options?: ExternalToast) => {
-		toastify.custom((id) => <Toast toastId={id} message={message} />, options);
+		toastify.custom((_) => <Toast message={message} />, options);
 	},
 	error: (message: string, options?: ExternalToast) => {
-		toastify.custom((id) => <ErrorToast toastId={id} message={message} />, options);
+		toastify.custom((_) => <ErrorToast message={message} />, options);
 	},
 	info: (message: string, options?: ExternalToast) => {
-		toastify.custom((id) => <InfoToast toastId={id} message={message} />, options);
+		toastify.custom((_) => <InfoToast message={message} />, options);
 	},
 };
 

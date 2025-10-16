@@ -1,10 +1,11 @@
 'use client';
 
-import { CircleCheck, CircleMinus } from '@dpm-core/shared';
-import { ErrorBoundary } from '@suspensive/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
+import { ErrorBoundary } from '@suspensive/react';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { CircleCheck, CircleMinus } from '@dpm-core/shared';
+
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringToFullDateString } from '@/lib/date';
@@ -18,10 +19,10 @@ const PresentView = ({ attendedAt }: { attendedAt: string }) => (
 	<>
 		<section className="mt-30">
 			<div className="flex flex-col items-center justify-center gap-8">
-				<div className="inline-flex p-2.5 bg-[#5E83FE33] rounded-full">
+				<div className="inline-flex rounded-full bg-[#5E83FE33] p-2.5">
 					<CircleCheck size={32} />
 				</div>
-				<h2 className="text-title1 font-semibold">오늘도 출석 완료!</h2>
+				<h2 className="font-semibold text-title1">오늘도 출석 완료!</h2>
 			</div>
 		</section>
 		<AttendanceTime attendedAt={attendedAt} />
@@ -32,10 +33,10 @@ const LateView = ({ attendedAt }: { attendedAt: string }) => (
 	<>
 		<section className="mt-30">
 			<div className="flex flex-col items-center justify-center gap-8">
-				<div className="inline-flex p-2.5 bg-[#FEC15E4D] rounded-full">
+				<div className="inline-flex rounded-full bg-[#FEC15E4D] p-2.5">
 					<CircleMinus size={32} />
 				</div>
-				<h2 className="text-title1 font-semibold">앗 오늘은 지각이네요</h2>
+				<h2 className="font-semibold text-title1">앗 오늘은 지각이네요</h2>
 			</div>
 		</section>
 		<AttendanceTime attendedAt={attendedAt} />
@@ -44,9 +45,9 @@ const LateView = ({ attendedAt }: { attendedAt: string }) => (
 
 const AttendanceTime = ({ attendedAt }: { attendedAt: string }) => (
 	<section className="mx-auto mt-4">
-		<div className="flex gap-2 px-5 py-3.5 bg-background-strong rounded-lg text-body2">
-			<span className="text-label-assistive font-semibold">출석 시간</span>
-			<span className="text-label-subtle font-medium">
+		<div className="flex gap-2 rounded-lg bg-background-strong px-5 py-3.5 text-body2">
+			<span className="font-semibold text-label-assistive">출석 시간</span>
+			<span className="font-medium text-label-subtle">
 				{formatISOStringToFullDateString(attendedAt)}
 			</span>
 		</div>

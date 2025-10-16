@@ -1,16 +1,17 @@
-import { TextLogo } from '@dpm-core/shared';
 import Image from 'next/image';
+import { TextLogo } from '@dpm-core/shared';
+
 import CopyRight from '@/assets/images/copyright.png';
 
 const Footer = () => {
 	return (
-		<footer className="bg-background-inverse py-[26px] px-4 flex flex-col min-h-[223px]">
+		<footer className="flex min-h-[223px] flex-col bg-background-inverse px-4 py-[26px]">
 			<TextLogo className="text-gray-0" />
-			<div className="flex items-center gap-x-2 my-[18px]">
+			<div className="my-[18px] flex items-center gap-x-2">
 				<a
 					href="https://depromeet.com/privacy"
 					target="_blank"
-					className="underline text-gray-400 text-caption1 font-semibold"
+					className="font-semibold text-caption1 text-gray-400 underline"
 					rel="noopener"
 				>
 					개인정보 처리방침
@@ -18,7 +19,7 @@ const Footer = () => {
 				<a
 					href="https://depromeet.com/terms"
 					target="_blank"
-					className="underline text-gray-400 text-caption1 font-semibold"
+					className="font-semibold text-caption1 text-gray-400 underline"
 					rel="noopener"
 				>
 					서비스 이용약관
@@ -29,43 +30,43 @@ const Footer = () => {
 					<a
 						href="https://www.instagram.com/depromeet/"
 						target="_blank"
-						className="text-caption1 text-label-assistive font-medium"
+						className="font-medium text-caption1 text-label-assistive"
 						rel="noopener"
 					>
 						Instagram
 					</a>
-					<div className="w-px h-[10px] mx-2 bg-gray-400" />
+					<div className="mx-2 h-[10px] w-px bg-gray-400" />
 					<a
 						href="https://www.behance.net/Depromeet"
 						target="_blank"
-						className="text-caption1 text-label-assistive font-medium"
+						className="font-medium text-caption1 text-label-assistive"
 						rel="noopener"
 					>
 						Behance
 					</a>
-					<div className="w-px h-[10px] mx-2 bg-gray-400" />
+					<div className="mx-2 h-[10px] w-px bg-gray-400" />
 					<a
 						href="https://github.com/depromeet/"
 						target="_blank"
-						className="text-caption1 text-label-assistive font-medium"
+						className="font-medium text-caption1 text-label-assistive"
 						rel="noopener"
 					>
 						Github
 					</a>
-					<div className="w-px h-[10px] mx-2 bg-gray-400" />
+					<div className="mx-2 h-[10px] w-px bg-gray-400" />
 					<a
 						href="https://depromeet.medium.com/"
 						target="_blank"
-						className="text-caption1 text-label-assistive font-medium"
+						className="font-medium text-caption1 text-label-assistive"
 						rel="noopener"
 					>
 						Medium
 					</a>
-					<div className="w-px h-[10px] mx-2 bg-gray-400" />
+					<div className="mx-2 h-[10px] w-px bg-gray-400" />
 					<a
 						href="https://www.linkedin.com/company/depromeet/"
 						target="_blank"
-						className="text-caption1 text-label-assistive font-medium"
+						className="font-medium text-caption1 text-label-assistive"
 						rel="noopener"
 					>
 						LinkedIn

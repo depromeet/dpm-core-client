@@ -1,22 +1,22 @@
 'use client';
 
+import { useMemo, useRef } from 'react';
+import { ChevronDownIcon, RotateCw } from 'lucide-react';
 import {
-  Button,
-  Checkbox,
-  cn,
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-  FilterChip,
-  Label,
+	Button,
+	Checkbox,
+	cn,
+	Drawer,
+	DrawerClose,
+	DrawerContent,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
+	FilterChip,
+	Label,
 } from '@dpm-core/shared';
 
-import { ChevronDownIcon, RotateCw } from 'lucide-react';
-import { useMemo, useRef } from 'react';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 
 // const ATTENDANCE_FILTER = [
@@ -78,7 +78,7 @@ export const AttendanceFilter = () => {
 	}, [selectedTeams]);
 
 	return (
-		<div className="flex justify-between items-center">
+		<div className="flex items-center justify-between">
 			<Drawer>
 				<div className="flex gap-2">
 					{/* <DrawerTrigger asChild>
@@ -98,7 +98,7 @@ export const AttendanceFilter = () => {
 						<Button
 							size="none"
 							className={cn(
-								'bg-background-normal rounded-lg text-label-assistive border border-line-normal py-1 px-2.5 gap-1 text-body2 font-medium hover:bg-inherit',
+								'gap-1 rounded-lg border border-line-normal bg-background-normal px-2.5 py-1 font-medium text-body2 text-label-assistive hover:bg-inherit',
 								teamsFilterLabel !== '팀별' && 'border-primary-normal text-primary-normal',
 							)}
 						>
@@ -134,9 +134,9 @@ export const AttendanceFilter = () => {
 							})}
 						</div>
 					</div> */}
-					<div className="px-6 mt-7.5 mb-40">
-						<p className="text-label-normal text-body1 font-semibold mb-2">팀별</p>
-						<div className="flex gap-2 flex-wrap">
+					<div className="mt-7.5 mb-40 px-6">
+						<p className="mb-2 font-semibold text-body1 text-label-normal">팀별</p>
+						<div className="flex flex-wrap gap-2">
 							{TEAM_FILTER.map((chip, index) => {
 								const selected = customSearchParams.get('teams')?.split(',').includes(chip);
 								return (
@@ -159,7 +159,7 @@ export const AttendanceFilter = () => {
 							<Button
 								variant="none"
 								size="none"
-								className="bg-background-strong p-3.5 flex items-center rounded-lg"
+								className="flex items-center rounded-lg bg-background-strong p-3.5"
 								onClick={() =>
 									customSearchParams.update(
 										{
@@ -170,7 +170,7 @@ export const AttendanceFilter = () => {
 									)
 								}
 							>
-								<RotateCw className="text-icon-noraml size-5" />
+								<RotateCw className="size-5 text-icon-noraml" />
 							</Button>
 						</DrawerClose>
 						<DrawerClose asChild>
@@ -193,9 +193,9 @@ export const AttendanceFilter = () => {
 					onCheckedChange={(checked) =>
 						customSearchParams.update({ onlyMyTeam: checked ? 'true' : '', teams: '' }, 'REPLACE')
 					}
-					className="size-4 border-line-normal rounded-sm text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
+					className="size-4 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 				/>
-				<Label htmlFor="my-team" className="text-label-assistive text-body2 font-medium">
+				<Label htmlFor="my-team" className="font-medium text-body2 text-label-assistive">
 					내 팀만 보기
 				</Label>
 			</div>

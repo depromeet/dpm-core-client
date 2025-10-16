@@ -1,8 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
-
-	--color-neutral-5: #F6F9FA;
+	--color-neutral-5: #f6f9fa;
 
 	/* Blue Colors */
 	--color-blue-50: #eff3ff;

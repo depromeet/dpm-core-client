@@ -1,6 +1,7 @@
+import Image from 'next/image';
 import type { Part } from '@dpm-core/api';
 import { cn } from '@dpm-core/shared';
-import Image from 'next/image';
+
 import { cohort } from '@/constants/cohort';
 import { getMemberPartLabel } from '@/lib/member/part';
 import { isExistPart } from '@/lib/utils';
@@ -16,8 +17,8 @@ export const Profile = (props: ProfileProps) => {
 	const { part, name, teamNumber, size = 40 } = props;
 
 	return (
-		<div className="flex gap-4 items-center">
-			<div className={cn('bg-background-strong rounded-full')}>
+		<div className="flex items-center gap-4">
+			<div className={cn('rounded-full bg-background-strong')}>
 				<Image
 					width={size}
 					height={size}
@@ -26,10 +27,10 @@ export const Profile = (props: ProfileProps) => {
 				/>
 			</div>
 			<div className="flex flex-col gap-0.5">
-				<span className="text-body1 font-semibold">{name}</span>
+				<span className="font-semibold text-body1">{name}</span>
 				<div className="flex gap-1.5 text-caption1 text-label-assistive">
 					<span>{teamNumber}팀</span>
-					<span className="border-l border-line-subtle" />
+					<span className="border-line-subtle border-l" />
 					<span>{getMemberPartLabel(part)}</span>
 				</div>
 			</div>

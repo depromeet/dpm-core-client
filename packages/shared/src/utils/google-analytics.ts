@@ -1,6 +1,7 @@
 'use client';
 
 import ReactGA from 'react-ga4';
+
 import { GA_ID } from '../constants/google-analytics';
 
 // GA4 초기화
@@ -85,7 +86,11 @@ export const gaTrackAttendanceOverride = (
 };
 
 // 출석/지각 시간 설정
-export const gaTrackAttendanceTimeSet = (sessionId: string, startTime: string, lateTime: string) => {
+export const gaTrackAttendanceTimeSet = (
+	sessionId: string,
+	startTime: string,
+	lateTime: string,
+) => {
 	ReactGA.event('attendance_time_set', {
 		session_id: sessionId,
 		start_time: startTime,

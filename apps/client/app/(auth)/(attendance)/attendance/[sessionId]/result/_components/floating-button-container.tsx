@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+
 import { Pressable } from '@/components/motion';
 
 export const FloatingButtonContainer = () => {
@@ -13,7 +14,7 @@ export const FloatingButtonContainer = () => {
 		<Pressable
 			variant="secondary"
 			size="full"
-			className="fixed max-w-lg w-full bottom-0"
+			className="fixed bottom-0 w-full max-w-lg"
 			onClick={goToAttendanceMe}
 		>
 			내 출석 현황 확인

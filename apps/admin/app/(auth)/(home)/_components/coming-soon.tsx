@@ -1,7 +1,7 @@
 'use client';
 
-import { toast } from '@dpm-core/shared';
 import React from 'react';
+import { toast } from '@dpm-core/shared';
 
 interface FeatureComingSoonProps {
 	children: React.ReactElement<{ onClick: (e: React.MouseEvent) => void }>;

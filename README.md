@@ -6,14 +6,14 @@ DPM Core는 **Turborepo**를 기반으로 한 **모노레포 Next.js 프로젝�
 
 ```
 dpm-core-client/
-├── apps/                     # 애플리케이션들
-│   ├── admin/               # 관리자 앱 (포트 3001)
-│   └── client/              # 클라이언트 앱 (포트 3000)
+├── apps/                    # 애플리케이션들
+│   ├── admin/               # 관리자 앱 (포트 3020)
+│   └── client/              # 클라이언트 앱 (포트 3010)
 ├── packages/                # 공유 패키지들
 │   ├── shared/              # 공통 컴포넌트/유틸리티
 │   └── api/                 # API 통신 라이브러리
 ├── scripts/                 # 유틸리티 스크립트
-│   └── create-package.js    # 패키지 생성 CLI
+│   └── local-server-setup   # 로컬 서버 환경 세팅
 ├── docs/                    # 문서
 │   ├── PROJECT_STRUCTURE.md
 │   ├── PACKAGE_USAGE.md
@@ -26,46 +26,30 @@ dpm-core-client/
 ### 1. 의존성 설치
 
 ```bash
-yarn install
+pnpm install
 ```
 
 ### 2. 개발 서버 실행
 
 ```bash
 # 모든 앱 동시 실행
-yarn dev
+pnpm dev
 
 # 개별 앱 실행
-yarn workspace @dpm-core/admin dev    # 관리자 앱 (포트 3001)
-yarn workspace @dpm-core/client dev   # 클라이언트 앱 (포트 3000)
+pnpm run dev:client   # 클라이언트 앱 (포트 3010)
+pnpm run dev:admin   # 관리자 앱 (포트 3020)
 ```
 
 ### 3. 빌드
 
 ```bash
 # 모든 패키지 빌드
-yarn build
+pnpm build
 
 # 개별 패키지 빌드
-yarn workspace @dpm-core/admin build
-yarn workspace @dpm-core/client build
+pnpm build:client
+pnpm build:admin
 ```
-
-## 📦 패키지 관리
-
-### 새로운 패키지 생성 (CLI 도구)
-
-```bash
-# 대화형 패키지 생성 도구 실행
-yarn create-package
-```
-
-CLI 도구가 다음을 자동으로 생성합니다:
-- 패키지 디렉터리 구조
-- package.json 설정
-- TypeScript 설정
-- README.md 문서
-- 기본 컴포넌트 템플릿 (선택사항)
 
 ### 사용 가능한 패키지 타입
 
@@ -125,30 +109,19 @@ const nextConfig: NextConfig = {
 
 ### 개발
 ```bash
-yarn dev                    # 모든 앱 개발 모드 실행
-yarn build                  # 모든 패키지 빌드
-yarn lint                   # 코드 린팅
-yarn format                 # 코드 포맷팅
-yarn clean                  # 빌드 캐시 정리
+pnpm dev                    # 모든 앱 개발 모드 실행
+pnpm build                  # 모든 패키지 빌드
+pnpm lint                   # 코드 린팅
+pnpm format                 # 코드 포맷팅
+pnpm format-and-lint        # biome check .
+pnpm format-and-lint:fix    # biome check . --write
+pnpm check-types            # 타입 체크
+pnpm clean                  # 빌드 캐시 정리 (node_modules, .turbo, dist)
 ```
 
-### 패키지 관리
+### 특정 워크스페이스 명령어
 ```bash
-yarn create-package         # 새 패키지 생성 (CLI 도구)
-yarn workspace <package>    # 특정 패키지 명령 실행
-yarn workspaces list        # 워크스페이스 목록 확인
-```
-
-### 예시
-```bash
-# 특정 패키지 개발 모드
-yarn workspace @dpm-core/shared dev
-
-# 특정 패키지 빌드
-yarn workspace @dpm-core/admin build
-
-# 패키지에 의존성 추가
-yarn workspace @dpm-core/shared add lodash
+pnpm turbo [명령어] --filter [workspace] 
 ```
 
 ## 🎯 개발 가이드라인
@@ -166,10 +139,12 @@ yarn workspace @dpm-core/shared add lodash
 
 ### 3. 코드 품질
 - **Biome**를 사용한 일관된 코드 포맷팅
-- **ESLint** 규칙 준수
 - **커밋 컨벤션** 사용
 
 ### 4. 순환 참조 방지
+- **Biome noImportCycles**를 통한 순환 참조 방지
+- **Turborepo**를 통한 패키지 간 순환 참조 방지
+
 ```typescript
 // ❌ 잘못된 예시
 import { cn } from '@dpm-core/shared';
@@ -182,23 +157,10 @@ import { cn } from '../../utils/cn';
 
 ### 빌드 오류
 ```bash
-# 캐시 정리
-yarn cache clean
-rm -rf node_modules yarn.lock
-yarn install
+# 캐시 관련 정리
+pnpm clean
 
-# 빌드 캐시 정리
-rm -rf packages/*/dist
-yarn build
-```
-
-### 의존성 문제
-```bash
-# 의존성 확인
-yarn why package-name
-
-# 워크스페이스 정보 확인
-yarn workspaces info
+pnpm install
 ```
 
 ## 📝 커밋 컨벤션

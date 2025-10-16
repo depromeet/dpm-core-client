@@ -1,7 +1,7 @@
 'use client';
 
-import { cn, createContext } from '@dpm-core/shared';
 import { type ComponentPropsWithoutRef, type PropsWithChildren, useState } from 'react';
+import { cn, createContext } from '@dpm-core/shared';
 
 interface BillTypeFilterProps<T = string> {
 	value?: T;
@@ -57,8 +57,8 @@ const BillTypeFilterItem = <T extends string>({ value, label }: BillTypeFilterIt
 			type="button"
 			data-selected={isSelected}
 			className={cn(
-				'rounded-md py-1 px-3 border border-line-normal text-label-assistive text-sm font-medium transition-colors cursor-pointer',
-				isSelected && 'bg-gray-800 border-gray-800 text-gray-0',
+				'cursor-pointer rounded-md border border-line-normal px-3 py-1 font-medium text-label-assistive text-sm transition-colors',
+				isSelected && 'border-gray-800 bg-gray-800 text-gray-0',
 			)}
 			onClick={() => onChange?.(value as T)}
 		>

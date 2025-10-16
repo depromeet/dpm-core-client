@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+
 import { AppHeader } from '@/components/app-header';
 
 interface LayoutProps {
@@ -7,7 +8,7 @@ interface LayoutProps {
 
 export default function Layout({ tabs }: LayoutProps) {
 	return (
-		<div className="flex flex-col min-h-dvh">
+		<div className="flex min-h-dvh flex-col">
 			<AppHeader title="출석" className="mb-2" />
 			{tabs}
 		</div>

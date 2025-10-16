@@ -1,5 +1,5 @@
 import type { AttendanceStatus } from '@dpm-core/api';
-import { cn, ATTENDANCE_STATUS_MAP } from '@dpm-core/shared';
+import { ATTENDANCE_STATUS_MAP, cn } from '@dpm-core/shared';
 
 interface AttendanceLabelProps extends React.ComponentProps<'span'> {
 	status: AttendanceStatus;
@@ -13,7 +13,7 @@ const AttendanceStatusLabel = ({ status, ...props }: AttendanceLabelProps) => {
 			{icon}
 			<strong
 				className={cn(
-					'text-body2 font-semibold',
+					'font-semibold text-body2',
 					status === 'PENDING' ? 'text-label-assistive' : 'text-label-subtle',
 				)}
 			>

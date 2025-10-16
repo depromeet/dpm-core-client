@@ -1,5 +1,5 @@
-import { isServer, QueryClient } from '@tanstack/react-query';
 import { cache } from 'react';
+import { isServer, QueryClient } from '@tanstack/react-query';
 
 function makeQueryClient() {
 	return new QueryClient({

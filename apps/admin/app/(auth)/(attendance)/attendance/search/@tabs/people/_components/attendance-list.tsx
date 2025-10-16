@@ -1,8 +1,9 @@
 'use client';
 
-import { Badge } from '@dpm-core/shared';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { Badge } from '@dpm-core/shared';
+
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { Profile } from '@/components/attendance/profile';
 import { LoadingBox } from '@/components/loading-box';
@@ -49,7 +50,7 @@ export const AttendanceList = () => {
 	}
 
 	return (
-		<section className="px-4 mt-2">
+		<section className="mt-2 px-4">
 			{flatData.map((member) => {
 				return (
 					<Link
