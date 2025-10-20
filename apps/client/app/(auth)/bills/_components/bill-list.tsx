@@ -1,13 +1,15 @@
 'use client';
 
-import { Button, useAppShell } from '@dpm-core/shared';
+import { Suspense } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Suspense } from 'react';
 import { createPortal } from 'react-dom';
+import { Button, useAppShell } from '@dpm-core/shared';
+
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { getBillsQueryOptions } from '@/remotes/queries/bill';
+
 import { useBillStatusSearchParams } from '../_hooks/use-bill-status-search-params';
 import { BillFilter } from './bill-filter';
 import { BillItem } from './bill-item';
@@ -33,7 +35,7 @@ const BillListContainer = () => {
 					})}
 				</ul>
 			) : (
-				<div className="flex flex-col flex-1 justify-center items-center">
+				<div className="flex flex-1 flex-col items-center justify-center">
 					<svg
 						width="57"
 						height="56"
@@ -48,7 +50,7 @@ const BillListContainer = () => {
 						/>
 					</svg>
 
-					<p className="text-body1 font-semibold text-label-assistive">아직 정산서가 없어요.</p>
+					<p className="font-semibold text-body1 text-label-assistive">아직 정산서가 없어요.</p>
 				</div>
 			)}
 			<AddButton />
@@ -74,7 +76,7 @@ function AddButton() {
 	return createPortal(
 		<Button
 			variant="none"
-			className="absolute py-3.5 px-4 right-5 bottom-5 text-label-inverse bg-gray-800 drop-shadow-[0_0_12px_rgba(0,0,0,0.06)] rounded-full"
+			className="absolute right-5 bottom-5 rounded-full bg-gray-800 px-4 py-3.5 text-label-inverse drop-shadow-[0_0_12px_rgba(0,0,0,0.06)]"
 		>
 			<svg
 				width="20"

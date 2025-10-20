@@ -1,6 +1,5 @@
-import { session } from '@dpm-core/api';
-
 import { queryOptions } from '@tanstack/react-query';
+import { session } from '@dpm-core/api';
 
 export const getSessionListQuery = queryOptions({
 	queryKey: ['session-list'],

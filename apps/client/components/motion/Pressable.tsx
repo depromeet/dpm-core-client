@@ -1,8 +1,9 @@
 'use client';
 
-import type { HTMLMotionProps } from 'motion/react';
 import { type ComponentPropsWithoutRef, forwardRef } from 'react';
-import { MotionButton } from '.';
+import type { HTMLMotionProps } from 'motion/react';
+
+import { MotionButton } from './foundation';
 
 const Pressable = forwardRef<
 	HTMLButtonElement,

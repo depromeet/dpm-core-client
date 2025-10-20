@@ -1,7 +1,8 @@
 'use client';
 
-import { type HTMLMotionProps, motion } from 'motion/react';
 import { useState } from 'react';
+import { type HTMLMotionProps, motion } from 'motion/react';
+
 import { MotionButton } from './motion';
 
 interface CtaButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {

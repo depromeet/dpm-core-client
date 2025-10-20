@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+
 import { COOKIE_KEYS } from '../constants';
 
 export const setCookie = (token: string, expirationTime: number) => {

@@ -45,11 +45,15 @@ export const attendance = {
 		const searchParams = new URLSearchParams();
 
 		if (statuses && statuses.length > 0) {
-			statuses.forEach((status) => searchParams.append('statuses', status));
+			statuses.forEach((status) => {
+				searchParams.append('statuses', status);
+			});
 		}
 
 		if (teams && teams.length > 0) {
-			teams.forEach((team) => searchParams.append('teams', team.toString()));
+			teams.forEach((team) => {
+				searchParams.append('teams', team.toString());
+			});
 		}
 
 		if (name) {
@@ -74,11 +78,15 @@ export const attendance = {
 		const searchParams = new URLSearchParams();
 
 		if (statuses && statuses.length > 0) {
-			statuses.forEach((status) => searchParams.append('statuses', status));
+			statuses.forEach((status) => {
+				searchParams.append('statuses', status);
+			});
 		}
 
 		if (teams && teams.length > 0) {
-			teams.forEach((team) => searchParams.append('teams', team.toString()));
+			teams.forEach((team) => {
+				searchParams.append('teams', team.toString());
+			});
 		}
 
 		if (name) {

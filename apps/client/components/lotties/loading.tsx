@@ -1,6 +1,7 @@
 'use client';
 
 import Lottie from 'react-lottie';
+
 import LoadingJson from '../../assets/lotties/loading.json';
 
 const Loading = () => {

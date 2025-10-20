@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+
 import { gaTrackHomeEnter, gaTrackSessionEnter } from '../../utils/google-analytics';
 
 interface GAPageTrackerProps {

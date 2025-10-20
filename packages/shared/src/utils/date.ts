@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import relativeTime from 'dayjs/plugin/relativeTime';
+
 import { ATTENDANCE_GAP_DURATION, ATTENDANCE_LATE_DURATION } from '../constants/attendance';
 
 dayjs.extend(relativeTime);
@@ -56,7 +57,8 @@ export const formatAttendanceTimeFromCode = (timeCode: string) => {
 };
 
 export const calculateLateTimeFromStartTime = (startTimeCode: string) => {
-	const totalMinutes = parseInt(startTimeCode.slice(0, 2)) * 60 + parseInt(startTimeCode.slice(2, 4)) + 35;
+	const totalMinutes =
+		parseInt(startTimeCode.slice(0, 2), 10) * 60 + parseInt(startTimeCode.slice(2, 4), 10) + 35;
 	const hours = Math.floor(totalMinutes / 60);
 	const minutes = totalMinutes % 60;
 	return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;

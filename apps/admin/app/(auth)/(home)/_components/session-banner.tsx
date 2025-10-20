@@ -1,11 +1,12 @@
 'use client';
 
-import { session } from '@dpm-core/api';
-import { ChevronRight } from '@dpm-core/shared';
-import { ErrorBoundary } from '@suspensive/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { ErrorBoundary } from '@suspensive/react';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { session } from '@dpm-core/api';
+import { ChevronRight } from '@dpm-core/shared';
+
 import { Pressable } from '@/components/motion';
 import { showAttendanceCodeBanner } from '@/lib/attendance/banner';
 import { formatSessionWeekString } from '@/lib/session/format';
@@ -33,7 +34,7 @@ const SessionBannerContainer = () => {
 		<Pressable
 			variant="none"
 			// 48px -> 앱 헤더 높이
-			className="py-3 px-4 bg-primary-normal flex items-center justify-between rounded-none sticky top-[48px] h-[42px]"
+			className="sticky top-[48px] flex h-[42px] items-center justify-between rounded-none bg-primary-normal px-4 py-3"
 			asChild
 		>
 			<Link href={`/session/${currentWeekSession.sessionId}`}>

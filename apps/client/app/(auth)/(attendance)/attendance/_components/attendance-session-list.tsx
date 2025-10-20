@@ -1,6 +1,7 @@
 'use client';
 
 import type { AttendanceReponse } from '@dpm-core/api';
+
 import { SessionItem } from './attendance-session-item';
 
 interface AttendanceSessionListProps {

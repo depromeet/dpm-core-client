@@ -19,32 +19,32 @@ const SessionCard = ({ subtitle, title, startTimeInfo, place, sessionId }: Sessi
 	return (
 		<Link
 			href={`/session/${sessionId}`}
-			className="bg-background-subtle flex flex-col rounded-lg p-5 animate-view-transition cursor-pointer hover:bg-background-strong transition-colors"
+			className="flex animate-view-transition cursor-pointer flex-col rounded-lg bg-background-subtle p-5 transition-colors hover:bg-background-strong"
 			style={cardStyle}
 		>
 			<small
-				className="text-label-subtle text-caption1"
+				className="text-caption1 text-label-subtle"
 				style={sessionId ? { viewTransitionName: `session-subtitle-${sessionId}` } : {}}
 			>
 				{subtitle}
 			</small>
 			<h3
-				className="text-body1 font-semibold"
+				className="font-semibold text-body1"
 				style={sessionId ? { viewTransitionName: `session-title-${sessionId}` } : {}}
 			>
 				{title}
 			</h3>
-			<div className="my-4 bg-line-normal w-full h-px" />
-			<div className="gap-y-3 flex flex-col">
-				<div className="gap-x-4 flex">
-					<span className="text-body2 font-semibold text-label-assistive w-[70px]">세션 시간</span>
-					<span className="inline-flex text-body2 text-label-subtle font-medium">
+			<div className="my-4 h-px w-full bg-line-normal" />
+			<div className="flex flex-col gap-y-3">
+				<div className="flex gap-x-4">
+					<span className="w-[70px] font-semibold text-body2 text-label-assistive">세션 시간</span>
+					<span className="inline-flex font-medium text-body2 text-label-subtle">
 						{startTimeInfo}
 					</span>
 				</div>
-				<div className="gap-x-4 flex">
-					<span className="text-body2 font-semibold text-label-assistive w-[70px]">세션 장소</span>
-					<span className="inline-flex text-body2 text-label-subtle font-medium">{place}</span>
+				<div className="flex gap-x-4">
+					<span className="w-[70px] font-semibold text-body2 text-label-assistive">세션 장소</span>
+					<span className="inline-flex font-medium text-body2 text-label-subtle">{place}</span>
 				</div>
 			</div>
 		</Link>

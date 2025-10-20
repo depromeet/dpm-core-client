@@ -1,9 +1,9 @@
-import { Button } from '@dpm-core/shared';
 import Link from 'next/link';
+import { Button } from '@dpm-core/shared';
 
 export default function NotFound() {
 	return (
-		<div className="relative w-full h-dvh flex flex-col items-center justify-center">
+		<div className="relative flex h-dvh w-full flex-col items-center justify-center">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="33"
@@ -19,17 +19,17 @@ export default function NotFound() {
 					fill="#E5E7EB"
 				/>
 			</svg>
-			<h1 className="mt-8 mb-4 text-title1 font-bold text-label-strong text-center">
+			<h1 className="mt-8 mb-4 text-center font-bold text-label-strong text-title1">
 				요청하신 페이지를
 				<br />
 				찾을 수 없습니다.
 			</h1>
-			<p className="text-body2 font-medium text-label-assistive text-center">
+			<p className="text-center font-medium text-body2 text-label-assistive">
 				주소가 잘못 입력되었거나,
 				<br />
 				변경 혹은 삭제되어 페이지를 찾을 수 없어요.
 			</p>
-			<Button className="fixed max-w-lg bottom-0" variant="secondary" size="full" asChild>
+			<Button className="fixed bottom-0 max-w-lg" variant="secondary" size="full" asChild>
 				<Link href="/">홈으로 돌아가기</Link>
 			</Button>
 		</div>

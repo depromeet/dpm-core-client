@@ -6,9 +6,9 @@ interface EmptyViewProps {
 
 export const EmptyView = ({ className, message }: React.ComponentProps<'div'> & EmptyViewProps) => {
 	return (
-		<div className={cn('flex flex-col items-center justify-center gap-y-3 flex-1', className)}>
+		<div className={cn('flex flex-1 flex-col items-center justify-center gap-y-3', className)}>
 			<Aesterisk />
-			<p className="text-label-assistive text-body1 font-semibold">{message}</p>
+			<p className="font-semibold text-body1 text-label-assistive">{message}</p>
 		</div>
 	);
 };

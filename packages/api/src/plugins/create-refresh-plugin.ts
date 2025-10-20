@@ -1,6 +1,7 @@
-import { logger } from '@dpm-core/shared';
 import type { AfterResponseHook } from 'ky';
 import ky from 'ky';
+import { logger } from '@dpm-core/shared';
+
 import { setCookie } from '../auth/cookie';
 
 interface RefreshPluginOptions {
@@ -17,7 +18,7 @@ export function createRefreshPlugin(options?: RefreshPluginOptions): AfterRespon
 
 	logger.debug('refresh plugin 생성됨', { refreshUrl });
 
-	return async (request, options, response) => {
+	return async (request, _, response) => {
 		logger.debug(`refresh plugin 실행: ${response.status}`, {
 			url: request.url,
 		});
