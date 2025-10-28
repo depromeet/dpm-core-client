@@ -1,12 +1,13 @@
 'use client';
 
 import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
 import type { Session } from '@dpm-core/api';
-import { Calender, ChevronRight, Clock, formatDotFullDate } from '@dpm-core/shared';
+import { Button, Calender, ChevronRight, Clock, formatDotFullDate } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
@@ -20,43 +21,66 @@ const SessionListContainer = () => {
 		data: { data: sessionResponse },
 	} = useSuspenseQuery(getSessionListQuery);
 	return (
-		<Virtuoso
-			style={{ height: '100%' }}
-			data={sessionResponse.sessions}
-			itemContent={(_, session) => <SessionItem key={session.id} session={session} />}
-			className="flex-1"
-		/>
+		<>
+			<div className="mt-6 mb-5 hidden justify-between md:flex">
+				<p>
+					<span className="mr-2 font-bold text-title1">세션 목록</span>
+					<span className="text-primary-normal">{sessionResponse.sessions.length}</span>
+				</p>
+
+				<Button asChild size="md" variant="secondary">
+					<Link href="/session/create">세션 추가</Link>
+				</Button>
+			</div>
+			<Virtuoso
+				useWindowScroll
+				data={sessionResponse.sessions}
+				itemContent={(_, session) => <SessionItem key={session.id} session={session} />}
+			/>
+		</>
 	);
 };
 
 function SessionItem({ session }: { session: Session }) {
+	const params = useParams();
+	const router = useRouter();
+
+	const handleClickSession = () => {
+		console.log(params.id);
+		if (Number(params.id) === session.id) return;
+
+		router.push(`/session/${session.id}`);
+	};
+
 	return (
-		<Pressable asChild variant="none" className="block h-auto">
-			<Link href={`/session/${session.id}`} className="px-4">
-				<div className="flex items-center justify-between border-line-subtle border-b px-3 py-4">
-					<div className="flex flex-col">
-						<p className="mb-0.5 font-medium text-caption1 text-label-assistive">
-							{formatSessionWeekString(session.week)}
+		<Pressable
+			variant="none"
+			size="none"
+			asChild
+			className="block h-auto w-full border-line-subtle border-b px-3 py-4 hover:bg-background-strong"
+			onClick={handleClickSession}
+		>
+			<div className="flex w-full items-center justify-between">
+				<div className="flex flex-1 flex-col">
+					<p className="mb-0.5 font-medium text-caption1 text-label-assistive">
+						{formatSessionWeekString(session.week)}
+					</p>
+					<h3 className="mb-1.5 font-semibold text-body1 text-label-normal">{session.eventName}</h3>
+					<div className="flex items-center gap-x-1">
+						<Calender />
+						<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
+							{formatDotFullDate(session.date)}
 						</p>
-						<h3 className="mb-1.5 font-semibold text-body1 text-label-normal">
-							{session.eventName}
-						</h3>
-						<div className="flex items-center gap-x-1">
-							<Calender />
-							<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
-								{formatDotFullDate(session.date)}
-							</p>
 
-							<Clock className="ml-2" />
+						<Clock className="ml-2" />
 
-							<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
-								{formatISOStringHHMM(session.date)}
-							</p>
-						</div>
+						<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
+							{formatISOStringHHMM(session.date)}
+						</p>
 					</div>
-					<ChevronRight className="text-icon-noraml" />
 				</div>
-			</Link>
+				<ChevronRight className="text-icon-noraml" />
+			</div>
 		</Pressable>
 	);
 }

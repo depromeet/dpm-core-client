@@ -2,8 +2,9 @@
 
 import * as React from 'react';
 import { CheckIcon } from 'lucide-react';
-import { cn, toast } from '@dpm-core/shared';
 
+import { toast } from '../../components/ui/toast';
+import { cn } from '../../utils/cn';
 import { CopyIcon } from '../icons/copy';
 import { Button, type ButtonProps } from './button';
 

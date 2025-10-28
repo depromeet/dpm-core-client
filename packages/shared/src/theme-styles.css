@@ -2,7 +2,6 @@
 
 @theme inline {
 	--color-neutral-5: #f6f9fa;
-
 	/* Blue Colors */
 	--color-blue-50: #eff3ff;
 	--color-blue-100: #dae2ff;
@@ -106,6 +105,5 @@
 	--text-caption1--line-height: 16px;
 
 	--color-background: var(--background);
-
 	--font-pretendard: var(--font-pretendard);
 }

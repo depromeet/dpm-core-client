@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { AppShell, GAScript, Toaster } from '@dpm-core/shared';
+import { GAScript, Toaster } from '@dpm-core/shared';
 
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
@@ -37,7 +37,7 @@ export default function RootLayout({
 			</head>
 			<body className={pretendard.variable} suppressHydrationWarning>
 				<QueryProvider>
-					<AppShell>{children}</AppShell>
+					{children}
 					<ReactQueryDevtools />
 					<Toaster
 						position="top-center"

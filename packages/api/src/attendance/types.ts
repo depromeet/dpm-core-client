@@ -61,6 +61,7 @@ export interface AttendanceBySessionReponse {
 	}[];
 	hasNext: boolean;
 	nextCursorId: number | null;
+	totalElements: number;
 }
 
 export interface AttendanceByMemberReponse {
@@ -73,4 +74,5 @@ export interface AttendanceByMemberReponse {
 	}[];
 	hasNext: boolean;
 	nextCursorId: number | null;
+	totalElements: number;
 }

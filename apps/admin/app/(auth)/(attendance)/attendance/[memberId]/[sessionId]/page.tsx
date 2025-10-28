@@ -1,3 +1,5 @@
+import { AppLayout } from '@dpm-core/shared';
+
 import { AttendanceSessionDetailContainer } from './_components/attendance-session-detail-container';
 
 interface AttendanceSessionDetailPageProps {
@@ -8,7 +10,9 @@ const AttendanceSessionDetailPage = async ({ params }: AttendanceSessionDetailPa
 	const { memberId, sessionId } = await params;
 
 	return (
-		<AttendanceSessionDetailContainer memberId={Number(memberId)} sessionId={Number(sessionId)} />
+		<AppLayout className="bg-background-normal">
+			<AttendanceSessionDetailContainer memberId={Number(memberId)} sessionId={Number(sessionId)} />
+		</AppLayout>
 	);
 };
 

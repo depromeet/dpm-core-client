@@ -1,7 +1,7 @@
 'use client';
 
 import { SearchIcon } from 'lucide-react';
-import { Input } from '@dpm-core/shared';
+import { cn, Input } from '@dpm-core/shared';
 
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -18,7 +18,12 @@ export const SearchInput = ({ className, ...props }: React.ComponentProps<'input
 
 	return (
 		<div className="relative">
-			<Input className="pr-11.5" defaultValue={nameValue} onChange={handleSearch} {...props} />
+			<Input
+				className={cn('pr-11.5', className)}
+				defaultValue={nameValue}
+				onChange={handleSearch}
+				{...props}
+			/>
 			<SearchIcon className="-translate-y-1/2 absolute top-1/2 right-4 size-5 text-icon-noraml" />
 		</div>
 	);

@@ -1,9 +1,10 @@
 'use client';
 
+import Link from 'next/link';
 import { Suspense, useEffect } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Aesterisk, Button, gaTrackHomeEnter } from '@dpm-core/shared';
+import { Aesterisk, Button, ChevronRight, gaTrackHomeEnter } from '@dpm-core/shared';
 
 import { Loading } from '@/components/lotties/loading';
 import { formatISOStringToFullDateString } from '@/lib/date';
@@ -23,6 +24,15 @@ const CurrentWeekSessionContainer = () => {
 
 	return (
 		<>
+			<div className="mb-3.5 hidden items-center gap-3 md:flex">
+				<h3 className="font-bold text-label-normal text-title1">세션</h3>
+				<Button variant="text" className="gap-0" asChild>
+					<Link href="/session">
+						전체보기
+						<ChevronRight className="size-4" />
+					</Link>
+				</Button>
+			</div>
 			{currentWeekSession ? (
 				<SessionCard
 					subtitle={`${currentWeekSession.week}주차 세션`}
@@ -43,25 +53,23 @@ const CurrentWeekSessionContainer = () => {
 	);
 };
 
-const CurrentWeekSession = ErrorBoundary.with(
-	{
-		fallback: (props) => {
+const CurrentWeekSession = () => (
+	<ErrorBoundary
+		fallback={(props) => {
 			return (
 				<div className="flex h-full flex-col items-center justify-center">
 					<p className="font-semibold text-body2">세선 정보 조회에 실패했어요.</p>
-					{/*TODO: QueryErrorBoundary 연동하기 */}
 					<Button type="button" onClick={() => props.reset()}>
 						다시 시도
 					</Button>
 				</div>
 			);
-		},
-	},
-	() => (
+		}}
+	>
 		<Suspense fallback={<Loading />}>
 			<CurrentWeekSessionContainer />
 		</Suspense>
-	),
+	</ErrorBoundary>
 );
 
 export { CurrentWeekSession };
