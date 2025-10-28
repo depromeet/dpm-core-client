@@ -7,7 +7,7 @@ import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
 import type { Session } from '@dpm-core/api';
-import { Button, Calender, ChevronRight, Clock, formatDotFullDate } from '@dpm-core/shared';
+import { Button, Calender, ChevronRight, Clock, cn, formatDotFullDate } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
@@ -20,6 +20,7 @@ const SessionListContainer = () => {
 	const {
 		data: { data: sessionResponse },
 	} = useSuspenseQuery(getSessionListQuery);
+
 	return (
 		<>
 			<div className="mt-6 mb-5 hidden justify-between md:flex">
@@ -46,18 +47,27 @@ function SessionItem({ session }: { session: Session }) {
 	const router = useRouter();
 
 	const handleClickSession = () => {
-		console.log(params.id);
 		if (Number(params.id) === session.id) return;
 
-		router.push(`/session/${session.id}`);
+		if (params.id) {
+			router.replace(`/session/${session.id}`, { scroll: false });
+		} else {
+			router.push(`/session/${session.id}`, { scroll: false });
+		}
 	};
+
+	const selected = Number(params.id) === session.id;
 
 	return (
 		<Pressable
+			data-no-close
 			variant="none"
 			size="none"
 			asChild
-			className="block h-auto w-full border-line-subtle border-b px-3 py-4 hover:bg-background-strong"
+			className={cn(
+				'block h-auto w-full border-line-subtle border-b px-3 py-4 hover:bg-background-strong',
+				selected && 'bg-background-strong',
+			)}
 			onClick={handleClickSession}
 		>
 			<div className="flex w-full items-center justify-between">

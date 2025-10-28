@@ -8,23 +8,22 @@ export const RightSheet = ({ children }: PropsWithChildren) => {
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
 
-	const lastId = useRef<string | undefined>(undefined);
-
-	const handleClose = () => {
-		console.log(lastId.current);
-		console.log(params.id);
-		if (lastId.current === params.id) return;
-		router.back();
-	};
-
-	// ✅ 매 렌더마다 현재 id 저장
-	if (params.id && lastId.current !== params.id) {
-		lastId.current = params.id;
-	}
+	const sheetRef = useRef<HTMLDivElement>(null);
 
 	return (
-		<Sheet modal={false} open={!!params.id} onOpenChange={handleClose}>
-			<SheetContent className="w-full min-w-full border-line-normal shadow-none md:w-[600px] md:min-w-[600px] md:pt-[81px]">
+		<Sheet modal={false} open={!!params.id}>
+			<SheetContent
+				ref={sheetRef}
+				className="w-full min-w-full border-line-normal shadow-none outline-none md:w-[600px] md:min-w-[600px] md:pt-[81px]"
+				onPointerDownOutside={(event) => {
+					const target = event.target as HTMLElement;
+					if (target.closest('[data-no-close]')) {
+						event.preventDefault();
+					} else {
+						router.back();
+					}
+				}}
+			>
 				{children}
 			</SheetContent>
 		</Sheet>
