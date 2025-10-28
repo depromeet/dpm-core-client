@@ -11,7 +11,7 @@ export default function CreateSessionPage() {
 				title="세션 추가"
 				rightIcon={
 					<Button variant="secondary" size="md" disabled>
-						저장
+						저장하기
 					</Button>
 				}
 			/>

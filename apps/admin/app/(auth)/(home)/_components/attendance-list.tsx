@@ -26,6 +26,7 @@ export const AttendanceList = ({ sessionId }: { sessionId: number }) => {
 		week: sessionId,
 		statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
 		teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
+		onlyMyTeam: searchParams.onlyMyTeam === 'true' ? true : undefined,
 		name: searchParams.name,
 	};
 

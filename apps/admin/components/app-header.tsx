@@ -46,7 +46,7 @@ const AppHeader = ({
 				<h3 className="font-semibold text-body1 text-label-strong md:font-bold md:text-headline1">
 					{title}
 				</h3>
-				{rightIcon}
+				<div className="absolute right-4">{rightIcon}</div>
 			</div>
 		</header>
 	);
