@@ -1,0 +1,1 @@
+export const GA_ID = 'G-NX5RGT9VXM';

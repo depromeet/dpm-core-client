@@ -1,5 +1,5 @@
-import { attendance } from '@dpm-core/api';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
+import { attendance } from '@dpm-core/api';
 
 const QUERY_KEY = 'ATTENDANCE';
 
@@ -7,6 +7,7 @@ interface getAttendanceBySessionOptionsParams {
 	week: number;
 	statuses?: string[];
 	teams?: number[];
+	onlyMyTeam?: boolean;
 	name?: string;
 }
 

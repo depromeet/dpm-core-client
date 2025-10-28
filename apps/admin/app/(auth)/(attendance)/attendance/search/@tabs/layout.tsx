@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+
 import { AttendanceTabs } from './_components/attendance-tabs';
 
 interface LayoutProps {

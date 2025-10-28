@@ -48,7 +48,7 @@ class Logger {
 		return this.levels[level] >= this.levels[this.config.level];
 	}
 
-	private formatMessage(level: LogLevel, message: string, data?: unknown): string {
+	private formatMessage(level: LogLevel, message: string, _?: unknown): string {
 		let formattedMessage = '';
 
 		/*

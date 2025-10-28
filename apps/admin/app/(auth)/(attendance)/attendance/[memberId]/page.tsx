@@ -1,3 +1,5 @@
+import { AppLayout } from '@dpm-core/shared';
+
 import { AttendanceMemberDetailContainer } from './_components/attendance-member-detail-container';
 
 interface AttendanceMemberDetailPageProps {
@@ -9,5 +11,9 @@ export default async function AttendanceMemberDetailPage({
 }: AttendanceMemberDetailPageProps) {
 	const { memberId } = await params;
 
-	return <AttendanceMemberDetailContainer memberId={Number(memberId)} />;
+	return (
+		<AppLayout className="bg-background-normal">
+			<AttendanceMemberDetailContainer memberId={Number(memberId)} />
+		</AppLayout>
+	);
 }

@@ -1,5 +1,8 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { type PropsWithChildren, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import {
 	Drawer,
 	DrawerContent,
@@ -9,11 +12,9 @@ import {
 	DrawerTrigger,
 	useAppShell,
 } from '@dpm-core/shared';
-import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { type PropsWithChildren, useState } from 'react';
 
 import { withdrawMutationOptions } from '@/remotes/mutations/member';
+
 import { Pressable } from '../motion';
 
 interface WithdrawBottomSheetProps {
@@ -58,8 +59,8 @@ const WithdrawBottomSheet = ({
 			>
 				<DrawerTitle className="sr-only">탈퇴하기</DrawerTitle>
 				<DrawerHeader className="!text-left !gap-y-2 items-start">
-					<h3 className="text-title2 font-semibold text-label-normal">탈퇴하기</h3>
-					<p className="text-body2 text-label-assistive font-medium">
+					<h3 className="font-semibold text-label-normal text-title2">탈퇴하기</h3>
+					<p className="font-medium text-body2 text-label-assistive">
 						지금 디프만 코어에서 탈퇴하면 다시 가입하기 어려워요.
 						<br />
 						그래도 정말 탈퇴할까요?

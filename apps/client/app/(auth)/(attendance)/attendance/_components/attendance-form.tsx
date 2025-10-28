@@ -1,5 +1,13 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ErrorBoundary } from '@suspensive/react';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import {
 	calcSessionAttendanceTime,
 	calcSessionLateAttendanceTime,
@@ -10,20 +18,16 @@ import {
 	FormField,
 	FormItem,
 	FormLabel,
+	gaTrackAttendanceEnter,
+	gaTrackAttendanceSubmit,
+	gaTrackSessionStart,
 	InputOTP,
 	InputOTPGroup,
 	InputOTPSlot,
 	toast,
 	usePreventScroll,
 } from '@dpm-core/shared';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { ErrorBoundary } from '@suspensive/react';
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import dayjs from 'dayjs';
-import { useRouter } from 'next/navigation';
-import { Suspense, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+
 import { CtaButton } from '@/components/cta-button';
 import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringHHMM } from '@/lib/date';
@@ -68,6 +72,11 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
+	useEffect(() => {
+		gaTrackAttendanceEnter(sessionId.toString());
+		gaTrackSessionStart(sessionId.toString());
+	}, [sessionId]);
+
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
@@ -79,11 +88,15 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 	const { mutate: checkAttendance, isPending: isPendingCheckAttendance } = useMutation(
 		checkAttendanceOptions(sessionId, {
 			onSuccess: () => {
+				gaTrackAttendanceSubmit(sessionId.toString(), 'success');
+
 				queryClient.invalidateQueries(getAttendanceMeBySessionIdOptions({ sessionId }));
 				queryClient.invalidateQueries(getAttendanceMeOptions());
 				router.replace(`/attendance/${sessionId}/result`);
 			},
 			onError: async (error) => {
+				gaTrackAttendanceSubmit(sessionId.toString(), 'fail');
+
 				const serverError = await error.response.json();
 				if (serverError.code === 'SESSION-400-04') {
 					toast.error('이미 출석을 체크했습니다.');
@@ -106,7 +119,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 				onSubmit={form.handleSubmit(handleSubmitCode)}
 				id="attendance-form"
 				className={cn(
-					'flex justify-center items-center flex-col gap-4 flex-1',
+					'flex flex-1 flex-col items-center justify-center gap-4',
 					keyboardOpen && 'pb-56',
 				)}
 			>
@@ -116,7 +129,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 					render={({ field }) => {
 						return (
 							<FormItem className="flex flex-col items-center gap-0">
-								<FormLabel htmlFor="code" className="text-title1 font-bold text-[#1A1C1E] mb-4">
+								<FormLabel htmlFor="code" className="mb-4 font-bold text-[#1A1C1E] text-title1">
 									출석코드를 입력해 주세요
 								</FormLabel>
 								<FormControl>
@@ -129,7 +142,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 										</InputOTPGroup>
 									</InputOTP>
 								</FormControl>
-								<FormDescription className="mt-8 text-body2 font-medium text-label-assistive">
+								<FormDescription className="mt-8 font-medium text-body2 text-label-assistive">
 									<span>
 										출석 시간 : {formatISOStringHHMM(attendanceStartTime)} -{' '}
 										{formatISOStringHHMM(
@@ -154,7 +167,7 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 				/>
 			</form>
 			<CtaButton
-				className="w-full mx-auto rounded-none fixed bottom-0"
+				className="fixed bottom-0 mx-auto w-full rounded-none"
 				disabled={!form.formState.isValid || form.formState.isSubmitting}
 				isLoading={isPendingCheckAttendance}
 				text="완료하기"

@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.2.5/schema.json",
 	"vcs": {
 		"clientKind": "git",
 		"enabled": true,
@@ -8,16 +8,56 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"correctness": {
+				"noUnusedVariables": "error",
+				"noUnusedImports": "error",
+				"noUnusedFunctionParameters": "warn",
+				"useUniqueElementIds": "off"
+			},
+			"nursery": {
+				"noImportCycles": "error",
+				"useSortedClasses": {
+					"level": "on",
+					"fix": "safe",
+					"options": {
+						"attributes": ["classList"],
+						"functions": ["clsx", "cva", "tw", "tw.*"]
+					}
+				}
+			},
+			"style": {
+				"useConsistentCurlyBraces": "error"
+			}
+		}
+	},
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": {
+					"level": "on",
+					"options": {
+						"groups": [
+							[":BUN:", ":NODE:"],
+							["react", "react/**", "next", "next/**"],
+							[":PACKAGE:", "!react", "!react/**", "!next", "!next/**", "!@dpm-core/**"],
+							"@dpm-core/**",
+							":BLANK_LINE:",
+							":ALIAS:",
+							":BLANK_LINE:",
+							[":PATH:"]
+						]
+					}
+				}
+			}
 		}
 	},
 	"formatter": {
 		"enabled": true,
-		"formatWithErrors": false,
-
 		"indentStyle": "tab",
 		"lineEnding": "lf",
-		"lineWidth": 100
+		"lineWidth": 100,
+		"formatWithErrors": true
 	},
 	"javascript": {
 		"formatter": {
@@ -34,6 +74,11 @@
 	"json": {
 		"formatter": {
 			"indentStyle": "tab"
+		}
+	},
+	"css": {
+		"linter": {
+			"enabled": false
 		}
 	}
 }

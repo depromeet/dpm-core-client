@@ -1,10 +1,17 @@
 'use client';
 
+import { type PropsWithChildren, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp';
+import { useForm } from 'react-hook-form';
+import z from 'zod';
 import { SESSION_ATTENDANCE_TIME_CODE_LENGTH } from '@dpm-core/api';
 import {
 	ATTENDANCE_GAP_DURATION,
 	ATTENDANCE_LATE_DURATION,
 	calcSessionAttendanceTimeByHHmmToISOString,
+	calculateLateTimeFromStartTime,
 	Drawer,
 	DrawerContent,
 	DrawerDescription,
@@ -13,21 +20,18 @@ import {
 	DrawerTrigger,
 	Form,
 	FormField,
+	formatAttendanceTimeFromCode,
+	gaTrackAttendanceTimeSet,
 	InputOTP,
 	InputOTPGroup,
 	InputOTPSlot,
 	useAppShell,
 	validateHHMM,
 } from '@dpm-core/shared';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp';
-import { type PropsWithChildren, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import z from 'zod';
-import { CtaButton } from '@/components/cta-button';
 
+import { CtaButton } from '@/components/cta-button';
 import { editSessionAttendanceTimeMutationOptions } from '@/remotes/mutations/session';
+
 import { formatAttendanceStartTimeToCode } from '../../_helpers';
 
 interface EditSessionBottomSheetProps {
@@ -68,6 +72,11 @@ const EditSessionBottomSheet = ({
 	);
 
 	const handleSuccess = () => {
+		const inputTime = form.getValues('attendanceStartTime');
+		const startTime = formatAttendanceTimeFromCode(inputTime);
+		const lateTime = calculateLateTimeFromStartTime(inputTime);
+		gaTrackAttendanceTimeSet(sessionId, startTime, lateTime);
+
 		onSuccess?.();
 		setIsOpen(false);
 	};
@@ -119,19 +128,19 @@ const EditSessionBottomSheet = ({
 							<br />- 지각 가능: 출석 가능 시간 이후 30분간
 						</DrawerDescription>
 						<DrawerHeader className="!text-left !gap-y-2 items-start px-5 pt-[30px]">
-							<h3 className="text-title2 font-semibold text-label-normal">출석/지각 시간 수정</h3>
+							<h3 className="font-semibold text-label-normal text-title2">출석/지각 시간 수정</h3>
 						</DrawerHeader>
-						<div className="px-5 mt-8">
+						<div className="mt-8 px-5">
 							<label
 								htmlFor="start-time-input"
-								className="flex justify-between items-center cursor-pointer"
+								className="flex cursor-pointer items-center justify-between"
 							>
-								<p className="text-body2 text-label-assistive font-semibold">출석 시작 시간</p>
+								<p className="font-semibold text-body2 text-label-assistive">출석 시작 시간</p>
 								<FormField
 									control={form.control}
 									name="attendanceStartTime"
 									render={({ field }) => (
-										<div className="flex items-center gap-x-2 w-full max-w-[215px] py-[14px] h-fit bg-background-strong rounded-lg justify-center focus-within:ring focus-within:ring-gray-900 focus-within:ring-offset-1 transition-[box-shadow]">
+										<div className="flex h-fit w-full max-w-[215px] items-center justify-center gap-x-2 rounded-lg bg-background-strong py-[14px] transition-[box-shadow] focus-within:ring focus-within:ring-gray-900 focus-within:ring-offset-1">
 											<InputOTP
 												id="start-time-input"
 												maxLength={4}
@@ -142,23 +151,23 @@ const EditSessionBottomSheet = ({
 											>
 												<InputOTPGroup>
 													<InputOTPSlot
-														className="size-2.5 text-body2 font-medium text-label-normal !ring-0"
+														className="!ring-0 size-2.5 font-medium text-body2 text-label-normal"
 														index={0}
 													/>
 													<InputOTPSlot
-														className="size-2.5 text-body2 font-medium text-label-normal !ring-0"
+														className="!ring-0 size-2.5 font-medium text-body2 text-label-normal"
 														index={1}
 													/>
-													<p className="text-label-assistive text-body2 font-medium mx-1">시</p>
+													<p className="mx-1 font-medium text-body2 text-label-assistive">시</p>
 													<InputOTPSlot
-														className="size-2.5 text-body2 font-medium text-label-normal !ring-0"
+														className="!ring-0 size-2.5 font-medium text-body2 text-label-normal"
 														index={2}
 													/>
 													<InputOTPSlot
-														className="size-2.5 text-body2 font-medium text-label-normal !ring-0"
+														className="!ring-0 size-2.5 font-medium text-body2 text-label-normal"
 														index={3}
 													/>
-													<p className="text-label-assistive text-body2 font-medium ml-1">
+													<p className="ml-1 font-medium text-body2 text-label-assistive">
 														분 부터
 													</p>
 												</InputOTPGroup>
@@ -169,9 +178,9 @@ const EditSessionBottomSheet = ({
 							</label>
 						</div>
 						<div className="px-5">
-							<div className="my-3 bg-line-normal h-px" />
+							<div className="my-3 h-px bg-line-normal" />
 						</div>
-						<p className="text-label-subtle text-caption1 font-medium px-5 mb-5">
+						<p className="mb-5 px-5 font-medium text-caption1 text-label-subtle">
 							정해진 규정에 따라 출석/지각 시간이 자동 계산됩니다.
 							<br />- 출석 가능: 출석 시작 시간으로부터 {ATTENDANCE_GAP_DURATION / (1000 * 60)}분간
 							<br />- 지각 가능: 출석 종료 시간으로부터 {ATTENDANCE_LATE_DURATION / (1000 * 60)}분간

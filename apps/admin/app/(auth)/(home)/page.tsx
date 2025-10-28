@@ -1,92 +1,57 @@
-import { AppLayout, ChevronRight, fadeInOutVariatns, TextLogo, UserAvatar } from '@dpm-core/shared';
-import * as motion from 'motion/react-client';
-import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
-import IconAttendance from '@/assets/icons/icon_attendance.png';
-import IconSession from '@/assets/icons/icon_session.png';
-import IconSettlement from '@/assets/icons/icon_settlement.png';
-import { NavigationBar } from '@/components/navigation-bar';
-import { SESSION_ID } from '../(attendance)/attendance/search/@tabs/const/const';
-import { FeatureComingSoon } from './_components/coming-soon';
-import { CurrentWeekSession } from './_components/current-week-session';
-import { SessionBanner } from './_components/session-banner';
-import { SessionCurrentWeekBanner } from './_components/session-current-week-banner';
+import { AppLayout, ChevronRight, GAPageTracker } from '@dpm-core/shared';
 
-const UserPage = () => {
+import { Section } from '@/components/section';
+
+import { CurrentWeekSession } from './_components/current-week-session';
+import { HomeAttendance } from './_components/home-attendance';
+import HomeHeader from './_components/home-header';
+import { MobileNav } from './_components/mobile-nav';
+import { SessionBanner } from './_components/session-banner';
+import { SessionProivder } from './_components/session-provider';
+
+const HomePage = () => {
 	return (
 		<AppLayout className="bg-background-normal">
-			<NavigationBar>
-				<div className="py-2 px-4 flex items-center justify-between bg-white">
-					<TextLogo className="text-gray-400" />
+			<GAPageTracker type="home" />
+			<HomeHeader />
+			<main>
+				<SessionProivder>
+					<SessionBanner />
 
-					<Link href="/my-page">
-						<UserAvatar />
-					</Link>
-				</div>
-				<SessionBanner />
-			</NavigationBar>
+					<Section className="mt-5 border-background-strong border-b-8 pb-10 md:hidden">
+						<MobileNav />
+					</Section>
 
-			<SessionCurrentWeekBanner />
+					<Section>
+						<CurrentWeekSession />
+					</Section>
 
-			<motion.div
-				variants={fadeInOutVariatns.variants}
-				className="flex flex-col divide-y-8 divide-background-strong flex-1"
-			>
-				<ul className="flex justify-center items-center gap-x-[52px] mt-5 pb-10">
-					<IconCard
-						icon={IconAttendance}
-						title="출석"
-						href={`/attendance/search/session?week=${SESSION_ID}`}
-					/>
-					<IconCard icon={IconSession} title="세션" href="/session" />
-					<FeatureComingSoon>
-						<IconCard icon={IconSettlement} title="정산" href="#" />
-					</FeatureComingSoon>
-				</ul>
+					<Section className="md:hidden">
+						<Link
+							href="https://forms.gle/yV88T98WsADu6VNc6"
+							target="_blank"
+							className="flex items-center justify-between rounded-lg bg-primary-extralight p-5"
+						>
+							<div>
+								<h3 className="font-bold text-primary-normal text-title2">
+									디프만 코어 VOC 수집중!
+								</h3>
+								<p className="mt-2 text-body2 text-label-assistive">
+									디프만 코어, 어떻게 느끼고 계신가요?
+									<br />
+									여러분의 의견을 기다리고 있어요!
+								</p>
+							</div>
+							<ChevronRight className="text-icon-noraml" />
+						</Link>
+					</Section>
 
-				<div className="flex flex-col my-5 px-4 w-full gap-y-5 flex-1">
-					<CurrentWeekSession />
-					<Link
-						href="https://forms.gle/yV88T98WsADu6VNc6"
-						target="_blank"
-						className="bg-primary-extralight rounded-[10px] p-5 flex justify-between items-center"
-					>
-						<div>
-							<h3 className="text-title2 font-bold text-primary-normal">디프만 코어 VOC 수집중!</h3>
-							<p className="text-body2 text-label-assistive mt-2">
-								디프만 코어, 어떻게 느끼고 계신가요?
-								<br />
-								여러분의 의견을 기다리고 있어요!
-							</p>
-						</div>
-						<ChevronRight className="text-icon-noraml" />
-					</Link>
-				</div>
-			</motion.div>
+					<HomeAttendance />
+				</SessionProivder>
+			</main>
 		</AppLayout>
 	);
 };
 
-interface IconCardProps {
-	icon: StaticImageData;
-	title: string;
-	href: string;
-}
-
-function IconCard({ icon, title, href }: IconCardProps) {
-	return (
-		<li>
-			<Link
-				href={href}
-				className="flex flex-col items-center text-center gap-y-2 hover:scale-105 transition-transform"
-			>
-				<div className="rounded-xl bg-background-strong w-[60px] h-[60px] flex items-center justify-center">
-					<Image src={icon} width={35} height={35} alt={title} />
-				</div>
-				<p className="text-body2 font-semibold">{title}</p>
-			</Link>
-		</li>
-	);
-}
-
-export default UserPage;
+export default HomePage;

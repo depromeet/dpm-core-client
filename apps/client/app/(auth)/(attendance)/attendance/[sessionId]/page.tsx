@@ -1,6 +1,8 @@
-import { ChevronLeft } from '@dpm-core/shared';
 import Link from 'next/link';
+import { ChevronLeft } from '@dpm-core/shared';
+
 import { NavigationBar } from '@/components/navigation-bar';
+
 import { AttendanceForm } from '../_components/attendance-form';
 
 interface Props {
@@ -11,7 +13,7 @@ export default async function page({ params }: Props) {
 	const { sessionId } = await params;
 
 	return (
-		<div className="flex flex-col h-dvh">
+		<div className="flex h-dvh flex-col">
 			<NavigationBar>
 				<Link href="/">
 					<ChevronLeft />

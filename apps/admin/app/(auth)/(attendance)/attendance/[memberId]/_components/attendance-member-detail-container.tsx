@@ -1,11 +1,13 @@
 'use client';
 
-import { Button, ChevronLeft } from '@dpm-core/shared';
-import { ErrorBoundary } from '@suspensive/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
+import { ErrorBoundary } from '@suspensive/react';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { Button, ChevronLeft } from '@dpm-core/shared';
+
 import { getAttendanceByMemberDetailOptions } from '@/remotes/queries/attendance';
+
 import { AttendanceMemberInfo } from './attendance-member-info';
 import { AttendanceSessionList } from './attendance-session-list';
 
@@ -23,11 +25,11 @@ export const _AttendanceMemberDetailContainer = (props: AttendanceMemberDetailCo
 
 	return (
 		<>
-			<header className="h-12 bg-gray-0 sticky top-0 py-3 px-4 flex items-center justify-between">
+			<header className="sticky top-0 flex h-12 items-center justify-between bg-gray-0 px-4 py-3">
 				<Button variant="none" size="none" onClick={() => router.back()} asChild>
 					<ChevronLeft />
 				</Button>
-				<h1 className="absolute left-1/2 -translate-x-1/2 font-semibold text-body1">
+				<h1 className="-translate-x-1/2 absolute left-1/2 font-semibold text-body1">
 					{data.member.name}
 				</h1>
 			</header>

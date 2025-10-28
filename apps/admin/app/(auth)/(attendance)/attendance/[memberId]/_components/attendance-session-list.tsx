@@ -1,6 +1,7 @@
+import Link from 'next/link';
 import type { AttendanceSession } from '@dpm-core/api';
 import { Calender, Clock, formatDotFullDate, formatTimeOnly } from '@dpm-core/shared';
-import Link from 'next/link';
+
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
 
 interface AttendanceSessionListProps {
@@ -24,12 +25,12 @@ const SessionItem = (props: AttendanceSession & { memberId: number }) => {
 	return (
 		<Link
 			href={`/attendance/${memberId}/${sessionId}`}
-			className="flex w-full justify-between items-center px-3 py-4 border-b border-line-normal"
+			className="flex w-full items-center justify-between border-line-normal border-b px-3 py-4"
 		>
 			<div>
-				<p className="mb-0.5 text-label-assistive text-caption1 font-medium">{week}주차 세션</p>
-				<p className="mb-0.5 text-label-normal text-body1 font-semibold">{eventName}</p>
-				<p className="flex gap-2 text-label-assistive text-caption1 font-medium">
+				<p className="mb-0.5 font-medium text-caption1 text-label-assistive">{week}주차 세션</p>
+				<p className="mb-0.5 font-semibold text-body1 text-label-normal">{eventName}</p>
+				<p className="flex gap-2 font-medium text-caption1 text-label-assistive">
 					<span className="flex items-center gap-0.5">
 						<Calender />
 						<time dateTime={date}>{formatDotFullDate(date)}</time>

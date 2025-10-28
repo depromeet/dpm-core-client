@@ -1,9 +1,10 @@
 'use client';
 
-import type { Variants } from 'motion/react';
-import { motion, useAnimation } from 'motion/react';
 import type { HTMLAttributes } from 'react';
 import { forwardRef, useEffect } from 'react';
+import type { Variants } from 'motion/react';
+import { motion, useAnimation } from 'motion/react';
+
 import { cn } from '../../utils/cn';
 
 export interface CheckIconHandle {
@@ -37,7 +38,7 @@ const pathVariants: Variants = {
 };
 
 const CheckIcon = forwardRef<CheckIconHandle, CheckIconProps>(
-	({ className, size = 28, ...props }, ref) => {
+	({ className, size = 28, ...props }, _) => {
 		const controls = useAnimation();
 
 		useEffect(() => {

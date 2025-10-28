@@ -1,6 +1,7 @@
-import { logger } from '@dpm-core/shared';
 import Cookies from 'js-cookie';
 import ky, { type KyInstance, type Options } from 'ky';
+import { logger } from '@dpm-core/shared';
+
 import { COOKIE_KEYS } from './constants';
 import { createRefreshPlugin } from './plugins/create-refresh-plugin';
 import type { ApiResponse } from './type';
@@ -30,7 +31,7 @@ class Http {
 					},
 				],
 				afterResponse: [
-					async (request, options, response) => {
+					async (request, _, response) => {
 						logger.api(request.method, request.url, response.status);
 
 						return response;

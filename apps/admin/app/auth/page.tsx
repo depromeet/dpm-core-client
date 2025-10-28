@@ -1,9 +1,9 @@
-import { Button } from '@dpm-core/shared';
 import Link from 'next/link';
+import { Button } from '@dpm-core/shared';
 
 const AuthPage = () => {
 	return (
-		<div className="relative w-full h-dvh flex flex-col items-center justify-center">
+		<div className="relative flex h-dvh w-full flex-col items-center justify-center">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="33"
@@ -19,15 +19,15 @@ const AuthPage = () => {
 					fill="#FFC06E"
 				/>
 			</svg>
-			<h1 className="mt-8 mb-4 text-title1 font-bold text-label-strong text-center">
+			<h1 className="mt-8 mb-4 text-center font-bold text-label-strong text-title1">
 				운영진 권한이 없습니다.
 			</h1>
-			<p className="text-body2 font-medium text-label-assistive text-center">
+			<p className="text-center font-medium text-body2 text-label-assistive">
 				디프만 운영진이라면
 				<br />
 				회/부회장에게 접근 권한을 요청해 주세요.
 			</p>
-			<Button className="fixed max-w-lg bottom-0" variant="secondary" size="full" asChild>
+			<Button className="fixed bottom-0 max-w-lg" variant="secondary" size="full" asChild>
 				<Link href="/login">메인 화면으로</Link>
 			</Button>
 		</div>

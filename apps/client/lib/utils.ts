@@ -1,5 +1,5 @@
-import { COOKIE_KEYS, type Part } from '@dpm-core/api';
 import Cookies from 'js-cookie';
+import { COOKIE_KEYS, type Part } from '@dpm-core/api';
 
 export { cn } from '@dpm-core/shared';
 

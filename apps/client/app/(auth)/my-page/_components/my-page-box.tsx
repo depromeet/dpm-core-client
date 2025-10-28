@@ -1,5 +1,5 @@
-import { cn } from '@dpm-core/shared';
 import type { ComponentPropsWithoutRef } from 'react';
+import { cn } from '@dpm-core/shared';
 
 type MypPageBoxProps = ComponentPropsWithoutRef<'div'>;
 
@@ -8,7 +8,7 @@ function MypPageBox(props: MypPageBoxProps) {
 		<div
 			{...props}
 			className={cn(
-				'rounded-lg bg-background-normal border border-line-subtle p-5 flex flex-col gap-y-5',
+				'flex flex-col gap-y-5 rounded-lg border border-line-subtle bg-background-normal p-5',
 				props.className,
 			)}
 		/>

@@ -3,27 +3,27 @@
 	"private": true,
 	"scripts": {
 		"dev": "turbo dev",
-		"setup:local": "scripts/local-server-setup.sh",
-		"dev:local": "turbo dev:local",
-		"dev:client": "node scripts/local-client-server.js",
-		"dev:admin": "node scripts/local-admin-server.js",
+		"setup": "scripts/local-server-setup.sh",
+		"dev:client": "turbo dev --filter client",
+		"dev:admin": "turbo dev --filter admin",
 		"build": "turbo build",
+		"build:client": "turbo build --filter client",
+		"build:admin": "turbo build --filter admin",
 		"start": "turbo start",
-		"format": "biome format --write .",
-		"lint": "biome lint --write .",
-		"clean": "turbo clean",
-		"create-package": "node scripts/create-package.js",
+		"format": "turbo format",
+		"lint": "turbo lint",
+		"check-types": "turbo check-types",
+		"format-and-lint": "biome check .",
+		"format-and-lint:fix": "biome check . --write",
+		"clean": "turbo clean && rm -rf node_modules && rm -rf .turbo",
 		"changeset": "changeset",
 		"changeset:version": "changeset version",
 		"changeset:publish": "changeset publish"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.1.0",
+		"@biomejs/biome": "2.2.5",
 		"@changesets/cli": "^2.29.5",
 		"turbo": "^2.3.5"
-	},
-	"dependencies": {
-		"zustand": "^5.0.6"
 	},
 	"packageManager": "pnpm@8.15.6",
 	"engines": {

@@ -1,7 +1,7 @@
 'use client';
 
-import { ChevronLeft, cn } from '@dpm-core/shared';
 import Link from 'next/link';
+import { ChevronLeft, cn } from '@dpm-core/shared';
 
 interface AppHeaderProps {
 	title: string;
@@ -30,9 +30,9 @@ const AppHeader = ({
 	),
 }: AppHeaderProps) => {
 	return (
-		<div className={cn('h-12 flex items-center justify-center relative px-4 py-3 mb-5', className)}>
+		<div className={cn('relative mb-5 flex h-12 items-center justify-center px-4 py-3', className)}>
 			{leftIcon}
-			<h3 className="text-body1 font-semibold text-label-strong">{title}</h3>
+			<h3 className="font-semibold text-body1 text-label-strong">{title}</h3>
 			{rightIcon}
 		</div>
 	);

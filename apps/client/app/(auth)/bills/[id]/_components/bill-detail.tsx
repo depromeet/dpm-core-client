@@ -1,17 +1,18 @@
 'use client';
 
-import type { Bill } from '@dpm-core/api';
-import { Form, Input } from '@dpm-core/shared';
+import { Suspense, useId } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Suspense, useId } from 'react';
 import { useForm } from 'react-hook-form';
+import { Form, Input } from '@dpm-core/shared';
+
 import { LoadingBox } from '@/components/loading-box';
 import { getBillDetailByIdQueryOptions } from '@/remotes/queries/bill';
+
 import { BillDetailSubmitButton } from './bill-detail-submit-button';
 import { BillOpenDetail } from './bill-open-detail';
 
-const BillCompletedDetail = ({ billDetail }: { billDetail: Bill }) => {
+const BillCompletedDetail = () => {
 	const formId = useId();
 	const form = useForm({
 		defaultValues: {},
@@ -26,7 +27,7 @@ const BillCompletedDetail = ({ billDetail }: { billDetail: Bill }) => {
 	);
 };
 
-const BillInProgressDetail = ({ billDetail }: { billDetail: Bill }) => {
+const BillInProgressDetail = () => {
 	const formId = useId();
 	const form = useForm({
 		defaultValues: {},
@@ -49,9 +50,9 @@ function BillDetailContainer({ billId }: { billId: number }) {
 		case 'OPEN':
 			return <BillOpenDetail billDetail={billDetail} />;
 		case 'COMPLETED':
-			return <BillCompletedDetail billDetail={billDetail} />;
+			return <BillCompletedDetail />;
 		case 'IN_PROGRESS':
-			return <BillInProgressDetail billDetail={billDetail} />;
+			return <BillInProgressDetail />;
 		default:
 			billDetail.billStatus satisfies never;
 	}

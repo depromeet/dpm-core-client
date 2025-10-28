@@ -7,29 +7,28 @@ export const dynamic = 'force-dynamic';
 
 const LoginPage = () => {
 	return (
-		<div className="bg-primary-extralight min-h-dvh flex flex-col justify-center gap-y-10">
-			<div className="mx-auto text-center flex flex-col gap-y-10">
-				<div className="flex flex-col items-center gap-y-[18px]">
+		<section className="flex flex-col items-center justify-center gap-10 text-center">
+			<div className="mx-auto flex flex-col gap-y-10">
+				<div className="flex flex-col items-center gap-y-4.5">
 					<CoreLogo />
-					<div className="uppercase text-headline1 font-semibold text-label-normal flex mx-auto gap-x-2.5 items-start relative">
-						<DpmText className="text-gray-800 w-fit" />
-						<p className="text-primary-strong text-body2 font-semibold lowercase leading-none absolute left-[105%]">
+					<div className="relative mx-auto flex gap-x-2.5 font-semibold text-headline1 text-label-normal uppercase">
+						<DpmText className="w-fit text-gray-800" />
+						<p className="absolute left-[105%] font-semibold text-body2 text-primary-strong lowercase leading-none">
 							admin
 						</p>
 					</div>
 				</div>
-				<p>
+				<p className="font-medium text-body2 text-label-subtle">
 					출석, 번개, 커피챗까지
 					<br />
 					17기의 모든 네트워킹을 코어에서 서포트합니다
 				</p>
 				<LoginButton
-					variant="assistive"
-					className="bg-[#FEE500] rounded-xl px-[15px] py-3.5 font-medium h-auto leading-1"
+					variant="none"
+					className="h-auto rounded-xl bg-[#FEE500] px-[15px] py-3.5 font-medium leading-1"
 				/>
 			</div>
-		</div>
+		</section>
 	);
 };
-
 export default LoginPage;

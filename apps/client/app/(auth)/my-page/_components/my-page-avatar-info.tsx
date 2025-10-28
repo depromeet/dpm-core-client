@@ -1,11 +1,12 @@
 'use client';
 
-import { fadeInOutVariatns } from '@dpm-core/shared';
+import Image from 'next/image';
+import { Suspense } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
-import Image from 'next/image';
-import { Suspense } from 'react';
+import { fadeInOutVariatns } from '@dpm-core/shared';
+
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { cohort } from '@/constants/cohort';
@@ -24,7 +25,7 @@ const MyPageAvatarInfoContainer = () => {
 			variants={fadeInOutVariatns.variants}
 			className="flex flex-col items-center gap-y-2.5"
 		>
-			<div className="w-[120px] h-[120px] rounded-full bg-white overflow-hidden">
+			<div className="h-[120px] w-[120px] overflow-hidden rounded-full bg-white">
 				<Image
 					// FIXME: 유효하지 않은 파트일 경우 디폴트 이미지
 					src={cohort[part].icon}
@@ -34,9 +35,9 @@ const MyPageAvatarInfoContainer = () => {
 					priority
 				/>
 			</div>
-			<div className="flex flex-col text-center gap-y-1">
-				<p className="text-title1 font-semibold text-label-normal">{myMemberInfo.name}</p>
-				<p className="text-xs text-label-assistive">{cohort[part].label}</p>
+			<div className="flex flex-col gap-y-1 text-center">
+				<p className="font-semibold text-label-normal text-title1">{myMemberInfo.name}</p>
+				<p className="text-label-assistive text-xs">{cohort[part].label}</p>
 			</div>
 		</motion.div>
 	);
@@ -51,7 +52,7 @@ const MyPageAvatarInfo = ErrorBoundary.with(
 	() => (
 		<Suspense
 			fallback={
-				<div className="flex flex-col items-center justify-center gap-y-3 flex-1">
+				<div className="flex flex-1 flex-col items-center justify-center gap-y-3">
 					<LoadingBox />
 				</div>
 			}

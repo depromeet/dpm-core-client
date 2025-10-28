@@ -1,5 +1,6 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useInfiniteQuery } from '@tanstack/react-query';
+
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { Profile } from '@/components/attendance/profile';
@@ -16,6 +17,7 @@ const AttendanceList = () => {
 		week: Number(searchParams.week),
 		statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
 		teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
+		onlyMyTeam: searchParams.onlyMyTeam === 'true' ? true : undefined,
 		name: searchParams.name,
 	};
 
@@ -47,7 +49,7 @@ const AttendanceList = () => {
 	}
 
 	return (
-		<section className="px-4 mt-2 flex-col flex-1">
+		<section className="mt-2 flex-1 flex-col px-4">
 			{flatData.map((member) => {
 				return (
 					<Link

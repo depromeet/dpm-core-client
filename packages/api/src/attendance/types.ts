@@ -1,5 +1,11 @@
 import type { Part } from '../member';
-export type AttendanceStatus = 'PRESENT' | 'LATE' | 'ABSENT' | 'EXCUSED_ABSENT' | 'PENDING' | 'EARLY_LEAVE';
+export type AttendanceStatus =
+	| 'PRESENT'
+	| 'LATE'
+	| 'ABSENT'
+	| 'EXCUSED_ABSENT'
+	| 'PENDING'
+	| 'EARLY_LEAVE';
 export type MemberAttendanceStatus = 'NORMAL' | 'AT_RISK' | 'IMPOSSIBLE';
 
 export interface AttendanceSession {
@@ -55,6 +61,7 @@ export interface AttendanceBySessionReponse {
 	}[];
 	hasNext: boolean;
 	nextCursorId: number | null;
+	totalElements: number;
 }
 
 export interface AttendanceByMemberReponse {
@@ -67,4 +74,5 @@ export interface AttendanceByMemberReponse {
 	}[];
 	hasNext: boolean;
 	nextCursorId: number | null;
+	totalElements: number;
 }

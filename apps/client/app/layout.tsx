@@ -1,6 +1,7 @@
-import { AppShell, Toaster } from '@dpm-core/shared';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { Metadata, Viewport } from 'next';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { AppShell, GAScript, Toaster } from '@dpm-core/shared';
+
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
 
@@ -26,6 +27,7 @@ export default function RootLayout({
 	return (
 		<html lang="ko">
 			<head>
+				<GAScript />
 				<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 				<link rel="shortcut icon" href="/favicon.ico" />

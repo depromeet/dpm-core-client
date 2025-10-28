@@ -1,6 +1,7 @@
+import type { PropsWithChildren } from 'react';
 import type { HTMLMotionProps } from 'motion/react';
 import * as motion from 'motion/react-client';
-import type { PropsWithChildren } from 'react';
+
 import { cn } from '../utils/cn';
 
 type AppLayoutProps = HTMLMotionProps<'div'>;
@@ -8,7 +9,7 @@ type AppLayoutProps = HTMLMotionProps<'div'>;
 const AppLayout = ({ className, ...props }: PropsWithChildren<AppLayoutProps>) => {
 	return (
 		<motion.div
-			className={cn('w-full flex flex-col min-h-[inherit] bg-background-subtle', className)}
+			className={cn('flex min-h-[inherit] w-full flex-col bg-background-subtle', className)}
 			initial="initial"
 			animate="animate"
 			transition={{

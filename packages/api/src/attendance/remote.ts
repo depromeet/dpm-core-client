@@ -39,22 +39,32 @@ export const attendance = {
 		statuses?: string[];
 		teams?: number[];
 		name?: string;
+		onlyMyTeam?: boolean;
 		cursorId: number;
 	}) => {
-		const { week, statuses, teams, name, cursorId } = params;
+		const { week, statuses, teams, name, onlyMyTeam, cursorId } = params;
 		const searchParams = new URLSearchParams();
 
 		if (statuses && statuses.length > 0) {
-			statuses.forEach((status) => searchParams.append('statuses', status));
+			statuses.forEach((status) => {
+				searchParams.append('statuses', status);
+			});
 		}
 
 		if (teams && teams.length > 0) {
-			teams.forEach((team) => searchParams.append('teams', team.toString()));
+			teams.forEach((team) => {
+				searchParams.append('teams', team.toString());
+			});
 		}
 
 		if (name) {
 			searchParams.set('name', name);
 		}
+
+		if (onlyMyTeam) {
+			searchParams.set('onlyMyTeam', onlyMyTeam.toString());
+		}
+
 		searchParams.set('cursorId', cursorId.toString());
 
 		const res = await http.get<AttendanceBySessionReponse>(`v1/sessions/${week}/attendances`, {
@@ -68,22 +78,32 @@ export const attendance = {
 		statuses?: string[];
 		teams?: number[];
 		name?: string;
+		onlyMyTeam?: boolean;
 		cursorId: number;
 	}) => {
-		const { statuses, teams, name, cursorId } = params;
+		const { statuses, teams, name, onlyMyTeam, cursorId } = params;
 		const searchParams = new URLSearchParams();
 
 		if (statuses && statuses.length > 0) {
-			statuses.forEach((status) => searchParams.append('statuses', status));
+			statuses.forEach((status) => {
+				searchParams.append('statuses', status);
+			});
 		}
 
 		if (teams && teams.length > 0) {
-			teams.forEach((team) => searchParams.append('teams', team.toString()));
+			teams.forEach((team) => {
+				searchParams.append('teams', team.toString());
+			});
 		}
 
 		if (name) {
 			searchParams.set('name', name);
 		}
+
+		if (onlyMyTeam) {
+			searchParams.set('onlyMyTeam', onlyMyTeam.toString());
+		}
+
 		searchParams.set('cursorId', cursorId.toString());
 
 		const res = await http.get<AttendanceByMemberReponse>(`v1/members/attendances`, {
