@@ -45,7 +45,11 @@ const AttendanceList = () => {
 	}
 
 	if (flatData.length === 0) {
-		return <EmptyView message="조건에 맞는 디퍼를 찾을 수 없어요" />;
+		return (
+			<div className="md:flex md:min-h-[400px] md:items-center md:justify-center">
+				<EmptyView message="조건에 맞는 디퍼를 찾을 수 없어요" />
+			</div>
+		);
 	}
 
 	return (
