@@ -1,6 +1,7 @@
 import { Checkbox } from '@dpm-core/shared';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
 import { EmptyView } from '@/components/attendance/EmptyView';
@@ -10,6 +11,8 @@ import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { useIntersect } from '@/hooks/useIntersect';
 import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
+
+import { AttendanceSessionDetailDrawer } from './attendance-session-detail-drawer';
 
 const AttendanceList = () => {
 	const customSearchParams = useCustomSearchParams();
@@ -43,6 +46,15 @@ const AttendanceList = () => {
 	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];
 
 	const { selectedIds, toggleItem, toggleAll, isAllSelected } = useCheckboxSelection(flatData);
+	const [selectedMember, setSelectedMember] = useState<{ memberId: number; sessionId: number } | null>(
+		null,
+	);
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+	const handleDesktopRowClick = (memberId: number) => {
+		setSelectedMember({ memberId, sessionId: Number(searchParams.week) });
+		setIsDrawerOpen(true);
+	};
 
 	if (isLoading) {
 		return <LoadingBox />;
@@ -111,24 +123,43 @@ const AttendanceList = () => {
 										onCheckedChange={() => toggleItem(member.id)}
 										className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 										aria-label={`${member.name} 선택`}
+										onClick={(e) => e.stopPropagation()}
 									/>
-									<Link href={`/attendance/${member.id}/${searchParams.week}`}>
+									<button
+										type="button"
+										onClick={() => handleDesktopRowClick(member.id)}
+										className="text-left"
+									>
 										<Profile
 											size={40}
 											name={member.name}
 											teamNumber={member.teamNumber}
 											part={member.part}
 										/>
-									</Link>
+									</button>
 								</div>
-								<Link href={`/attendance/${member.id}/${searchParams.week}`}>
+								<button
+									type="button"
+									onClick={() => handleDesktopRowClick(member.id)}
+									className="text-left"
+								>
 									<AttendanceStatusLabel status={member.attendanceStatus} />
-								</Link>
+								</button>
 							</div>
 						);
 					})}
 				</div>
 				<div ref={targetRef} />
+
+				{/* Drawer for desktop */}
+				{selectedMember && (
+					<AttendanceSessionDetailDrawer
+						memberId={selectedMember.memberId}
+						sessionId={selectedMember.sessionId}
+						open={isDrawerOpen}
+						onOpenChange={setIsDrawerOpen}
+					/>
+				)}
 			</section>
 		</>
 	);
