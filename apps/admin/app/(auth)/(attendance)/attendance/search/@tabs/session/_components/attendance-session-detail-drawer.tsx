@@ -1,5 +1,9 @@
 'use client';
 
+import { Suspense, useState } from 'react';
+import * as RadioGroup from '@radix-ui/react-radio-group';
+import { ErrorBoundary } from '@suspensive/react';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import type { AttendanceStatus } from '@dpm-core/api';
 import {
 	ATTENDANCE_STATUS_OPTIONS,
@@ -13,10 +17,6 @@ import {
 	toast,
 	XCircle,
 } from '@dpm-core/shared';
-import * as RadioGroup from '@radix-ui/react-radio-group';
-import { ErrorBoundary } from '@suspensive/react';
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { Suspense, useState } from 'react';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
 import { Profile } from '@/components/attendance/profile';
@@ -91,7 +91,6 @@ const _AttendanceSessionDetailContent = ({
 			</SheetHeader>
 
 			<div className="flex-1 overflow-y-auto px-6 py-6">
-				{/* 프로필 섹션 */}
 				<section className="mb-6">
 					<Profile
 						size={60}
@@ -101,7 +100,6 @@ const _AttendanceSessionDetailContent = ({
 					/>
 				</section>
 
-				{/* 출석 정보 */}
 				<section className="mb-6">
 					<h3 className="mb-3 font-semibold text-body1 text-label-normal">출석 정보</h3>
 					{isEditMode ? (
@@ -167,7 +165,6 @@ const _AttendanceSessionDetailContent = ({
 					)}
 				</section>
 
-				{/* 세션 정보 */}
 				<section>
 					<h3 className="mb-3 font-semibold text-body1 text-label-normal">세션 정보</h3>
 					<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-4">

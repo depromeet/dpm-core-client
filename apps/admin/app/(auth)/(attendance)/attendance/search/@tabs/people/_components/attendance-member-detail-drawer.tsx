@@ -1,5 +1,9 @@
 'use client';
 
+import Link from 'next/link';
+import { Suspense } from 'react';
+import { ErrorBoundary } from '@suspensive/react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import type { AttendanceSession } from '@dpm-core/api';
 import {
 	Badge,
@@ -15,10 +19,6 @@ import {
 	SheetTitle,
 	XCircle,
 } from '@dpm-core/shared';
-import { ErrorBoundary } from '@suspensive/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import Link from 'next/link';
-import { Suspense } from 'react';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
 import { Profile } from '@/components/attendance/profile';
@@ -52,7 +52,6 @@ const _AttendanceMemberDetailContent = ({ memberId }: { memberId: number }) => {
 			</SheetHeader>
 
 			<div className="flex-1 overflow-y-auto px-6 py-6">
-				{/* 멤버 정보 섹션 */}
 				<section className="mb-10">
 					<div className="mb-4 flex items-center justify-between">
 						<Profile
@@ -103,7 +102,6 @@ const _AttendanceMemberDetailContent = ({ memberId }: { memberId: number }) => {
 					)}
 				</section>
 
-				{/* 세션 리스트 섹션 */}
 				<section>
 					<div className="flex flex-col">
 						{data.sessions.map((session) => (
