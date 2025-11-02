@@ -1,8 +1,8 @@
 'use client';
 
+import { cn, Tabs, TabsList, TabsTrigger } from '@dpm-core/shared';
 import Link from 'next/link';
 import { redirect, useSelectedLayoutSegment } from 'next/navigation';
-import { cn, Tabs, TabsList, TabsTrigger } from '@dpm-core/shared';
 
 import { SESSION_ID } from '../const/const';
 
@@ -39,7 +39,12 @@ export const AttendanceTabs = () => {
 			</Tabs>
 
 			{/* Desktop view (>= 768px) - Figma 디자인 스타일 */}
-			<nav className="hidden h-20 items-center gap-5 bg-white px-10 md:flex">
+			<nav
+				className={cn(
+					'hidden h-20 items-center gap-5 bg-white px-10 md:flex',
+					tab === 'people' && 'border-line-normal border-b',
+				)}
+			>
 				{CONST_TABS.map(({ value, label }) => {
 					const isActive = tab === value;
 					return (
