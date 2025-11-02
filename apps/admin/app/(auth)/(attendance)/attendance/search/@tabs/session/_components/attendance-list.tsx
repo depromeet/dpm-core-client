@@ -113,9 +113,11 @@ const AttendanceList = () => {
 					{flatData.map((member) => {
 						const isChecked = selectedIds.has(member.id);
 						return (
-							<div
+							<button
 								key={member.id}
-								className="flex items-center justify-between border-gray-200 border-b py-5 pr-[136px] pl-5 transition-colors hover:bg-gray-50"
+								type="button"
+								onClick={() => handleDesktopRowClick(member.id)}
+								className="flex w-full cursor-pointer items-center justify-between border-gray-200 border-b py-5 pr-[136px] pl-5 text-left transition-colors hover:bg-gray-50"
 							>
 								<div className="flex items-center gap-4">
 									<Checkbox
@@ -125,27 +127,15 @@ const AttendanceList = () => {
 										aria-label={`${member.name} 선택`}
 										onClick={(e) => e.stopPropagation()}
 									/>
-									<button
-										type="button"
-										onClick={() => handleDesktopRowClick(member.id)}
-										className="text-left"
-									>
-										<Profile
-											size={40}
-											name={member.name}
-											teamNumber={member.teamNumber}
-											part={member.part}
-										/>
-									</button>
+									<Profile
+										size={40}
+										name={member.name}
+										teamNumber={member.teamNumber}
+										part={member.part}
+									/>
 								</div>
-								<button
-									type="button"
-									onClick={() => handleDesktopRowClick(member.id)}
-									className="text-left"
-								>
-									<AttendanceStatusLabel status={member.attendanceStatus} />
-								</button>
-							</div>
+								<AttendanceStatusLabel status={member.attendanceStatus} />
+							</button>
 						);
 					})}
 				</div>
