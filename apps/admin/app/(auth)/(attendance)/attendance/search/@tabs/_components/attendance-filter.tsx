@@ -1,5 +1,7 @@
 'use client';
 
+import { useMemo, useRef } from 'react';
+import { RotateCw } from 'lucide-react';
 import type { AttendanceStatus } from '@dpm-core/api';
 import {
 	Button,
@@ -16,8 +18,6 @@ import {
 	FilterChip,
 	Label,
 } from '@dpm-core/shared';
-import { RotateCw } from 'lucide-react';
-import { useMemo, useRef } from 'react';
 
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { getAttendanceStatusLabel } from '@/lib/attendance/status';
@@ -111,7 +111,7 @@ export const AttendanceFilter = () => {
 							</Button>
 						</DrawerTrigger>
 					</div>
-					<DrawerContent className="mx-auto max-w-lg">
+					<DrawerContent className="w-full">
 						<DrawerHeader>
 							<DrawerTitle>필터</DrawerTitle>
 						</DrawerHeader>
