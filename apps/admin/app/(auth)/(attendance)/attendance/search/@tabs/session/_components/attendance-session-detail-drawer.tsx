@@ -200,7 +200,7 @@ export const AttendanceSessionDetailDrawer = ({
 }: AttendanceSessionDetailDrawerProps) => {
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
-			<SheetContent side="right" className="w-full p-0 sm:max-w-[480px]">
+			<SheetContent side="right" className="w-full p-0 sm:max-w-[600px]">
 				<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
 					<Suspense fallback={<LoadingBox />}>
 						<_AttendanceSessionDetailContent memberId={memberId} sessionId={sessionId} />
