@@ -11,7 +11,7 @@ import {
 } from '@dpm-core/shared';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
 import { Profile } from '@/components/attendance/profile';
@@ -40,9 +40,11 @@ const _AttendanceSessionDetailContent = ({
 		data: { data },
 	} = useSuspenseQuery(getAttendanceBySessionDetailOptions({ memberId, sessionId }));
 
+	const [isModifyDrawerOpen, setIsModifyDrawerOpen] = useState(false);
+
 	return (
 		<>
-			<SheetHeader className="flex-row items-center justify-between border-gray-200 border-b px-6 py-4">
+			<SheetHeader className="flex-row items-center justify-between border-gray-200 border-b px-10 py-6">
 				<SheetTitle className="font-semibold text-headline2 text-label-normal">
 					출석 상세
 				</SheetTitle>
@@ -56,21 +58,12 @@ const _AttendanceSessionDetailContent = ({
 			<div className="flex-1 overflow-y-auto px-6 py-6">
 				{/* 프로필 섹션 */}
 				<section className="mb-6">
-					<div className="flex items-start justify-between">
-						<Profile
-							size={60}
-							name={data?.member.name}
-							part={data?.member.part}
-							teamNumber={data?.member.teamNumber}
-						/>
-						<Button
-							variant="none"
-							size="none"
-							className="font-medium text-body2 text-primary-normal"
-						>
-							수정
-						</Button>
-					</div>
+					<Profile
+						size={60}
+						name={data?.member.name}
+						part={data?.member.part}
+						teamNumber={data?.member.teamNumber}
+					/>
 				</section>
 
 				{/* 출석 정보 */}
@@ -88,6 +81,14 @@ const _AttendanceSessionDetailContent = ({
 							</p>
 						</div>
 					</div>
+					<Button
+						variant="none"
+						size="none"
+						onClick={() => setIsModifyDrawerOpen(true)}
+						className="mt-3 rounded-lg border border-line-normal bg-white px-4 py-3 font-medium text-body2"
+					>
+						수정
+					</Button>
 				</section>
 
 				{/* 세션 정보 */}
@@ -112,14 +113,14 @@ const _AttendanceSessionDetailContent = ({
 				</section>
 			</div>
 
-			{/* 수정하기 버튼 */}
-			<div className="border-gray-200 border-t p-6">
+			{/* 수정 Drawer */}
+			{isModifyDrawerOpen && (
 				<AttendanceModifyStatus
 					sessionId={sessionId}
 					member={data?.member}
 					attendanceStatus={data.attendance.status}
 				/>
-			</div>
+			)}
 		</>
 	);
 };
