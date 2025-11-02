@@ -1,16 +1,21 @@
 'use client';
 
+import type { AttendanceStatus } from '@dpm-core/api';
 import {
+	ATTENDANCE_STATUS_OPTIONS,
 	Button,
+	gaTrackAttendanceOverride,
 	Sheet,
 	SheetClose,
 	SheetContent,
 	SheetHeader,
 	SheetTitle,
+	toast,
 	XCircle,
 } from '@dpm-core/shared';
+import * as RadioGroup from '@radix-ui/react-radio-group';
 import { ErrorBoundary } from '@suspensive/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { Suspense, useState } from 'react';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
@@ -18,9 +23,8 @@ import { Profile } from '@/components/attendance/profile';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringToFullDateString } from '@/lib/date';
+import { modifyAttendanceStatusOptions } from '@/remotes/mutations/attendance';
 import { getAttendanceBySessionDetailOptions } from '@/remotes/queries/attendance';
-
-import { AttendanceModifyStatus } from '../../../../[memberId]/[sessionId]/_components/attendance-modify-status';
 
 interface AttendanceSessionDetailDrawerProps {
 	memberId: number;
@@ -40,7 +44,38 @@ const _AttendanceSessionDetailContent = ({
 		data: { data },
 	} = useSuspenseQuery(getAttendanceBySessionDetailOptions({ memberId, sessionId }));
 
-	const [isModifyDrawerOpen, setIsModifyDrawerOpen] = useState(false);
+	const [isEditMode, setIsEditMode] = useState(false);
+	const [selectedStatus, setSelectedStatus] = useState<AttendanceStatus>(data.attendance.status);
+
+	const queryClient = useQueryClient();
+	const { mutate: modifyStatus } = useMutation(
+		modifyAttendanceStatusOptions(sessionId, memberId, {
+			onSuccess: async () => {
+				gaTrackAttendanceOverride(
+					sessionId.toString(),
+					memberId.toString(),
+					data.attendance.status,
+					selectedStatus,
+				);
+
+				queryClient.invalidateQueries({
+					queryKey: ['ATTENDANCE'],
+				});
+
+				toast.success('출석 정보를 저장했습니다.');
+				setIsEditMode(false);
+			},
+		}),
+	);
+
+	const handleSave = () => {
+		modifyStatus({ attendanceStatus: selectedStatus });
+	};
+
+	const handleCancel = () => {
+		setSelectedStatus(data.attendance.status);
+		setIsEditMode(false);
+	};
 
 	return (
 		<>
@@ -69,26 +104,67 @@ const _AttendanceSessionDetailContent = ({
 				{/* 출석 정보 */}
 				<section className="mb-6">
 					<h3 className="mb-3 font-semibold text-body1 text-label-normal">출석 정보</h3>
-					<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-4">
-						<div className="flex items-center gap-4">
-							<p className="w-20 font-medium text-body2 text-label-assistive">출석 상태</p>
-							<AttendanceStatusLabel status={data?.attendance.status} />
-						</div>
-						<div className="flex items-center gap-4">
-							<p className="w-20 font-medium text-body2 text-label-assistive">출석 시간</p>
-							<p className="font-medium text-body2 text-label-normal">
-								{formatISOStringToFullDateString(data?.attendance.attendedAt)}
-							</p>
-						</div>
-					</div>
-					<Button
-						variant="none"
-						size="none"
-						onClick={() => setIsModifyDrawerOpen(true)}
-						className="mt-3 rounded-lg border border-line-normal bg-white px-4 py-3 font-medium text-body2"
-					>
-						수정
-					</Button>
+					{isEditMode ? (
+						<>
+							<RadioGroup.Root
+								value={selectedStatus}
+								className="flex w-full rounded-lg border border-line-normal"
+								onValueChange={(value) => setSelectedStatus(value as AttendanceStatus)}
+							>
+								{ATTENDANCE_STATUS_OPTIONS.map((status) => (
+									<RadioGroup.Item
+										key={status.value}
+										value={status.value}
+										className="flex-1 px-3 py-2.5 text-label-assistive data-[state=checked]:bg-primary-extralight data-[state=checked]:text-primary-normal"
+									>
+										<span className="whitespace-nowrap font-normal text-body2">{status.label}</span>
+									</RadioGroup.Item>
+								))}
+							</RadioGroup.Root>
+							<div className="mt-3 flex gap-2">
+								<Button
+									variant="none"
+									size="none"
+									onClick={handleSave}
+									disabled={selectedStatus === data.attendance.status}
+									className="rounded-lg bg-gray-800 px-4 py-3 font-medium text-body2 text-white disabled:opacity-50"
+								>
+									저장하기
+								</Button>
+								<Button
+									variant="none"
+									size="none"
+									onClick={handleCancel}
+									className="rounded-lg bg-gray-100 px-4 py-3 font-medium text-body2"
+								>
+									취소
+								</Button>
+							</div>
+						</>
+					) : (
+						<>
+							<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-4">
+								<div className="flex items-center gap-4">
+									<p className="w-20 font-medium text-body2 text-label-assistive">출석 상태</p>
+									<AttendanceStatusLabel status={data?.attendance.status} />
+								</div>
+								<div className="flex items-center gap-4">
+									<p className="w-20 font-medium text-body2 text-label-assistive">출석 시간</p>
+									<p className="font-medium text-body2 text-label-normal">
+										{formatISOStringToFullDateString(data?.attendance.attendedAt)}
+									</p>
+								</div>
+							</div>
+							<Button
+								variant="none"
+								size="none"
+								onClick={() => setIsEditMode(true)}
+								className="mt-3 rounded-lg border border-line-normal bg-white px-4 py-3 font-medium text-body2"
+							>
+								수정
+							</Button>
+						</>
+					)}
 				</section>
 
 				{/* 세션 정보 */}
@@ -112,15 +188,6 @@ const _AttendanceSessionDetailContent = ({
 					</div>
 				</section>
 			</div>
-
-			{/* 수정 Drawer */}
-			{isModifyDrawerOpen && (
-				<AttendanceModifyStatus
-					sessionId={sessionId}
-					member={data?.member}
-					attendanceStatus={data.attendance.status}
-				/>
-			)}
 		</>
 	);
 };
