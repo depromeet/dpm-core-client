@@ -49,7 +49,7 @@ const AttendanceSessionContainer = () => {
 				</section>
 
 				<section className="bg-white px-10 py-6">
-					<div className="mb-2.5 flex items-center gap-2">
+					<div className="mb-4 flex items-center gap-2">
 						<h2 className="font-bold text-label-normal text-title1 tracking-[-0.2px]">
 							출석 {selectedSession?.week}주차 (데이터 필요)
 						</h2>

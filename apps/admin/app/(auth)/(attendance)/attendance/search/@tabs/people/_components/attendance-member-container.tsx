@@ -24,7 +24,7 @@ const AttendanceMemberContainer = () => {
 			{/* Desktop view (>= 768px) - 새로운 레이아웃 */}
 			<div className="hidden md:block">
 				<section className="bg-white px-10 py-6">
-					<div className="mb-2.5 flex items-center gap-2">
+					<div className="mb-4 flex items-center gap-2">
 						<h2 className="font-bold text-label-normal text-title1 tracking-[-0.2px]">
 							사람별 출석
 						</h2>

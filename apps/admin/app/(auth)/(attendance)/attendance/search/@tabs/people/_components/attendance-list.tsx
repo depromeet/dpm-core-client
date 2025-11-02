@@ -1,9 +1,9 @@
 'use client';
 
+import { Badge } from '@dpm-core/shared';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { Badge } from '@dpm-core/shared';
 
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { Profile } from '@/components/attendance/profile';
@@ -117,13 +117,9 @@ export const AttendanceList = () => {
 									teamNumber={member.teamNumber}
 									part={member.part}
 								/>
-								{member.attendanceStatus !== 'NORMAL' ? (
-									<Badge variant={member.attendanceStatus}>
-										{getAttendanceMemberStatusLabel(member.attendanceStatus)}
-									</Badge>
-								) : (
-									<div className="w-[68px]" />
-								)}
+								<Badge variant={member.attendanceStatus}>
+									{getAttendanceMemberStatusLabel(member.attendanceStatus)}
+								</Badge>
 							</button>
 						);
 					})}
