@@ -46,9 +46,10 @@ const AttendanceList = () => {
 	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];
 
 	const { selectedIds, toggleItem, toggleAll, isAllSelected } = useCheckboxSelection(flatData);
-	const [selectedMember, setSelectedMember] = useState<{ memberId: number; sessionId: number } | null>(
-		null,
-	);
+	const [selectedMember, setSelectedMember] = useState<{
+		memberId: number;
+		sessionId: number;
+	} | null>(null);
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
 	const handleDesktopRowClick = (memberId: number) => {
@@ -70,7 +71,7 @@ const AttendanceList = () => {
 
 	return (
 		<>
-			{/* Mobile view (< 768px) - 기존 리스트 */}
+			{/* Mobile view (< 768px) */}
 			<section className="mt-2 mb-15 flex-1 flex-col px-4 md:hidden">
 				{flatData.map((member) => {
 					return (
@@ -92,10 +93,9 @@ const AttendanceList = () => {
 				<div ref={targetRef} />
 			</section>
 
-			{/* Desktop view (>= 768px) - 테이블 형태 */}
+			{/* Desktop view (>= 768px) */}
 			<section className="mx-10 mb-15 hidden md:block">
 				<div className="overflow-auto">
-					{/* 테이블 헤더 */}
 					<div className="flex items-center justify-between border-gray-200 border-b bg-gray-50 py-2.5 pr-[136px] pl-5">
 						<div className="flex items-center gap-4">
 							<Checkbox
@@ -109,7 +109,6 @@ const AttendanceList = () => {
 						<span className="font-medium text-body2 text-label-subtle">출석 상태</span>
 					</div>
 
-					{/* 테이블 바디 */}
 					{flatData.map((member) => {
 						const isChecked = selectedIds.has(member.id);
 						return (
@@ -141,7 +140,6 @@ const AttendanceList = () => {
 				</div>
 				<div ref={targetRef} />
 
-				{/* Drawer for desktop */}
 				{selectedMember && (
 					<AttendanceSessionDetailDrawer
 						memberId={selectedMember.memberId}

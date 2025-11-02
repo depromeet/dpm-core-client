@@ -32,7 +32,7 @@ const AttendanceSessionContainer = () => {
 
 	return (
 		<>
-			{/* Mobile view (< 768px) - 기존 레이아웃 유지 */}
+			{/* Mobile view (< 768px) */}
 			<div className="md:hidden">
 				<section className="sticky top-0 space-y-3.5 bg-white px-4 py-2.5">
 					<WeekFilter weeks={data.sessions} />
@@ -42,7 +42,7 @@ const AttendanceSessionContainer = () => {
 				<AttendanceList />
 			</div>
 
-			{/* Desktop view (>= 768px) - 새로운 레이아웃 */}
+			{/* Desktop view (>= 768px) */}
 			<div className="hidden md:block">
 				<section className="border-gray-200 border-b bg-white px-10 py-4">
 					<WeekFilter weeks={data.sessions} />

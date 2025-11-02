@@ -67,7 +67,7 @@ export const AttendanceList = () => {
 
 	return (
 		<>
-			{/* Mobile view (< 768px) - 기존 리스트 */}
+			{/* Mobile view (< 768px) */}
 			<section className="mt-2 mb-15 flex-1 flex-col px-4 md:hidden">
 				{flatData.map((member) => {
 					return (
@@ -93,16 +93,14 @@ export const AttendanceList = () => {
 				<div ref={targetRef} />
 			</section>
 
-			{/* Desktop view (>= 768px) - 테이블 형태 */}
+			{/* Desktop view (>= 768px) */}
 			<section className="mx-10 mb-15 hidden md:block">
 				<div className="overflow-auto">
-					{/* 테이블 헤더 */}
 					<div className="flex items-center justify-between border-gray-200 border-b bg-gray-50 py-2.5 pr-[136px] pl-5">
 						<span className="font-medium text-body2 text-label-subtle">멤버 정보</span>
 						<span className="font-medium text-body2 text-label-subtle">수료 상태</span>
 					</div>
 
-					{/* 테이블 바디 */}
 					{flatData.map((member) => {
 						return (
 							<button

@@ -12,7 +12,7 @@ import { AttendanceList } from './attendance-list';
 const AttendanceMemberContainer = () => {
 	return (
 		<>
-			{/* Mobile view (< 768px) - 기존 레이아웃 유지 */}
+			{/* Mobile view (< 768px) */}
 			<div className="md:hidden">
 				<section className="sticky top-0 space-y-3.5 bg-white px-4 py-2.5">
 					<SearchInput placeholder="디퍼 검색" />
@@ -21,7 +21,7 @@ const AttendanceMemberContainer = () => {
 				<AttendanceList />
 			</div>
 
-			{/* Desktop view (>= 768px) - 새로운 레이아웃 */}
+			{/* Desktop view (>= 768px) */}
 			<div className="hidden md:block">
 				<section className="bg-white px-10 py-6">
 					<div className="mb-4 flex items-center gap-2">

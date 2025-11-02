@@ -20,7 +20,7 @@ export const AttendanceTabs = () => {
 
 	return (
 		<>
-			{/* Mobile view (< 768px) - 기존 Tabs 스타일 유지 */}
+			{/* Mobile view (< 768px */}
 			<Tabs value={tab} className="md:hidden">
 				<TabsList className="px-4">
 					{CONST_TABS.map(({ value, label }) => {
@@ -38,7 +38,7 @@ export const AttendanceTabs = () => {
 				</TabsList>
 			</Tabs>
 
-			{/* Desktop view (>= 768px) - Figma 디자인 스타일 */}
+			{/* Desktop view (>= 768px) */}
 			<nav
 				className={cn(
 					'hidden h-20 items-center gap-5 bg-white px-10 md:flex',

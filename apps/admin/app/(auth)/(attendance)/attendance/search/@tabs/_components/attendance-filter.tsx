@@ -81,7 +81,7 @@ export const AttendanceFilter = () => {
 
 	return (
 		<>
-			{/* Mobile view (< 768px) - Drawer 사용 */}
+			{/* Mobile view (< 768px) */}
 			<div className="flex items-center justify-between md:hidden">
 				<Drawer>
 					<div className="flex gap-2">
@@ -206,7 +206,7 @@ export const AttendanceFilter = () => {
 				</div>
 			</div>
 
-			{/* Desktop view (>= 768px) - 일반 Select 형태 */}
+			{/* Desktop view (>= 768px) */}
 			<div className="hidden items-center gap-2 md:flex">
 				<div className="flex items-center gap-1.5 rounded-lg border border-line-subtle bg-white px-4 py-[9px]">
 					<Checkbox
