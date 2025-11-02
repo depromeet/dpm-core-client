@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
 import { EmptyView } from '@/components/attendance/EmptyView';
@@ -53,26 +53,60 @@ const AttendanceList = () => {
 	}
 
 	return (
-		<section className="mt-2 flex-1 flex-col px-4">
-			{flatData.map((member) => {
-				return (
-					<Link
-						href={`/attendance/${member.id}/${searchParams.week}`}
-						className="flex justify-between py-3"
-						key={member.id}
-					>
-						<Profile
-							size={40}
-							name={member.name}
-							teamNumber={member.teamNumber}
-							part={member.part}
-						/>
-						<AttendanceStatusLabel status={member.attendanceStatus} />
-					</Link>
-				);
-			})}
-			<div ref={targetRef} />
-		</section>
+		<>
+			{/* Mobile view (< 768px) - 기존 리스트 */}
+			<section className="mb-15 mt-2 flex-1 flex-col px-4 md:hidden">
+				{flatData.map((member) => {
+					return (
+						<Link
+							href={`/attendance/${member.id}/${searchParams.week}`}
+							className="flex justify-between py-3"
+							key={member.id}
+						>
+							<Profile
+								size={40}
+								name={member.name}
+								teamNumber={member.teamNumber}
+								part={member.part}
+							/>
+							<AttendanceStatusLabel status={member.attendanceStatus} />
+						</Link>
+					);
+				})}
+				<div ref={targetRef} />
+			</section>
+
+			{/* Desktop view (>= 768px) - 테이블 형태 */}
+			<section className="mx-10 mb-15 hidden md:block">
+				<div className="overflow-auto">
+					{/* 테이블 헤더 */}
+					<div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 py-2.5 pl-8 pr-[136px]">
+						<span className="font-medium text-body2 text-label-subtle">멤버 정보</span>
+						<span className="font-medium text-body2 text-label-subtle">출석 상태</span>
+					</div>
+
+					{/* 테이블 바디 */}
+					{flatData.map((member) => {
+						return (
+							<Link
+								href={`/attendance/${member.id}/${searchParams.week}`}
+								key={member.id}
+								className="flex items-center justify-between border-b border-gray-200 py-3 pl-8 pr-[136px] transition-colors hover:bg-gray-50"
+							>
+								<Profile
+									size={40}
+									name={member.name}
+									teamNumber={member.teamNumber}
+									part={member.part}
+								/>
+								<AttendanceStatusLabel status={member.attendanceStatus} />
+							</Link>
+						);
+					})}
+				</div>
+				<div ref={targetRef} />
+			</section>
+		</>
 	);
 };
 
