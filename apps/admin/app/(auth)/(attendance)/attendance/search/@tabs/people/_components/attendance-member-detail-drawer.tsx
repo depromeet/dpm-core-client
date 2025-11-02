@@ -53,7 +53,7 @@ const _AttendanceMemberDetailContent = ({ memberId }: { memberId: number }) => {
 
 			<div className="flex-1 overflow-y-auto px-6 py-6">
 				{/* 멤버 정보 섹션 */}
-				<section className="mb-6">
+				<section className="mb-10">
 					<div className="mb-4 flex items-center justify-between">
 						<Profile
 							size={60}
@@ -105,7 +105,6 @@ const _AttendanceMemberDetailContent = ({ memberId }: { memberId: number }) => {
 
 				{/* 세션 리스트 섹션 */}
 				<section>
-					<h3 className="mb-3 font-semibold text-body1 text-label-normal">세션별 출석</h3>
 					<div className="flex flex-col">
 						{data.sessions.map((session) => (
 							<SessionItem key={session.id} memberId={memberId} {...session} />
