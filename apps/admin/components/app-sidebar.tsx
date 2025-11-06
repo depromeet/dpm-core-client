@@ -135,7 +135,7 @@ const SideBarUserMenu = () => {
 	return (
 		<SidebarMenu>
 			<SidebarMenuItem>
-				<DropdownMenu>
+				<DropdownMenu modal={false}>
 					<DropdownMenuTrigger asChild>
 						<SidebarMenuButton className="flex h-auto items-center">
 							<SideBarProfile part={user.cohort as Exclude<Part, 'ETC'>} name={user.name} />
