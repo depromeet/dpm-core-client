@@ -1,14 +1,23 @@
 import Link from 'next/link';
+import { cn } from '@dpm-core/shared';
 
 interface SessionCardProps {
 	subtitle: string;
 	title: string;
 	startTimeInfo: string;
 	place: string;
-	sessionId?: string; // 고유 ID 추가
+	sessionId?: string;
+	className?: string;
 }
 
-const SessionCard = ({ subtitle, title, startTimeInfo, place, sessionId }: SessionCardProps) => {
+const SessionCard = ({
+	subtitle,
+	title,
+	startTimeInfo,
+	place,
+	sessionId,
+	className,
+}: SessionCardProps) => {
 	// 고유한 view-transition-name을 위한 스타일
 	const cardStyle = sessionId
 		? {
@@ -19,7 +28,10 @@ const SessionCard = ({ subtitle, title, startTimeInfo, place, sessionId }: Sessi
 	return (
 		<Link
 			href={`/session/${sessionId}`}
-			className="flex animate-view-transition cursor-pointer flex-col rounded-lg bg-background-subtle p-5 transition-colors hover:bg-background-strong"
+			className={cn(
+				'flex animate-view-transition cursor-pointer flex-col rounded-lg bg-background-subtle p-5 transition-colors hover:bg-background-strong',
+				className,
+			)}
 			style={cardStyle}
 		>
 			<small
