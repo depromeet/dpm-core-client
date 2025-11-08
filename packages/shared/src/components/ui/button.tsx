@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
-import { Loader2 } from 'lucide-react';
 
 import { cn } from '../../utils/cn';
 
@@ -72,11 +71,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 				disabled={isDisabled}
 				{...props}
 			>
-				{/* biome-ignore lint/complexity/noUselessFragments: somewhere children and loading are used together */}
-				<>
-					{children}
-					{loading && <Loader2 className="size-4 animate-spin" />}
-				</>
+				{children}
 			</Comp>
 		);
 	},
