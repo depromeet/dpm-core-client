@@ -1,9 +1,9 @@
 'use client';
 
-import { Badge } from '@dpm-core/shared';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { Badge } from '@dpm-core/shared';
 
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { Profile } from '@/components/attendance/profile';
@@ -53,7 +53,8 @@ export const AttendanceList = () => {
 		setIsDrawerOpen(true);
 	};
 
-	if (isLoading) {
+	// 초기 로딩만 전체 LoadingBox 표시
+	if (isLoading && !data) {
 		return <LoadingBox />;
 	}
 
@@ -68,7 +69,7 @@ export const AttendanceList = () => {
 	return (
 		<>
 			{/* Mobile view (< 768px) */}
-			<section className="mt-2 mb-15 flex-1 flex-col px-4 md:hidden">
+			<section className="relative mt-2 mb-15 flex-1 flex-col px-4 md:hidden">
 				{flatData.map((member) => {
 					return (
 						<Link
@@ -94,7 +95,7 @@ export const AttendanceList = () => {
 			</section>
 
 			{/* Desktop view (>= 768px) */}
-			<section className="mx-10 mb-15 hidden md:block">
+			<section className="relative mx-10 mb-15 hidden md:block">
 				<div className="overflow-auto">
 					<div className="flex items-center justify-between border-gray-200 border-b bg-gray-50 py-2.5 pr-[136px] pl-5">
 						<span className="font-medium text-body2 text-label-subtle">멤버 정보</span>

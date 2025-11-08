@@ -50,6 +50,7 @@ const AttendanceSessionContainer = () => {
 		hasNextPage,
 		fetchStatus,
 		isLoading,
+		isFetching,
 	} = useInfiniteQuery(getAttendanceBySessionOptions(attendanceSearchParams));
 
 	const { targetRef } = useIntersect({
@@ -91,7 +92,8 @@ const AttendanceSessionContainer = () => {
 		return <EmptyView message="현재 조회된 세션 정보가 없습니다" />;
 	}
 
-	if (isLoading) {
+	// 초기 로딩만 전체 LoadingBox 표시
+	if (isLoading && !attendanceData) {
 		return <LoadingBox />;
 	}
 
@@ -111,6 +113,7 @@ const AttendanceSessionContainer = () => {
 					onToggleItem={toggleItem}
 					onToggleAll={toggleAll}
 					isAllSelected={isAllSelected}
+					isFetching={isFetching}
 				/>
 			</div>
 
@@ -160,6 +163,7 @@ const AttendanceSessionContainer = () => {
 					onToggleItem={toggleItem}
 					onToggleAll={toggleAll}
 					isAllSelected={isAllSelected}
+					isFetching={isFetching}
 				/>
 
 				<AttendanceBulkModifyModal

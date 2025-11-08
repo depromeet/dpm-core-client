@@ -23,6 +23,7 @@ export const getAttendanceBySessionOptions = (params: getAttendanceBySessionOpti
 				? lastPage.data.nextCursorId
 				: undefined;
 		},
+		placeholderData: (previousData) => previousData,
 		retry: false,
 	});
 
@@ -40,6 +41,7 @@ export const getAttendanceByMemberOptions = (
 				? lastPage.data.nextCursorId
 				: undefined;
 		},
+		placeholderData: (previousData) => previousData,
 		retry: false,
 	});
 
