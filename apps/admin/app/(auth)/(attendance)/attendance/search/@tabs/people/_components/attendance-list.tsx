@@ -9,7 +9,7 @@ import { EmptyView } from '@/components/attendance/EmptyView';
 import { Profile } from '@/components/attendance/profile';
 import { LoadingBox } from '@/components/loading-box';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
-import { useIntersect } from '@/hooks/useIntersect';
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
 import { getAttendanceByMemberOptions } from '@/remotes/queries/attendance';
 
@@ -30,17 +30,10 @@ export const AttendanceList = () => {
 		getAttendanceByMemberOptions(attendanceSearchParams),
 	);
 
-	const { targetRef } = useIntersect({
-		onIntersect: (entry, observer) => {
-			if (!hasNextPage) {
-				observer.unobserve(entry.target);
-				return;
-			}
-
-			if (entry.isIntersecting && hasNextPage && fetchStatus !== 'fetching') {
-				fetchNextPage();
-			}
-		},
+	const { targetRef } = useInfiniteScroll({
+		callback: fetchNextPage,
+		canObserve: hasNextPage,
+		enabled: fetchStatus !== 'fetching',
 	});
 
 	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];

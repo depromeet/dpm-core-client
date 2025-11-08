@@ -10,7 +10,7 @@ import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
-import { useIntersect } from '@/hooks/useIntersect';
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 import { getSessionWeeks } from '@/remotes/queries/session';
 
@@ -50,20 +50,12 @@ const AttendanceSessionContainer = () => {
 		hasNextPage,
 		fetchStatus,
 		isLoading,
-		isFetching,
 	} = useInfiniteQuery(getAttendanceBySessionOptions(attendanceSearchParams));
 
-	const { targetRef } = useIntersect({
-		onIntersect: (entry, observer) => {
-			if (!hasNextPage) {
-				observer.unobserve(entry.target);
-				return;
-			}
-
-			if (entry.isIntersecting && hasNextPage && fetchStatus !== 'fetching') {
-				fetchNextPage();
-			}
-		},
+	const { targetRef } = useInfiniteScroll({
+		callback: fetchNextPage,
+		canObserve: hasNextPage,
+		enabled: fetchStatus !== 'fetching',
 	});
 
 	const flatData = attendanceData?.pages.flatMap((page) => page.data.members) ?? [];
@@ -113,7 +105,6 @@ const AttendanceSessionContainer = () => {
 					onToggleItem={toggleItem}
 					onToggleAll={toggleAll}
 					isAllSelected={isAllSelected}
-					isFetching={isFetching}
 				/>
 			</div>
 
@@ -163,7 +154,6 @@ const AttendanceSessionContainer = () => {
 					onToggleItem={toggleItem}
 					onToggleAll={toggleAll}
 					isAllSelected={isAllSelected}
-					isFetching={isFetching}
 				/>
 
 				<AttendanceBulkModifyModal

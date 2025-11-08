@@ -7,7 +7,6 @@ import { Checkbox } from '@dpm-core/shared';
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { Profile } from '@/components/attendance/profile';
-import { LoadingBox } from '@/components/loading-box';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 
 import { AttendanceSessionDetailDrawer } from './attendance-session-detail-drawer';
@@ -27,7 +26,6 @@ interface AttendanceListProps {
 	onToggleItem: (id: number) => void;
 	onToggleAll: () => void;
 	isAllSelected: boolean;
-	isFetching?: boolean;
 }
 
 const AttendanceList = ({
@@ -37,7 +35,6 @@ const AttendanceList = ({
 	onToggleItem,
 	onToggleAll,
 	isAllSelected,
-	isFetching = false,
 }: AttendanceListProps) => {
 	const customSearchParams = useCustomSearchParams();
 	const searchParams = customSearchParams.getAll();
@@ -52,10 +49,6 @@ const AttendanceList = ({
 		setSelectedMember({ memberId, sessionId: Number(searchParams.week) });
 		setIsDrawerOpen(true);
 	};
-
-	if (isFetching) {
-		return <LoadingBox />;
-	}
 
 	if (data.length === 0) {
 		return (
@@ -91,7 +84,6 @@ const AttendanceList = ({
 
 			{/* Desktop view (>= 768px) */}
 			<section className="relative mx-10 mb-15 hidden md:block">
-				{isFetching && <LoadingBox />}
 				<div className="overflow-auto">
 					<div className="flex items-center justify-between border-gray-200 border-b bg-gray-50 py-2.5 pr-[136px] pl-5">
 						<div className="flex items-center gap-4">
