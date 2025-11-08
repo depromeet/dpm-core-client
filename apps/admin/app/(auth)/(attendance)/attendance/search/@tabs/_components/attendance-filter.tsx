@@ -33,8 +33,9 @@ const ATTENDANCE_FILTER = [
 	{ label: '지각', value: 'LATE' },
 	{ label: '인정', value: 'EXCUSED_ABSENT' },
 	{ label: '결석', value: 'ABSENT' },
+	{ label: '조퇴', value: 'EARLY_LEAVE' },
 	{ label: '미출석', value: 'PENDING' },
-];
+] as const;
 const TEAM_FILTER = ['1', '2', '3', '4', '5', '6'];
 
 export const AttendanceFilter = () => {
@@ -272,7 +273,7 @@ export const AttendanceFilter = () => {
 						align="end"
 						alignOffset={0}
 						sideOffset={6}
-						className="w-[360px] rounded-xl border-none bg-background-normal px-4 py-5 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
+						className="rounded-xl border-none bg-background-normal px-4 py-5 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
 					>
 						<div className="flex items-center justify-between">
 							<DropdownMenuLabel className="p-0 font-semibold text-title2">필터</DropdownMenuLabel>
