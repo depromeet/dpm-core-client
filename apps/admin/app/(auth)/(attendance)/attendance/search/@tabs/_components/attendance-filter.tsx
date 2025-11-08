@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { RotateCw } from 'lucide-react';
 import type { AttendanceStatus } from '@dpm-core/api';
 import {
@@ -22,6 +22,7 @@ import {
 	DropdownMenuTrigger,
 	FilterChip,
 	Label,
+	XCircle,
 } from '@dpm-core/shared';
 
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
@@ -38,6 +39,7 @@ const TEAM_FILTER = ['1', '2', '3', '4', '5', '6'];
 
 export const AttendanceFilter = () => {
 	const customSearchParams = useCustomSearchParams();
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
 	const filterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
 	const teamsFilterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -237,7 +239,7 @@ export const AttendanceFilter = () => {
 					</Label>
 				</div>
 
-				<DropdownMenu modal={false}>
+				<DropdownMenu modal={false} open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
 					<div className="flex gap-2">
 						<DropdownMenuTrigger asChild>
 							<Button
@@ -272,7 +274,10 @@ export const AttendanceFilter = () => {
 						sideOffset={6}
 						className="w-[360px] rounded-xl border-none bg-background-normal px-4 py-5 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
 					>
-						<DropdownMenuLabel className="p-0 font-semibold text-title2">필터</DropdownMenuLabel>
+						<div className="flex items-center justify-between">
+							<DropdownMenuLabel className="p-0 font-semibold text-title2">필터</DropdownMenuLabel>
+							<XCircle className="cursor-pointer" onClick={() => setIsDropdownOpen(false)} />
+						</div>
 						<div className="mt-8">
 							<p className="mb-2 font-semibold text-body1 text-label-normal">출석 상태별</p>
 							<div className="flex flex-wrap gap-2">
@@ -296,7 +301,7 @@ export const AttendanceFilter = () => {
 								})}
 							</div>
 						</div>
-						<div className="mt-7.5 mb-5">
+						<div className="mt-7.5 mb-8">
 							<p className="mb-2 font-semibold text-body1 text-label-normal">팀별</p>
 							<div className="flex flex-wrap gap-2">
 								{TEAM_FILTER.map((chip, index) => {
