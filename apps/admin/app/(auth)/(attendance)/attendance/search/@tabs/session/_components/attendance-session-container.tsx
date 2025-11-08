@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useMemo } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { Button } from '@dpm-core/shared';
@@ -17,6 +17,7 @@ import { getSessionWeeks } from '@/remotes/queries/session';
 import { AttendanceFilter } from '../../_components/attendance-filter';
 import { SearchInput } from '../../_components/search-input';
 import { WeekFilter } from '../../_components/week-filter';
+import { AttendanceBulkModifyModal } from './attendance-bulk-modify-modal';
 import AttendanceList from './attendance-list';
 
 const AttendanceSessionContainer = () => {
@@ -31,7 +32,6 @@ const AttendanceSessionContainer = () => {
 		return data.sessions?.find((session) => session.id.toString() === selectedWeekId);
 	}, [data.sessions, selectedWeekId]);
 
-	// 출석 데이터 조회
 	const searchParams = customSearchParams.getAll();
 	const attendanceSearchParams = useMemo(
 		() => ({
@@ -76,9 +76,15 @@ const AttendanceSessionContainer = () => {
 		}
 	}, [attendanceSearchParams.week, clearSelection]);
 
+	const selectedMembers = useMemo(
+		() => flatData.filter((member) => selectedIds.has(member.id)),
+		[flatData, selectedIds],
+	);
+
+	const [isBulkModifyModalOpen, setIsBulkModifyModalOpen] = useState(false);
+
 	const handleModifyAttendance = () => {
-		// TODO: 출석 정보 수정 로직 구현
-		console.log('선택된 멤버 IDs:', Array.from(selectedIds));
+		setIsBulkModifyModalOpen(true);
 	};
 
 	if (data?.sessions?.length === 0) {
@@ -154,6 +160,13 @@ const AttendanceSessionContainer = () => {
 					onToggleItem={toggleItem}
 					onToggleAll={toggleAll}
 					isAllSelected={isAllSelected}
+				/>
+
+				<AttendanceBulkModifyModal
+					sessionId={Number(searchParams.week)}
+					selectedMembers={selectedMembers}
+					open={isBulkModifyModalOpen}
+					onOpenChange={setIsBulkModifyModalOpen}
 				/>
 			</div>
 		</>
