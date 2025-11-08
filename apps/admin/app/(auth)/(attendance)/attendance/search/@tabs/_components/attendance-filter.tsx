@@ -208,7 +208,14 @@ export const AttendanceFilter = () => {
 
 			{/* Desktop view (>= 768px) */}
 			<div className="hidden items-center gap-2 md:flex">
-				<div className="flex items-center gap-1.5 rounded-lg border border-line-subtle bg-white px-4 py-[9px]">
+				<div
+					className={cn(
+						'flex items-center gap-1.5 rounded-lg border bg-white px-4 py-[9px]',
+						customSearchParams.get('onlyMyTeam') === 'true'
+							? 'border-primary-normal'
+							: 'border-line-subtle',
+					)}
+				>
 					<Checkbox
 						id="my-team-desktop"
 						checked={customSearchParams.get('onlyMyTeam') === 'true' && true}

@@ -114,7 +114,14 @@ export const AttendanceFilter = () => {
 
 	return (
 		<div className="flex">
-			<div className="flex items-center gap-1.5 rounded-lg border border-line-normal px-4 py-2">
+			<div
+				className={cn(
+					'flex items-center gap-1.5 rounded-lg border px-4 py-2',
+					customSearchParams.get('onlyMyTeam') === 'true'
+						? 'border-primary-normal'
+						: 'border-line-normal',
+				)}
+			>
 				<Checkbox
 					id="my-team"
 					checked={customSearchParams.get('onlyMyTeam') === 'true' && true}
