@@ -1,14 +1,17 @@
 'use client';
 
-import { Suspense, useCallback, useMemo, useState } from 'react';
+import { Suspense, useMemo } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { Button } from '@dpm-core/shared';
 
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { ErrorBox } from '@/components/error-box';
+import { LoadingBox } from '@/components/loading-box';
 import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
+import { useIntersect } from '@/hooks/useIntersect';
+import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 import { getSessionWeeks } from '@/remotes/queries/session';
 
 import { AttendanceFilter } from '../../_components/attendance-filter';
@@ -28,12 +31,44 @@ const AttendanceSessionContainer = () => {
 		return data.sessions?.find((session) => session.id.toString() === selectedWeekId);
 	}, [data.sessions, selectedWeekId]);
 
-	const [members, setMembers] = useState<Array<{ id: number }>>([]);
-	const { selectedIds, toggleItem, toggleAll, isAllSelected } = useCheckboxSelection(members);
+	// 출석 데이터 조회
+	const searchParams = customSearchParams.getAll();
+	const attendanceSearchParams = useMemo(
+		() => ({
+			week: Number(searchParams.week),
+			statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
+			teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
+			onlyMyTeam: searchParams.onlyMyTeam === 'true' ? true : undefined,
+			name: searchParams.name,
+		}),
+		[searchParams],
+	);
 
-	const handleDataLoaded = useCallback((loadedMembers: Array<{ id: number }>) => {
-		setMembers(loadedMembers);
-	}, []);
+	const {
+		data: attendanceData,
+		fetchNextPage,
+		hasNextPage,
+		fetchStatus,
+		isLoading,
+	} = useInfiniteQuery(getAttendanceBySessionOptions(attendanceSearchParams));
+
+	const { targetRef } = useIntersect({
+		onIntersect: (entry, observer) => {
+			if (!hasNextPage) {
+				observer.unobserve(entry.target);
+				return;
+			}
+
+			if (entry.isIntersecting && hasNextPage && fetchStatus !== 'fetching') {
+				fetchNextPage();
+			}
+		},
+	});
+
+	const flatData = attendanceData?.pages.flatMap((page) => page.data.members) ?? [];
+
+	// 선택 상태 관리
+	const { selectedIds, toggleItem, toggleAll, isAllSelected } = useCheckboxSelection(flatData);
 
 	const handleModifyAttendance = () => {
 		// TODO: 출석 정보 수정 로직 구현
@@ -42,6 +77,10 @@ const AttendanceSessionContainer = () => {
 
 	if (data?.sessions?.length === 0) {
 		return <EmptyView message="현재 조회된 세션 정보가 없습니다" />;
+	}
+
+	if (isLoading) {
+		return <LoadingBox />;
 	}
 
 	return (
@@ -54,11 +93,12 @@ const AttendanceSessionContainer = () => {
 					<AttendanceFilter />
 				</section>
 				<AttendanceList
+					data={flatData}
+					targetRef={targetRef}
 					selectedIds={selectedIds}
 					onToggleItem={toggleItem}
 					onToggleAll={toggleAll}
 					isAllSelected={isAllSelected}
-					onDataLoaded={handleDataLoaded}
 				/>
 			</div>
 
@@ -102,11 +142,12 @@ const AttendanceSessionContainer = () => {
 				</section>
 
 				<AttendanceList
+					data={flatData}
+					targetRef={targetRef}
 					selectedIds={selectedIds}
 					onToggleItem={toggleItem}
 					onToggleAll={toggleAll}
 					isAllSelected={isAllSelected}
-					onDataLoaded={handleDataLoaded}
 				/>
 			</div>
 		</>

@@ -1,68 +1,43 @@
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import type { RefObject } from 'react';
+import { useState } from 'react';
+import type { AttendanceStatus } from '@dpm-core/api';
 import { Checkbox } from '@dpm-core/shared';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { Profile } from '@/components/attendance/profile';
-import { LoadingBox } from '@/components/loading-box';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
-import { useIntersect } from '@/hooks/useIntersect';
-import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 
 import { AttendanceSessionDetailDrawer } from './attendance-session-detail-drawer';
 
+interface AttendanceMember {
+	id: number;
+	name: string;
+	teamNumber: number;
+	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER';
+	attendanceStatus: AttendanceStatus;
+}
+
 interface AttendanceListProps {
+	data: AttendanceMember[];
+	targetRef: RefObject<HTMLDivElement | null>;
 	selectedIds: Set<number>;
 	onToggleItem: (id: number) => void;
 	onToggleAll: () => void;
 	isAllSelected: boolean;
-	onDataLoaded?: (members: Array<{ id: number }>) => void;
 }
 
 const AttendanceList = ({
+	data,
+	targetRef,
 	selectedIds,
 	onToggleItem,
 	onToggleAll,
 	isAllSelected,
-	onDataLoaded,
 }: AttendanceListProps) => {
 	const customSearchParams = useCustomSearchParams();
-
 	const searchParams = customSearchParams.getAll();
-	const attendanceSearchParams = {
-		week: Number(searchParams.week),
-		statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
-		teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
-		onlyMyTeam: searchParams.onlyMyTeam === 'true' ? true : undefined,
-		name: searchParams.name,
-	};
-
-	const { data, fetchNextPage, hasNextPage, fetchStatus, isLoading } = useInfiniteQuery(
-		getAttendanceBySessionOptions(attendanceSearchParams),
-	);
-
-	const { targetRef } = useIntersect({
-		onIntersect: (entry, observer) => {
-			if (!hasNextPage) {
-				observer.unobserve(entry.target);
-				return;
-			}
-
-			if (entry.isIntersecting && hasNextPage && fetchStatus !== 'fetching') {
-				fetchNextPage();
-			}
-		},
-	});
-
-	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];
-
-	useEffect(() => {
-		if (flatData.length > 0 && onDataLoaded) {
-			onDataLoaded(flatData);
-		}
-	}, [flatData, onDataLoaded]);
 
 	const [selectedMember, setSelectedMember] = useState<{
 		memberId: number;
@@ -75,11 +50,7 @@ const AttendanceList = ({
 		setIsDrawerOpen(true);
 	};
 
-	if (isLoading) {
-		return <LoadingBox />;
-	}
-
-	if (flatData.length === 0) {
+	if (data.length === 0) {
 		return (
 			<div className="md:flex md:min-h-[400px] md:items-center md:justify-center">
 				<EmptyView message="조건에 맞는 디퍼를 찾을 수 없어요" />
@@ -91,7 +62,7 @@ const AttendanceList = ({
 		<>
 			{/* Mobile view (< 768px) */}
 			<section className="mt-2 mb-15 flex-1 flex-col px-4 md:hidden">
-				{flatData.map((member) => {
+				{data.map((member) => {
 					return (
 						<Link
 							href={`/attendance/${member.id}/${searchParams.week}`}
@@ -127,7 +98,7 @@ const AttendanceList = ({
 						<span className="font-medium text-body2 text-label-subtle">출석 상태</span>
 					</div>
 
-					{flatData.map((member) => {
+					{data.map((member) => {
 						const isChecked = selectedIds.has(member.id);
 						return (
 							<button
