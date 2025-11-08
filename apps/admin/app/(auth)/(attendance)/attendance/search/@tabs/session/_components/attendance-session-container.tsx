@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useMemo } from 'react';
+import { Suspense, useEffect, useMemo } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { Button } from '@dpm-core/shared';
@@ -67,8 +67,14 @@ const AttendanceSessionContainer = () => {
 
 	const flatData = attendanceData?.pages.flatMap((page) => page.data.members) ?? [];
 
-	// 선택 상태 관리
-	const { selectedIds, toggleItem, toggleAll, isAllSelected } = useCheckboxSelection(flatData);
+	const { selectedIds, toggleItem, toggleAll, isAllSelected, clearSelection } =
+		useCheckboxSelection(flatData);
+
+	useEffect(() => {
+		if (attendanceSearchParams.week) {
+			clearSelection();
+		}
+	}, [attendanceSearchParams.week, clearSelection]);
 
 	const handleModifyAttendance = () => {
 		// TODO: 출석 정보 수정 로직 구현
