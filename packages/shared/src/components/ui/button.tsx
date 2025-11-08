@@ -72,6 +72,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 				disabled={isDisabled}
 				{...props}
 			>
+				{/* biome-ignore lint/complexity/noUselessFragments: somewhere children and loading are used together */}
 				<>
 					{children}
 					{loading && <Loader2 className="size-4 animate-spin" />}
