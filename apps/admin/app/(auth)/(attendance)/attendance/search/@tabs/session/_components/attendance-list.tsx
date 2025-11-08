@@ -1,20 +1,33 @@
-import { Checkbox } from '@dpm-core/shared';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { Checkbox } from '@dpm-core/shared';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { Profile } from '@/components/attendance/profile';
 import { LoadingBox } from '@/components/loading-box';
-import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { useIntersect } from '@/hooks/useIntersect';
 import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 
 import { AttendanceSessionDetailDrawer } from './attendance-session-detail-drawer';
 
-const AttendanceList = () => {
+interface AttendanceListProps {
+	selectedIds: Set<number>;
+	onToggleItem: (id: number) => void;
+	onToggleAll: () => void;
+	isAllSelected: boolean;
+	onDataLoaded?: (members: Array<{ id: number }>) => void;
+}
+
+const AttendanceList = ({
+	selectedIds,
+	onToggleItem,
+	onToggleAll,
+	isAllSelected,
+	onDataLoaded,
+}: AttendanceListProps) => {
 	const customSearchParams = useCustomSearchParams();
 
 	const searchParams = customSearchParams.getAll();
@@ -45,7 +58,12 @@ const AttendanceList = () => {
 
 	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];
 
-	const { selectedIds, toggleItem, toggleAll, isAllSelected } = useCheckboxSelection(flatData);
+	useEffect(() => {
+		if (flatData.length > 0 && onDataLoaded) {
+			onDataLoaded(flatData);
+		}
+	}, [flatData, onDataLoaded]);
+
 	const [selectedMember, setSelectedMember] = useState<{
 		memberId: number;
 		sessionId: number;
@@ -100,7 +118,7 @@ const AttendanceList = () => {
 						<div className="flex items-center gap-4">
 							<Checkbox
 								checked={isAllSelected}
-								onCheckedChange={toggleAll}
+								onCheckedChange={onToggleAll}
 								className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 								aria-label="전체 선택"
 							/>
@@ -121,7 +139,7 @@ const AttendanceList = () => {
 								<div className="flex items-center gap-4">
 									<Checkbox
 										checked={isChecked}
-										onCheckedChange={() => toggleItem(member.id)}
+										onCheckedChange={() => onToggleItem(member.id)}
 										className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 										aria-label={`${member.name} 선택`}
 										onClick={(e) => e.stopPropagation()}

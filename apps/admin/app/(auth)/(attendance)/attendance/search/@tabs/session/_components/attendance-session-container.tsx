@@ -1,11 +1,13 @@
 'use client';
 
+import { Suspense, useCallback, useMemo, useState } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Suspense, useMemo } from 'react';
+import { Button } from '@dpm-core/shared';
 
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { ErrorBox } from '@/components/error-box';
+import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { getSessionWeeks } from '@/remotes/queries/session';
 
@@ -26,6 +28,18 @@ const AttendanceSessionContainer = () => {
 		return data.sessions?.find((session) => session.id.toString() === selectedWeekId);
 	}, [data.sessions, selectedWeekId]);
 
+	const [members, setMembers] = useState<Array<{ id: number }>>([]);
+	const { selectedIds, toggleItem, toggleAll, isAllSelected } = useCheckboxSelection(members);
+
+	const handleDataLoaded = useCallback((loadedMembers: Array<{ id: number }>) => {
+		setMembers(loadedMembers);
+	}, []);
+
+	const handleModifyAttendance = () => {
+		// TODO: 출석 정보 수정 로직 구현
+		console.log('선택된 멤버 IDs:', Array.from(selectedIds));
+	};
+
 	if (data?.sessions?.length === 0) {
 		return <EmptyView message="현재 조회된 세션 정보가 없습니다" />;
 	}
@@ -39,7 +53,13 @@ const AttendanceSessionContainer = () => {
 					<SearchInput placeholder="디퍼 검색" />
 					<AttendanceFilter />
 				</section>
-				<AttendanceList />
+				<AttendanceList
+					selectedIds={selectedIds}
+					onToggleItem={toggleItem}
+					onToggleAll={toggleAll}
+					isAllSelected={isAllSelected}
+					onDataLoaded={handleDataLoaded}
+				/>
 			</div>
 
 			{/* Desktop view (>= 768px) */}
@@ -60,11 +80,34 @@ const AttendanceSessionContainer = () => {
 						<div className="w-[270px]">
 							<SearchInput placeholder="디퍼 검색" />
 						</div>
-						<AttendanceFilter />
+						<div className="flex items-center gap-[30px]">
+							{selectedIds.size > 0 && (
+								<div className="flex items-center gap-3">
+									<p className="font-medium text-body1 text-primary-normal">
+										{selectedIds.size}개 선택됨
+									</p>
+									<Button
+										variant="none"
+										size="none"
+										onClick={handleModifyAttendance}
+										className="rounded-lg bg-background-inverse px-4 py-3 font-semibold text-body2 text-label-inverse"
+									>
+										출석 정보 수정
+									</Button>
+								</div>
+							)}
+							<AttendanceFilter />
+						</div>
 					</div>
 				</section>
 
-				<AttendanceList />
+				<AttendanceList
+					selectedIds={selectedIds}
+					onToggleItem={toggleItem}
+					onToggleAll={toggleAll}
+					isAllSelected={isAllSelected}
+					onDataLoaded={handleDataLoaded}
+				/>
 			</div>
 		</>
 	);
