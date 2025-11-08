@@ -15,6 +15,11 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 	DrawerTrigger,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuTrigger,
 	FilterChip,
 	Label,
 } from '@dpm-core/shared';
@@ -174,7 +179,7 @@ export const AttendanceFilter = () => {
 										)
 									}
 								>
-									<RotateCw className="size-5 text-icon-noraml" />
+									<RotateCw className="size-5 text-icon-normal" />
 								</Button>
 							</DrawerClose>
 							<DrawerClose asChild>
@@ -232,38 +237,43 @@ export const AttendanceFilter = () => {
 					</Label>
 				</div>
 
-				<Drawer>
-					<DrawerTrigger asChild>
-						<Button
-							size="none"
-							className={cn(
-								'h-10 gap-1 rounded-lg border border-line-subtle bg-white px-4 py-2.5 font-normal text-body2 text-label-assistive hover:bg-inherit',
-								attendanceFilterLabel !== '출석 상태별' &&
-									'border-primary-normal text-primary-normal',
-							)}
-						>
-							{attendanceFilterLabel}
-							<ChevronDown className="size-3" />
-						</Button>
-					</DrawerTrigger>
-					<DrawerTrigger asChild>
-						<Button
-							size="none"
-							className={cn(
-								'h-10 gap-1 rounded-lg border border-line-subtle bg-white px-4 py-2.5 font-normal text-body2 text-label-assistive hover:bg-inherit',
-								teamsFilterLabel !== '팀별' && 'border-primary-normal text-primary-normal',
-							)}
-						>
-							{teamsFilterLabel}
-							<ChevronDown className="size-3" />
-						</Button>
-					</DrawerTrigger>
+				<DropdownMenu modal={false}>
+					<div className="flex gap-2">
+						<DropdownMenuTrigger asChild>
+							<Button
+								size="none"
+								className={cn(
+									'h-10 gap-1 rounded-lg border border-line-subtle bg-white px-4 py-2.5 font-normal text-body2 text-label-assistive hover:bg-inherit',
+									attendanceFilterLabel !== '출석 상태별' &&
+										'border-primary-normal text-primary-normal',
+								)}
+							>
+								{attendanceFilterLabel}
+								<ChevronDown className="size-3" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuTrigger asChild>
+							<Button
+								size="none"
+								className={cn(
+									'h-10 gap-1 rounded-lg border border-line-subtle bg-white px-4 py-2.5 font-normal text-body2 text-label-assistive hover:bg-inherit',
+									teamsFilterLabel !== '팀별' && 'border-primary-normal text-primary-normal',
+								)}
+							>
+								{teamsFilterLabel}
+								<ChevronDown className="size-3" />
+							</Button>
+						</DropdownMenuTrigger>
+					</div>
 
-					<DrawerContent className="mx-auto max-w-lg">
-						<DrawerHeader>
-							<DrawerTitle>필터</DrawerTitle>
-						</DrawerHeader>
-						<div className="mt-8 px-6">
+					<DropdownMenuContent
+						align="end"
+						alignOffset={0}
+						sideOffset={6}
+						className="w-[360px] rounded-xl border-none bg-background-normal px-4 py-5 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
+					>
+						<DropdownMenuLabel className="p-0 font-semibold text-title2">필터</DropdownMenuLabel>
+						<div className="mt-8">
 							<p className="mb-2 font-semibold text-body1 text-label-normal">출석 상태별</p>
 							<div className="flex flex-wrap gap-2">
 								{ATTENDANCE_FILTER.map((chip, index) => {
@@ -286,7 +296,7 @@ export const AttendanceFilter = () => {
 								})}
 							</div>
 						</div>
-						<div className="mt-7.5 mb-40 px-6">
+						<div className="mt-7.5 mb-5">
 							<p className="mb-2 font-semibold text-body1 text-label-normal">팀별</p>
 							<div className="flex flex-wrap gap-2">
 								{TEAM_FILTER.map((chip, index) => {
@@ -306,8 +316,9 @@ export const AttendanceFilter = () => {
 								})}
 							</div>
 						</div>
-						<DrawerFooter className="flex flex-row gap-2 px-4 py-3">
-							<DrawerClose asChild>
+
+						<div className="flex gap-2">
+							<DropdownMenuItem asChild>
 								<Button
 									variant="none"
 									size="none"
@@ -322,10 +333,11 @@ export const AttendanceFilter = () => {
 										)
 									}
 								>
-									<RotateCw className="size-5 text-icon-noraml" />
+									<RotateCw className="size-5 text-icon-normal" />
 								</Button>
-							</DrawerClose>
-							<DrawerClose asChild>
+							</DropdownMenuItem>
+
+							<DropdownMenuItem asChild>
 								<Button
 									className="flex-1 rounded-lg"
 									size="lg"
@@ -334,10 +346,10 @@ export const AttendanceFilter = () => {
 								>
 									적용하기
 								</Button>
-							</DrawerClose>
-						</DrawerFooter>
-					</DrawerContent>
-				</Drawer>
+							</DropdownMenuItem>
+						</div>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</div>
 		</>
 	);
