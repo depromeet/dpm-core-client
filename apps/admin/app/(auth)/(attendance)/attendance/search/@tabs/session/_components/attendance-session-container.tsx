@@ -1,17 +1,23 @@
 'use client';
 
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { Suspense, useMemo } from 'react';
+import { useInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { Button } from '@dpm-core/shared';
 
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { ErrorBox } from '@/components/error-box';
+import { LoadingBox } from '@/components/loading-box';
+import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 import { getSessionWeeks } from '@/remotes/queries/session';
 
 import { AttendanceFilter } from '../../_components/attendance-filter';
 import { SearchInput } from '../../_components/search-input';
 import { WeekFilter } from '../../_components/week-filter';
+import { AttendanceBulkModifyModal } from './attendance-bulk-modify-modal';
 import AttendanceList from './attendance-list';
 
 const AttendanceSessionContainer = () => {
@@ -26,8 +32,61 @@ const AttendanceSessionContainer = () => {
 		return data.sessions?.find((session) => session.id.toString() === selectedWeekId);
 	}, [data.sessions, selectedWeekId]);
 
+	const searchParams = customSearchParams.getAll();
+	const attendanceSearchParams = useMemo(
+		() => ({
+			week: Number(searchParams.week),
+			statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
+			teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
+			onlyMyTeam: searchParams.onlyMyTeam === 'true' ? true : undefined,
+			name: searchParams.name,
+		}),
+		[searchParams],
+	);
+
+	const {
+		data: attendanceData,
+		fetchNextPage,
+		hasNextPage,
+		fetchStatus,
+		isLoading,
+	} = useInfiniteQuery(getAttendanceBySessionOptions(attendanceSearchParams));
+
+	const { targetRef } = useInfiniteScroll({
+		callback: fetchNextPage,
+		canObserve: hasNextPage,
+		enabled: fetchStatus !== 'fetching',
+	});
+
+	const flatData = attendanceData?.pages.flatMap((page) => page.data.members) ?? [];
+
+	const { selectedIds, toggleItem, toggleAll, isAllSelected, clearSelection } =
+		useCheckboxSelection(flatData);
+
+	useEffect(() => {
+		if (attendanceSearchParams.week) {
+			clearSelection();
+		}
+	}, [attendanceSearchParams.week, clearSelection]);
+
+	const selectedMembers = useMemo(
+		() => flatData.filter((member) => selectedIds.has(member.id)),
+		[flatData, selectedIds],
+	);
+
+	const [isBulkModifyModalOpen, setIsBulkModifyModalOpen] = useState(false);
+
+	const handleModifyAttendance = () => {
+		setIsBulkModifyModalOpen(true);
+	};
+
 	if (data?.sessions?.length === 0) {
 		return <EmptyView message="현재 조회된 세션 정보가 없습니다" />;
+	}
+
+	// 초기 로딩만 전체 LoadingBox 표시
+	if (isLoading && !attendanceData) {
+		return <LoadingBox />;
 	}
 
 	return (
@@ -39,7 +98,14 @@ const AttendanceSessionContainer = () => {
 					<SearchInput placeholder="디퍼 검색" />
 					<AttendanceFilter />
 				</section>
-				<AttendanceList />
+				<AttendanceList
+					data={flatData}
+					targetRef={targetRef}
+					selectedIds={selectedIds}
+					onToggleItem={toggleItem}
+					onToggleAll={toggleAll}
+					isAllSelected={isAllSelected}
+				/>
 			</div>
 
 			{/* Desktop view (>= 768px) */}
@@ -60,11 +126,42 @@ const AttendanceSessionContainer = () => {
 						<div className="w-[270px]">
 							<SearchInput placeholder="디퍼 검색" />
 						</div>
-						<AttendanceFilter />
+						<div className="flex items-center gap-[30px]">
+							{selectedIds.size > 0 && (
+								<div className="flex items-center gap-3">
+									<p className="font-medium text-body1 text-primary-normal">
+										{selectedIds.size}개 선택됨
+									</p>
+									<Button
+										variant="none"
+										size="none"
+										onClick={handleModifyAttendance}
+										className="rounded-lg bg-background-inverse px-4 py-3 font-semibold text-body2 text-label-inverse"
+									>
+										출석 정보 수정
+									</Button>
+								</div>
+							)}
+							<AttendanceFilter />
+						</div>
 					</div>
 				</section>
 
-				<AttendanceList />
+				<AttendanceList
+					data={flatData}
+					targetRef={targetRef}
+					selectedIds={selectedIds}
+					onToggleItem={toggleItem}
+					onToggleAll={toggleAll}
+					isAllSelected={isAllSelected}
+				/>
+
+				<AttendanceBulkModifyModal
+					sessionId={Number(searchParams.week)}
+					selectedMembers={selectedMembers}
+					open={isBulkModifyModalOpen}
+					onOpenChange={setIsBulkModifyModalOpen}
+				/>
 			</div>
 		</>
 	);

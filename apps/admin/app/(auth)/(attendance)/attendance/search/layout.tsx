@@ -1,5 +1,5 @@
-import { AppLayout } from '@dpm-core/shared';
 import type { ReactNode } from 'react';
+import { AppLayout } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { RotateCw } from 'lucide-react';
 import type { AttendanceStatus } from '@dpm-core/api';
 import {
@@ -15,8 +15,14 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 	DrawerTrigger,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuTrigger,
 	FilterChip,
 	Label,
+	XCircle,
 } from '@dpm-core/shared';
 
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
@@ -27,15 +33,26 @@ const ATTENDANCE_FILTER = [
 	{ label: '지각', value: 'LATE' },
 	{ label: '인정', value: 'EXCUSED_ABSENT' },
 	{ label: '결석', value: 'ABSENT' },
+	{ label: '조퇴', value: 'EARLY_LEAVE' },
 	{ label: '미출석', value: 'PENDING' },
-];
+] as const;
 const TEAM_FILTER = ['1', '2', '3', '4', '5', '6'];
 
 export const AttendanceFilter = () => {
 	const customSearchParams = useCustomSearchParams();
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
 	const filterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
 	const teamsFilterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+	const handleMyTeamToggle = (checked: boolean) => {
+		customSearchParams.update(
+			{
+				onlyMyTeam: checked ? 'true' : '',
+			},
+			'REPLACE',
+		);
+	};
 
 	const handleSelectFilter = () => {
 		const filterChipIds = filterChipRefs.current
@@ -174,7 +191,7 @@ export const AttendanceFilter = () => {
 										)
 									}
 								>
-									<RotateCw className="size-5 text-icon-noraml" />
+									<RotateCw className="size-5 text-icon-normal" />
 								</Button>
 							</DrawerClose>
 							<DrawerClose asChild>
@@ -195,9 +212,7 @@ export const AttendanceFilter = () => {
 					<Checkbox
 						id="my-team-mobile"
 						checked={customSearchParams.get('onlyMyTeam') === 'true' && true}
-						onCheckedChange={(checked) =>
-							customSearchParams.update({ onlyMyTeam: checked ? 'true' : '', teams: '' }, 'REPLACE')
-						}
+						onCheckedChange={handleMyTeamToggle}
 						className="size-4 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 					/>
 					<Label htmlFor="my-team-mobile" className="font-normal text-body2 text-label-assistive">
@@ -208,13 +223,18 @@ export const AttendanceFilter = () => {
 
 			{/* Desktop view (>= 768px) */}
 			<div className="hidden items-center gap-2 md:flex">
-				<div className="flex items-center gap-1.5 rounded-lg border border-line-subtle bg-white px-4 py-[9px]">
+				<div
+					className={cn(
+						'flex items-center gap-1.5 rounded-lg border bg-white px-4 py-[9px]',
+						customSearchParams.get('onlyMyTeam') === 'true'
+							? 'border-primary-normal'
+							: 'border-line-subtle',
+					)}
+				>
 					<Checkbox
 						id="my-team-desktop"
 						checked={customSearchParams.get('onlyMyTeam') === 'true' && true}
-						onCheckedChange={(checked) =>
-							customSearchParams.update({ onlyMyTeam: checked ? 'true' : '', teams: '' }, 'REPLACE')
-						}
+						onCheckedChange={handleMyTeamToggle}
 						className="size-4 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 					/>
 					<Label
@@ -225,38 +245,46 @@ export const AttendanceFilter = () => {
 					</Label>
 				</div>
 
-				<Drawer>
-					<DrawerTrigger asChild>
-						<Button
-							size="none"
-							className={cn(
-								'h-10 gap-1 rounded-lg border border-line-subtle bg-white px-4 py-2.5 font-normal text-body2 text-label-assistive hover:bg-inherit',
-								attendanceFilterLabel !== '출석 상태별' &&
-									'border-primary-normal text-primary-normal',
-							)}
-						>
-							{attendanceFilterLabel}
-							<ChevronDown className="size-3" />
-						</Button>
-					</DrawerTrigger>
-					<DrawerTrigger asChild>
-						<Button
-							size="none"
-							className={cn(
-								'h-10 gap-1 rounded-lg border border-line-subtle bg-white px-4 py-2.5 font-normal text-body2 text-label-assistive hover:bg-inherit',
-								teamsFilterLabel !== '팀별' && 'border-primary-normal text-primary-normal',
-							)}
-						>
-							{teamsFilterLabel}
-							<ChevronDown className="size-3" />
-						</Button>
-					</DrawerTrigger>
+				<DropdownMenu modal={false} open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+					<div className="flex gap-2">
+						<DropdownMenuTrigger asChild>
+							<Button
+								size="none"
+								className={cn(
+									'h-10 gap-1 rounded-lg border border-line-subtle bg-white px-4 py-2.5 font-normal text-body2 text-label-assistive hover:bg-inherit',
+									attendanceFilterLabel !== '출석 상태별' &&
+										'border-primary-normal text-primary-normal',
+								)}
+							>
+								{attendanceFilterLabel}
+								<ChevronDown className="size-3" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuTrigger asChild>
+							<Button
+								size="none"
+								className={cn(
+									'h-10 gap-1 rounded-lg border border-line-subtle bg-white px-4 py-2.5 font-normal text-body2 text-label-assistive hover:bg-inherit',
+									teamsFilterLabel !== '팀별' && 'border-primary-normal text-primary-normal',
+								)}
+							>
+								{teamsFilterLabel}
+								<ChevronDown className="size-3" />
+							</Button>
+						</DropdownMenuTrigger>
+					</div>
 
-					<DrawerContent className="mx-auto max-w-lg">
-						<DrawerHeader>
-							<DrawerTitle>필터</DrawerTitle>
-						</DrawerHeader>
-						<div className="mt-8 px-6">
+					<DropdownMenuContent
+						align="end"
+						alignOffset={0}
+						sideOffset={6}
+						className="rounded-xl border-none bg-background-normal px-4 py-5 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
+					>
+						<div className="flex items-center justify-between">
+							<DropdownMenuLabel className="p-0 font-semibold text-title2">필터</DropdownMenuLabel>
+							<XCircle className="cursor-pointer" onClick={() => setIsDropdownOpen(false)} />
+						</div>
+						<div className="mt-8">
 							<p className="mb-2 font-semibold text-body1 text-label-normal">출석 상태별</p>
 							<div className="flex flex-wrap gap-2">
 								{ATTENDANCE_FILTER.map((chip, index) => {
@@ -279,7 +307,7 @@ export const AttendanceFilter = () => {
 								})}
 							</div>
 						</div>
-						<div className="mt-7.5 mb-40 px-6">
+						<div className="mt-7.5 mb-8">
 							<p className="mb-2 font-semibold text-body1 text-label-normal">팀별</p>
 							<div className="flex flex-wrap gap-2">
 								{TEAM_FILTER.map((chip, index) => {
@@ -299,8 +327,9 @@ export const AttendanceFilter = () => {
 								})}
 							</div>
 						</div>
-						<DrawerFooter className="flex flex-row gap-2 px-4 py-3">
-							<DrawerClose asChild>
+
+						<div className="flex gap-2">
+							<DropdownMenuItem asChild>
 								<Button
 									variant="none"
 									size="none"
@@ -315,10 +344,11 @@ export const AttendanceFilter = () => {
 										)
 									}
 								>
-									<RotateCw className="size-5 text-icon-noraml" />
+									<RotateCw className="size-5 text-icon-normal" />
 								</Button>
-							</DrawerClose>
-							<DrawerClose asChild>
+							</DropdownMenuItem>
+
+							<DropdownMenuItem asChild>
 								<Button
 									className="flex-1 rounded-lg"
 									size="lg"
@@ -327,10 +357,10 @@ export const AttendanceFilter = () => {
 								>
 									적용하기
 								</Button>
-							</DrawerClose>
-						</DrawerFooter>
-					</DrawerContent>
-				</Drawer>
+							</DropdownMenuItem>
+						</div>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</div>
 		</>
 	);

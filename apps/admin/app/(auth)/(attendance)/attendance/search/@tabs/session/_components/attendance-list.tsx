@@ -1,51 +1,44 @@
-import { Checkbox } from '@dpm-core/shared';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import type { RefObject } from 'react';
 import { useState } from 'react';
+import type { AttendanceStatus } from '@dpm-core/api';
+import { Checkbox } from '@dpm-core/shared';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { Profile } from '@/components/attendance/profile';
-import { LoadingBox } from '@/components/loading-box';
-import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
-import { useIntersect } from '@/hooks/useIntersect';
-import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 
 import { AttendanceSessionDetailDrawer } from './attendance-session-detail-drawer';
 
-const AttendanceList = () => {
+interface AttendanceMember {
+	id: number;
+	name: string;
+	teamNumber: number;
+	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER';
+	attendanceStatus: AttendanceStatus;
+}
+
+interface AttendanceListProps {
+	data: AttendanceMember[];
+	targetRef: RefObject<HTMLDivElement | null>;
+	selectedIds: Set<number>;
+	onToggleItem: (id: number) => void;
+	onToggleAll: () => void;
+	isAllSelected: boolean;
+}
+
+const AttendanceList = ({
+	data,
+	targetRef,
+	selectedIds,
+	onToggleItem,
+	onToggleAll,
+	isAllSelected,
+}: AttendanceListProps) => {
 	const customSearchParams = useCustomSearchParams();
-
 	const searchParams = customSearchParams.getAll();
-	const attendanceSearchParams = {
-		week: Number(searchParams.week),
-		statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
-		teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
-		onlyMyTeam: searchParams.onlyMyTeam === 'true' ? true : undefined,
-		name: searchParams.name,
-	};
 
-	const { data, fetchNextPage, hasNextPage, fetchStatus, isLoading } = useInfiniteQuery(
-		getAttendanceBySessionOptions(attendanceSearchParams),
-	);
-
-	const { targetRef } = useIntersect({
-		onIntersect: (entry, observer) => {
-			if (!hasNextPage) {
-				observer.unobserve(entry.target);
-				return;
-			}
-
-			if (entry.isIntersecting && hasNextPage && fetchStatus !== 'fetching') {
-				fetchNextPage();
-			}
-		},
-	});
-
-	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];
-
-	const { selectedIds, toggleItem, toggleAll, isAllSelected } = useCheckboxSelection(flatData);
 	const [selectedMember, setSelectedMember] = useState<{
 		memberId: number;
 		sessionId: number;
@@ -57,11 +50,7 @@ const AttendanceList = () => {
 		setIsDrawerOpen(true);
 	};
 
-	if (isLoading) {
-		return <LoadingBox />;
-	}
-
-	if (flatData.length === 0) {
+	if (data.length === 0) {
 		return (
 			<div className="md:flex md:min-h-[400px] md:items-center md:justify-center">
 				<EmptyView message="조건에 맞는 디퍼를 찾을 수 없어요" />
@@ -72,8 +61,8 @@ const AttendanceList = () => {
 	return (
 		<>
 			{/* Mobile view (< 768px) */}
-			<section className="mt-2 mb-15 flex-1 flex-col px-4 md:hidden">
-				{flatData.map((member) => {
+			<section className="relative mt-2 mb-15 flex-1 flex-col px-4 md:hidden">
+				{data.map((member) => {
 					return (
 						<Link
 							href={`/attendance/${member.id}/${searchParams.week}`}
@@ -94,13 +83,13 @@ const AttendanceList = () => {
 			</section>
 
 			{/* Desktop view (>= 768px) */}
-			<section className="mx-10 mb-15 hidden md:block">
+			<section className="relative mx-10 mb-15 hidden md:block">
 				<div className="overflow-auto">
 					<div className="flex items-center justify-between border-gray-200 border-b bg-gray-50 py-2.5 pr-[136px] pl-5">
 						<div className="flex items-center gap-4">
 							<Checkbox
 								checked={isAllSelected}
-								onCheckedChange={toggleAll}
+								onCheckedChange={onToggleAll}
 								className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 								aria-label="전체 선택"
 							/>
@@ -109,19 +98,27 @@ const AttendanceList = () => {
 						<span className="font-medium text-body2 text-label-subtle">출석 상태</span>
 					</div>
 
-					{flatData.map((member) => {
+					{data.map((member) => {
 						const isChecked = selectedIds.has(member.id);
 						return (
-							<button
+							// biome-ignore lint/a11y/useSemanticElements: Checkbox가 버튼 컴포넌트임으로 nested button 이슈를 해결하기 위해 div role button을 사용
+							<div
 								key={member.id}
-								type="button"
+								role="button"
+								tabIndex={0}
 								onClick={() => handleDesktopRowClick(member.id)}
+								onKeyDown={(e) => {
+									if (e.key === 'Enter' || e.key === ' ') {
+										e.preventDefault();
+										handleDesktopRowClick(member.id);
+									}
+								}}
 								className="flex w-full cursor-pointer items-center justify-between border-gray-200 border-b py-5 pr-[136px] pl-5 text-left transition-colors hover:bg-gray-50"
 							>
 								<div className="flex items-center gap-4">
 									<Checkbox
 										checked={isChecked}
-										onCheckedChange={() => toggleItem(member.id)}
+										onCheckedChange={() => onToggleItem(member.id)}
 										className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 										aria-label={`${member.name} 선택`}
 										onClick={(e) => e.stopPropagation()}
@@ -134,7 +131,7 @@ const AttendanceList = () => {
 									/>
 								</div>
 								<AttendanceStatusLabel status={member.attendanceStatus} />
-							</button>
+							</div>
 						);
 					})}
 				</div>

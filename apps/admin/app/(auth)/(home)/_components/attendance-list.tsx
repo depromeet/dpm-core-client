@@ -11,7 +11,7 @@ import { EmptyView } from '@/components/attendance/EmptyView';
 import { LoadingBox } from '@/components/loading-box';
 import { cohort } from '@/constants/cohort';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
-import { useIntersect } from '@/hooks/useIntersect';
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { getMemberPartLabel } from '@/lib/member/part';
 import { isExistPart } from '@/lib/utils';
 import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
@@ -34,17 +34,10 @@ export const AttendanceList = ({ sessionId }: { sessionId: number }) => {
 		getAttendanceBySessionOptions(attendanceSearchParams),
 	);
 
-	const { targetRef } = useIntersect({
-		onIntersect: (entry, observer) => {
-			if (!hasNextPage) {
-				observer.unobserve(entry.target);
-				return;
-			}
-
-			if (entry.isIntersecting && hasNextPage && fetchStatus !== 'fetching') {
-				fetchNextPage();
-			}
-		},
+	const { targetRef } = useInfiniteScroll({
+		callback: fetchNextPage,
+		canObserve: hasNextPage,
+		enabled: fetchStatus !== 'fetching',
 	});
 
 	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];

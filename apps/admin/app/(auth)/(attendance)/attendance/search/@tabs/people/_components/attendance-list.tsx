@@ -1,50 +1,29 @@
-'use client';
-
-import { Badge } from '@dpm-core/shared';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import type { RefObject } from 'react';
 import { useState } from 'react';
+import type { MemberAttendanceStatus } from '@dpm-core/api';
+import { Badge } from '@dpm-core/shared';
 
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { Profile } from '@/components/attendance/profile';
-import { LoadingBox } from '@/components/loading-box';
-import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
-import { useIntersect } from '@/hooks/useIntersect';
 import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
-import { getAttendanceByMemberOptions } from '@/remotes/queries/attendance';
 
 import { AttendanceMemberDetailDrawer } from './attendance-member-detail-drawer';
 
-export const AttendanceList = () => {
-	const customSearchParams = useCustomSearchParams();
+interface AttendanceMember {
+	id: number;
+	name: string;
+	teamNumber: number;
+	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER';
+	attendanceStatus: MemberAttendanceStatus;
+}
 
-	const searchParams = customSearchParams.getAll();
-	const attendanceSearchParams = {
-		statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
-		teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
-		onlyMyTeam: searchParams.onlyMyTeam === 'true' ? true : undefined,
-		name: searchParams.name,
-	};
+interface AttendanceListProps {
+	data: AttendanceMember[];
+	targetRef: RefObject<HTMLDivElement | null>;
+}
 
-	const { data, fetchNextPage, hasNextPage, fetchStatus, isLoading } = useInfiniteQuery(
-		getAttendanceByMemberOptions(attendanceSearchParams),
-	);
-
-	const { targetRef } = useIntersect({
-		onIntersect: (entry, observer) => {
-			if (!hasNextPage) {
-				observer.unobserve(entry.target);
-				return;
-			}
-
-			if (entry.isIntersecting && hasNextPage && fetchStatus !== 'fetching') {
-				fetchNextPage();
-			}
-		},
-	});
-
-	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];
-
+export const AttendanceList = ({ data, targetRef }: AttendanceListProps) => {
 	const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -53,11 +32,7 @@ export const AttendanceList = () => {
 		setIsDrawerOpen(true);
 	};
 
-	if (isLoading) {
-		return <LoadingBox />;
-	}
-
-	if (flatData.length === 0) {
+	if (data.length === 0) {
 		return (
 			<div className="md:flex md:min-h-[400px] md:items-center md:justify-center">
 				<EmptyView message="조건에 맞는 디퍼를 찾을 수 없어요" />
@@ -68,8 +43,8 @@ export const AttendanceList = () => {
 	return (
 		<>
 			{/* Mobile view (< 768px) */}
-			<section className="mt-2 mb-15 flex-1 flex-col px-4 md:hidden">
-				{flatData.map((member) => {
+			<section className="relative mt-2 mb-15 flex-1 flex-col px-4 md:hidden">
+				{data.map((member) => {
 					return (
 						<Link
 							href={`/attendance/${member.id}`}
@@ -94,14 +69,14 @@ export const AttendanceList = () => {
 			</section>
 
 			{/* Desktop view (>= 768px) */}
-			<section className="mx-10 mb-15 hidden md:block">
+			<section className="relative mx-10 mb-15 hidden md:block">
 				<div className="overflow-auto">
 					<div className="flex items-center justify-between border-gray-200 border-b bg-gray-50 py-2.5 pr-[136px] pl-5">
 						<span className="font-medium text-body2 text-label-subtle">멤버 정보</span>
 						<span className="font-medium text-body2 text-label-subtle">수료 상태</span>
 					</div>
 
-					{flatData.map((member) => {
+					{data.map((member) => {
 						return (
 							<button
 								key={member.id}

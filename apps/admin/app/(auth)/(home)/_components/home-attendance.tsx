@@ -70,6 +70,15 @@ export const AttendanceFilter = () => {
 	const filterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
 	const teamsFilterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
+	const handleMyTeamToggle = (checked: boolean) => {
+		customSearchParams.update(
+			{
+				onlyMyTeam: checked ? 'true' : '',
+			},
+			'REPLACE',
+		);
+	};
+
 	const handleSelectFilter = () => {
 		const filterChipIds = filterChipRefs.current
 			.filter((chip) => chip?.ariaChecked === 'true')
@@ -114,13 +123,18 @@ export const AttendanceFilter = () => {
 
 	return (
 		<div className="flex">
-			<div className="flex items-center gap-1.5 rounded-lg border border-line-normal px-4 py-2">
+			<div
+				className={cn(
+					'flex items-center gap-1.5 rounded-lg border px-4 py-2',
+					customSearchParams.get('onlyMyTeam') === 'true'
+						? 'border-primary-normal'
+						: 'border-line-normal',
+				)}
+			>
 				<Checkbox
 					id="my-team"
 					checked={customSearchParams.get('onlyMyTeam') === 'true' && true}
-					onCheckedChange={(checked) =>
-						customSearchParams.update({ onlyMyTeam: checked ? 'true' : '', teams: '' }, 'REPLACE')
-					}
+					onCheckedChange={handleMyTeamToggle}
 					className="size-4 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 				/>
 				<Label htmlFor="my-team" className="font-medium text-body2 text-label-assistive">
