@@ -7,6 +7,7 @@ export * from './components/google-analytics';
 export * from './components/icons';
 export * from './components/ui/avatar';
 export * from './components/ui/button';
+export * from './components/ui/calendar';
 export * from './components/ui/card';
 export * from './components/ui/checkbox';
 export * from './components/ui/copy-button';

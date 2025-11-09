@@ -41,12 +41,12 @@ const AppHeader = ({
 				className,
 			)}
 		>
-			<div className="mx-auto flex w-full max-w-[1200px] items-center justify-center px-4 py-3 md:justify-between md:px-10 md:py-6">
+			<div className="relative mx-auto flex w-full max-w-[1200px] items-center justify-center px-4 py-3 md:justify-between md:px-10 md:py-6">
 				{leftIcon}
 				<h3 className="font-semibold text-body1 text-label-strong md:font-bold md:text-headline1">
 					{title}
 				</h3>
-				<div className="absolute right-4">{rightIcon}</div>
+				<div className="absolute right-4 md:right-10">{rightIcon}</div>
 			</div>
 		</header>
 	);
