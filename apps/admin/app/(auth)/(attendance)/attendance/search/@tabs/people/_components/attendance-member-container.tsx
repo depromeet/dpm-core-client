@@ -1,15 +1,50 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useMemo } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { ErrorBox } from '@/components/error-box';
+import { LoadingBox } from '@/components/loading-box';
+import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { getAttendanceByMemberOptions } from '@/remotes/queries/attendance';
 
 import { AttendanceFilter } from '../../_components/attendance-filter';
 import { SearchInput } from '../../_components/search-input';
 import { AttendanceList } from './attendance-list';
 
 const AttendanceMemberContainer = () => {
+	const customSearchParams = useCustomSearchParams();
+
+	const searchParams = customSearchParams.getAll();
+	const attendanceSearchParams = useMemo(
+		() => ({
+			statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
+			teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
+			onlyMyTeam: searchParams.onlyMyTeam === 'true' ? true : undefined,
+			name: searchParams.name,
+		}),
+		[searchParams],
+	);
+
+	const { data, fetchNextPage, hasNextPage, fetchStatus, isLoading } = useInfiniteQuery(
+		getAttendanceByMemberOptions(attendanceSearchParams),
+	);
+
+	const { targetRef } = useInfiniteScroll({
+		callback: fetchNextPage,
+		canObserve: hasNextPage,
+		enabled: fetchStatus !== 'fetching',
+	});
+
+	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];
+
+	// 초기 로딩만 전체 LoadingBox 표시
+	if (isLoading && !data) {
+		return <LoadingBox />;
+	}
+
 	return (
 		<>
 			{/* Mobile view (< 768px) */}
@@ -18,7 +53,7 @@ const AttendanceMemberContainer = () => {
 					<SearchInput placeholder="디퍼 검색" />
 					<AttendanceFilter />
 				</section>
-				<AttendanceList />
+				<AttendanceList data={flatData} targetRef={targetRef} />
 			</div>
 
 			{/* Desktop view (>= 768px) */}
@@ -39,7 +74,7 @@ const AttendanceMemberContainer = () => {
 					</div>
 				</section>
 
-				<AttendanceList />
+				<AttendanceList data={flatData} targetRef={targetRef} />
 			</div>
 		</>
 	);

@@ -1,43 +1,29 @@
-'use client';
-
 import Link from 'next/link';
+import type { RefObject } from 'react';
 import { useState } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import type { MemberAttendanceStatus } from '@dpm-core/api';
 import { Badge } from '@dpm-core/shared';
 
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { Profile } from '@/components/attendance/profile';
-import { LoadingBox } from '@/components/loading-box';
-import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
-import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
-import { getAttendanceByMemberOptions } from '@/remotes/queries/attendance';
 
 import { AttendanceMemberDetailDrawer } from './attendance-member-detail-drawer';
 
-export const AttendanceList = () => {
-	const customSearchParams = useCustomSearchParams();
+interface AttendanceMember {
+	id: number;
+	name: string;
+	teamNumber: number;
+	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER';
+	attendanceStatus: MemberAttendanceStatus;
+}
 
-	const searchParams = customSearchParams.getAll();
-	const attendanceSearchParams = {
-		statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
-		teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
-		onlyMyTeam: searchParams.onlyMyTeam === 'true' ? true : undefined,
-		name: searchParams.name,
-	};
+interface AttendanceListProps {
+	data: AttendanceMember[];
+	targetRef: RefObject<HTMLDivElement | null>;
+}
 
-	const { data, fetchNextPage, hasNextPage, fetchStatus, isLoading } = useInfiniteQuery(
-		getAttendanceByMemberOptions(attendanceSearchParams),
-	);
-
-	const { targetRef } = useInfiniteScroll({
-		callback: fetchNextPage,
-		canObserve: hasNextPage,
-		enabled: fetchStatus !== 'fetching',
-	});
-
-	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];
-
+export const AttendanceList = ({ data, targetRef }: AttendanceListProps) => {
 	const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -46,12 +32,7 @@ export const AttendanceList = () => {
 		setIsDrawerOpen(true);
 	};
 
-	// 초기 로딩만 전체 LoadingBox 표시
-	if (isLoading && !data) {
-		return <LoadingBox />;
-	}
-
-	if (flatData.length === 0) {
+	if (data.length === 0) {
 		return (
 			<div className="md:flex md:min-h-[400px] md:items-center md:justify-center">
 				<EmptyView message="조건에 맞는 디퍼를 찾을 수 없어요" />
@@ -63,7 +44,7 @@ export const AttendanceList = () => {
 		<>
 			{/* Mobile view (< 768px) */}
 			<section className="relative mt-2 mb-15 flex-1 flex-col px-4 md:hidden">
-				{flatData.map((member) => {
+				{data.map((member) => {
 					return (
 						<Link
 							href={`/attendance/${member.id}`}
@@ -95,7 +76,7 @@ export const AttendanceList = () => {
 						<span className="font-medium text-body2 text-label-subtle">수료 상태</span>
 					</div>
 
-					{flatData.map((member) => {
+					{data.map((member) => {
 						return (
 							<button
 								key={member.id}
