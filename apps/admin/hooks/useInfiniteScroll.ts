@@ -8,11 +8,7 @@ interface UseInfiniteScrollOptions {
 	enabled: boolean;
 }
 
-export const useInfiniteScroll = ({
-	callback,
-	canObserve,
-	enabled,
-}: UseInfiniteScrollOptions) => {
+export const useInfiniteScroll = ({ callback, canObserve, enabled }: UseInfiniteScrollOptions) => {
 	const { targetRef } = useIntersect({
 		onIntersect: (entry, observer) => {
 			if (!canObserve) {

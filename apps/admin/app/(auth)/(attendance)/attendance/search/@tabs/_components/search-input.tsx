@@ -1,7 +1,7 @@
 'use client';
 
-import { cn, Input } from '@dpm-core/shared';
 import { SearchIcon } from 'lucide-react';
+import { cn, Input } from '@dpm-core/shared';
 
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { useDebounce } from '@/hooks/useDebounce';

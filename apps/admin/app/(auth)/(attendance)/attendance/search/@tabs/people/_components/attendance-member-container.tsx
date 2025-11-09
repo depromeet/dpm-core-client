@@ -1,7 +1,7 @@
 'use client';
 
-import { ErrorBoundary } from '@suspensive/react';
 import { Suspense } from 'react';
+import { ErrorBoundary } from '@suspensive/react';
 
 import { ErrorBox } from '@/components/error-box';
 

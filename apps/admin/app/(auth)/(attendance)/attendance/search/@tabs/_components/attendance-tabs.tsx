@@ -1,8 +1,8 @@
 'use client';
 
-import { cn, Tabs, TabsList, TabsTrigger } from '@dpm-core/shared';
 import Link from 'next/link';
 import { redirect, useSelectedLayoutSegment } from 'next/navigation';
+import { cn, Tabs, TabsList, TabsTrigger } from '@dpm-core/shared';
 
 import { SESSION_ID } from '../const/const';
 
