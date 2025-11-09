@@ -101,10 +101,18 @@ const AttendanceList = ({
 					{data.map((member) => {
 						const isChecked = selectedIds.has(member.id);
 						return (
-							<button
+							// biome-ignore lint/a11y/useSemanticElements: Checkbox가 버튼 컴포넌트임으로 nested button 이슈를 해결하기 위해 div role button을 사용
+							<div
 								key={member.id}
-								type="button"
+								role="button"
+								tabIndex={0}
 								onClick={() => handleDesktopRowClick(member.id)}
+								onKeyDown={(e) => {
+									if (e.key === 'Enter' || e.key === ' ') {
+										e.preventDefault();
+										handleDesktopRowClick(member.id);
+									}
+								}}
 								className="flex w-full cursor-pointer items-center justify-between border-gray-200 border-b py-5 pr-[136px] pl-5 text-left transition-colors hover:bg-gray-50"
 							>
 								<div className="flex items-center gap-4">
@@ -123,7 +131,7 @@ const AttendanceList = ({
 									/>
 								</div>
 								<AttendanceStatusLabel status={member.attendanceStatus} />
-							</button>
+							</div>
 						);
 					})}
 				</div>
