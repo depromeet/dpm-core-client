@@ -54,7 +54,7 @@ const CurrentWeekSessionContainer = () => {
 
 				{nextWeekSession && (
 					<SessionCard
-						className="hidden flex-1 md:block"
+						className="hidden flex-1 md:flex"
 						subtitle={`${nextWeekSession.week}주차 세션`}
 						title={nextWeekSession.eventName}
 						startTimeInfo={formatISOStringToFullDateString(nextWeekSession.date)}

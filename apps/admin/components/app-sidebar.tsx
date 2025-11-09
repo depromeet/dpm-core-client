@@ -137,7 +137,7 @@ const SideBarUserMenu = () => {
 			<SidebarMenuItem>
 				<DropdownMenu modal={false}>
 					<DropdownMenuTrigger asChild>
-						<SidebarMenuButton className="flex h-auto items-center">
+						<SidebarMenuButton className="flex h-auto cursor-pointer items-center">
 							<SideBarProfile part={user.cohort as Exclude<Part, 'ETC'>} name={user.name} />
 						</SidebarMenuButton>
 					</DropdownMenuTrigger>
@@ -154,7 +154,7 @@ const SideBarUserMenu = () => {
 							</div>
 							<div className="flex items-center gap-4">
 								<span className="w-[25px] shrink-0">기수</span>
-								<span className="font-medium text-label-subtle">{user.cohort}기</span>
+								<span className="font-medium text-body1 text-label-subtle">{user.cohort}기</span>
 							</div>
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator className="my-0" />
@@ -222,7 +222,7 @@ const LogoutAlert = () => {
 				<Button
 					size="none"
 					variant="none"
-					className="flex h-12 w-full justify-between rounded-lg px-1 text-body2 text-label-subtle hover:bg-background-subtle"
+					className="flex h-12 w-full justify-between rounded-lg px-1 font-medium text-body1 text-label-subtle hover:bg-background-subtle"
 				>
 					로그아웃
 					<ChevronRight className="text-icon-noraml" width={18} height={18} />
@@ -275,7 +275,7 @@ const WithdrawAlert = () => {
 				<Button
 					size="none"
 					variant="none"
-					className="flex h-12 w-full justify-between rounded-lg px-1 text-body2 text-label-subtle hover:bg-background-subtle"
+					className="flex h-12 w-full justify-between rounded-lg px-1 font-medium text-body1 text-label-subtle hover:bg-background-subtle"
 				>
 					탈퇴
 					<ChevronRight className="text-icon-noraml" width={18} height={18} />

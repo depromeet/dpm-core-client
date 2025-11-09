@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useMemo, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import { ChevronDown, ChevronRight, RotateCw } from 'lucide-react';
 import type { AttendanceStatus, Session } from '@dpm-core/api';
 import {
@@ -15,7 +16,6 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuTrigger,
 	FilterChip,
-	formatDotFullDate,
 	Label,
 	useIsMobile,
 } from '@dpm-core/shared';
@@ -44,7 +44,7 @@ export const HomeAttendance = () => {
 			<div className="flex justify-between">
 				<SearchInput
 					placeholder="디퍼 검색"
-					className="w-[270px] border border-line-normal bg-background-normal"
+					className="h-10 w-[270px] min-w-0 shrink-1 border border-line-normal bg-background-normal px-4 py-2.5 max-[800px]:w-[240px]"
 				/>
 				<AttendanceFilter />
 			</div>
@@ -123,9 +123,10 @@ export const AttendanceFilter = () => {
 
 	return (
 		<div className="flex">
-			<div
+			<Label
+				htmlFor="my-team"
 				className={cn(
-					'flex items-center gap-1.5 rounded-lg border px-4 py-2',
+					'flex h-10 cursor-pointer items-center gap-1.5 rounded-lg border border-line-normal px-4 py-2.5 font-medium text-body2 text-label-assistive transition',
 					customSearchParams.get('onlyMyTeam') === 'true'
 						? 'border-primary-normal'
 						: 'border-line-normal',
@@ -135,19 +136,17 @@ export const AttendanceFilter = () => {
 					id="my-team"
 					checked={customSearchParams.get('onlyMyTeam') === 'true' && true}
 					onCheckedChange={handleMyTeamToggle}
-					className="size-4 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
+					className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 				/>
-				<Label htmlFor="my-team" className="font-medium text-body2 text-label-assistive">
-					내 팀만 보기
-				</Label>
-			</div>
+				<span>내 팀만 보기</span>
+			</Label>
 			<DropdownMenu modal={false}>
 				<div>
 					<DropdownMenuTrigger asChild>
 						<Button
 							size="none"
 							className={cn(
-								'ml-2 gap-1 rounded-lg border border-line-normal bg-background-normal px-4 py-2.5 font-medium text-body2 text-label-assistive hover:bg-inherit',
+								'ml-2 h-10 gap-1 rounded-lg border border-line-normal bg-background-normal px-4 py-2.5 font-medium text-body2 text-label-assistive hover:bg-inherit',
 								attendanceFilterLabel !== '출석 상태별' &&
 									'border-primary-normal text-primary-normal',
 							)}
@@ -160,7 +159,7 @@ export const AttendanceFilter = () => {
 						<Button
 							size="none"
 							className={cn(
-								'ml-2 gap-1 rounded-lg border border-line-normal bg-background-normal px-4 py-2.5 font-medium text-body2 text-label-assistive hover:bg-inherit',
+								'ml-2 h-10 gap-1 rounded-lg border border-line-normal bg-background-normal px-4 py-2.5 font-medium text-body2 text-label-assistive hover:bg-inherit',
 								teamsFilterLabel !== '팀별' && 'border-primary-normal text-primary-normal',
 							)}
 						>
@@ -225,7 +224,7 @@ export const AttendanceFilter = () => {
 							<Button
 								variant="none"
 								size="none"
-								className="flex items-center rounded-lg bg-background-strong p-3.5"
+								className="flex cursor-pointer items-center rounded-lg bg-background-strong p-3.5"
 								onClick={() =>
 									customSearchParams.update(
 										{
@@ -242,7 +241,7 @@ export const AttendanceFilter = () => {
 
 						<DropdownMenuItem asChild>
 							<Button
-								className="flex-1 rounded-lg"
+								className="flex-1 cursor-pointer rounded-lg"
 								size="lg"
 								variant="secondary"
 								onClick={handleSelectFilter}
@@ -260,6 +259,10 @@ export const AttendanceFilter = () => {
 interface AttendanceHeaderProps {
 	session: Session;
 }
+
+const formatDate = (date: string) => {
+	return dayjs(date).format('YYYY.MM.DD');
+};
 
 const AttendanceHeader = (props: AttendanceHeaderProps) => {
 	const { session } = props;
@@ -279,7 +282,7 @@ const AttendanceHeader = (props: AttendanceHeaderProps) => {
 	return (
 		<div className="mb-4 flex items-center">
 			<h3 className="font-bold text-label-normal text-title1">
-				출석 {session.week}주차 ({formatDotFullDate(session.date)})
+				출석 {session.week}주차 ({formatDate(session.date)})
 			</h3>
 			<span className="ml-2 font-medium text-body1 text-primary-normal">
 				{data?.pages[0].data.totalElements}

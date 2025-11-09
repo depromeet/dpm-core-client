@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import type { Part } from '@dpm-core/api';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@dpm-core/shared';
@@ -19,8 +18,6 @@ import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 export const AttendanceList = ({ sessionId }: { sessionId: number }) => {
 	const customSearchParams = useCustomSearchParams();
 	const searchParams = customSearchParams.getAll();
-
-	const router = useRouter();
 
 	const attendanceSearchParams = {
 		week: sessionId,
@@ -42,8 +39,12 @@ export const AttendanceList = ({ sessionId }: { sessionId: number }) => {
 
 	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];
 
-	if (isLoading) {
-		return <LoadingBox />;
+	if (isLoading && fetchStatus === 'fetching') {
+		return (
+			<div className="mx-auto h-[212px] w-[375px]">
+				<LoadingBox />
+			</div>
+		);
 	}
 
 	if (flatData.length === 0) {
@@ -62,10 +63,7 @@ export const AttendanceList = ({ sessionId }: { sessionId: number }) => {
 				<TableBody>
 					{flatData.map((member) => {
 						return (
-							<TableRow
-								key={member.id}
-								onClick={() => router.push(`/attendance/${member.id}/${sessionId}`)}
-							>
+							<TableRow key={member.id}>
 								<TableCell>
 									<TableProfile
 										size={40}
