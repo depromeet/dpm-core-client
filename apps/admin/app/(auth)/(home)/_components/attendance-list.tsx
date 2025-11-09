@@ -39,7 +39,7 @@ export const AttendanceList = ({ sessionId }: { sessionId: number }) => {
 
 	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];
 
-	if (isLoading && fetchStatus === 'fetching') {
+	if (isLoading) {
 		return (
 			<div className="mx-auto h-[212px] w-[375px]">
 				<LoadingBox />
