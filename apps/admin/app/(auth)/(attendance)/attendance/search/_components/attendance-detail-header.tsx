@@ -1,4 +1,11 @@
-import { Button, ChevronLeft, SheetClose, SheetHeader, SheetTitle, XCircle } from '@dpm-core/shared';
+import {
+	Button,
+	ChevronLeft,
+	SheetClose,
+	SheetHeader,
+	SheetTitle,
+	XCircle,
+} from '@dpm-core/shared';
 
 interface AttendanceDetailHeaderProps {
 	title: string;
@@ -15,7 +22,9 @@ export const AttendanceDetailHeader = ({ title, onBack }: AttendanceDetailHeader
 					<Button variant="none" size="none" onClick={onBack} className="size-6">
 						<ChevronLeft className="size-6 text-icon-normal" />
 					</Button>
-					<SheetTitle className="font-semibold text-headline2 text-label-normal">{title}</SheetTitle>
+					<SheetTitle className="font-semibold text-headline2 text-label-normal">
+						{title}
+					</SheetTitle>
 				</div>
 			) : (
 				<SheetTitle className="font-semibold text-headline2 text-label-normal">{title}</SheetTitle>
