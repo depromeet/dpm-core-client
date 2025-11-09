@@ -25,6 +25,7 @@ import {
 	XCircle,
 } from '@dpm-core/shared';
 
+import { useAuth } from '@/providers/auth-provider';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { getAttendanceStatusLabel } from '@/lib/attendance/status';
 
@@ -39,11 +40,22 @@ const ATTENDANCE_FILTER = [
 const TEAM_FILTER = ['1', '2', '3', '4', '5', '6'];
 
 export const AttendanceFilter = () => {
+	const { user } = useAuth();
 	const customSearchParams = useCustomSearchParams();
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
 	const filterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
 	const teamsFilterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+	const handleMyTeamToggle = (checked: boolean) => {
+		customSearchParams.update(
+			{
+				onlyMyTeam: checked ? 'true' : '',
+				teams: checked && user?.teamNumber ? user.teamNumber.toString() : '',
+			},
+			'REPLACE',
+		);
+	};
 
 	const handleSelectFilter = () => {
 		const filterChipIds = filterChipRefs.current
@@ -203,9 +215,7 @@ export const AttendanceFilter = () => {
 					<Checkbox
 						id="my-team-mobile"
 						checked={customSearchParams.get('onlyMyTeam') === 'true' && true}
-						onCheckedChange={(checked) =>
-							customSearchParams.update({ onlyMyTeam: checked ? 'true' : '', teams: '' }, 'REPLACE')
-						}
+						onCheckedChange={handleMyTeamToggle}
 						className="size-4 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 					/>
 					<Label htmlFor="my-team-mobile" className="font-normal text-body2 text-label-assistive">
@@ -227,9 +237,7 @@ export const AttendanceFilter = () => {
 					<Checkbox
 						id="my-team-desktop"
 						checked={customSearchParams.get('onlyMyTeam') === 'true' && true}
-						onCheckedChange={(checked) =>
-							customSearchParams.update({ onlyMyTeam: checked ? 'true' : '', teams: '' }, 'REPLACE')
-						}
+						onCheckedChange={handleMyTeamToggle}
 						className="size-4 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 					/>
 					<Label

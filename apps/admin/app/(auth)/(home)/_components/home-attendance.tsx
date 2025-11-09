@@ -24,6 +24,7 @@ import { Section } from '@/components/section';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { getAttendanceStatusLabel } from '@/lib/attendance/status';
 import { getPreviousSession } from '@/lib/session/getPreviousSession';
+import { useAuth } from '@/providers/auth-provider';
 import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 
 import { SearchInput } from '../../(attendance)/attendance/search/@tabs/_components/search-input';
@@ -65,10 +66,21 @@ const ATTENDANCE_FILTER = [
 const TEAM_FILTER = Array.from({ length: 6 }, (_, i) => String(i + 1));
 
 export const AttendanceFilter = () => {
+	const { user } = useAuth();
 	const customSearchParams = useCustomSearchParams();
 
 	const filterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
 	const teamsFilterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+	const handleMyTeamToggle = (checked: boolean) => {
+		customSearchParams.update(
+			{
+				onlyMyTeam: checked ? 'true' : '',
+				teams: checked && user?.teamNumber ? user.teamNumber.toString() : '',
+			},
+			'REPLACE',
+		);
+	};
 
 	const handleSelectFilter = () => {
 		const filterChipIds = filterChipRefs.current
@@ -125,9 +137,7 @@ export const AttendanceFilter = () => {
 				<Checkbox
 					id="my-team"
 					checked={customSearchParams.get('onlyMyTeam') === 'true' && true}
-					onCheckedChange={(checked) =>
-						customSearchParams.update({ onlyMyTeam: checked ? 'true' : '', teams: '' }, 'REPLACE')
-					}
+					onCheckedChange={handleMyTeamToggle}
 					className="size-4 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 				/>
 				<Label htmlFor="my-team" className="font-medium text-body2 text-label-assistive">
