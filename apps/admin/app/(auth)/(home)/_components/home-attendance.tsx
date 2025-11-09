@@ -24,7 +24,6 @@ import { Section } from '@/components/section';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { getAttendanceStatusLabel } from '@/lib/attendance/status';
 import { getPreviousSession } from '@/lib/session/getPreviousSession';
-import { useAuth } from '@/providers/auth-provider';
 import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 
 import { SearchInput } from '../../(attendance)/attendance/search/@tabs/_components/search-input';
@@ -66,7 +65,6 @@ const ATTENDANCE_FILTER = [
 const TEAM_FILTER = Array.from({ length: 6 }, (_, i) => String(i + 1));
 
 export const AttendanceFilter = () => {
-	const { user } = useAuth();
 	const customSearchParams = useCustomSearchParams();
 
 	const filterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -76,7 +74,6 @@ export const AttendanceFilter = () => {
 		customSearchParams.update(
 			{
 				onlyMyTeam: checked ? 'true' : '',
-				teams: checked && user?.teamNumber ? user.teamNumber.toString() : '',
 			},
 			'REPLACE',
 		);

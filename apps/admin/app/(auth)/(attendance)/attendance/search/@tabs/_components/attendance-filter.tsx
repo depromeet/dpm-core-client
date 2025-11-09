@@ -25,7 +25,6 @@ import {
 	XCircle,
 } from '@dpm-core/shared';
 
-import { useAuth } from '@/providers/auth-provider';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { getAttendanceStatusLabel } from '@/lib/attendance/status';
 
@@ -40,7 +39,6 @@ const ATTENDANCE_FILTER = [
 const TEAM_FILTER = ['1', '2', '3', '4', '5', '6'];
 
 export const AttendanceFilter = () => {
-	const { user } = useAuth();
 	const customSearchParams = useCustomSearchParams();
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -51,7 +49,6 @@ export const AttendanceFilter = () => {
 		customSearchParams.update(
 			{
 				onlyMyTeam: checked ? 'true' : '',
-				teams: checked && user?.teamNumber ? user.teamNumber.toString() : '',
 			},
 			'REPLACE',
 		);

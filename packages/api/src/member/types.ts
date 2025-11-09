@@ -10,7 +10,6 @@ export interface Member {
 	cohort: string;
 
 	part: Part;
-	teamNumber: number;
 
 	isAdmin: boolean;
 }
