@@ -109,7 +109,7 @@ const AttendanceSessionContainer = () => {
 			</div>
 
 			{/* Desktop view (>= 768px) */}
-			<div className="hidden md:block">
+			<div className="hidden md:mx-auto md:block md:max-w-[1200px]">
 				<section className="border-gray-200 border-b bg-white px-10 py-4">
 					<WeekFilter weeks={data.sessions} />
 				</section>
