@@ -136,7 +136,7 @@ const AttendanceSessionContainer = () => {
 										variant="none"
 										size="none"
 										onClick={handleModifyAttendance}
-										className="rounded-lg bg-background-inverse px-4 py-3 font-semibold text-body2 text-label-inverse"
+										className="rounded-lg border-none bg-background-inverse px-4 py-2.5 font-semibold text-body2 text-label-inverse"
 									>
 										출석 정보 수정
 									</Button>
