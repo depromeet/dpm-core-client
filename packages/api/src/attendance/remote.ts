@@ -137,4 +137,16 @@ export const attendance = {
 			json,
 		});
 	},
+
+	// 출석 상태 일괄 갱신
+	modifyBulkAttendanceStatus: async (params: {
+		sessionId: number;
+		attendanceStatus: AttendanceStatus;
+		memberIds: number[];
+	}) => {
+		const { sessionId, ...json } = params;
+		return await http.patch(`v1/sessions/${sessionId}/attendances/bulk`, {
+			json,
+		});
+	},
 };
