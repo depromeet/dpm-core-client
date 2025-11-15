@@ -109,7 +109,7 @@ const AttendanceSessionContainer = () => {
 			</div>
 
 			{/* Desktop view (>= 768px) */}
-			<div className="hidden md:block">
+			<div className="hidden md:mx-auto md:block md:max-w-[1200px]">
 				<section className="border-gray-200 border-b bg-white px-10 py-4">
 					<WeekFilter weeks={data.sessions} />
 				</section>
@@ -136,7 +136,7 @@ const AttendanceSessionContainer = () => {
 										variant="none"
 										size="none"
 										onClick={handleModifyAttendance}
-										className="rounded-lg bg-background-inverse px-4 py-3 font-semibold text-body2 text-label-inverse"
+										className="rounded-lg border-none bg-background-inverse px-4 py-2.5 font-semibold text-body2 text-label-inverse"
 									>
 										출석 정보 수정
 									</Button>

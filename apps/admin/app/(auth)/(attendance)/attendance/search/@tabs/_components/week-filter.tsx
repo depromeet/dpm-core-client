@@ -40,7 +40,7 @@ export const WeekFilter = (props: WeekFilterProps) => {
 							'border-gray-200',
 							'transition duration-150 ease-out',
 							'data-[state=on]:border-transparent data-[state=on]:bg-gray-900 data-[state=on]:text-white',
-							'data-[state=off]:bg-white data-[state=off]:text-gray-500',
+							'data-[state=off]:bg-white data-[state=off]:text-label-assistive',
 						)}
 					>
 						{week.week}주차

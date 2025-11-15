@@ -41,7 +41,7 @@ export const AttendanceTabs = () => {
 			{/* Desktop view (>= 768px) */}
 			<nav
 				className={cn(
-					'hidden h-20 items-center gap-5 bg-white px-10 md:flex',
+					'hidden h-20 items-center gap-5 bg-white px-10 md:mx-auto md:flex md:max-w-[1200px]',
 					tab === 'people' && 'border-line-normal border-b',
 				)}
 			>

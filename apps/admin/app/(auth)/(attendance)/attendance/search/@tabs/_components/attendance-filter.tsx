@@ -191,7 +191,7 @@ export const AttendanceFilter = () => {
 										)
 									}
 								>
-									<RotateCw className="size-5 text-icon-normal" />
+									<RotateCw className="size-5 text-gray-400" />
 								</Button>
 							</DrawerClose>
 							<DrawerClose asChild>
@@ -344,7 +344,7 @@ export const AttendanceFilter = () => {
 										)
 									}
 								>
-									<RotateCw className="size-5 text-icon-normal" />
+									<RotateCw className="size-5 text-gray-400" />
 								</Button>
 							</DropdownMenuItem>
 
