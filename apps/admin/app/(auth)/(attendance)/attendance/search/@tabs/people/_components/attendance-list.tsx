@@ -71,7 +71,7 @@ export const AttendanceList = ({ data, targetRef }: AttendanceListProps) => {
 			{/* Desktop view (>= 768px) */}
 			<section className="relative mx-10 mb-15 hidden md:block">
 				<div className="overflow-auto">
-					<div className="flex items-center justify-between border-gray-200 border-b bg-gray-50 py-2.5 pr-[136px] pl-5">
+					<div className="flex items-center justify-between bg-gray-50 py-2.5 pr-[136px] pl-5">
 						<span className="font-medium text-body2 text-label-subtle">멤버 정보</span>
 						<span className="font-medium text-body2 text-label-subtle">수료 상태</span>
 					</div>

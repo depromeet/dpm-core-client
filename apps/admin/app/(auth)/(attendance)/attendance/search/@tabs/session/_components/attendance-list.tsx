@@ -85,7 +85,7 @@ const AttendanceList = ({
 			{/* Desktop view (>= 768px) */}
 			<section className="relative mx-10 mb-15 hidden md:block">
 				<div className="overflow-auto">
-					<div className="flex items-center justify-between border-gray-200 border-b bg-gray-50 py-2.5 pr-[136px] pl-5">
+					<div className="flex items-center justify-between bg-gray-50 py-2.5 pr-[136px] pl-5">
 						<div className="flex items-center gap-4">
 							<Checkbox
 								checked={isAllSelected}
