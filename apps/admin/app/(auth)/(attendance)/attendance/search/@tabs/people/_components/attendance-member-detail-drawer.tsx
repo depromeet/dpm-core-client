@@ -233,7 +233,7 @@ export const AttendanceMemberDetailDrawer = ({
 				}
 			}}
 		>
-			<SheetContent side="right" className="w-full p-0 sm:max-w-[600px]">
+			<SheetContent side="right" className="w-full border-none p-0 sm:max-w-[600px]">
 				{viewMode === 'member' ? (
 					<>
 						<SheetHeader className="flex-row items-center justify-between border-gray-200 border-b px-10 py-6">
