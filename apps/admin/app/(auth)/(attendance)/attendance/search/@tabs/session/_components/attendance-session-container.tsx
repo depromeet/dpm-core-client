@@ -60,6 +60,7 @@ const AttendanceSessionContainer = () => {
 	});
 
 	const flatData = attendanceData?.pages.flatMap((page) => page.data.members) ?? [];
+	const totalElements = attendanceData?.pages[0]?.data.totalElements ?? 0;
 
 	const { selectedIds, toggleItem, toggleAll, isAllSelected, clearSelection } =
 		useCheckboxSelection(flatData);
@@ -89,8 +90,6 @@ const AttendanceSessionContainer = () => {
 	if (isLoading && !attendanceData) {
 		return <LoadingBox />;
 	}
-
-	console.log(attendanceData);
 
 	return (
 		<>
@@ -123,7 +122,7 @@ const AttendanceSessionContainer = () => {
 							출석 {selectedSession?.week}주차 (
 							{selectedSession?.date ? formatISOStringToDate(selectedSession.date) : '-'})
 						</h2>
-						<span className="font-medium text-body1 text-primary-normal">데이터 필요</span>
+						<span className="font-medium text-body1 text-primary-normal">{totalElements}명</span>
 					</div>
 
 					<div className="flex items-center justify-between">
