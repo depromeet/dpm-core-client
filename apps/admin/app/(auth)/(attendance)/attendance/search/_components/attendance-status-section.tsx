@@ -35,7 +35,7 @@ export const AttendanceStatusSection = ({
 			<div className="mb-3 flex items-center justify-between">
 				<h3 className="font-semibold text-body1 text-label-normal">출석 정보</h3>
 				{updatedAt && (
-					<p className="font-medium text-body2 text-label-subtle">
+					<p className="font-medium text-label-subtle text-xs">
 						{formatISOStringToFullDateString(updatedAt)} 저장됨
 					</p>
 				)}
