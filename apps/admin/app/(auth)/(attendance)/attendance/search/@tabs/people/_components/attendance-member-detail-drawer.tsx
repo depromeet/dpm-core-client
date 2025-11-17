@@ -188,6 +188,7 @@ const _AttendanceSessionDetailView = ({
 				selectedStatus={selectedStatus}
 				originalStatus={data.attendance.status}
 				attendedAt={data.attendance.attendedAt}
+				updatedAt={data.attendance.updatedAt}
 				onStatusChange={setSelectedStatus}
 				onSave={handleSave}
 				onCancel={handleCancel}
@@ -248,7 +249,7 @@ export const AttendanceMemberDetailDrawer = ({
 						</SheetHeader>
 						<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
 							<Suspense fallback={<LoadingBox />}>
-								<div className="flex-1 overflow-y-auto px-6 py-6">
+								<div className="flex-1 overflow-y-auto px-10 py-6">
 									<section className="mb-10">
 										<_AttendanceMemberHeader memberId={memberId} />
 										<_AttendanceMemberDetailContent memberId={memberId} />

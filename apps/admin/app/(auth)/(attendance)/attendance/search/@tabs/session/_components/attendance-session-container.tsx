@@ -11,6 +11,7 @@ import { LoadingBox } from '@/components/loading-box';
 import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { formatISOStringToDate } from '@/lib/date';
 import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 import { getSessionWeeks } from '@/remotes/queries/session';
 
@@ -59,6 +60,7 @@ const AttendanceSessionContainer = () => {
 	});
 
 	const flatData = attendanceData?.pages.flatMap((page) => page.data.members) ?? [];
+	const totalElements = attendanceData?.pages[0]?.data.totalElements ?? 0;
 
 	const { selectedIds, toggleItem, toggleAll, isAllSelected, clearSelection } =
 		useCheckboxSelection(flatData);
@@ -117,9 +119,10 @@ const AttendanceSessionContainer = () => {
 				<section className="bg-white px-10 py-6">
 					<div className="mb-4 flex items-center gap-2">
 						<h2 className="font-bold text-label-normal text-title1 tracking-[-0.2px]">
-							출석 {selectedSession?.week}주차 (데이터 필요)
+							출석 {selectedSession?.week}주차 (
+							{selectedSession?.date ? formatISOStringToDate(selectedSession.date) : '-'})
 						</h2>
-						<span className="font-medium text-body1 text-primary-normal">데이터 필요</span>
+						<span className="font-medium text-body1 text-primary-normal">{totalElements}명</span>
 					</div>
 
 					<div className="flex items-center justify-between">

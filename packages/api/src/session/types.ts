@@ -112,5 +112,6 @@ export interface SessionWeeksReponse {
 	sessions: {
 		id: number;
 		week: number;
+		date: string;
 	}[];
 }

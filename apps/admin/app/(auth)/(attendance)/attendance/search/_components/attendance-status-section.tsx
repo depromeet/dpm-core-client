@@ -10,6 +10,7 @@ interface AttendanceStatusSectionProps {
 	selectedStatus: AttendanceStatus;
 	originalStatus: AttendanceStatus;
 	attendedAt: string;
+	updatedAt: string;
 	onStatusChange: (status: AttendanceStatus) => void;
 	onSave: () => void;
 	onCancel: () => void;
@@ -22,6 +23,7 @@ export const AttendanceStatusSection = ({
 	selectedStatus,
 	originalStatus,
 	attendedAt,
+	updatedAt,
 	onStatusChange,
 	onSave,
 	onCancel,
@@ -30,7 +32,14 @@ export const AttendanceStatusSection = ({
 }: AttendanceStatusSectionProps) => {
 	return (
 		<section className="mb-6">
-			<h3 className="mb-3 font-semibold text-body1 text-label-normal">출석 정보</h3>
+			<div className="mb-3 flex items-center justify-between">
+				<h3 className="font-semibold text-body1 text-label-normal">출석 정보</h3>
+				{updatedAt && (
+					<p className="font-medium text-label-subtle text-xs">
+						{formatISOStringToFullDateString(updatedAt)} 저장됨
+					</p>
+				)}
+			</div>
 			{isEditMode ? (
 				<>
 					<RadioGroup.Root
