@@ -53,6 +53,7 @@ const _AttendanceSessionDetailContent = ({
 				selectedStatus={selectedStatus}
 				originalStatus={data.attendance.status}
 				attendedAt={data.attendance.attendedAt}
+				updatedAt={data.attendance.updatedAt}
 				onStatusChange={setSelectedStatus}
 				onSave={handleSave}
 				onCancel={handleCancel}

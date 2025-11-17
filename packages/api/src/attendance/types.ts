@@ -41,7 +41,7 @@ export interface AttendanceReponse {
 
 export interface AttendanceBySessionIdReponse {
 	member: AttendanceMember;
-	attendance: { status: AttendanceStatus; attendedAt: string };
+	attendance: { status: AttendanceStatus; attendedAt: string; updatedAt: string };
 	session: AttendanceSession;
 }
 
