@@ -72,7 +72,7 @@ const AttendanceSessionContainer = () => {
 	}, [attendanceSearchParams.week, clearSelection]);
 
 	const selectedMembers = useMemo(
-		() => flatData.filter((member) => selectedIds.has(member.id)),
+		() => flatData.filter((member) => selectedIds.includes(member.id)),
 		[flatData, selectedIds],
 	);
 
@@ -130,10 +130,10 @@ const AttendanceSessionContainer = () => {
 							<SearchInput placeholder="디퍼 검색" />
 						</div>
 						<div className="flex items-center gap-[30px]">
-							{selectedIds.size > 0 && (
+							{selectedIds.length > 0 && (
 								<div className="flex items-center gap-3">
 									<p className="font-medium text-body1 text-primary-normal">
-										{selectedIds.size}개 선택됨
+										{selectedIds.length}개 선택됨
 									</p>
 									<Button
 										variant="none"

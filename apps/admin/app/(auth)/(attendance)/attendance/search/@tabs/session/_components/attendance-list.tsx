@@ -22,7 +22,7 @@ interface AttendanceMember {
 interface AttendanceListProps {
 	data: AttendanceMember[];
 	targetRef: RefObject<HTMLDivElement | null>;
-	selectedIds: Set<number>;
+	selectedIds: number[];
 	onToggleItem: (id: number) => void;
 	onToggleAll: () => void;
 	isAllSelected: boolean;
@@ -49,6 +49,8 @@ const AttendanceList = ({
 		setSelectedMember({ memberId, sessionId: Number(searchParams.week) });
 		setIsDrawerOpen(true);
 	};
+
+	console.log(data.length);
 
 	if (data.length === 0) {
 		return (
@@ -99,7 +101,7 @@ const AttendanceList = ({
 					</div>
 
 					{data.map((member, index) => {
-						const isChecked = selectedIds.has(member.id);
+						const isChecked = selectedIds.includes(member.id);
 						return (
 							// biome-ignore lint/a11y/useSemanticElements: Checkbox가 버튼 컴포넌트임으로 nested button 이슈를 해결하기 위해 div role button을 사용
 							<div
