@@ -50,8 +50,6 @@ const AttendanceList = ({
 		setIsDrawerOpen(true);
 	};
 
-	console.log(data.length);
-
 	if (data.length === 0) {
 		return (
 			<div className="md:flex md:min-h-[400px] md:items-center md:justify-center">
