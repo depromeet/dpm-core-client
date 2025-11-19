@@ -22,7 +22,7 @@ interface AttendanceMember {
 interface AttendanceListProps {
 	data: AttendanceMember[];
 	targetRef: RefObject<HTMLDivElement | null>;
-	selectedIds: Set<number>;
+	selectedIds: number[];
 	onToggleItem: (id: number) => void;
 	onToggleAll: () => void;
 	isAllSelected: boolean;
@@ -62,12 +62,12 @@ const AttendanceList = ({
 		<>
 			{/* Mobile view (< 768px) */}
 			<section className="relative mt-2 mb-15 flex-1 flex-col px-4 md:hidden">
-				{data.map((member) => {
+				{data.map((member, index) => {
 					return (
 						<Link
 							href={`/attendance/${member.id}/${searchParams.week}`}
 							className="flex justify-between py-3"
-							key={member.id}
+							key={`${member.id}-${index}`}
 						>
 							<Profile
 								size={40}
@@ -98,12 +98,12 @@ const AttendanceList = ({
 						<span className="font-medium text-body2 text-label-subtle">출석 상태</span>
 					</div>
 
-					{data.map((member) => {
-						const isChecked = selectedIds.has(member.id);
+					{data.map((member, index) => {
+						const isChecked = selectedIds.includes(member.id);
 						return (
 							// biome-ignore lint/a11y/useSemanticElements: Checkbox가 버튼 컴포넌트임으로 nested button 이슈를 해결하기 위해 div role button을 사용
 							<div
-								key={member.id}
+								key={`${member.id}-${index}`}
 								role="button"
 								tabIndex={0}
 								onClick={() => handleDesktopRowClick(member.id)}

@@ -39,6 +39,7 @@ const AttendanceMemberContainer = () => {
 	});
 
 	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];
+	const totalElements = data?.pages[0]?.data.totalElements ?? 0;
 
 	// 초기 로딩만 전체 LoadingBox 표시
 	if (isLoading && !data) {
@@ -63,7 +64,7 @@ const AttendanceMemberContainer = () => {
 						<h2 className="font-bold text-label-normal text-title1 tracking-[-0.2px]">
 							사람별 출석
 						</h2>
-						<span className="font-medium text-body1 text-primary-normal">데이터 필요</span>
+						<span className="font-medium text-body1 text-primary-normal">{totalElements}명</span>
 					</div>
 
 					<div className="flex items-center justify-between">

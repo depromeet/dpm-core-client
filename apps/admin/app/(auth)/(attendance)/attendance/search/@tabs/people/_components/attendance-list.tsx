@@ -44,12 +44,12 @@ export const AttendanceList = ({ data, targetRef }: AttendanceListProps) => {
 		<>
 			{/* Mobile view (< 768px) */}
 			<section className="relative mt-2 mb-15 flex-1 flex-col px-4 md:hidden">
-				{data.map((member) => {
+				{data.map((member, index) => {
 					return (
 						<Link
 							href={`/attendance/${member.id}`}
 							className="flex items-center justify-between py-3"
-							key={member.id}
+							key={`${member.id}-${index}`}
 						>
 							<Profile
 								size={40}
@@ -76,10 +76,10 @@ export const AttendanceList = ({ data, targetRef }: AttendanceListProps) => {
 						<span className="font-medium text-body2 text-label-subtle">수료 상태</span>
 					</div>
 
-					{data.map((member) => {
+					{data.map((member, index) => {
 						return (
 							<button
-								key={member.id}
+								key={`${member.id}-${index}`}
 								type="button"
 								onClick={() => handleDesktopRowClick(member.id)}
 								className="flex w-full cursor-pointer items-center justify-between border-gray-200 border-b py-5 pr-[136px] pl-5 text-left transition-colors hover:bg-gray-50"

@@ -122,8 +122,8 @@ const _AttendanceMemberSessions = ({
 	return (
 		<section>
 			<div className="flex flex-col">
-				{data.sessions.map((session) => (
-					<SessionItem key={session.id} {...session} onClick={() => onSessionClick(session.id)} />
+				{data.sessions.map((session, index) => (
+					<SessionItem key={`${session.id}-${index}`} {...session} onClick={() => onSessionClick(session.id)} />
 				))}
 			</div>
 		</section>

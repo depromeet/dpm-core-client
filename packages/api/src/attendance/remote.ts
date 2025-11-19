@@ -41,8 +41,9 @@ export const attendance = {
 		name?: string;
 		onlyMyTeam?: boolean;
 		cursorId: number;
+		size?: number;
 	}) => {
-		const { week, statuses, teams, name, onlyMyTeam, cursorId } = params;
+		const { week, statuses, teams, name, onlyMyTeam, cursorId, size } = params;
 		const searchParams = new URLSearchParams();
 
 		if (statuses && statuses.length > 0) {
@@ -66,6 +67,10 @@ export const attendance = {
 		}
 
 		searchParams.set('cursorId', cursorId.toString());
+
+		if (size) {
+			searchParams.set('size', size.toString());
+		}
 
 		const res = await http.get<AttendanceBySessionReponse>(`v1/sessions/${week}/attendances`, {
 			searchParams,
