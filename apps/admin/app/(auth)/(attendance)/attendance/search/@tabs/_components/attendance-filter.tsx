@@ -227,7 +227,10 @@ export const AttendanceFilter = () => {
 						onCheckedChange={handleMyTeamToggle}
 						className="size-4 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 					/>
-					<Label htmlFor="my-team-mobile" className="font-normal text-body2 text-label-assistive">
+					<Label
+						htmlFor="my-team-mobile"
+						className="cursor-pointer font-normal text-body2 text-label-assistive"
+					>
 						내 팀만 보기
 					</Label>
 				</div>
@@ -237,9 +240,10 @@ export const AttendanceFilter = () => {
 			<div className="hidden items-center gap-2 md:flex">
 				<div
 					className={cn(
-						'flex items-center gap-1.5 rounded-lg border bg-white px-4 py-[9px]',
+						'flex cursor-pointer items-center gap-1.5 rounded-lg border bg-white px-4 py-[9px]',
 						isMyTeamOnly ? 'border-primary-normal' : 'border-line-subtle',
 					)}
+					onClick={() => handleMyTeamToggle(!isMyTeamOnly)}
 				>
 					<Checkbox
 						id="my-team-desktop"
