@@ -24,6 +24,7 @@ import { Section } from '@/components/section';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { getAttendanceStatusLabel } from '@/lib/attendance/status';
 import { getPreviousSession } from '@/lib/session/getPreviousSession';
+import { useAuth } from '@/providers/auth-provider';
 import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 
 import { SearchInput } from '../../(attendance)/attendance/search/@tabs/_components/search-input';
@@ -66,17 +67,32 @@ const TEAM_FILTER = Array.from({ length: 6 }, (_, i) => String(i + 1));
 
 export const AttendanceFilter = () => {
 	const customSearchParams = useCustomSearchParams();
+	const { user } = useAuth();
 
 	const filterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
 	const teamsFilterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
+	const myTeamNumber = user?.teamNumber?.toString() ?? '';
+	const selectedTeams = customSearchParams.get('teams')?.split(',').filter(Boolean) ?? [];
+
+	const isMyTeamOnly = selectedTeams.length === 1 && selectedTeams[0] === myTeamNumber;
+
 	const handleMyTeamToggle = (checked: boolean) => {
-		customSearchParams.update(
-			{
-				onlyMyTeam: checked ? 'true' : '',
-			},
-			'REPLACE',
-		);
+		if (checked) {
+			customSearchParams.update(
+				{
+					teams: myTeamNumber,
+				},
+				'REPLACE',
+			);
+		} else {
+			customSearchParams.update(
+				{
+					teams: '',
+				},
+				'REPLACE',
+			);
+		}
 	};
 
 	const handleSelectFilter = () => {
@@ -88,15 +104,10 @@ export const AttendanceFilter = () => {
 			.filter((chip) => chip?.ariaChecked === 'true')
 			.map((chip) => chip?.id);
 
-		const hasSelectedTeams = teamFilterChipIds.length > 0;
-		const existingOnlyMyTeam = customSearchParams.get('onlyMyTeam');
-		const onlyMyTeamParams = hasSelectedTeams ? '' : (existingOnlyMyTeam ?? '');
-
 		customSearchParams.update(
 			{
 				statuses: filterChipIds.toString(),
 				teams: teamFilterChipIds.toString(),
-				onlyMyTeam: onlyMyTeamParams,
 			},
 			'REPLACE',
 		);
@@ -112,8 +123,6 @@ export const AttendanceFilter = () => {
 		return `${getAttendanceStatusLabel(selectedAttendanceStatuses[0] as AttendanceStatus)} 외 ${selectedAttendanceStatuses.length - 1}`;
 	}, [selectedAttendanceStatuses]);
 
-	const selectedTeams = customSearchParams.get('teams')?.split(',').filter(Boolean) ?? [];
-
 	const teamsFilterLabel = useMemo(() => {
 		if (selectedTeams.length === 0) return '팀별';
 
@@ -127,14 +136,12 @@ export const AttendanceFilter = () => {
 				htmlFor="my-team"
 				className={cn(
 					'flex h-10 cursor-pointer items-center gap-1.5 rounded-lg border border-line-normal px-4 py-2.5 font-medium text-body2 text-label-assistive transition',
-					customSearchParams.get('onlyMyTeam') === 'true'
-						? 'border-primary-normal'
-						: 'border-line-normal',
+					isMyTeamOnly ? 'border-primary-normal' : 'border-line-normal',
 				)}
 			>
 				<Checkbox
 					id="my-team"
-					checked={customSearchParams.get('onlyMyTeam') === 'true' && true}
+					checked={isMyTeamOnly}
 					onCheckedChange={handleMyTeamToggle}
 					className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 				/>
@@ -152,7 +159,7 @@ export const AttendanceFilter = () => {
 							)}
 						>
 							{attendanceFilterLabel}
-							<ChevronDown />
+							<ChevronDown className="size-3" />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuTrigger asChild>
@@ -164,7 +171,7 @@ export const AttendanceFilter = () => {
 							)}
 						>
 							{teamsFilterLabel}
-							<ChevronDown />
+							<ChevronDown className="size-3" />
 						</Button>
 					</DropdownMenuTrigger>
 				</div>
