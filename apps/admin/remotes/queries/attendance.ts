@@ -7,7 +7,6 @@ interface getAttendanceBySessionOptionsParams {
 	week: number;
 	statuses?: string[];
 	teams?: number[];
-	onlyMyTeam?: boolean;
 	name?: string;
 }
 
