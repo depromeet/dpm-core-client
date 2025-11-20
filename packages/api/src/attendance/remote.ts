@@ -39,11 +39,10 @@ export const attendance = {
 		statuses?: string[];
 		teams?: number[];
 		name?: string;
-		onlyMyTeam?: boolean;
 		cursorId: number;
 		size?: number;
 	}) => {
-		const { week, statuses, teams, name, onlyMyTeam, cursorId, size } = params;
+		const { week, statuses, teams, name, cursorId, size } = params;
 		const searchParams = new URLSearchParams();
 
 		if (statuses && statuses.length > 0) {
@@ -60,10 +59,6 @@ export const attendance = {
 
 		if (name) {
 			searchParams.set('name', name);
-		}
-
-		if (onlyMyTeam) {
-			searchParams.set('onlyMyTeam', onlyMyTeam.toString());
 		}
 
 		searchParams.set('cursorId', cursorId.toString());
@@ -83,10 +78,9 @@ export const attendance = {
 		statuses?: string[];
 		teams?: number[];
 		name?: string;
-		onlyMyTeam?: boolean;
 		cursorId: number;
 	}) => {
-		const { statuses, teams, name, onlyMyTeam, cursorId } = params;
+		const { statuses, teams, name, cursorId } = params;
 		const searchParams = new URLSearchParams();
 
 		if (statuses && statuses.length > 0) {
@@ -103,10 +97,6 @@ export const attendance = {
 
 		if (name) {
 			searchParams.set('name', name);
-		}
-
-		if (onlyMyTeam) {
-			searchParams.set('onlyMyTeam', onlyMyTeam.toString());
 		}
 
 		searchParams.set('cursorId', cursorId.toString());
