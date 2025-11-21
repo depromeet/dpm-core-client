@@ -39,15 +39,12 @@ const SessionBannerContainer = () => {
 			{showAttendanceCodeBanner(currentWeekSession.date) && (
 				<AttendanceCodeBanner
 					week={currentWeekSession.week}
-					sessionId={currentWeekSession.sessionId}
+					sessionId={currentWeekSession.id}
 					attendanceCode={currentWeekSession.attendanceCode}
 				/>
 			)}
 			{showAttendanceBanner(currentWeekSession.date) && (
-				<CurrentSessionBanner
-					week={currentWeekSession.week}
-					sessionId={currentWeekSession.sessionId}
-				/>
+				<CurrentSessionBanner week={currentWeekSession.week} sessionId={currentWeekSession.id} />
 			)}
 		</motion.section>
 	);

@@ -1,9 +1,17 @@
 import { http } from '../http';
-import type { CurrentWeekSession, Session, SessionDetail, SessionWeeksReponse } from './types';
+import type { Session, SessionAttendanceCode, SessionAttendanceStatusTime } from './types';
 
 type SessionListResponse = {
 	sessions: Session[];
 };
+
+type CurrentWeekSessionResponse = Session & SessionAttendanceCode;
+
+type SessionWeeksResponse = {
+	sessions: Pick<Session, 'id' | 'week' | 'date'>[];
+};
+
+type SessionDetailResponse = Session & SessionAttendanceCode & SessionAttendanceStatusTime;
 
 export const session = {
 	/**
@@ -29,7 +37,7 @@ export const session = {
 	 * @returns 세션 상세
 	 */
 	getSessionById: async (sessionId: number) => {
-		const res = await http.get<SessionDetail>(`v1/sessions/${sessionId}`);
+		const res = await http.get<SessionDetailResponse>(`v1/sessions/${sessionId}`);
 		return res;
 	},
 
@@ -40,7 +48,7 @@ export const session = {
 	 * @returns 이번주 세션 정보
 	 */
 	getCurrentWeekSession: async () => {
-		const res = await http.get<CurrentWeekSession | null>('v1/sessions/next');
+		const res = await http.get<CurrentWeekSessionResponse | null>('v1/sessions/next');
 		return res;
 	},
 
@@ -60,14 +68,61 @@ export const session = {
 	 * @returns 세션 출석 시작 시간
 	 */
 	getSessionAttendanceTime: async (sessionId: number) => {
-		const res = await http.get<Pick<SessionDetail, 'attendanceStartTime'>>(
+		const res = await http.get<{ attendanceStartTime: string }>(
 			`v1/sessions/${sessionId}/attendance-time`,
 		);
 		return res;
 	},
 
 	getSessionWeeks: async () => {
-		const res = await http.get<SessionWeeksReponse>(`v1/sessions/weeks`);
+		const res = await http.get<SessionWeeksResponse>(`v1/sessions/weeks`);
 		return res;
+	},
+
+	/**
+	 * 세션 추가
+	 * 세션 추가하는 API 입니다.
+	 * @param sessionId 세션 아이디
+	 * @returns 세션 상세
+	 */
+
+	// TODO: 서버에서 데이터 타입 수정 후 타입 공통화
+	createSession: async (params: {
+		name: string;
+		date: string;
+		isOnline: boolean;
+		place: string;
+		week: number;
+		attendanceStart: string;
+		lateStart: string;
+		absentStart: string;
+	}) => {
+		return await http.post(`v1/sessions`, { json: params });
+	},
+
+	modifySession: async (params: {
+		sessionId: number;
+		name: string;
+		date: string;
+		isOnline: boolean;
+		place: string;
+		week: number;
+		attendanceStart: string;
+		lateStart: string;
+		absentStart: string;
+	}) => {
+		return await http.patch(`v1/sessions`, {
+			json: params,
+		});
+	},
+
+	deleteSession: async (params: { sessionId: number }) => {
+		const { sessionId } = params;
+		return await http.patch(`v1/sessions/${sessionId}/delete`);
+	},
+
+	getSessionModifyPolicy: async (params: { sessionId: number } & SessionAttendanceStatusTime) => {
+		const { sessionId, ...searchParams } = params;
+		return await http.get(`v1/sessions/${sessionId}/update-policy`, { searchParams });
 	},
 };

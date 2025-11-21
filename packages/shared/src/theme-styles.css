@@ -2,6 +2,7 @@
 
 @theme inline {
 	--color-neutral-5: #f6f9fa;
+	--color-neutral-60: #5a5c63;
 	/* Blue Colors */
 	--color-blue-50: #eff3ff;
 	--color-blue-100: #dae2ff;
@@ -75,6 +76,7 @@
 	--color-label-subtle: var(--color-gray-600);
 	--color-label-normal: var(--color-gray-800);
 	--color-label-strong: var(--color-gray-900);
+	--color-label-alternative: var(--color-neutral-60);
 	--color-icon-primary: #160042;
 	--color-icon-noraml: var(--color-gray-400);
 	--color-icon-strong: var(--color-gray-500);

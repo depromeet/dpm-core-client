@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { session } from '@dpm-core/api';
+import { type SessionAttendanceStatusTime, session } from '@dpm-core/api';
 
 export const getSessionListQuery = queryOptions({
 	queryKey: ['session-list'],
@@ -28,3 +28,13 @@ export const getSessionWeeks = () =>
 			return session.getSessionWeeks();
 		},
 	});
+
+export const getSessionModifyPolicyQuery = (
+	params: { sessionId: number } & SessionAttendanceStatusTime,
+) => {
+	const { sessionId, ...searchParams } = params;
+	return queryOptions({
+		queryKey: ['session-policy', sessionId],
+		queryFn: async () => session.getSessionModifyPolicy({ sessionId, ...searchParams }),
+	});
+};

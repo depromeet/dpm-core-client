@@ -23,6 +23,7 @@ export * from './components/ui/input-otp';
 export * from './components/ui/label';
 export * from './components/ui/popover';
 export * from './components/ui/popover';
+export * from './components/ui/select';
 export * from './components/ui/separator';
 export * from './components/ui/sheet';
 export * from './components/ui/sidebar';

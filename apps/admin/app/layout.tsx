@@ -1,13 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import {
-	AppShell,
-	GAInitializer,
-	getGAConfigScript,
-	getGAScriptSrc,
-	Toaster,
-} from '@dpm-core/shared';
+import { GAInitializer, getGAConfigScript, getGAScriptSrc, Toaster } from '@dpm-core/shared';
 
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
@@ -46,7 +40,7 @@ export default function RootLayout({
 			<body className={pretendard.variable} suppressHydrationWarning>
 				<QueryProvider>
 					<GAInitializer />
-					<AppShell>{children}</AppShell>
+					{children}
 					<ReactQueryDevtools />
 					<Toaster
 						position="top-center"

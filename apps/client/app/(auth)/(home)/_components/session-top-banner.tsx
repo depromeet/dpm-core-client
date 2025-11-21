@@ -21,7 +21,7 @@ const SessionCurrentWeekBannerContainer = () => {
 			const { data: currentWeekSession } = await session.getCurrentWeekSession();
 			if (!currentWeekSession) return null;
 			const { data: attendanceTime } = await session.getSessionAttendanceTime(
-				currentWeekSession.sessionId,
+				currentWeekSession.id,
 			);
 			return {
 				...currentWeekSession,
@@ -74,7 +74,7 @@ const SessionCurrentWeekBannerContainer = () => {
 					size="lg"
 					asChild
 				>
-					<Link href={`/attendance/${currentWeekSession.sessionId}`}>
+					<Link href={`/attendance/${currentWeekSession.id}`}>
 						출석체크하기
 						<ArrowRight />
 					</Link>

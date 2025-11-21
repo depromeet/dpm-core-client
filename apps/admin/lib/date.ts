@@ -36,12 +36,18 @@ export const formatISOStringHHMM = (isoString: string) => {
 	return dayjs(isoString).format('HH:mm');
 };
 
-/**
- * @param isoString ISO 8601 형식의 날짜 문자열
- * @returns 날짜 문자열 (예: 2025-08-02)
- * @example
- * formatISOStringToDate('2025-08-02T13:00:00') // 2025-08-02
- */
+export const formatFullDate = (isoString: string) => {
+	if (!isoString) {
+		return '-';
+	}
+
+	return dayjs(isoString).format('YYYY년 MM월 DD일 (ddd)');
+};
+
 export const formatISOStringToDate = (isoString: string) => {
-	return dayjs(isoString).format('YYYY-MM-DD');
+	if (!isoString) {
+		return '-';
+	}
+
+	return dayjs(isoString).format('YYYY년 MM월 DD일 (ddd)');
 };

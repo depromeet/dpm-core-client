@@ -1,14 +1,14 @@
 'use client';
 
 import { useSuspenseQueries } from '@tanstack/react-query';
-import type { CurrentWeekSession, Session } from '@dpm-core/api';
+import type { Session, SessionAttendanceCode } from '@dpm-core/api';
 import { createContext } from '@dpm-core/shared';
 
 import { getCurrentWeekSessionQuery, getSessionListQuery } from '@/remotes/queries/session';
 
 interface SessionContext {
 	sessions: Session[];
-	currentSessionWeek: CurrentWeekSession | null;
+	currentSessionWeek: (Session & SessionAttendanceCode) | null;
 }
 
 const [SessionProviderContext, useSession] = createContext<SessionContext>('Week', undefined);
