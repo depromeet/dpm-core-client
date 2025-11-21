@@ -16,29 +16,33 @@ import { formatISOStringHHMM } from '@/lib/date';
 import { formatSessionWeekString } from '@/lib/session/format';
 import { getSessionListQuery } from '@/remotes/queries/session';
 
+import { SessionInfoModifyModal } from './SessionInfoModifyModal';
+
 const SessionListContainer = () => {
 	const {
 		data: { data: sessionResponse },
 	} = useSuspenseQuery(getSessionListQuery);
 
 	return (
-		<>
+		<div className="flex h-full w-full flex-col px-4 pb-15 md:px-0">
 			<div className="mt-6 mb-5 hidden justify-between md:flex">
-				<p>
+				<h3 className="flex items-center">
 					<span className="mr-2 font-bold text-title1">세션 목록</span>
 					<span className="text-primary-normal">{sessionResponse.sessions.length}</span>
-				</p>
-
-				<Button asChild size="md" variant="secondary">
-					<Link href="/session/create">세션 추가</Link>
-				</Button>
+				</h3>
+				<div className="flex gap-4">
+					<SessionInfoModifyModal />
+					<Button asChild size="md" variant="secondary">
+						<Link href="/session/create">세션 추가</Link>
+					</Button>
+				</div>
 			</div>
 			<Virtuoso
-				useWindowScroll
 				data={sessionResponse.sessions}
+				className="[&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar]:w-2"
 				itemContent={(_, session) => <SessionItem key={session.id} session={session} />}
 			/>
-		</>
+		</div>
 	);
 };
 
@@ -75,7 +79,7 @@ function SessionItem({ session }: { session: Session }) {
 					<p className="mb-0.5 font-medium text-caption1 text-label-assistive">
 						{formatSessionWeekString(session.week)}
 					</p>
-					<h3 className="mb-1.5 font-semibold text-body1 text-label-normal">{session.eventName}</h3>
+					<h3 className="mb-1.5 font-semibold text-body1 text-label-normal">{session.name}</h3>
 					<div className="flex items-center gap-x-1">
 						<Calender />
 						<p className="ml-0.5 font-medium text-caption1 text-label-assistive">

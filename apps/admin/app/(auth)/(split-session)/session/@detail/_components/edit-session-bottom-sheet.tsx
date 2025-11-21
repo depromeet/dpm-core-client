@@ -32,7 +32,7 @@ import {
 import { CtaButton } from '@/components/cta-button';
 import { editSessionAttendanceTimeMutationOptions } from '@/remotes/mutations/session';
 
-import { formatAttendanceStartTimeToCode } from '../../_helpers';
+import { formatAttendanceStartTimeToCode } from '../../_utils';
 
 interface EditSessionBottomSheetProps {
 	attendanceStartTime: string;

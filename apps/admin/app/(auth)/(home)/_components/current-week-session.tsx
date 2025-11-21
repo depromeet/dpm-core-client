@@ -25,7 +25,7 @@ const CurrentWeekSessionContainer = () => {
 	}, [sessions, currentWeekSession]);
 
 	useEffect(() => {
-		const sessionId = currentWeekSession?.sessionId?.toString() || 'home';
+		const sessionId = currentWeekSession?.id?.toString() || 'home';
 		gaTrackHomeEnter(sessionId);
 	}, [currentWeekSession]);
 
@@ -46,20 +46,19 @@ const CurrentWeekSessionContainer = () => {
 				<SessionCard
 					className="flex-1"
 					subtitle={`${currentWeekSession.week}주차 세션`}
-					title={currentWeekSession.eventName}
+					title={currentWeekSession.name}
 					startTimeInfo={formatISOStringToFullDateString(currentWeekSession.date)}
 					place={currentWeekSession.isOnline ? '온라인' : currentWeekSession.place}
-					sessionId={currentWeekSession.sessionId.toString()}
+					sessionId={currentWeekSession.id.toString()}
 				/>
 
 				{nextWeekSession && (
 					<SessionCard
 						className="hidden flex-1 md:flex"
 						subtitle={`${nextWeekSession.week}주차 세션`}
-						title={nextWeekSession.eventName}
+						title={nextWeekSession.name}
 						startTimeInfo={formatISOStringToFullDateString(nextWeekSession.date)}
-						// FIXME 데이터 타입 변경 요청
-						place="온라인"
+						place={currentWeekSession.isOnline ? '온라인' : currentWeekSession.place}
 						sessionId={nextWeekSession.id.toString()}
 					/>
 				)}
