@@ -1,6 +1,5 @@
-@import "tw-animate-css";
-@import "@dpm-core/shared/theme-styles.css";
 @import "@dpm-core/shared/shared-styles.css";
+@import "@dpm-core/shared/theme-styles.css";
 
 @layer base {
 	body {

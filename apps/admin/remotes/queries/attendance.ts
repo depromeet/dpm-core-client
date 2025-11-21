@@ -1,7 +1,7 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import { attendance } from '@dpm-core/api';
 
-const QUERY_KEY = 'ATTENDANCE';
+export const ATTENDANCE_QUERY_KEY = 'ATTENDANCE';
 
 interface getAttendanceBySessionOptionsParams {
 	week: number;
@@ -12,16 +12,17 @@ interface getAttendanceBySessionOptionsParams {
 
 export const getAttendanceBySessionOptions = (params: getAttendanceBySessionOptionsParams) =>
 	infiniteQueryOptions({
-		queryKey: [QUERY_KEY, params],
+		queryKey: [ATTENDANCE_QUERY_KEY, params],
 		initialPageParam: 1,
 		queryFn: ({ pageParam }) => {
-			return attendance.getAttendanceBySession({ ...params, cursorId: pageParam });
+			return attendance.getAttendanceBySession({ ...params, cursorId: pageParam, size: 80 });
 		},
 		getNextPageParam: (lastPage) => {
 			return lastPage.data.hasNext && lastPage.data.nextCursorId != null
 				? lastPage.data.nextCursorId
 				: undefined;
 		},
+		placeholderData: (previousData) => previousData,
 		retry: false,
 	});
 
@@ -29,7 +30,7 @@ export const getAttendanceByMemberOptions = (
 	params: Omit<getAttendanceBySessionOptionsParams, 'week'>,
 ) =>
 	infiniteQueryOptions({
-		queryKey: [QUERY_KEY, params],
+		queryKey: [ATTENDANCE_QUERY_KEY, params],
 		initialPageParam: 1,
 		queryFn: ({ pageParam }) => {
 			return attendance.getAttendanceByMember({ ...params, cursorId: pageParam });
@@ -39,12 +40,13 @@ export const getAttendanceByMemberOptions = (
 				? lastPage.data.nextCursorId
 				: undefined;
 		},
+		placeholderData: (previousData) => previousData,
 		retry: false,
 	});
 
 export const getAttendanceByMemberDetailOptions = ({ memberId }: { memberId: number }) =>
 	queryOptions({
-		queryKey: [QUERY_KEY, memberId],
+		queryKey: [ATTENDANCE_QUERY_KEY, memberId],
 		queryFn: () => attendance.getAttendanceByMemberDetail({ memberId }),
 		retry: false,
 	});
@@ -57,7 +59,7 @@ export const getAttendanceBySessionDetailOptions = ({
 	sessionId: number;
 }) =>
 	queryOptions({
-		queryKey: [QUERY_KEY, memberId, sessionId],
+		queryKey: [ATTENDANCE_QUERY_KEY, memberId, sessionId],
 		queryFn: () => attendance.getAttendanceBySessionDetail({ memberId, sessionId }),
 		retry: false,
 	});

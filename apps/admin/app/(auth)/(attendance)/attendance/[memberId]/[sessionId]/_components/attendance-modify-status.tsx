@@ -62,11 +62,11 @@ export const AttendanceModifyStatus = (props: AttendanceModifyStatusProps) => {
 	return (
 		<Drawer>
 			<DrawerTrigger asChild>
-				<Button variant="secondary" size="full" className="fixed bottom-0 w-full max-w-lg">
+				<Button variant="secondary" size="full" className="fixed bottom-0 w-full">
 					수정하기
 				</Button>
 			</DrawerTrigger>
-			<DrawerContent className="mx-auto max-w-lg">
+			<DrawerContent className="mx-auto w-full">
 				<DrawerHeader className="mb-8 px-5">
 					<DrawerTitle>출석 규정 안내</DrawerTitle>
 				</DrawerHeader>

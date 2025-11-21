@@ -5,10 +5,14 @@
 
 :root {
 	--background: var(--color-gray-0);
-}
-
-.dark {
-	--background: var(--color-gray-800);
+	--sidebar: var(--color-background-normal);
+	--sidebar-foreground: var(--color-label-subtle);
+	--sidebar-primary: hsl(240 5.9% 10%);
+	--sidebar-primary-foreground: hsl(0 0% 98%);
+	--sidebar-accent: var(--color-background-strong);
+	--sidebar-accent-foreground: hsl(240 5.9% 10%);
+	--sidebar-border: var(--color-line-normal);
+	--sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
 
 @layer base {
@@ -16,4 +20,15 @@
 		overscroll-behavior: none;
 		@apply bg-background text-label-normal font-pretendard;
 	}
+}
+
+@theme inline {
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
 }

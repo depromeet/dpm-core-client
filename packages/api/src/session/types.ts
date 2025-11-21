@@ -102,21 +102,16 @@ export interface CurrentWeekSession {
 	date: string;
 
 	/**
-	 * 출석 시작 시간
-	 * ISO 8601 형식
+	 * 출석 코드
+	 * @todo
 	 */
-	attendanceStartTime: string;
-
-	/**
-	 * 출석 종료 시간
-	 * ISO 8601 형식
-	 */
-	attendanceEndTime: string;
+	attendanceCode: string;
 }
 
 export interface SessionWeeksReponse {
 	sessions: {
 		id: number;
 		week: number;
+		date: string;
 	}[];
 }

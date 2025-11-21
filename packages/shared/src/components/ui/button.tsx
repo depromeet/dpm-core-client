@@ -42,19 +42,37 @@ export interface ButtonProps extends React.ComponentProps<'button'> {
 	variant?: 'primary' | 'secondary' | 'assistive' | 'text' | 'none';
 	size?: 'xs' | 'sm' | 'md' | 'lg' | 'full' | 'none';
 	asChild?: boolean;
+	loading?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-	({ className, variant, size, asChild = false, ...props }, ref) => {
+	(
+		{
+			className,
+			variant,
+			size,
+			asChild = false,
+			loading = false,
+			children,
+			disabled = false,
+			...props
+		},
+		ref,
+	) => {
 		const Comp = asChild ? Slot : 'button';
+
+		const isDisabled = loading || disabled;
 
 		return (
 			<Comp
 				ref={ref}
 				data-slot="button"
 				className={cn(buttonVariants({ variant, size, className }))}
+				disabled={isDisabled}
 				{...props}
-			/>
+			>
+				{children}
+			</Comp>
 		);
 	},
 );

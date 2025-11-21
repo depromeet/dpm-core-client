@@ -35,7 +35,14 @@ const _AttendanceSessionDetailContainer = (props: AttendanceSessionDetailContain
 			<AttendanceMemberInfo member={data?.member} />
 			<section className="mt-5 px-4">
 				<article className="mb-5">
-					<h3 className="mb-2 font-semibold text-body1 text-label-subtle">출석 정보</h3>
+					<div className="mb-2 flex items-center justify-between">
+						<h3 className="font-semibold text-body1 text-label-subtle">출석 정보</h3>
+						{data?.attendance.updatedAt && (
+							<p className="font-medium text-label-subtle text-xs">
+								{formatISOStringToFullDateString(data.attendance.updatedAt)} 저장됨
+							</p>
+						)}
+					</div>
 					<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-3 font-semibold text-body2">
 						<div className="flex gap-4">
 							<p className="w-17.5 text-label-assistive">출석 상태</p>

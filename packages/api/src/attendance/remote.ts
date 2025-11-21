@@ -40,8 +40,9 @@ export const attendance = {
 		teams?: number[];
 		name?: string;
 		cursorId: number;
+		size?: number;
 	}) => {
-		const { week, statuses, teams, name, cursorId } = params;
+		const { week, statuses, teams, name, cursorId, size } = params;
 		const searchParams = new URLSearchParams();
 
 		if (statuses && statuses.length > 0) {
@@ -59,7 +60,12 @@ export const attendance = {
 		if (name) {
 			searchParams.set('name', name);
 		}
+
 		searchParams.set('cursorId', cursorId.toString());
+
+		if (size) {
+			searchParams.set('size', size.toString());
+		}
 
 		const res = await http.get<AttendanceBySessionReponse>(`v1/sessions/${week}/attendances`, {
 			searchParams,
@@ -92,6 +98,7 @@ export const attendance = {
 		if (name) {
 			searchParams.set('name', name);
 		}
+
 		searchParams.set('cursorId', cursorId.toString());
 
 		const res = await http.get<AttendanceByMemberReponse>(`v1/members/attendances`, {
@@ -122,6 +129,18 @@ export const attendance = {
 	}) => {
 		const { sessionId, memberId, ...json } = params;
 		return await http.patch(`v1/sessions/${sessionId}/attendances/${memberId}`, {
+			json,
+		});
+	},
+
+	// 출석 상태 일괄 갱신
+	modifyBulkAttendanceStatus: async (params: {
+		sessionId: number;
+		attendanceStatus: AttendanceStatus;
+		memberIds: number[];
+	}) => {
+		const { sessionId, ...json } = params;
+		return await http.patch(`v1/sessions/${sessionId}/attendances/bulk`, {
 			json,
 		});
 	},

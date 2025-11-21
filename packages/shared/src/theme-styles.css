@@ -2,7 +2,6 @@
 
 @theme inline {
 	--color-neutral-5: #f6f9fa;
-
 	/* Blue Colors */
 	--color-blue-50: #eff3ff;
 	--color-blue-100: #dae2ff;
@@ -22,7 +21,7 @@
 	--color-gray-200: #e5e7eb;
 	--color-gray-300: #d1d5db;
 	--color-gray-400: #9ca3af;
-	--color-gray-500: #9ca3af;
+	--color-gray-500: #6b7280;
 	--color-gray-600: #4b5563;
 	--color-gray-700: #374151;
 	--color-gray-800: #1f2937;
@@ -106,6 +105,5 @@
 	--text-caption1--line-height: 16px;
 
 	--color-background: var(--background);
-
 	--font-pretendard: var(--font-pretendard);
 }

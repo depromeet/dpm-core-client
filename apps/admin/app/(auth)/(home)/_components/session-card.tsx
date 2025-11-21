@@ -1,14 +1,23 @@
 import Link from 'next/link';
+import { cn } from '@dpm-core/shared';
 
 interface SessionCardProps {
 	subtitle: string;
 	title: string;
 	startTimeInfo: string;
 	place: string;
-	sessionId?: string; // 고유 ID 추가
+	sessionId?: string;
+	className?: string;
 }
 
-const SessionCard = ({ subtitle, title, startTimeInfo, place, sessionId }: SessionCardProps) => {
+const SessionCard = ({
+	subtitle,
+	title,
+	startTimeInfo,
+	place,
+	sessionId,
+	className,
+}: SessionCardProps) => {
 	// 고유한 view-transition-name을 위한 스타일
 	const cardStyle = sessionId
 		? {
@@ -19,7 +28,10 @@ const SessionCard = ({ subtitle, title, startTimeInfo, place, sessionId }: Sessi
 	return (
 		<Link
 			href={`/session/${sessionId}`}
-			className="flex animate-view-transition cursor-pointer flex-col rounded-lg bg-background-subtle p-5 transition-colors hover:bg-background-strong"
+			className={cn(
+				'flex animate-view-transition cursor-pointer flex-col rounded-lg bg-background-subtle p-5 transition-colors hover:bg-background-strong',
+				className,
+			)}
 			style={cardStyle}
 		>
 			<small
@@ -36,15 +48,13 @@ const SessionCard = ({ subtitle, title, startTimeInfo, place, sessionId }: Sessi
 			</h3>
 			<div className="my-4 h-px w-full bg-line-normal" />
 			<div className="flex flex-col gap-y-3">
-				<div className="flex gap-x-4">
-					<span className="w-[70px] font-semibold text-body2 text-label-assistive">세션 시간</span>
-					<span className="inline-flex font-medium text-body2 text-label-subtle">
-						{startTimeInfo}
-					</span>
+				<div className="flex gap-x-4 text-body2 md:text-body1">
+					<span className="w-[70px] font-semibold text-label-assistive">세션 시간</span>
+					<span className="inline-flex font-medium text-label-subtle">{startTimeInfo}</span>
 				</div>
-				<div className="flex gap-x-4">
-					<span className="w-[70px] font-semibold text-body2 text-label-assistive">세션 장소</span>
-					<span className="inline-flex font-medium text-body2 text-label-subtle">{place}</span>
+				<div className="flex gap-x-4 text-body2 md:text-body1">
+					<span className="w-[70px] font-semibold text-label-assistive">세션 장소</span>
+					<span className="inline-flex font-medium text-label-subtle">{place}</span>
 				</div>
 			</div>
 		</Link>

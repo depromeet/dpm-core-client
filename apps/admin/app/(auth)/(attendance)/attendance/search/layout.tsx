@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { AppLayout } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
 
@@ -8,9 +9,15 @@ interface LayoutProps {
 
 export default function Layout({ tabs }: LayoutProps) {
 	return (
-		<div className="flex min-h-dvh flex-col">
-			<AppHeader title="출석" className="mb-2" />
-			{tabs}
-		</div>
+		<>
+			<AppLayout className="hidden min-h-dvh min-w-0 bg-background-normal md:block">
+				{tabs}
+			</AppLayout>
+
+			<AppLayout className="min-h-dvh min-w-0 bg-background-normal md:hidden">
+				<AppHeader title="출석" className="mb-2" />
+				{tabs}
+			</AppLayout>
+		</>
 	);
 }

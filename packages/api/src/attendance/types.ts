@@ -41,7 +41,7 @@ export interface AttendanceReponse {
 
 export interface AttendanceBySessionIdReponse {
 	member: AttendanceMember;
-	attendance: { status: AttendanceStatus; attendedAt: string };
+	attendance: { status: AttendanceStatus; attendedAt: string; updatedAt: string };
 	session: AttendanceSession;
 }
 
@@ -61,6 +61,7 @@ export interface AttendanceBySessionReponse {
 	}[];
 	hasNext: boolean;
 	nextCursorId: number | null;
+	totalElements: number;
 }
 
 export interface AttendanceByMemberReponse {
@@ -73,4 +74,5 @@ export interface AttendanceByMemberReponse {
 	}[];
 	hasNext: boolean;
 	nextCursorId: number | null;
+	totalElements: number;
 }
