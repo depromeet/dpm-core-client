@@ -1,8 +1,8 @@
-import type { CurrentWeekSession, Session } from '@dpm-core/api';
+import type { Session, SessionAttendanceCode } from '@dpm-core/api';
 
 export const getPreviousSession = (
 	sessions: Session[],
-	currentSessionWeek: CurrentWeekSession | null,
+	currentSessionWeek: (Session & SessionAttendanceCode) | null,
 ) => {
 	if (!sessions?.length || !currentSessionWeek) return null;
 

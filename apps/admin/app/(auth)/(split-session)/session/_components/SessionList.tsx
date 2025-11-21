@@ -16,8 +16,6 @@ import { formatISOStringHHMM } from '@/lib/date';
 import { formatSessionWeekString } from '@/lib/session/format';
 import { getSessionListQuery } from '@/remotes/queries/session';
 
-import { SessionInfoModifyModal } from './SessionInfoModifyModal';
-
 const SessionListContainer = () => {
 	const {
 		data: { data: sessionResponse },
@@ -31,7 +29,6 @@ const SessionListContainer = () => {
 					<span className="text-primary-normal">{sessionResponse.sessions.length}</span>
 				</h3>
 				<div className="flex gap-4">
-					<SessionInfoModifyModal />
 					<Button asChild size="md" variant="secondary">
 						<Link href="/session/create">세션 추가</Link>
 					</Button>
