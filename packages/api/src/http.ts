@@ -58,7 +58,6 @@ class Http {
 
 	post = async <Response = unknown>(url: string, options?: Options) => {
 		const res = await this.instance.post<ApiResponse<Response>>(url, options);
-		if (res.status === 204) return null;
 		return res.json();
 	};
 

@@ -17,7 +17,7 @@ const CurrentWeekSessionContainer = () => {
 	} = useSuspenseQuery(getSessionCurrentOptions());
 
 	useEffect(() => {
-		const sessionId = currentWeekSession?.sessionId?.toString() || 'home';
+		const sessionId = currentWeekSession?.id?.toString() || 'home';
 		gaTrackHomeEnter(sessionId);
 	}, [currentWeekSession]);
 
@@ -25,9 +25,9 @@ const CurrentWeekSessionContainer = () => {
 		<>
 			{currentWeekSession ? (
 				<SessionCard
-					id={currentWeekSession.sessionId.toString()}
+					id={currentWeekSession.id.toString()}
 					subtitle={`${currentWeekSession.week}주차 세션`}
-					title={currentWeekSession.eventName}
+					title={currentWeekSession.name}
 					startTimeInfo={formatISOStringToFullDateString(currentWeekSession.date)}
 					place={currentWeekSession.isOnline ? '온라인' : currentWeekSession.place}
 				/>

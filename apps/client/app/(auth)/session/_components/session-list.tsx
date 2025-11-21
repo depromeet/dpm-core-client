@@ -33,7 +33,7 @@ function SessionItem({ session }: { session: Session }) {
 				<p className="mb-0.5 font-medium text-caption1 text-label-assistive">
 					{formatSessionWeekString(session.week)}
 				</p>
-				<h3 className="mb-1.5 font-semibold text-body1 text-label-normal">{session.eventName}</h3>
+				<h3 className="mb-1.5 font-semibold text-body1 text-label-normal">{session.name}</h3>
 				<div className="flex items-center gap-x-1">
 					<Calender />
 					<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
