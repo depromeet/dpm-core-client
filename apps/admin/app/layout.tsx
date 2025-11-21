@@ -1,6 +1,13 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { GAScript, Toaster } from '@dpm-core/shared';
+import {
+	AppShell,
+	GAInitializer,
+	getGAConfigScript,
+	getGAScriptSrc,
+	Toaster,
+} from '@dpm-core/shared';
 
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
@@ -28,7 +35,8 @@ export default function RootLayout({
 	return (
 		<html lang="ko">
 			<head>
-				<GAScript />
+				<Script src={getGAScriptSrc()} />
+				<Script id="google-analytics">{getGAConfigScript()}</Script>
 				<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 				<link rel="shortcut icon" href="/favicon.ico" />
@@ -37,7 +45,8 @@ export default function RootLayout({
 			</head>
 			<body className={pretendard.variable} suppressHydrationWarning>
 				<QueryProvider>
-					{children}
+					<GAInitializer />
+					<AppShell>{children}</AppShell>
 					<ReactQueryDevtools />
 					<Toaster
 						position="top-center"
