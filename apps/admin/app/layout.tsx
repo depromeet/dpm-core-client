@@ -45,7 +45,10 @@ export default function RootLayout({
 					<Toaster
 						position="top-center"
 						visibleToasts={1}
-						style={{ pointerEvents: 'none' }}
+						style={{
+							display: 'flex',
+							justifyContent: 'center',
+						}}
 						toastOptions={{
 							duration: 3_000,
 						}}
