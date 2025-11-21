@@ -11,5 +11,7 @@ export interface Member {
 
 	part: Part;
 
+	teamNumber: number;
+
 	isAdmin: boolean;
 }

@@ -11,6 +11,7 @@ import { LoadingBox } from '@/components/loading-box';
 import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { formatISOStringToDate } from '@/lib/date';
 import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 import { getSessionWeeks } from '@/remotes/queries/session';
 
@@ -38,7 +39,6 @@ const AttendanceSessionContainer = () => {
 			week: Number(searchParams.week),
 			statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
 			teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
-			onlyMyTeam: searchParams.onlyMyTeam === 'true' ? true : undefined,
 			name: searchParams.name,
 		}),
 		[searchParams],
@@ -59,6 +59,7 @@ const AttendanceSessionContainer = () => {
 	});
 
 	const flatData = attendanceData?.pages.flatMap((page) => page.data.members) ?? [];
+	const totalElements = attendanceData?.pages[0]?.data.totalElements ?? 0;
 
 	const { selectedIds, toggleItem, toggleAll, isAllSelected, clearSelection } =
 		useCheckboxSelection(flatData);
@@ -70,7 +71,7 @@ const AttendanceSessionContainer = () => {
 	}, [attendanceSearchParams.week, clearSelection]);
 
 	const selectedMembers = useMemo(
-		() => flatData.filter((member) => selectedIds.has(member.id)),
+		() => flatData.filter((member) => selectedIds.includes(member.id)),
 		[flatData, selectedIds],
 	);
 
@@ -109,7 +110,7 @@ const AttendanceSessionContainer = () => {
 			</div>
 
 			{/* Desktop view (>= 768px) */}
-			<div className="hidden md:block">
+			<div className="hidden md:mx-auto md:block md:max-w-[1200px]">
 				<section className="border-gray-200 border-b bg-white px-10 py-4">
 					<WeekFilter weeks={data.sessions} />
 				</section>
@@ -117,9 +118,10 @@ const AttendanceSessionContainer = () => {
 				<section className="bg-white px-10 py-6">
 					<div className="mb-4 flex items-center gap-2">
 						<h2 className="font-bold text-label-normal text-title1 tracking-[-0.2px]">
-							출석 {selectedSession?.week}주차 (데이터 필요)
+							출석 {selectedSession?.week}주차 (
+							{selectedSession?.date ? formatISOStringToDate(selectedSession.date) : '-'})
 						</h2>
-						<span className="font-medium text-body1 text-primary-normal">데이터 필요</span>
+						<span className="font-medium text-body1 text-primary-normal">{totalElements}명</span>
 					</div>
 
 					<div className="flex items-center justify-between">
@@ -127,16 +129,16 @@ const AttendanceSessionContainer = () => {
 							<SearchInput placeholder="디퍼 검색" />
 						</div>
 						<div className="flex items-center gap-[30px]">
-							{selectedIds.size > 0 && (
+							{selectedIds.length > 0 && (
 								<div className="flex items-center gap-3">
 									<p className="font-medium text-body1 text-primary-normal">
-										{selectedIds.size}개 선택됨
+										{selectedIds.length}개 선택됨
 									</p>
 									<Button
 										variant="none"
 										size="none"
 										onClick={handleModifyAttendance}
-										className="rounded-lg bg-background-inverse px-4 py-3 font-semibold text-body2 text-label-inverse"
+										className="rounded-lg border-none bg-background-inverse px-4 py-2.5 font-semibold text-body2 text-label-inverse"
 									>
 										출석 정보 수정
 									</Button>

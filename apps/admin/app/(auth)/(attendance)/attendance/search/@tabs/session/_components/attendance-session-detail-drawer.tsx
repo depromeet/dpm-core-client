@@ -41,7 +41,7 @@ const _AttendanceSessionDetailContent = ({
 		});
 
 	return (
-		<div className="flex-1 overflow-y-auto px-6 py-6">
+		<div className="flex-1 overflow-y-auto px-10 py-6">
 			<ProfileSection
 				name={data.member.name}
 				part={data.member.part}
@@ -53,6 +53,7 @@ const _AttendanceSessionDetailContent = ({
 				selectedStatus={selectedStatus}
 				originalStatus={data.attendance.status}
 				attendedAt={data.attendance.attendedAt}
+				updatedAt={data.attendance.updatedAt}
 				onStatusChange={setSelectedStatus}
 				onSave={handleSave}
 				onCancel={handleCancel}
@@ -77,7 +78,7 @@ export const AttendanceSessionDetailDrawer = ({
 }: AttendanceSessionDetailDrawerProps) => {
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
-			<SheetContent side="right" className="w-full p-0 sm:max-w-[600px]">
+			<SheetContent side="right" className="w-full border-none p-0 sm:max-w-[600px]">
 				<AttendanceDetailHeader title="출석 상세" />
 				<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
 					<Suspense fallback={<LoadingBox />}>

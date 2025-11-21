@@ -42,17 +42,13 @@ export const AttendanceBulkModifyModal = ({
 
 	const queryClient = useQueryClient();
 
-	// TODO: BULK API 추가 후 수정 필요
 	const { mutate: modifyBulkStatus, isPending } = useMutation({
 		mutationFn: async (status: AttendanceStatus) => {
-			const promises = selectedMembers.map((member) =>
-				attendance.modifyAttendanceStatus({
-					sessionId,
-					memberId: member.id,
-					attendanceStatus: status,
-				}),
-			);
-			return Promise.all(promises);
+			return attendance.modifyBulkAttendanceStatus({
+				sessionId,
+				attendanceStatus: status,
+				memberIds: selectedMembers.map((member) => member.id),
+			});
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({

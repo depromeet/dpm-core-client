@@ -7,7 +7,6 @@ interface getAttendanceBySessionOptionsParams {
 	week: number;
 	statuses?: string[];
 	teams?: number[];
-	onlyMyTeam?: boolean;
 	name?: string;
 }
 
@@ -16,7 +15,7 @@ export const getAttendanceBySessionOptions = (params: getAttendanceBySessionOpti
 		queryKey: [ATTENDANCE_QUERY_KEY, params],
 		initialPageParam: 1,
 		queryFn: ({ pageParam }) => {
-			return attendance.getAttendanceBySession({ ...params, cursorId: pageParam });
+			return attendance.getAttendanceBySession({ ...params, cursorId: pageParam, size: 80 });
 		},
 		getNextPageParam: (lastPage) => {
 			return lastPage.data.hasNext && lastPage.data.nextCursorId != null

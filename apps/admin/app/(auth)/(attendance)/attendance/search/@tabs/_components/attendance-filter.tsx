@@ -27,6 +27,7 @@ import {
 
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { getAttendanceStatusLabel } from '@/lib/attendance/status';
+import { useAuth } from '@/providers/auth-provider';
 
 const ATTENDANCE_FILTER = [
 	{ label: '출석', value: 'PRESENT' },
@@ -41,17 +42,35 @@ const TEAM_FILTER = ['1', '2', '3', '4', '5', '6'];
 export const AttendanceFilter = () => {
 	const customSearchParams = useCustomSearchParams();
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const { user } = useAuth();
 
 	const filterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
 	const teamsFilterChipRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
+	const myTeamNumber = user?.teamNumber?.toString() ?? '';
+	const selectedTeams = customSearchParams.get('teams')?.split(',').filter(Boolean) ?? [];
+
+	// "내 팀만 보기" 체크 상태: teams 필터에 내 팀 번호만 있을 때
+	const isMyTeamOnly = selectedTeams.length === 1 && selectedTeams[0] === myTeamNumber;
+
 	const handleMyTeamToggle = (checked: boolean) => {
-		customSearchParams.update(
-			{
-				onlyMyTeam: checked ? 'true' : '',
-			},
-			'REPLACE',
-		);
+		if (checked) {
+			// 내 팀만 보기 체크: teams 필터에 내 팀 번호 설정
+			customSearchParams.update(
+				{
+					teams: myTeamNumber,
+				},
+				'REPLACE',
+			);
+		} else {
+			// 내 팀만 보기 해제: teams 필터 제거
+			customSearchParams.update(
+				{
+					teams: '',
+				},
+				'REPLACE',
+			);
+		}
 	};
 
 	const handleSelectFilter = () => {
@@ -63,15 +82,10 @@ export const AttendanceFilter = () => {
 			.filter((chip) => chip?.ariaChecked === 'true')
 			.map((chip) => chip?.id);
 
-		const hasSelectedTeams = teamFilterChipIds.length > 0;
-		const existingOnlyMyTeam = customSearchParams.get('onlyMyTeam');
-		const onlyMyTeamParams = hasSelectedTeams ? '' : (existingOnlyMyTeam ?? '');
-
 		customSearchParams.update(
 			{
 				statuses: filterChipIds.toString(),
 				teams: teamFilterChipIds.toString(),
-				onlyMyTeam: onlyMyTeamParams,
 			},
 			'REPLACE',
 		);
@@ -86,8 +100,6 @@ export const AttendanceFilter = () => {
 			return getAttendanceStatusLabel(selectedAttendanceStatuses[0] as AttendanceStatus);
 		return `${getAttendanceStatusLabel(selectedAttendanceStatuses[0] as AttendanceStatus)} 외 ${selectedAttendanceStatuses.length - 1}`;
 	}, [selectedAttendanceStatuses]);
-
-	const selectedTeams = customSearchParams.get('teams')?.split(',').filter(Boolean) ?? [];
 
 	const teamsFilterLabel = useMemo(() => {
 		if (selectedTeams.length === 0) return '팀별';
@@ -191,7 +203,7 @@ export const AttendanceFilter = () => {
 										)
 									}
 								>
-									<RotateCw className="size-5 text-icon-normal" />
+									<RotateCw className="size-5 text-gray-400" />
 								</Button>
 							</DrawerClose>
 							<DrawerClose asChild>
@@ -211,11 +223,14 @@ export const AttendanceFilter = () => {
 				<div className="flex items-center gap-1.5">
 					<Checkbox
 						id="my-team-mobile"
-						checked={customSearchParams.get('onlyMyTeam') === 'true' && true}
+						checked={isMyTeamOnly}
 						onCheckedChange={handleMyTeamToggle}
 						className="size-4 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 					/>
-					<Label htmlFor="my-team-mobile" className="font-normal text-body2 text-label-assistive">
+					<Label
+						htmlFor="my-team-mobile"
+						className="cursor-pointer font-normal text-body2 text-label-assistive"
+					>
 						내 팀만 보기
 					</Label>
 				</div>
@@ -225,15 +240,14 @@ export const AttendanceFilter = () => {
 			<div className="hidden items-center gap-2 md:flex">
 				<div
 					className={cn(
-						'flex items-center gap-1.5 rounded-lg border bg-white px-4 py-[9px]',
-						customSearchParams.get('onlyMyTeam') === 'true'
-							? 'border-primary-normal'
-							: 'border-line-subtle',
+						'flex cursor-pointer items-center gap-1.5 rounded-lg border bg-white px-4 py-[9px]',
+						isMyTeamOnly ? 'border-primary-normal' : 'border-line-subtle',
 					)}
+					onClick={() => handleMyTeamToggle(!isMyTeamOnly)}
 				>
 					<Checkbox
 						id="my-team-desktop"
-						checked={customSearchParams.get('onlyMyTeam') === 'true' && true}
+						checked={isMyTeamOnly}
 						onCheckedChange={handleMyTeamToggle}
 						className="size-4 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 					/>
@@ -344,7 +358,7 @@ export const AttendanceFilter = () => {
 										)
 									}
 								>
-									<RotateCw className="size-5 text-icon-normal" />
+									<RotateCw className="size-5 text-gray-400" />
 								</Button>
 							</DropdownMenuItem>
 
