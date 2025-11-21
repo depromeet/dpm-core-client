@@ -8,7 +8,7 @@ type SessionListResponse = {
 type CurrentWeekSessionResponse = Session & SessionAttendanceCode;
 
 type SessionWeeksResponse = {
-	sessions: Pick<Session, 'id' | 'week'>[];
+	sessions: Pick<Session, 'id' | 'week' | 'date'>[];
 };
 
 type SessionDetailResponse = Session & SessionAttendanceCode & SessionAttendanceStatusTime;

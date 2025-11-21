@@ -43,3 +43,11 @@ export const formatFullDate = (isoString: string) => {
 
 	return dayjs(isoString).format('YYYY년 MM월 DD일 (ddd)');
 };
+
+export const formatISOStringToDate = (isoString: string) => {
+	if (!isoString) {
+		return '-';
+	}
+
+	return dayjs(isoString).format('YYYY년 MM월 DD일 (ddd)');
+};
