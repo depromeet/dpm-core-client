@@ -33,7 +33,8 @@ export const FormPlace = () => {
 							<Select
 								onValueChange={(v) => {
 									if (v === 'online') {
-										form.resetField('place');
+										form.setValue('place', '');
+										form.clearErrors('place');
 									}
 									field.onChange(v);
 								}}

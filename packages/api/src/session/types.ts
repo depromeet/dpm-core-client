@@ -1,3 +1,5 @@
+import type { AttendanceStatus } from '../attendance';
+
 export interface Session {
 	id: number;
 	week: number;
@@ -15,4 +17,23 @@ export interface SessionAttendanceStatusTime {
 
 export interface SessionAttendanceCode {
 	attendanceCode: string;
+}
+
+export interface SessionWeek {
+	id: Session['id'];
+	week: Session['week'];
+	date: Session['date'];
+}
+
+export interface SessionTargeted {
+	name: string;
+	currentStatus: AttendanceStatus;
+	targetStatus: AttendanceStatus;
+	attendedAt: string;
+}
+
+export interface SessionUnTargeted {
+	name: string;
+	status: AttendanceStatus;
+	updatedAt: string;
 }
