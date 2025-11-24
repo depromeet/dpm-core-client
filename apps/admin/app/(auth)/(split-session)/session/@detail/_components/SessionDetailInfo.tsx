@@ -1,10 +1,11 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { type PropsWithChildren, Suspense } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { Ellipsis, Trash2 } from 'lucide-react';
+import { Ellipsis, Pencil, Trash2 } from 'lucide-react';
 import {
 	Button,
 	CopyButton,
@@ -19,6 +20,7 @@ import {
 	DialogTrigger,
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuTrigger,
 	GAPageTracker,
@@ -63,13 +65,13 @@ const SessionDetailInfoContainer = ({ sessionId }: { sessionId: string }) => {
 					>
 						<DropdownMenuLabel className="sr-only">세션 수정 및 삭제</DropdownMenuLabel>
 						<div className="inline-flex gap-3 font-semibold text-body2 text-label-alternative">
-							{/* <DropdownMenuItem asChild className="cursor-pointer gap-1.5 p-0">
+							<DropdownMenuItem asChild className="cursor-pointer gap-1.5 p-0">
 								<Link href={`/session/${sessionDetail.id}/modify`}>
 									<Pencil size={16} />
 									수정
 								</Link>
 							</DropdownMenuItem>
-							<div className="w-px bg-line-normal" /> */}
+							<div className="w-px bg-line-normal" />
 							<DeleteSessionAlert sessionId={sessionDetail.id} />
 						</div>
 					</DropdownMenuContent>
