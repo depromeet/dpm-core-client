@@ -10,7 +10,7 @@ interface LayoutProps {
 export default function Layout({ tabs }: LayoutProps) {
 	return (
 		<>
-			<AppLayout className="hidden min-h-dvh min-w-0 bg-background-normal md:block">
+			<AppLayout className="hidden min-h-dvh min-w-0 bg-background-normal md:flex">
 				{tabs}
 			</AppLayout>
 

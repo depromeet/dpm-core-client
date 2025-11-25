@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import { Button } from '@dpm-core/shared';
 
 import { EmptyView } from '@/components/attendance/EmptyView';
@@ -11,7 +12,6 @@ import { LoadingBox } from '@/components/loading-box';
 import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
-import { formatISOStringToDate } from '@/lib/date';
 import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 import { getSessionWeeks } from '@/remotes/queries/session';
 
@@ -20,6 +20,10 @@ import { SearchInput } from '../../_components/search-input';
 import { WeekFilter } from '../../_components/week-filter';
 import { AttendanceBulkModifyModal } from './attendance-bulk-modify-modal';
 import AttendanceList from './attendance-list';
+
+const formatDate = (date: string) => {
+	return dayjs(date).format('YYYY.MM.DD');
+};
 
 const AttendanceSessionContainer = () => {
 	const {
@@ -87,7 +91,11 @@ const AttendanceSessionContainer = () => {
 
 	// 초기 로딩만 전체 LoadingBox 표시
 	if (isLoading && !attendanceData) {
-		return <LoadingBox />;
+		return (
+			<div className="mx-auto flex h-[212px] w-[375px] flex-1 flex-col">
+				<LoadingBox />
+			</div>
+		);
 	}
 
 	return (
@@ -110,7 +118,7 @@ const AttendanceSessionContainer = () => {
 			</div>
 
 			{/* Desktop view (>= 768px) */}
-			<div className="hidden md:mx-auto md:block md:max-w-[1200px]">
+			<div className="hidden w-full md:mx-auto md:block md:max-w-[1200px]">
 				<section className="border-gray-200 border-b bg-white px-10 py-4">
 					<WeekFilter weeks={data.sessions} />
 				</section>
@@ -119,7 +127,7 @@ const AttendanceSessionContainer = () => {
 					<div className="mb-4 flex items-center gap-2">
 						<h2 className="font-bold text-label-normal text-title1 tracking-[-0.2px]">
 							출석 {selectedSession?.week}주차 (
-							{selectedSession?.date ? formatISOStringToDate(selectedSession.date) : '-'})
+							{selectedSession?.date ? formatDate(selectedSession.date) : '-'})
 						</h2>
 						<span className="font-medium text-body1 text-primary-normal">{totalElements}명</span>
 					</div>
