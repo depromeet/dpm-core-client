@@ -102,7 +102,7 @@ const AttendanceSessionContainer = () => {
 		<>
 			{/* Mobile view (< 768px) */}
 			<div className="md:hidden">
-				<section className="sticky top-0 space-y-3.5 bg-white px-4 py-2.5">
+				<section className="sticky top-0 z-10 space-y-3.5 bg-white px-4 py-2.5">
 					<WeekFilter weeks={data.sessions} />
 					<SearchInput placeholder="디퍼 검색" />
 					<AttendanceFilter />

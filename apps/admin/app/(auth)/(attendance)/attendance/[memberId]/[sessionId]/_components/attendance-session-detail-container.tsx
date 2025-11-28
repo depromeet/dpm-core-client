@@ -26,7 +26,7 @@ const _AttendanceSessionDetailContainer = (props: AttendanceSessionDetailContain
 
 	return (
 		<>
-			<header className="sticky top-0 flex h-12 items-center justify-between bg-gray-0 px-4 py-3">
+			<header className="sticky top-0 z-10 flex h-12 items-center justify-between bg-gray-0 px-4 py-3">
 				<Button variant="none" size="none" onClick={() => router.back()} asChild>
 					<ChevronLeft />
 				</Button>
