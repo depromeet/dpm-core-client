@@ -85,7 +85,7 @@ const AttendanceList = ({
 			{/* Desktop view (>= 768px) */}
 			<section className="relative mx-10 mb-15 hidden md:block">
 				<div className="overflow-auto">
-					<div className="flex items-center justify-between bg-gray-50 py-2.5 pr-[136px] pl-5">
+					<div className="flex items-center justify-between bg-gray-50 py-2.5 pl-5">
 						<div className="flex items-center gap-4">
 							<Checkbox
 								checked={isAllSelected}
@@ -95,7 +95,9 @@ const AttendanceList = ({
 							/>
 							<span className="font-medium text-body2 text-label-subtle">멤버 정보</span>
 						</div>
-						<span className="font-medium text-body2 text-label-subtle">출석 상태</span>
+						<span className="min-w-[200px] font-medium text-body2 text-label-subtle">
+							출석 상태
+						</span>
 					</div>
 
 					{data.map((member, index) => {
@@ -113,7 +115,7 @@ const AttendanceList = ({
 										handleDesktopRowClick(member.id);
 									}
 								}}
-								className="flex w-full cursor-pointer items-center justify-between border-gray-200 border-b py-5 pr-[136px] pl-5 text-left transition-colors hover:bg-gray-50"
+								className="flex w-full cursor-pointer items-center justify-between border-gray-200 border-b py-5 pl-5 text-left transition-colors hover:bg-gray-50"
 							>
 								<div className="flex items-center gap-4">
 									<Checkbox
@@ -130,7 +132,10 @@ const AttendanceList = ({
 										part={member.part}
 									/>
 								</div>
-								<AttendanceStatusLabel status={member.attendanceStatus} />
+								<AttendanceStatusLabel
+									className="min-w-[200px] justify-items-start"
+									status={member.attendanceStatus}
+								/>
 							</div>
 						);
 					})}
