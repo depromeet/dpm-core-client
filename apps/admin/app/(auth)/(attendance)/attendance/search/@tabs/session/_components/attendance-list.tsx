@@ -83,7 +83,7 @@ const AttendanceList = ({
 			</section>
 
 			{/* Desktop view (>= 768px) */}
-			<section className="relative mx-10 mb-15 hidden md:block">
+			<section className="relative mx-auto mb-15 hidden max-w-[1200px] px-10 md:block">
 				<div className="overflow-auto">
 					<div className="flex items-center justify-between bg-gray-50 py-2.5 pl-5">
 						<div className="flex items-center gap-4">

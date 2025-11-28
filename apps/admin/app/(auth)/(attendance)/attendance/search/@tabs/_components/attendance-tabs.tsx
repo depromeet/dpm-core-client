@@ -41,26 +41,28 @@ export const AttendanceTabs = () => {
 			{/* Desktop view (>= 768px) */}
 			<nav
 				className={cn(
-					'hidden h-20 w-full items-center gap-5 bg-white px-10 md:mx-auto md:flex md:max-w-[1200px]',
+					'hidden w-full bg-white md:mx-auto md:block',
 					tab === 'people' && 'border-line-normal border-b',
 				)}
 			>
-				{CONST_TABS.map(({ value, label }) => {
-					const isActive = tab === value;
-					return (
-						<Link
-							key={value}
-							href={`/attendance/search/${value === 'session' ? `session?week=${SESSION_ID}` : value}`}
-							replace
-							className={cn(
-								'whitespace-nowrap font-bold text-headline1 tracking-[-0.48px]',
-								isActive ? 'text-label-normal' : 'text-label-assistive',
-							)}
-						>
-							{label}
-						</Link>
-					);
-				})}
+				<div className="mx-auto flex h-20 w-full max-w-[1200px] items-center gap-5 px-10">
+					{CONST_TABS.map(({ value, label }) => {
+						const isActive = tab === value;
+						return (
+							<Link
+								key={value}
+								href={`/attendance/search/${value === 'session' ? `session?week=${SESSION_ID}` : value}`}
+								replace
+								className={cn(
+									'whitespace-nowrap font-bold text-headline1 tracking-[-0.48px]',
+									isActive ? 'text-label-normal' : 'text-label-assistive',
+								)}
+							>
+								{label}
+							</Link>
+						);
+					})}
+				</div>
 			</nav>
 		</>
 	);

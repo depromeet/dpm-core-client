@@ -118,12 +118,14 @@ const AttendanceSessionContainer = () => {
 			</div>
 
 			{/* Desktop view (>= 768px) */}
-			<div className="hidden w-full md:mx-auto md:block md:max-w-[1200px]">
-				<section className="border-gray-200 border-b bg-white px-10 py-4">
-					<WeekFilter weeks={data.sessions} />
+			<div className="hidden w-full md:block">
+				<section className="border-gray-200 border-b bg-white">
+					<div className="mx-auto max-w-[1200px] px-10 py-4">
+						<WeekFilter weeks={data.sessions} />
+					</div>
 				</section>
 
-				<section className="bg-white px-10 py-6">
+				<section className="mx-auto max-w-[1200px] bg-white px-10 py-6">
 					<div className="mb-4 flex items-center gap-2">
 						<h2 className="font-bold text-label-normal text-title1 tracking-[-0.2px]">
 							출석 {selectedSession?.week}주차 (
