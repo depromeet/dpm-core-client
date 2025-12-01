@@ -123,7 +123,11 @@ const _AttendanceMemberSessions = ({
 		<section>
 			<div className="flex flex-col">
 				{data.sessions.map((session, index) => (
-					<SessionItem key={`${session.id}-${index}`} {...session} onClick={() => onSessionClick(session.id)} />
+					<SessionItem
+						key={`${session.id}-${index}`}
+						{...session}
+						onClick={() => onSessionClick(session.id)}
+					/>
 				))}
 			</div>
 		</section>
@@ -176,7 +180,7 @@ const _AttendanceSessionDetailView = ({
 		});
 
 	return (
-		<div className="flex-1 overflow-y-auto px-6 py-6">
+		<div className="flex-1 overflow-y-auto px-10 py-6">
 			<ProfileSection
 				name={data.member.name}
 				part={data.member.part}
@@ -234,7 +238,7 @@ export const AttendanceMemberDetailDrawer = ({
 				}
 			}}
 		>
-			<SheetContent side="right" className="w-full border-none p-0 sm:max-w-[600px]">
+			<SheetContent side="right" className="w-full gap-0 border-none p-0 sm:max-w-[600px]">
 				{viewMode === 'member' ? (
 					<>
 						<SheetHeader className="flex-row items-center justify-between border-gray-200 border-b px-10 py-6">

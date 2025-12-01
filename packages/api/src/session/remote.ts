@@ -1,5 +1,12 @@
 import { http } from '../http';
-import type { Session, SessionAttendanceCode, SessionAttendanceStatusTime } from './types';
+import type {
+	Session,
+	SessionAttendanceCode,
+	SessionAttendanceStatusTime,
+	SessionTargeted,
+	SessionUnTargeted,
+	SessionWeek,
+} from './types';
 
 type SessionListResponse = {
 	sessions: Session[];
@@ -8,10 +15,15 @@ type SessionListResponse = {
 type CurrentWeekSessionResponse = Session & SessionAttendanceCode;
 
 type SessionWeeksResponse = {
-	sessions: Pick<Session, 'id' | 'week' | 'date'>[];
+	sessions: SessionWeek[];
 };
 
 type SessionDetailResponse = Session & SessionAttendanceCode & SessionAttendanceStatusTime;
+
+type SessionModifyPolicyResponse = {
+	targeted: SessionTargeted[];
+	untargeted: SessionUnTargeted[];
+};
 
 export const session = {
 	/**
@@ -123,6 +135,8 @@ export const session = {
 
 	getSessionModifyPolicy: async (params: { sessionId: number } & SessionAttendanceStatusTime) => {
 		const { sessionId, ...searchParams } = params;
-		return await http.get(`v1/sessions/${sessionId}/update-policy`, { searchParams });
+		return await http.get<SessionModifyPolicyResponse>(`v1/sessions/${sessionId}/update-policy`, {
+			searchParams,
+		});
 	},
 };

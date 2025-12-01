@@ -225,7 +225,7 @@ export const AttendanceFilter = () => {
 						id="my-team-mobile"
 						checked={isMyTeamOnly}
 						onCheckedChange={handleMyTeamToggle}
-						className="size-4 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
+						className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 					/>
 					<Label
 						htmlFor="my-team-mobile"
@@ -249,7 +249,7 @@ export const AttendanceFilter = () => {
 						id="my-team-desktop"
 						checked={isMyTeamOnly}
 						onCheckedChange={handleMyTeamToggle}
-						className="size-4 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
+						className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 					/>
 					<Label
 						htmlFor="my-team-desktop"

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@dpm-core/shared';
 
+import { SessionProivder } from '@/app/(auth)/(home)/_components/session-provider';
 import { createSessionMutationOptions } from '@/remotes/mutations/session';
 import { getCurrentWeekSessionQuery, getSessionListQuery } from '@/remotes/queries/session';
 
@@ -33,5 +34,9 @@ export const CreateSessionContainer = () => {
 		createSession(params);
 	};
 
-	return <SessionForm onSubmit={handleCreateSession} />;
+	return (
+		<SessionProivder>
+			<SessionForm onSubmit={handleCreateSession} />
+		</SessionProivder>
+	);
 };

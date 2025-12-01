@@ -3,7 +3,7 @@
 
 @layer base {
 	body {
-		@apply bg-background-strong;
+		@apply bg-background-normal;
 	}
 }
 

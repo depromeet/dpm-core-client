@@ -32,9 +32,8 @@ export const getSessionWeeks = () =>
 export const getSessionModifyPolicyQuery = (
 	params: { sessionId: number } & SessionAttendanceStatusTime,
 ) => {
-	const { sessionId, ...searchParams } = params;
 	return queryOptions({
-		queryKey: ['session-policy', sessionId],
-		queryFn: async () => session.getSessionModifyPolicy({ sessionId, ...searchParams }),
+		queryKey: ['session-policy', params],
+		queryFn: async () => session.getSessionModifyPolicy(params),
 	});
 };
