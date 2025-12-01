@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ChevronLeft, cn } from '@dpm-core/shared';
 
 interface AppHeaderProps {
@@ -16,25 +17,30 @@ const AppHeader = ({
 	backHref,
 	className,
 	rightIcon = <></>,
-	leftIcon = (
+	leftIcon: leftIconProp,
+}: AppHeaderProps) => {
+	const router = useRouter();
+	const leftIcon = leftIconProp ?? (
 		<Link
-			href={backHref ?? '-1'}
+			href={backHref ?? '#'}
 			onClick={(event) => {
 				if (backHref) return;
 				event.preventDefault();
+				router.back();
 			}}
 			className="absolute left-4"
 		>
 			<ChevronLeft />
 		</Link>
-	),
-}: AppHeaderProps) => {
+	);
 	return (
-		<div className={cn('relative mb-5 flex h-12 items-center justify-center px-4 py-3', className)}>
+		<header
+			className={cn('relative mb-5 flex h-12 items-center justify-center px-4 py-3', className)}
+		>
 			{leftIcon}
 			<h3 className="font-semibold text-body1 text-label-strong">{title}</h3>
 			{rightIcon}
-		</div>
+		</header>
 	);
 };
 

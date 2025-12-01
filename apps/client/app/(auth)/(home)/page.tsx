@@ -15,6 +15,7 @@ import IconSession from '@/assets/icons/icon_session.png';
 import IconSettlement from '@/assets/icons/icon_settlement.png';
 import { NavigationBar } from '@/components/navigation-bar';
 
+import { FeatureComingSoon } from './_components/coming-soon';
 import { CurrentWeekSession } from './_components/current-week-session';
 import { SessionCurrentWeekBanner } from './_components/session-top-banner';
 
@@ -39,7 +40,9 @@ const UserPage = () => {
 				<ul className="mt-5 flex items-center justify-center gap-x-[52px] pb-10">
 					<IconCard icon={IconAttendance} title="출석" href="/attendance/me" />
 					<IconCard icon={IconSession} title="세션" href="/session" />
-					<IconCard icon={IconSettlement} title="정산" href="/bills" />
+					<FeatureComingSoon>
+						<IconCard icon={IconSettlement} title="정산" href="#" />
+					</FeatureComingSoon>
 				</ul>
 				<div className="my-5 flex w-full flex-1 flex-col gap-y-5 px-4">
 					<CurrentWeekSession />

@@ -42,14 +42,18 @@ const AttendanceMemberContainer = () => {
 
 	// 초기 로딩만 전체 LoadingBox 표시
 	if (isLoading && !data) {
-		return <LoadingBox />;
+		return (
+			<div className="mx-auto flex h-[212px] w-[375px] flex-1 flex-col">
+				<LoadingBox />
+			</div>
+		);
 	}
 
 	return (
 		<>
 			{/* Mobile view (< 768px) */}
 			<div className="md:hidden">
-				<section className="sticky top-0 space-y-3.5 bg-white px-4 py-2.5">
+				<section className="sticky top-0 z-10 space-y-3.5 bg-white px-4 py-2.5">
 					<SearchInput placeholder="디퍼 검색" />
 					<AttendanceFilter />
 				</section>
@@ -57,7 +61,7 @@ const AttendanceMemberContainer = () => {
 			</div>
 
 			{/* Desktop view (>= 768px) */}
-			<div className="hidden md:mx-auto md:block md:max-w-[1200px]">
+			<div className="hidden w-full md:mx-auto md:block md:max-w-[1200px]">
 				<section className="bg-white px-10 py-6">
 					<div className="mb-4 flex items-center gap-2">
 						<h2 className="font-bold text-label-normal text-title1 tracking-[-0.2px]">
