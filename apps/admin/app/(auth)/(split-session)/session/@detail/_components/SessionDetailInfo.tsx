@@ -101,7 +101,7 @@ const SessionDetailInfoBox = ({
 
 export const SessionDetailInfo = ({ sessionId }: SessionDetailInfoProps) => {
 	return (
-		<ErrorBoundary fallback={<ErrorBox />}>
+		<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
 			<Suspense>
 				<SessionDetailInfoContainer sessionId={sessionId} />
 			</Suspense>

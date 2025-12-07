@@ -96,15 +96,12 @@ function SessionItem({ session }: { session: Session }) {
 	);
 }
 
-const SessionList = ErrorBoundary.with(
-	{
-		fallback: (props) => <ErrorBox onReset={() => props.reset()} />,
-	},
-	() => (
-		<Suspense fallback={<LoadingBox />}>
-			<SessionListContainer />
-		</Suspense>
-	),
-);
-
-export { SessionList };
+export const SessionList = () => {
+	return (
+		<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
+			<Suspense fallback={<LoadingBox />}>
+				<SessionListContainer />
+			</Suspense>
+		</ErrorBoundary>
+	);
+};
