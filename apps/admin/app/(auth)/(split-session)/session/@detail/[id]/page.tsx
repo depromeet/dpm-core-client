@@ -11,7 +11,7 @@ const SessionDetailPage = async ({ params }: { params: Promise<{ id: string }> }
 
 	return (
 		<Sheet modal={false} open={!!id}>
-			<SheetContent className="w-full min-w-full gap-0 border-line-normal shadow-none outline-none md:w-[600px] md:min-w-[600px]">
+			<SheetContent className="w-full min-w-full gap-0 border-line-normal shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)] outline-none md:w-[600px] md:min-w-[600px]">
 				<SheetHeader className="flex-row items-center justify-between border-gray-200 border-b px-10 py-6 max-md:hidden">
 					<SheetTitle className="font-bold text-headline1 text-label-normal">세션 상세</SheetTitle>
 					<SheetClose asChild>
