@@ -28,9 +28,9 @@
 		"ky": "^1.8.2",
 		"lucide-react": "^0.514.0",
 		"motion": "^12.23.0",
-		"next": "15.3.3",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0",
+		"next": "15.3.6",
+		"react": "^19.0.1",
+		"react-dom": "^19.0.1",
 		"react-hook-form": "^7.60.0",
 		"react-virtuoso": "^4.13.0",
 		"zod": "^4.0.5"
