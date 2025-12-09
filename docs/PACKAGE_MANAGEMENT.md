@@ -216,8 +216,8 @@ yarn install
     "tailwind-merge": "^3.3.1"
   },
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1"
   }
 }
 ```

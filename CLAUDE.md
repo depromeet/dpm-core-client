@@ -115,7 +115,6 @@ const nextConfig: NextConfig = {
 ### 패키지 관리
 - **패키지 매니저**: pnpm 8.15.6
 - **Node.js 버전**: >=18
-- 새 패키지 생성 시 `pnpm create-package` CLI 사용
 - 공유 패키지 참조 시 `workspace:*` 표기법 사용
 - 적절한 워크스페이스 의존성 유지
 - **버전 관리**: Changesets (@changesets/cli)
