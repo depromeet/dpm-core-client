@@ -60,4 +60,4 @@ mkcert -key-file "$ADMIN_HOST-key.pem" -cert-file "$ADMIN_HOST.pem" "$ADMIN_HOST
 
 echo ""
 echo "🎉 로컬 개발 환경 설정이 완료되었습니다!"
-echo "💡 이제 'yarn dev' 명령어를 사용하여 개발 서버를 실행할 수 있습니다."
+echo "💡 이제 'pnpm dev' 명령어를 사용하여 개발 서버를 실행할 수 있습니다."
