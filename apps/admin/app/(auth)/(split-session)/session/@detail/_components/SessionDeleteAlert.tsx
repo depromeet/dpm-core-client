@@ -23,7 +23,8 @@ interface SessionDeleteAlertProps {
 	sessionId: number;
 }
 
-export const SessionDeleteAlert = ({ sessionId }: SessionDeleteAlertProps) => {
+export const SessionDeleteAlert = (props: SessionDeleteAlertProps) => {
+	const { sessionId } = props;
 	const router = useRouter();
 
 	const queryClient = useQueryClient();

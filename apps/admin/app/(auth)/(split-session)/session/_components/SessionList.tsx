@@ -61,7 +61,6 @@ function SessionItem({ session }: { session: Session }) {
 
 	return (
 		<Pressable
-			data-no-close
 			variant="none"
 			size="none"
 			asChild

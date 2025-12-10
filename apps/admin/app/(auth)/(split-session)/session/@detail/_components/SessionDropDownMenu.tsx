@@ -15,7 +15,9 @@ interface SessionDropDownMenuProps {
 	sessionId: number;
 }
 
-export const SessionDropDownMenu = ({ sessionId }: SessionDropDownMenuProps) => {
+export const SessionDropDownMenu = (props: SessionDropDownMenuProps) => {
+	const { sessionId } = props;
+
 	return (
 		<DropdownMenu modal={false}>
 			<DropdownMenuTrigger asChild>
