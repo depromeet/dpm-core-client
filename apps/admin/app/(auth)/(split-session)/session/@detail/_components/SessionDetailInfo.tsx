@@ -20,7 +20,9 @@ interface SessionDetailInfoProps {
 	sessionId: number;
 }
 
-const SessionDetailInfoContainer = ({ sessionId }: SessionDetailInfoProps) => {
+const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
+	const { sessionId } = props;
+
 	const {
 		data: { data: sessionDetail },
 	} = useSuspenseQuery(getSessionDetailQuery(Number(sessionId)));

@@ -29,7 +29,12 @@ export default function NotFound() {
 				<br />
 				변경 혹은 삭제되어 페이지를 찾을 수 없어요.
 			</p>
-			<Button className="fixed bottom-0 max-w-lg" variant="secondary" size="full" asChild>
+			<Button
+				className="fixed bottom-0 md:relative md:mt-13.5 md:w-45 md:rounded-lg"
+				variant="secondary"
+				size="full"
+				asChild
+			>
 				<Link href="/">홈으로 돌아가기</Link>
 			</Button>
 		</div>
