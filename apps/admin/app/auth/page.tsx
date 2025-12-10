@@ -27,7 +27,12 @@ const AuthPage = () => {
 				<br />
 				회/부회장에게 접근 권한을 요청해 주세요.
 			</p>
-			<Button className="fixed bottom-0 max-w-lg" variant="secondary" size="full" asChild>
+			<Button
+				className="fixed bottom-0 md:relative md:mt-13.5 md:w-45 md:rounded-lg"
+				variant="secondary"
+				size="full"
+				asChild
+			>
 				<Link href="/login">메인 화면으로</Link>
 			</Button>
 		</div>
