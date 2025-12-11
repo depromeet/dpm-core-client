@@ -1,7 +1,8 @@
 import { AppLayout } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
-import { Section } from '@/components/section';
+
+import { SessionSheet } from './@detail/_components/SessionSheet';
 
 export default async function SessionLayout({
 	children,
@@ -11,16 +12,10 @@ export default async function SessionLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<div className="flex w-full flex-col overflow-x-hidden">
-			<AppHeader title="세션" className="max-md:hidden" />
-			<main className="flex flex-1">
-				<AppLayout className="bg-background-normal">
-					<Section className="flex h-full flex-col px-0 md:flex-row">
-						{children}
-						{detail}
-					</Section>
-				</AppLayout>
-			</main>
-		</div>
+		<AppLayout className="flex flex-col bg-background-normal">
+			<AppHeader title="세션" />
+			{children}
+			<SessionSheet>{detail}</SessionSheet>
+		</AppLayout>
 	);
 }

@@ -22,7 +22,7 @@ const SessionListContainer = () => {
 	} = useSuspenseQuery(getSessionListQuery);
 
 	return (
-		<div className="flex h-full w-full flex-col px-4 pb-15 md:px-0">
+		<div className="flex h-full w-full flex-col pb-15">
 			<div className="mt-6 mb-5 hidden justify-between md:flex">
 				<h3 className="flex items-center">
 					<span className="mr-2 font-bold text-title1">세션 목록</span>
@@ -61,7 +61,6 @@ function SessionItem({ session }: { session: Session }) {
 
 	return (
 		<Pressable
-			data-no-close
 			variant="none"
 			size="none"
 			asChild
@@ -96,15 +95,12 @@ function SessionItem({ session }: { session: Session }) {
 	);
 }
 
-const SessionList = ErrorBoundary.with(
-	{
-		fallback: (props) => <ErrorBox onReset={() => props.reset()} />,
-	},
-	() => (
-		<Suspense fallback={<LoadingBox />}>
-			<SessionListContainer />
-		</Suspense>
-	),
-);
-
-export { SessionList };
+export const SessionList = () => {
+	return (
+		<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
+			<Suspense fallback={<LoadingBox />}>
+				<SessionListContainer />
+			</Suspense>
+		</ErrorBoundary>
+	);
+};
