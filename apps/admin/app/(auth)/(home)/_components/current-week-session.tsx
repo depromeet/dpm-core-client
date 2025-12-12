@@ -6,7 +6,7 @@ import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Aesterisk, Button, ChevronRight, gaTrackHomeEnter } from '@dpm-core/shared';
 
-import { Loading } from '@/components/lotties/loading';
+import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringToFullDateString } from '@/lib/date';
 import { getCurrentWeekSessionQuery } from '@/remotes/queries/session';
 
@@ -94,7 +94,7 @@ const CurrentWeekSession = () => (
 			</div>
 		)}
 	>
-		<Suspense fallback={<Loading />}>
+		<Suspense fallback={<LoadingBox />}>
 			<CurrentWeekSessionContainer />
 		</Suspense>
 	</ErrorBoundary>

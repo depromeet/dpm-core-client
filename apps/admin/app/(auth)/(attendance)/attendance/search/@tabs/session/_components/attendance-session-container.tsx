@@ -91,11 +91,7 @@ const AttendanceSessionContainer = () => {
 
 	// 초기 로딩만 전체 LoadingBox 표시
 	if (isLoading && !attendanceData) {
-		return (
-			<div className="mx-auto flex h-[212px] w-[375px] flex-1 flex-col">
-				<LoadingBox />
-			</div>
-		);
+		return <LoadingBox />;
 	}
 
 	return (

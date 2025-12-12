@@ -98,7 +98,13 @@ function SessionItem({ session }: { session: Session }) {
 export const SessionList = () => {
 	return (
 		<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
-			<Suspense fallback={<LoadingBox />}>
+			<Suspense
+				fallback={
+					<div className="flex h-full flex-col">
+						<LoadingBox />
+					</div>
+				}
+			>
 				<SessionListContainer />
 			</Suspense>
 		</ErrorBoundary>
