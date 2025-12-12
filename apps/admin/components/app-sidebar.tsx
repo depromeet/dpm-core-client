@@ -78,7 +78,7 @@ export const AppSidebar = () => {
 		<Sidebar collapsible="icon" className="border-line-normal border-r">
 			<SidebarHeader className="p-4">
 				<Link href="/" className="flex items-center justify-center px-4.5 py-2.5">
-					<TextLogo className="hidden h-5 w-[144px] text-gray-400 lg:block" />
+					<TextLogo className="hidden h-5 w-36 text-gray-400 lg:block" />
 					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="block lg:hidden">
 						<title>Logo</title>
 						<path

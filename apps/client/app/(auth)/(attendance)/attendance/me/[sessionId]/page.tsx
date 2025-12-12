@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { AppLayout } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
 
@@ -12,9 +12,9 @@ export default async function page({ params }: AttendanceMeBySessionIdProps) {
 	const { sessionId } = await params;
 
 	return (
-		<Fragment>
+		<AppLayout className="bg-gray-0">
 			<AppHeader title="내 출석 상세" />
 			<AttendanceSessionDetail sessionId={Number(sessionId)} />
-		</Fragment>
+		</AppLayout>
 	);
 }
