@@ -43,10 +43,9 @@ export const HomeAttendance = () => {
 		<Section>
 			<AttendanceHeader session={prevSession} />
 			<div className="flex justify-between">
-				<SearchInput
-					placeholder="디퍼 검색"
-					className="h-10 w-[270px] min-w-0 shrink-1 border border-line-normal bg-background-normal px-4 py-2.5 max-[800px]:w-[240px]"
-				/>
+				<div className="max-w-[270px] flex-1">
+					<SearchInput id="search" placeholder="디퍼 검색" />
+				</div>
 				<AttendanceFilter />
 			</div>
 

@@ -11,6 +11,7 @@ import {
 } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
+import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringHHMM, formatISOStringToFullDateString } from '@/lib/date';
 import { getSessionDetailQuery } from '@/remotes/queries/session';
 
@@ -104,7 +105,7 @@ const SessionDetailInfoBox = ({
 export const SessionDetailInfo = ({ sessionId }: SessionDetailInfoProps) => {
 	return (
 		<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
-			<Suspense>
+			<Suspense fallback={<LoadingBox />}>
 				<SessionDetailInfoContainer sessionId={sessionId} />
 			</Suspense>
 		</ErrorBoundary>

@@ -94,7 +94,7 @@ const AttendanceCodeBanner = (props: AttendanceBannerProps) => {
 					</span>
 					<strong className="md:font-bold md:text-headline2">{attendanceCode}</strong>
 				</p>
-				<div className="absolute right-5 bottom-5 rounded-full bg-blue-300 p-[10px] max-md:hidden">
+				<div className="absolute right-5 bottom-5 rounded-full bg-blue-300 p-2.5 max-md:hidden">
 					<ArrowRight />
 				</div>
 				<ChevronRight className="text-white md:hidden" />
@@ -153,7 +153,7 @@ const CurrentSessionBanner = (props: CurrentSessionBannerProps) => {
 					</Link>
 				</Button>
 			</div>
-			<div className="absolute right-5 bottom-5 rounded-full bg-blue-400 p-[10px] max-md:hidden">
+			<div className="absolute right-5 bottom-5 rounded-full bg-blue-400 p-2.5 max-md:hidden">
 				<ArrowRight />
 			</div>
 		</div>

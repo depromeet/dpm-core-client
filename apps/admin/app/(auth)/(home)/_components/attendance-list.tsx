@@ -96,7 +96,7 @@ export const TableProfile = (props: TableProfileProps) => {
 
 	return (
 		<figure className="flex items-center gap-3">
-			<div className="flex-shrink-0 overflow-hidden rounded-full bg-background-strong">
+			<div className="shrink-0 overflow-hidden rounded-full bg-background-strong">
 				<Image
 					width={size}
 					height={size}

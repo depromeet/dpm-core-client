@@ -20,7 +20,7 @@ export const SearchInput = ({ className, ...props }: React.ComponentProps<'input
 		<div className="relative">
 			<Input
 				className={cn(
-					'pr-11.5 placeholder:font-normal md:h-10 md:border md:border-line-normal md:bg-white md:px-4',
+					'pr-11.5 placeholder:font-normal md:h-10 md:border md:border-line-normal md:bg-white',
 					className,
 				)}
 				defaultValue={nameValue}
