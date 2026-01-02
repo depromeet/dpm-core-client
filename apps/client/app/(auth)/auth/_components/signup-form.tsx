@@ -2,12 +2,13 @@
 
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { Form, toast } from '@dpm-core/shared';
 
 import { approveWhitelistMutationOptions } from '@/remotes/mutations/member';
+import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
 import { FormEmail } from './form/form-email';
 import { FormName } from './form/form-name';
@@ -32,10 +33,12 @@ export const SignupForm = () => {
 	});
 
 	const router = useRouter();
+	const queryClient = useQueryClient();
 
 	const { mutate: approveWhitelist, isPending } = useMutation(
 		approveWhitelistMutationOptions({
 			onSuccess: () => {
+				queryClient.invalidateQueries(getMyMemberInfoQuery);
 				router.replace('/');
 			},
 			onError: () => {
