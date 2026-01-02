@@ -1,6 +1,7 @@
 export * from './attendance';
 export * from './auth';
 export * from './bill';
+export * from './cohort';
 export * from './constants';
 export * from './http';
 export * from './member';
