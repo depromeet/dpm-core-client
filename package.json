@@ -13,7 +13,7 @@
 		"build": "turbo build",
 		"build:client": "turbo build --filter client",
 		"build:admin": "turbo build --filter admin",
-		"build:native": "pnpm --filter @dpm-core/native build",
+		"build:native": "turbo build --filter @dpm-core/native",
 		"start": "turbo start",
 		"format": "turbo format",
 		"lint": "turbo lint",
