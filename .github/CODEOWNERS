@@ -1,19 +1,19 @@
 # Global owners for all files in the repository
-* @LeeJeongHooo @semnil5202
+* @LeeJeongHooo @semnil5202 @Andrevile @ppinppini @seungsimdang
 
 # Package-specific owners
-/packages/ @LeeJeongHooo @semnil5202
-/apps/ @LeeJeongHooo @semnil5202
+/packages/ @LeeJeongHooo @semnil5202 @Andrevile @ppinppini @seungsimdang
+/apps/ @LeeJeongHooo @semnil5202 @Andrevile @ppinppini @seungsimdang
 
 # Configuration files
-package.json @LeeJeongHooo @semnil5202
-tsconfig*.json @LeeJeongHooo @semnil5202
-turbo.json @LeeJeongHooo @semnil5202
-biome.json @LeeJeongHooo @semnil5202
+package.json @LeeJeongHooo @semnil5202 @Andrevile @ppinppini @seungsimdang
+tsconfig*.json @LeeJeongHooo @semnil5202 @Andrevile @ppinppini @seungsimdang
+turbo.json @LeeJeongHooo @semnil5202 @Andrevile @ppinppini @seungsimdang
+biome.json @LeeJeongHooo @semnil5202 @Andrevile @ppinppini @seungsimdang
 
 # GitHub configurations
-/.github/ @LeeJeongHooo @semnil5202
+/.github/ @LeeJeongHooo @semnil5202 @Andrevile @ppinppini @seungsimdang 
 
 # Documentation
-README.md @LeeJeongHooo @semnil5202
-*.md @LeeJeongHooo @semnil5202 
+README.md @LeeJeongHooo @semnil5202 @Andrevile @ppinppini @seungsimdang
+*.md @LeeJeongHooo @semnil5202 @Andrevile @ppinppini @seungsimdang 
