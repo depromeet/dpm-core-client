@@ -9,6 +9,7 @@
 		"build": "turbo build",
 		"build:client": "turbo build --filter client",
 		"build:admin": "turbo build --filter admin",
+		"build:native": "turbo start --filter @dpm-core/native",
 		"start": "turbo start",
 		"format": "turbo format",
 		"lint": "turbo lint",
@@ -25,7 +26,7 @@
 		"@changesets/cli": "^2.29.5",
 		"turbo": "^2.3.5"
 	},
-	"packageManager": "pnpm@8.15.6",
+	"packageManager": "pnpm@10.27.0",
 	"engines": {
 		"node": ">=18"
 	}

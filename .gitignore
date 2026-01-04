@@ -3,9 +3,29 @@ node_modules
 .pnp
 .pnp.js
 
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
 # Local env files
 .env
 .env.local
+.env*.local
 .env.development.local
 .env.test.local
 .env.production.local
@@ -37,3 +57,10 @@ yarn-error.log*
 # Etc
 *storybook.log
 *.tsbuildinfo
+
+
+app-example
+
+# generated native folders
+/ios
+/android
