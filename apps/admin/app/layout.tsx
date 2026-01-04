@@ -21,6 +21,7 @@ export const viewport: Viewport = {
 	minimumScale: 1,
 };
 
+console.log('test');
 export default function RootLayout({
 	children,
 }: Readonly<{
