@@ -3,6 +3,8 @@ import { BackHandler, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import WebView, { type WebViewNavigation } from 'react-native-webview';
 
+const WEBVIEW_URL = __DEV__ ? 'https://core.depromeet.shop' : 'https://core.depromeet.com';
+
 export default function Home() {
 	const webViewRef = useRef<WebView>(null);
 	const insets = useSafeAreaInsets();
@@ -21,7 +23,7 @@ export default function Home() {
 		return () => backHandler.remove();
 	}, [canGoBack]);
 
-	const handleNavigationChnage = (navState: WebViewNavigation) => {
+	const handleNavigationChanage = (navState: WebViewNavigation) => {
 		setCanGoBack(navState.canGoBack);
 	};
 
@@ -38,10 +40,11 @@ export default function Home() {
 					flex: 1,
 				}}
 				ref={webViewRef}
-				source={{ uri: 'https://core.depromeet.com' }}
-				onNavigationStateChange={handleNavigationChnage}
+				source={{ uri: WEBVIEW_URL }}
+				onNavigationStateChange={handleNavigationChanage}
 				overScrollMode="never"
 				sharedCookiesEnabled={true}
+				allowsBackForwardNavigationGestures={true}
 			/>
 		</View>
 	);
