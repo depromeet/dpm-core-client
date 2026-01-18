@@ -7,10 +7,10 @@ const getStage = (): Stage => {
 	return 'development';
 };
 
-export const isProduction = () => getStage() === 'production';
+export const IS_PROD = getStage() === 'production';
 
 export const getApiBaseUrl = (): string => {
-	if (isProduction()) {
+	if (IS_PROD) {
 		return 'https://api.depromeet.com';
 	}
 	return 'https://api.depromeet.shop';
