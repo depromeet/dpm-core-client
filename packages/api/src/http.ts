@@ -3,10 +3,11 @@ import ky, { type KyInstance, type Options } from 'ky';
 import { logger } from '@dpm-core/shared';
 
 import { COOKIE_KEYS } from './constants';
+import { getApiBaseUrl } from './env';
 import { createRefreshPlugin } from './plugins/create-refresh-plugin';
 import type { ApiResponse } from './type';
 
-export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const BASE_URL = getApiBaseUrl();
 
 class Http {
 	private instance: KyInstance;
