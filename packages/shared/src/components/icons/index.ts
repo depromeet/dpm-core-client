@@ -1,3 +1,4 @@
+export { AppleLogo } from './apple-logo';
 export { ArrowRight } from './arrow-right';
 export { Aesterisk } from './asterisk';
 export { Calender } from './calender';
