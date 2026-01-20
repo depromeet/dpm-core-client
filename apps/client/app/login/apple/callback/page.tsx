@@ -1,11 +1,11 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import Cookies from 'js-cookie';
 import { auth, COOKIE_KEYS } from '@dpm-core/api';
 
-const AppleCallbackPage = () => {
+const AppleCallbackContent = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const isProcessing = useRef(false);
@@ -40,6 +40,14 @@ const AppleCallbackPage = () => {
 	}, [router, searchParams]);
 
 	return null;
+};
+
+const AppleCallbackPage = () => {
+	return (
+		<Suspense>
+			<AppleCallbackContent />
+		</Suspense>
+	);
 };
 
 export default AppleCallbackPage;
