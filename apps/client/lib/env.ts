@@ -18,9 +18,9 @@ export const getAppleClientId = (): string => {
 
 export const getAppleRedirectUri = (): string => {
 	if (IS_PROD) {
-		return 'https://api.depromeet.com/login/oauth2/code/apple';
+		return 'https://core.depromeet.com/login/apple/callback';
 	}
-	return 'https://api.depromeet.shop/login/oauth2/code/apple';
+	return 'https://core.depromeet.shop/login/apple/callback';
 };
 
 /**
