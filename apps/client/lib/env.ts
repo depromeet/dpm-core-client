@@ -7,7 +7,7 @@ const getStage = (): Stage => {
 	return 'development';
 };
 
-const isProduction = () => getStage() === 'production';
+export const IS_PROD = getStage() === 'production';
 
 /**
  * Apple OAuth 관련 환경변수
@@ -17,10 +17,10 @@ export const getAppleClientId = (): string => {
 };
 
 export const getAppleRedirectUri = (): string => {
-	if (isProduction()) {
-		return 'https://api.depromeet.com/login/oauth2/code/apple';
+	if (IS_PROD) {
+		return 'https://core.depromeet.com/login/apple/callback';
 	}
-	return 'https://api.depromeet.shop/login/oauth2/code/apple';
+	return 'https://core.depromeet.shop/login/apple/callback';
 };
 
 /**
