@@ -6,10 +6,12 @@ export async function POST(request: NextRequest) {
 	try {
 		const formData = await request.formData();
 		const code = formData.get('code')?.toString();
-		const error = formData.get('error')?.toString();
+		const appleError = formData.get('error')?.toString();
 
-		if (error || !code) {
-			return NextResponse.redirect(new URL('/login', request.url));
+		if (appleError || !code) {
+			const url = new URL('/login', request.url);
+			url.searchParams.set('error', 'apple_no_code');
+			return NextResponse.redirect(url, { status: 303 });
 		}
 
 		const response = await fetch(`${BASE_URL}/login/auth/apple`, {
@@ -21,7 +23,9 @@ export async function POST(request: NextRequest) {
 		});
 
 		if (!response.ok) {
-			return NextResponse.redirect(new URL('/login', request.url));
+			const url = new URL('/login', request.url);
+			url.searchParams.set('error', `api_failed_${response.status}`);
+			return NextResponse.redirect(url, { status: 303 });
 		}
 
 		const data = await response.json();
@@ -41,8 +45,10 @@ export async function POST(request: NextRequest) {
 			path: '/',
 		});
 
-		return NextResponse.redirect(new URL('/', request.url));
-	} catch {
-		return NextResponse.redirect(new URL('/login', request.url));
+		return NextResponse.redirect(new URL('/', request.url), { status: 303 });
+	} catch (e) {
+		const url = new URL('/login', request.url);
+		url.searchParams.set('error', `catch_${e instanceof Error ? e.message : 'unknown'}`);
+		return NextResponse.redirect(url, { status: 303 });
 	}
 }
