@@ -25,11 +25,33 @@ export async function POST(request: NextRequest) {
 		if (!response.ok) {
 			const url = new URL('/login', request.url);
 			url.searchParams.set('error', `api_failed_${response.status}`);
+
+			try {
+				const clonedResponse = response.clone();
+				const errorData = await clonedResponse.json();
+
+				if (errorData.code) {
+					url.searchParams.set('code', errorData.code);
+				}
+				if (errorData.message) {
+					const message =
+						errorData.message.length > 200
+							? errorData.message.substring(0, 200) + '...'
+							: errorData.message;
+					url.searchParams.set('message', message);
+				}
+				if (errorData.status) {
+					url.searchParams.set('api_status', errorData.status);
+				}
+			} catch {
+				url.searchParams.set('response', 'unknown_error');
+			}
+
 			return NextResponse.redirect(url, { status: 303 });
 		}
 
 		const data = await response.json();
-		const { accessToken, refreshToken } = data.data;
+		const { accessToken, refreshToken } = data;
 
 		const cookieStore = await cookies();
 		cookieStore.set(COOKIE_KEYS.ACCESS_TOKEN, accessToken, {
@@ -45,6 +67,7 @@ export async function POST(request: NextRequest) {
 			path: '/',
 		});
 
+		// 로그인 성공 시 쿼리 파라미터 제거: new URL('/', request.url)로 루트 경로만 사용하여 기존 쿼리 파라미터 제거
 		return NextResponse.redirect(new URL('/', request.url), { status: 303 });
 	} catch (e) {
 		const url = new URL('/login', request.url);
