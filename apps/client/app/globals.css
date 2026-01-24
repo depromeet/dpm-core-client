@@ -1,6 +1,14 @@
 @import "@dpm-core/shared/theme-styles.css";
 @import "@dpm-core/shared/shared-styles.css";
 
+@utility scrollbar-hide {
+	&::-webkit-scrollbar {
+		display: none;
+	}
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
 @layer base {
 	body {
 		@apply bg-background-strong;
