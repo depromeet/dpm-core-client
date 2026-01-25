@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
+import { COOKIE_KEYS } from '@dpm-core/api';
 
 export default async function Layout({
 	children,
@@ -7,7 +8,7 @@ export default async function Layout({
 	children: React.ReactNode;
 }>) {
 	const cookieStore = await cookies();
-	const refreshToken = cookieStore.get('refresh_token');
+	const refreshToken = cookieStore.get(COOKIE_KEYS.REFRESH_TOKEN);
 
 	if (refreshToken) {
 		return redirect('/', RedirectType.replace);
