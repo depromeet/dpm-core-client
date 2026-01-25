@@ -1,22 +1,32 @@
 'use client';
 
-import React from 'react';
+import type React from 'react';
 import { toast } from '@dpm-core/shared';
 
 interface FeatureComingSoonProps {
-	children: React.ReactElement<{ onClick: (e: React.MouseEvent) => void }>;
+	children: React.ReactElement;
 }
 
-export const FeatureComingSoon = ({ children }: FeatureComingSoonProps) => {
-	const handleClick = (e: React.MouseEvent) => {
-		e.preventDefault();
-		e.stopPropagation();
+export const FeatureComingSoon = (props: FeatureComingSoonProps) => {
+	const handleBlockInteraction = (event: React.SyntheticEvent) => {
+		event.preventDefault();
+		event.stopPropagation();
 		toast.info('아직 준비 중인 기능이에요.');
 	};
 
-	if (!React.isValidElement(children)) return null;
+	const handleKeyDownCapture = (event: React.KeyboardEvent) => {
+		if (event.key === 'Enter' || event.key === ' ') {
+			handleBlockInteraction(event);
+		}
+	};
 
-	return React.cloneElement(children, {
-		onClick: handleClick,
-	});
+	return (
+		<div
+			style={{ display: 'contents' }}
+			onClickCapture={handleBlockInteraction}
+			onKeyDownCapture={handleKeyDownCapture}
+			aria-disabled="true"
+			{...props}
+		/>
+	);
 };

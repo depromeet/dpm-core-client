@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
 import { type PropsWithChildren, useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { auth, type Member } from '@dpm-core/api';
@@ -57,12 +57,11 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		return <UnauthenticatedLayout />;
 	}
 
+	if (memberInfo?.status === 'PENDING' && pathname !== '/auth') {
+		return redirect('/auth');
+	}
+
 	if (isLoading) {
-		// return (
-		// 	<div className="flex flex-col items-center justify-center h-dvh">
-		// 		<Loading />
-		// 	</div>
-		// );
 		return null;
 	}
 

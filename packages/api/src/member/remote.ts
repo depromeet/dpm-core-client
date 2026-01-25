@@ -11,4 +11,9 @@ export const member = {
 		const res = await http.patch('v1/members/withdraw');
 		return res;
 	},
+
+	approveWhitelist: async (params: { signupEmail: string; name: string }) => {
+		const res = await http.patch('v1/members/whitelist', { json: params });
+		return res;
+	},
 };
