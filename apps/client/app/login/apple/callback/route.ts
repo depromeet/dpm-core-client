@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
 			const url = new URL('/login', request.url);
 			url.searchParams.set('error', `api_failed_${response.status}`);
 
+			// ---------- 에러 응답 본문 파싱 시도 ----------
 			try {
 				const clonedResponse = response.clone();
 				const errorData = await clonedResponse.json();
@@ -46,6 +47,7 @@ export async function POST(request: NextRequest) {
 			} catch {
 				url.searchParams.set('response', 'unknown_error');
 			}
+			// ---------- 에러 응답 본문 파싱 시도 종료 ----------
 
 			return NextResponse.redirect(url, { status: 303 });
 		}
@@ -67,7 +69,6 @@ export async function POST(request: NextRequest) {
 			path: '/',
 		});
 
-		// 로그인 성공 시 쿼리 파라미터 제거: new URL('/', request.url)로 루트 경로만 사용하여 기존 쿼리 파라미터 제거
 		return NextResponse.redirect(new URL('/', request.url), { status: 303 });
 	} catch (e) {
 		const url = new URL('/login', request.url);
