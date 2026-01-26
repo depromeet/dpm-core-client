@@ -45,74 +45,13 @@ const STATUS_LIST = [
 		label: '진행 중',
 		value: 'IN_PROGRESS',
 	},
-	{
-		label: '전체',
-		value: 'ALL',
-	},
-	{
-		label: '진행 중',
-		value: 'IN_PROGRESS',
-	},
-	{
-		label: '전체',
-		value: 'ALL',
-	},
-	{
-		label: '진행 중',
-		value: 'IN_PROGRESS',
-	},
-	{
-		label: '전체',
-		value: 'ALL',
-	},
-	{
-		label: '진행 중',
-		value: 'IN_PROGRESS',
-	},
-	{
-		label: '전체',
-		value: 'ALL',
-	},
-	{
-		label: '진행 중',
-		value: 'IN_PROGRESS',
-	},
-	{
-		label: '전체',
-		value: 'ALL',
-	},
-	{
-		label: '진행 중',
-		value: 'IN_PROGRESS',
-	},
-	{
-		label: '전체',
-		value: 'ALL',
-	},
-	{
-		label: '진행 중',
-		value: 'IN_PROGRESS',
-	},
-	{
-		label: '전체',
-		value: 'ALL',
-	},
-	{
-		label: '진행 중',
-		value: 'IN_PROGRESS',
-	},
-	{
-		label: '전체',
-		value: 'ALL',
-	},
-	{
-		label: '진행 중',
-		value: 'IN_PROGRESS',
-	},
 ];
+
+type StaffTogetherStatusType = 'ALL' | 'IN_PROGRESS';
 
 const StaffTogetherStatusList = () => {
 	const { ref, isDragging, panHandlers } = useDragScroll();
+	const [selectedStatus, setSelectedStatus] = useState<StaffTogetherStatusType>('ALL');
 
 	return (
 		<motion.div
@@ -135,4 +74,27 @@ const StaffTogetherStatusList = () => {
 	);
 };
 
+// const SessionList = ErrorBoundary.with(
+// 	{
+// 		fallback: (props) => <ErrorBox onReset={() => props.reset()} />,
+// 	},
+// 	() => (
+// 		<Suspense fallback={<LoadingBox />}>
+// 			<SessionListContainer />
+// 		</Suspense>
+// 	),
+// );
+
+// const SessionListContainer = () => {
+// 	const {
+// 		data: { data: sessionResponse },
+// 	} = useSuspenseQuery(getSessionListQuery);
+// 	return (
+// 		<Virtuoso
+// 			data={sessionResponse.sessions}
+// 			itemContent={(_, session) => <SessionItem key={session.id} session={session} />}
+// 			className="flex-1"
+// 		/>
+// 	);
+// };
 export { StaffTogetherStatusList };

@@ -26,8 +26,8 @@ export const useDragScroll = () => {
 		if (!ref.current) return;
 
 		let currentVelocity = velocity;
-		const friction = 0.95; // 마찰 계수 (낮을수록 빨리 멈춤)
-		const minVelocity = 0.5; // 최소 속도 (이하면 정지)
+		const friction = 0.9; // 마찰 계수 (낮을수록 빨리 멈춤)
+		const minVelocity = 0.3; // 최소 속도 (이하면 정지)
 
 		const animate = () => {
 			if (!ref.current || Math.abs(currentVelocity) < minVelocity) {
