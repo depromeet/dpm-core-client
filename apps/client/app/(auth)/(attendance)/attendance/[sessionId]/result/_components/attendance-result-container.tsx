@@ -82,9 +82,7 @@ const AttendanceResultContainer = ({ sessionId }: AttendanceResultProps) => {
 
 export const AttendanceResult = (props: AttendanceResultProps) => {
 	return (
-		<ErrorBoundary
-			fallback={(props) => <ErrorBox onReset={() => props.reset()} />}
-		>
+		<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
 			<Suspense fallback={<LoadingBox />}>
 				<AttendanceResultContainer {...props} />
 			</Suspense>

@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
-import { noticeSchema, type NoticeSchema } from '@/app/(auth)/notice/create/_schemas/notice-schema';
+import { type NoticeSchema, noticeSchema } from '@/app/(auth)/notice/create/_schemas/notice-schema';
 
 export const useNoticeForm = (defaultValues?: Partial<NoticeSchema>) => {
 	const form = useForm<NoticeSchema>({
