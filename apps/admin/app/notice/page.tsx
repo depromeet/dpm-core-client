@@ -19,6 +19,7 @@ interface Notice {
 
 const NoticePage = () => {
 	const router = useRouter();
+
 	const [selectedType, setSelectedType] = useState<NoticeType>('all');
 
 	// 목업 데이터
