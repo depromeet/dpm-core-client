@@ -57,6 +57,11 @@ const SIDEBAR_ITEMS = [
 		icon: IconHome,
 	},
 	{
+		title: '공지',
+		href: '/notice',
+		icon: IconHome, // [TODO]: 아이콘 준비되면 교체 필요
+	},
+	{
 		title: '출석',
 		href: `/attendance/search/session?week=${SESSION_ID}`,
 		icon: IconAttendance,
