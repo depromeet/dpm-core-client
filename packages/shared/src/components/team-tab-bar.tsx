@@ -24,7 +24,7 @@ export const TeamTabBar = ({
   return (
     <div
       className={cn(
-        'flex h-full items-end border-b border-line-normal bg-background-normal pt-3',
+        'flex items-end border-b border-line-normal bg-background-normal pt-3',
         className,
       )}
       {...props}
