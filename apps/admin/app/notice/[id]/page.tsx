@@ -116,7 +116,7 @@ const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
           <div className="flex flex-1 flex-col gap-10 overflow-y-auto border-r border-line-normal p-10">
             {/* Title Section */}
             <div className="flex flex-col gap-2">
-              <NoticeTag type={tags[0]} />
+              <NoticeTag type={tags[0]} className="w-fit" />
 
               <div className="flex flex-col gap-2">
                 <h2 className="font-semibold text-label-strong text-title1">
