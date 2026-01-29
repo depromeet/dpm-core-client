@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import { type Profile } from './profile-stack';
 import { cn } from '../utils/cn';
+import { profile } from 'console';
 
 export interface NoticeDetailHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
@@ -59,22 +60,22 @@ export const NoticeDetailHeader = ({
           <div className="flex items-center gap-1">
             {/* Profile Stack */}
             <div className="flex items-center">
-              {displayProfiles.map((profile, index) => (
-                <Avatar
-                  key={profile.id}
-                  className={cn(
-                    'size-10 border-2 border-white',
-                    index > 0 && '-ml-5',
-                  )}
-                >
-                  {profile.avatarSrc && (
-                    <AvatarImage src={profile.avatarSrc} alt={profile.name} />
-                  )}
-                  <AvatarFallback className="bg-primary-extralight text-primary-normal">
-                    {profile.avatarFallback || profile.name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-              ))}
+              {displayProfiles.map(
+                ({ id, avatarSrc, name, avatarFallback }, index) => (
+                  <Avatar
+                    key={id}
+                    className={cn(
+                      'size-10 border-2 border-white',
+                      index > 0 && '-ml-5',
+                    )}
+                  >
+                    {avatarSrc && <AvatarImage src={avatarSrc} alt={name} />}
+                    <AvatarFallback className="bg-primary-extralight text-primary-normal">
+                      {avatarFallback || name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                ),
+              )}
             </div>
 
             {/* 읽음 텍스트 */}
