@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Plus } from 'lucide-react';
 import {
   Button,
@@ -21,6 +22,7 @@ interface Notice {
 }
 
 const NoticePage = () => {
+  const router = useRouter();
   const [selectedType, setSelectedType] = useState<NoticeType>('all');
 
   // 목업 데이터
@@ -78,8 +80,7 @@ const NoticePage = () => {
   });
 
   const handleNoticeClick = (noticeId: string) => {
-    console.log('공지 클릭:', noticeId);
-    // TODO: 공지 상세 페이지로 이동
+    router.push(`/notice/${noticeId}`);
   };
 
   const handleCreateNotice = () => {
