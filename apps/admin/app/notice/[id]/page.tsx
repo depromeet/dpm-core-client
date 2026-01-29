@@ -105,6 +105,7 @@ const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
         <NoticeDetailHeader
           title="공지 상세"
           readProfiles={readProfiles}
+          readCount={readCount}
           onBack={handleBack}
           onEdit={handleEdit}
         />
