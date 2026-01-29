@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Button,
@@ -11,6 +11,8 @@ import {
   TeamTabBar,
   type Profile,
 } from '@dpm-core/shared';
+import { title } from 'process';
+import { id } from 'zod/locales';
 
 type TabType = 'unread' | 'read';
 
@@ -23,15 +25,16 @@ interface Member {
 }
 
 interface NoticeDetailPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-const NoticeDetailPage = ({ params }: NoticeDetailPageProps) => {
+const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
+  const params = use(paramsPromise);
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState<TabType>('unread');
 
   // 목업 데이터
-  const notice = {
+  const { id, title, date, readCount, tags, content } = {
     id: params.id,
     title: '{공지} 제목이 들어갑니다.',
     date: 'YYYY.MM.DD',
@@ -111,24 +114,24 @@ const NoticeDetailPage = ({ params }: NoticeDetailPageProps) => {
         <div className="flex flex-1 flex-col gap-10 overflow-y-auto border-r border-line-normal p-10">
           {/* Title Section */}
           <div className="flex flex-col gap-2">
-            <NoticeTag type={notice.tags[0]} />
+            <NoticeTag type={tags[0]} />
 
             <div className="flex flex-col gap-2">
               <h2 className="font-semibold text-label-strong text-title1">
-                {notice.title}
+                {title}
               </h2>
 
               <div className="flex items-center gap-2 text-caption1 text-label-assistive">
-                <span>{notice.date}</span>
+                <span>{date}</span>
                 <div className="h-3 w-px bg-gray-400" />
-                <span>{notice.readCount}명 읽음</span>
+                <span>{readCount}명 읽음</span>
               </div>
             </div>
           </div>
 
           {/* Content Section */}
           <div className="whitespace-pre-wrap font-medium text-body2 text-label-normal">
-            {notice.content}
+            {content}
           </div>
         </div>
 
@@ -150,12 +153,12 @@ const NoticeDetailPage = ({ params }: NoticeDetailPageProps) => {
           {/* Member List */}
           <div className="flex-1 overflow-y-auto bg-background-normal p-5">
             <div className="flex flex-col gap-2">
-              {currentMembers.map((member) => (
+              {currentMembers.map(({ id, name, team, role }) => (
                 <MemberProfile
-                  key={member.id}
-                  name={member.name}
-                  team={member.team}
-                  role={member.role}
+                  key={id}
+                  name={name}
+                  team={team}
+                  role={role}
                   showHover
                 />
               ))}
