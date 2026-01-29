@@ -8,11 +8,10 @@ import {
   NoticeDetailHeader,
   NoticeTag,
   ReminderCallout,
+  SidebarInset,
   TeamTabBar,
   type Profile,
 } from '@dpm-core/shared';
-import { title } from 'process';
-import { id } from 'zod/locales';
 
 type TabType = 'unread' | 'read';
 
@@ -30,12 +29,13 @@ interface NoticeDetailPageProps {
 
 const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
   const params = use(paramsPromise);
+  console.log('NoticeDetailPage params id:', params.id); // id 값 확인용 로그
+
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState<TabType>('unread');
 
   // 목업 데이터
-  const { id, title, date, readCount, tags, content } = {
-    id: params.id,
+  const { title, date, readCount, tags, content } = {
     title: '{공지} 제목이 들어갑니다.',
     date: 'YYYY.MM.DD',
     readCount: 5,
@@ -99,87 +99,89 @@ const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
   const currentMembers = selectedTab === 'unread' ? unreadMembers : readMembers;
 
   return (
-    <div className="flex h-screen w-full flex-col bg-background-normal">
-      {/* Header */}
-      <NoticeDetailHeader
-        title="공지 상세"
-        readProfiles={readProfiles}
-        onBack={handleBack}
-        onEdit={handleEdit}
-      />
+    <SidebarInset>
+      <div className="flex h-screen w-full flex-col bg-background-normal">
+        {/* Header */}
+        <NoticeDetailHeader
+          title="공지 상세"
+          readProfiles={readProfiles}
+          onBack={handleBack}
+          onEdit={handleEdit}
+        />
 
-      {/* Body */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* 좌측: 공지 상세 */}
-        <div className="flex flex-1 flex-col gap-10 overflow-y-auto border-r border-line-normal p-10">
-          {/* Title Section */}
-          <div className="flex flex-col gap-2">
-            <NoticeTag type={tags[0]} />
-
+        {/* Body */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* 좌측: 공지 상세 */}
+          <div className="flex flex-1 flex-col gap-10 overflow-y-auto border-r border-line-normal p-10">
+            {/* Title Section */}
             <div className="flex flex-col gap-2">
-              <h2 className="font-semibold text-label-strong text-title1">
-                {title}
-              </h2>
+              <NoticeTag type={tags[0]} />
 
-              <div className="flex items-center gap-2 text-caption1 text-label-assistive">
-                <span>{date}</span>
-                <div className="h-3 w-px bg-gray-400" />
-                <span>{readCount}명 읽음</span>
+              <div className="flex flex-col gap-2">
+                <h2 className="font-semibold text-label-strong text-title1">
+                  {title}
+                </h2>
+
+                <div className="flex items-center gap-2 text-caption1 text-label-assistive">
+                  <span>{date}</span>
+                  <div className="h-3 w-px bg-gray-400" />
+                  <span>{readCount}명 읽음</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Content Section */}
-          <div className="whitespace-pre-wrap font-medium text-body2 text-label-normal">
-            {content}
-          </div>
-        </div>
-
-        {/* 우측: 조회 현황 */}
-        <div className="flex h-full w-100 flex-col bg-background-normal">
-          {/* Tab */}
-          <div className="border-b border-line-normal bg-background-normal px-4 pt-3">
-            <TeamTabBar
-              tabs={[
-                { id: 'unread', label: '안 읽은 디퍼' },
-                { id: 'read', label: '읽은 디퍼' },
-              ]}
-              activeTabId={selectedTab}
-              onTabChange={(tabId) => setSelectedTab(tabId as TabType)}
-              className="w-full"
-            />
-          </div>
-
-          {/* Member List */}
-          <div className="flex-1 overflow-y-auto bg-background-normal p-5">
-            <div className="flex flex-col gap-2">
-              {currentMembers.map(({ id, name, team, role }) => (
-                <MemberProfile
-                  key={id}
-                  name={name}
-                  team={team}
-                  role={role}
-                  showHover
-                />
-              ))}
+            {/* Content Section */}
+            <div className="whitespace-pre-wrap font-medium text-body2 text-label-normal">
+              {content}
             </div>
           </div>
 
-          {/* Footer */}
-          <div className="border-t border-line-normal bg-background-normal p-5">
-            <div className="flex flex-col gap-4">
-              <ReminderCallout
-                title="리마인드 알림 일괄 전송"
-                description="안읽은 디퍼들에게 한번에 다 보낸다~ 이런 문구가 들어가면 될 듯?"
+          {/* 우측: 조회 현황 */}
+          <div className="flex h-full w-100 flex-col bg-background-normal">
+            {/* Tab */}
+            <div className="border-b border-line-normal bg-background-normal px-4 pt-3">
+              <TeamTabBar
+                tabs={[
+                  { id: 'unread', label: '안 읽은 디퍼' },
+                  { id: 'read', label: '읽은 디퍼' },
+                ]}
+                activeTabId={selectedTab}
+                onTabChange={(tabId) => setSelectedTab(tabId as TabType)}
+                className="w-full"
               />
-              <Button size="lg" className="w-full" onClick={handleRemindSend}>
-                리마인드 전송
-              </Button>
+            </div>
+
+            {/* Member List */}
+            <div className="flex-1 overflow-y-auto bg-background-normal p-5">
+              <div className="flex flex-col gap-2">
+                {currentMembers.map(({ id, name, team, role }) => (
+                  <MemberProfile
+                    key={id}
+                    name={name}
+                    team={team}
+                    role={role}
+                    showHover
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-line-normal bg-background-normal p-5">
+              <div className="flex flex-col gap-4">
+                <ReminderCallout
+                  title="리마인드 알림 일괄 전송"
+                  description="안읽은 디퍼들에게 한번에 다 보낸다~ 이런 문구가 들어가면 될 듯?"
+                />
+                <Button size="lg" className="w-full" onClick={handleRemindSend}>
+                  리마인드 전송
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </SidebarInset>
   );
 };
 
