@@ -20,15 +20,16 @@ export const Toolbar = ({ editor }: ToolbarProps) => {
 	};
 
 	return (
-		<div className="w-full overflow-x-auto border-line-normal border-b">
+		<div className="w-full overflow-x-auto bg-background-subtle">
 			<div className="flex min-w-fit items-center gap-2.5 p-5">
-				<History editor={editor} handleTooltip={handleTooltip} />
-				<VerticalDivider />
 				<FontStyles editor={editor} handleTooltip={handleTooltip} />
 				<VerticalDivider />
 				<TiptapLink editor={editor} handleTooltip={handleTooltip} />
 				<VerticalDivider />
 				<List editor={editor} handleTooltip={handleTooltip} />
+				<div className="ml-auto" />
+				<VerticalDivider />
+				<History editor={editor} handleTooltip={handleTooltip} />
 			</div>
 		</div>
 	);

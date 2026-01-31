@@ -38,10 +38,10 @@ export const useTiptapEditor = ({ content, onChange }: UseTiptapEditorProps) => 
 		onUpdate: ({ editor }) => {
 			onChange(editor.getHTML());
 		},
-		editorProps: {
+			editorProps: {
 			attributes: {
 				class:
-					'min-h-[300px] w-full rounded-lg border border-transparent p-4 font-medium text-body2 outline-none transition-color placeholder:text-label-assistive focus:border-gray-900 bg-background-normal resize-none',
+					'min-h-[300px] w-full p-4 font-medium text-body2 outline-none transition-color placeholder:text-label-assistive bg-background-normal resize-none',
 			},
 		},
 	});

@@ -25,7 +25,7 @@ export const TiptapEditorContainer = ({ content, onChange }: TiptapEditorContain
 	}
 
 	return (
-		<div className="flex w-full flex-col">
+		<div className="flex w-full flex-col rounded-lg border border-line-normal overflow-hidden">
 			<Toolbar editor={editor} />
 			<TiptapEditor editor={editor} />
 		</div>
