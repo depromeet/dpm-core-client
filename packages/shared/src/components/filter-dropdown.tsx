@@ -20,7 +20,7 @@ export const FilterDropdown = ({
 		<button
 			type="button"
 			className={cn(
-				'flex h-10 items-center justify-center gap-1.5 rounded-lg border bg-comp-fill-white px-4 py-3 font-semibold text-body3 outline-none transition-colors',
+				'flex h-10 cursor-pointer items-center justify-center gap-1.5 rounded-lg border bg-comp-fill-white px-4 py-3 font-semibold text-body3 outline-none transition-colors',
 				isSelected
 					? 'border-primary-normal text-primary-normal'
 					: 'border-line-normal text-label-assistive',
