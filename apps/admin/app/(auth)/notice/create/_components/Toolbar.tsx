@@ -18,7 +18,7 @@ export const Toolbar = ({ editor }: ToolbarProps) => {
 	};
 
 	return (
-		<div className="flex h-11 w-full items-center overflow-x-auto bg-background-subtle">
+		<div className="relative flex h-11 w-full items-center overflow-x-auto bg-background-subtle">
 			<div className="flex w-full min-w-fit items-center justify-between gap-2.5 px-5">
 				<div className="flex items-center gap-2.5">
 					<FontStyles editor={editor} handleTooltip={handleTooltip} />
