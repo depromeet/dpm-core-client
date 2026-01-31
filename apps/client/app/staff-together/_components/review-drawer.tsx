@@ -55,7 +55,7 @@ export const ReviewDrawer = ({
 		.filter(Boolean);
 
 	return (
-		<Drawer>
+		<Drawer modal={false}>
 			<DrawerTrigger asChild>{children}</DrawerTrigger>
 			<DrawerContent
 				aria-describedby={undefined}

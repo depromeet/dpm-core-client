@@ -95,7 +95,7 @@ export const TagSelect = ({
 					type="text"
 					readOnly
 					onFocus={() => setIsOpen(true)}
-					onBlur={() => setTimeout(() => setIsOpen(false), 150)}
+					onBlur={() => setIsOpen(false)}
 					placeholder={selectedOptions.length === 0 ? placeholder : ''}
 					className="min-w-[20px] flex-1 cursor-text bg-transparent font-medium text-body2 caret-gray-900 outline-none placeholder:text-[#9CA3AF]"
 				/>

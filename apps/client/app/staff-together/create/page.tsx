@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 // import * as motion from 'motion/react-client';
@@ -58,6 +59,7 @@ const INVITE_SCOPE_OPTIONS = [
 const STORAGE_KEY = 'staff-together-create-form';
 
 const StaffTogetherCreatePage = () => {
+	const router = useRouter();
 	// const { isVisible: showButton } = useScrollVisibility({ delay: 300 });
 
 	const form = useForm<CreateGatheringFormValues>({
@@ -102,11 +104,17 @@ const StaffTogetherCreatePage = () => {
 	const descriptionValue = form.watch('description') ?? '';
 	const scheduledAtValue = form.watch('scheduledAt');
 
-	const handleSubmit = (data: CreateGatheringFormValues) => {
+	const handleSubmit = async (data: CreateGatheringFormValues) => {
 		console.log('Form submitted:', data);
+
+		// TODO: API 호출
+		// await createStaffTogether(data);
+
 		// 제출 성공 시 저장된 데이터 삭제
 		sessionStorage.removeItem(STORAGE_KEY);
-		// TODO: API 호출 및 페이지 이동
+
+		// 완료 페이지로 이동
+		router.replace('/staff-together/create/complete');
 	};
 
 	return (
