@@ -33,6 +33,47 @@
 	color: var(--color-primary-strong);
 }
 
+/* Tiptap Editor Heading 스타일 */
+.ProseMirror h2 {
+	font-size: var(--text-headline2);
+	line-height: var(--text-headline2--line-height);
+	font-weight: 600;
+	color: var(--color-label-strong);
+	margin: 1rem 0 0.5rem 0;
+}
+
+.ProseMirror h3 {
+	font-size: var(--text-title1);
+	line-height: var(--text-title1--line-height);
+	font-weight: 600;
+	color: var(--color-label-strong);
+	margin: 0.875rem 0 0.5rem 0;
+}
+
+.ProseMirror h4 {
+	font-size: var(--text-title2);
+	line-height: var(--text-title2--line-height);
+	font-weight: 600;
+	color: var(--color-label-strong);
+	margin: 0.75rem 0 0.5rem 0;
+}
+
+.ProseMirror h5 {
+	font-size: var(--text-body1);
+	line-height: var(--text-body1--line-height);
+	font-weight: 600;
+	color: var(--color-label-strong);
+	margin: 0.625rem 0 0.5rem 0;
+}
+
+.ProseMirror h6 {
+	font-size: var(--text-body2);
+	line-height: var(--text-body2--line-height);
+	font-weight: 600;
+	color: var(--color-label-strong);
+	margin: 0.5rem 0 0.5rem 0;
+}
+
 /* Tiptap Editor 리스트 스타일 */
 .ProseMirror ul,
 .ProseMirror ol {
