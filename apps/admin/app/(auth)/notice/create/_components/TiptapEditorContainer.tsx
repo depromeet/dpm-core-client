@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { TiptapEditor, useTiptapEditor } from './TiptapEditor';
 import { TiptapEditorSkeleton } from './TiptapEditorSkeleton';
@@ -25,7 +25,7 @@ export const TiptapEditorContainer = ({ content, onChange }: TiptapEditorContain
 	}
 
 	return (
-		<div className="flex w-full flex-col rounded-lg border border-line-normal overflow-hidden">
+		<div className="flex w-full flex-col overflow-hidden rounded-lg border border-line-normal">
 			<Toolbar editor={editor} />
 			<TiptapEditor editor={editor} />
 		</div>

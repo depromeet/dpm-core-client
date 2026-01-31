@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Button, Dialog, DialogContent, Input, cn } from '@dpm-core/shared';
+import { Button, cn, Dialog, DialogContent, Input } from '@dpm-core/shared';
 
 import { LinkIcon } from '../icons';
 import type { EditorProps } from './types';

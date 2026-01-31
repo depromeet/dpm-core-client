@@ -20,18 +20,42 @@ import {
 
 import { Section } from '@/components/section';
 import { useNoticeForm } from '@/hooks/use-notice-form';
+import { usePreventPageExit } from '@/hooks/use-prevent-page-exit';
 
 import { TiptapEditorContainer } from './_components/TiptapEditorContainer';
 
 export default function CreateNoticePage() {
 	const { form, handleSubmit, handleTemporarySave } = useNoticeForm();
 
+	// form 값 감시
+	const title = form.watch('title');
+	const content = form.watch('content');
+	const isScheduled = form.watch('isScheduled');
+	const sendNotification = form.watch('sendNotification');
+
+	// 입력 내용이 하나라도 있으면 페이지 이탈 방지 활성화
+	// category는 기본값 'required'이므로 무시
+	const hasChanges =
+		title.trim() !== '' || content.trim() !== '' || isScheduled || sendNotification;
+
+	usePreventPageExit(hasChanges);
+
 	return (
 		<AppLayout className="bg-background-normal">
 			{/* 상단 헤더 */}
 			<header className="sticky top-0 z-10 border-line-normal border-b bg-background-normal">
 				<div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4 py-3 md:px-10 md:py-4">
-					<Link href="/notice" className="flex items-center gap-2">
+					<Link
+						href="/notice"
+						className="flex items-center gap-2"
+						onClick={(e) => {
+							if (hasChanges) {
+								if (!window.confirm('작성 중인 내용이 있습니다. 정말 나가시겠습니까?')) {
+									e.preventDefault();
+								}
+							}
+						}}
+					>
 						<ChevronLeft className="text-icon-noraml" />
 					</Link>
 					<div className="flex items-center gap-2">
@@ -58,7 +82,7 @@ export default function CreateNoticePage() {
 								name="category"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>카테고리</FormLabel>
+										<FormLabel className="text-body1">카테고리</FormLabel>
 										<FormControl>
 											<ToggleGroup
 												type="single"
@@ -105,9 +129,9 @@ export default function CreateNoticePage() {
 								name="title"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>공지 제목</FormLabel>
+										<FormLabel className="text-body1">공지 제목</FormLabel>
 										<FormControl>
-											<Input placeholder="ex. 디프만 00기 OT" variant="filled" {...field} />
+											<Input placeholder="ex. 디프만 00기 OT" variant="line" {...field} />
 										</FormControl>
 										<FormMessage className="text-red-400" />
 									</FormItem>
@@ -120,7 +144,7 @@ export default function CreateNoticePage() {
 								name="content"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>상세 내용</FormLabel>
+										<FormLabel className="text-body1">상세 내용</FormLabel>
 										<FormControl>
 											<TiptapEditorContainer
 												content={field.value}
@@ -140,7 +164,7 @@ export default function CreateNoticePage() {
 								render={({ field }) => (
 									<FormItem>
 										<div className="flex items-center justify-between">
-											<FormLabel>공지 예약하기</FormLabel>
+											<FormLabel className="text-body1">공지 예약하기</FormLabel>
 											<FormControl>
 												<Switch checked={field.value} onCheckedChange={field.onChange} />
 											</FormControl>
@@ -158,7 +182,7 @@ export default function CreateNoticePage() {
 									<FormItem>
 										<div className="flex items-center justify-between">
 											<div className="flex flex-col gap-1">
-												<FormLabel>등록알림 보내기</FormLabel>
+												<FormLabel className="text-body1">등록알림 보내기</FormLabel>
 												<p className="text-body2 text-label-assistive">
 													디퍼들에게 공지 등록 PUSH 알림을 보내요
 												</p>
