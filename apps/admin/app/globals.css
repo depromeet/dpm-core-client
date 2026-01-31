@@ -21,12 +21,36 @@
 	margin: 0.5rem 0;
 }
 
-.ProseMirror ul {
+/* Unordered List - 첫 번째 레벨: 속이 찬 동그란 리스트 (disc) */
+.ProseMirror > ul {
 	list-style-type: disc;
 }
 
-.ProseMirror ol {
+/* Unordered List - 두 번째 레벨: 속이 비고 테두리가 있는 리스트 (circle) */
+.ProseMirror ul ul {
+	list-style-type: circle;
+}
+
+/* Unordered List - 세 번째 레벨 이상: square */
+.ProseMirror ul ul ul {
+	list-style-type: square;
+}
+
+/* Ordered List - 첫 번째 레벨: 1, 2, 3... */
+.ProseMirror > ol {
 	list-style-type: decimal;
+}
+
+/* Ordered List - 두 번째 레벨: a, b, c... */
+.ProseMirror ol ol,
+.ProseMirror ul ol {
+	list-style-type: lower-alpha;
+}
+
+/* Ordered List - 세 번째 레벨: i, ii, iii... */
+.ProseMirror ol ol ol,
+.ProseMirror ul ol ol {
+	list-style-type: lower-roman;
 }
 
 .ProseMirror li {
@@ -34,6 +58,7 @@
 	padding-left: 0.25rem;
 }
 
+/* 중첩 리스트 간격 */
 .ProseMirror ul ul,
 .ProseMirror ol ol,
 .ProseMirror ul ol,
