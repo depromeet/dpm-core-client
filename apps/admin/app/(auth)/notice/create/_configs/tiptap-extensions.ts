@@ -6,7 +6,7 @@ import StarterKit from '@tiptap/starter-kit';
 export const CustomStarterKit = StarterKit.configure({
 	listItem: {
 		HTMLAttributes: {
-			style: 'margin: 0; padding: 0; list-style-type: revert; margin-left: 22px;',
+			style: 'margin: 0; padding: 0; list-style-type: revert; margin-left: 16px;',
 		},
 	},
 	blockquote: {
