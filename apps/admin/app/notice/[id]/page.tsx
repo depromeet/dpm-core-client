@@ -106,6 +106,7 @@ const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
 	};
 
 	// 현재 공지 데이터 가져오기
+	<<<<<<< HEAD
 	const notice = mockNotices[params.id];
 	if (!notice) notFound();
 
@@ -133,6 +134,33 @@ const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
 		{ id: '7', name: '{디퍼} 이름', team: '{N}팀', role: '{디퍼} 직무' },
 	];
 
+	=======
+	const notice = mockNotices[params.id] || mockNotices['1'];
+	const { title, date, readCount, tags, content } = notice;
+
+	// 과제 공지인지 확인
+	const isAssignment = tags.includes('assignment');
+
+	const readProfiles: Profile[] = [
+		{ id: '1', name: '디퍼 A', avatarSrc: undefined },
+		{ id: '2', name: '디퍼 B', avatarSrc: undefined },
+		{ id: '3', name: '디퍼 C', avatarSrc: undefined },
+	];
+
+	const unreadMembers: Member[] = [
+		// { id: '1', name: '{디퍼} 이름', team: '{N}팀', role: '{디퍼} 직무' },
+		// { id: '2', name: '{디퍼} 이름', team: '{N}팀', role: '{디퍼} 직무' },
+		// { id: '3', name: '{디퍼} 이름', team: '{N}팀', role: '{디퍼} 직무' },
+		// { id: '4', name: '{디퍼} 이름', team: '{N}팀', role: '{디퍼} 직무' },
+		// { id: '5', name: '{디퍼} 이름', team: '{N}팀', role: '{디퍼} 직무' },
+	];
+
+	const readMembers: Member[] = [
+		{ id: '6', name: '{디퍼} 이름', team: '{N}팀', role: '{디퍼} 직무' },
+		{ id: '7', name: '{디퍼} 이름', team: '{N}팀', role: '{디퍼} 직무' },
+	];
+
+	>>>>>>> dd5091b (feat: 과제 공지 상세 페이지 구현)
 	const handleBack = () => router.push('/notice');
 
 	const handleEdit = () => {
