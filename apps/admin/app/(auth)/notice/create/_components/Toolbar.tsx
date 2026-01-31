@@ -19,15 +19,17 @@ export const Toolbar = ({ editor }: ToolbarProps) => {
 
 	return (
 		<div className="flex h-11 w-full items-center overflow-x-auto bg-background-subtle">
-			<div className="flex min-w-fit items-center gap-2.5 px-5">
-				<FontStyles editor={editor} handleTooltip={handleTooltip} />
-				<VerticalDivider />
-				<TiptapLink editor={editor} handleTooltip={handleTooltip} />
-				<VerticalDivider />
-				<List editor={editor} handleTooltip={handleTooltip} />
-				<div className="ml-auto" />
-				<VerticalDivider />
-				<History editor={editor} handleTooltip={handleTooltip} />
+			<div className="flex w-full min-w-fit items-center justify-between gap-2.5 px-5">
+				<div className="flex items-center gap-2.5">
+					<FontStyles editor={editor} handleTooltip={handleTooltip} />
+					<VerticalDivider />
+					<TiptapLink editor={editor} handleTooltip={handleTooltip} />
+					<VerticalDivider />
+					<List editor={editor} handleTooltip={handleTooltip} />
+				</div>
+				<section className="flex items-center gap-2.5">
+					<History editor={editor} handleTooltip={handleTooltip} />
+				</section>
 			</div>
 		</div>
 	);
