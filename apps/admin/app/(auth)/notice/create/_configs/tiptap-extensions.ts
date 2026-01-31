@@ -31,7 +31,6 @@ export const CustomStarterKit = StarterKit.configure({
 	},
 	bulletList: false,
 	heading: false,
-	paragraph: false,
 	codeBlock: false,
 	code: false,
 	dropcursor: {
