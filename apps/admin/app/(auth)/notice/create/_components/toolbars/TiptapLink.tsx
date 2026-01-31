@@ -95,7 +95,7 @@ export const TiptapLink = ({ editor, handleTooltip }: EditorProps) => {
 	const modalContent = isOpen && (
 		<div
 			ref={modalRef}
-			className="fixed z-50 w-[400px] rounded-2xl border border-line-normal bg-background-subtle p-4 shadow-lg"
+			className="fixed z-50 w-[400px] rounded-2xl border border-line-normal bg-background-subtle shadow-lg"
 			style={{
 				top: `${position.top}px`,
 				left: `${position.left}px`,
