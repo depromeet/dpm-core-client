@@ -19,6 +19,8 @@ import {
 
 import { AppHeader } from '@/components/app-header';
 
+import { TagSelect } from '../_components/tag-select';
+
 // import { useScrollVisibility } from '../_hooks/useScrollVisibility';
 
 /** 폼 스키마 정의 */
@@ -41,6 +43,14 @@ const createGatheringSchema = z.object({
 });
 
 type CreateGatheringFormValues = z.infer<typeof createGatheringSchema>;
+
+/** 초대 범위 목 데이터 - TODO: 서버에서 받아오기 */
+const INVITE_SCOPE_OPTIONS = [
+	{ id: '18th-staff', label: '18기 운영진' },
+	{ id: '18th-diper', label: '18기 디퍼' },
+	{ id: '17th-staff', label: '17기 운영진' },
+	{ id: '17th-diper', label: '17기 디퍼' },
+];
 
 const StaffTogetherCreatePage = () => {
 	// const { isVisible: showButton } = useScrollVisibility({ delay: 300 });
@@ -128,16 +138,21 @@ const StaffTogetherCreatePage = () => {
 							)}
 						/>
 
-						{/* 회식 초대 범위 - 2단계에서 구현 */}
+						{/* 회식 초대 범위 */}
 						<FormField
 							control={form.control}
 							name="inviteScopes"
-							render={() => (
+							render={({ field }) => (
 								<FormItem>
 									<Label className="font-semibold text-[#4B5563] text-body2">회식 초대 범위</Label>
-									<div className="flex min-h-[48px] w-full items-center rounded-lg border border-line-normal bg-white p-4">
-										{/* TODO: 태그 입력 컴포넌트 */}
-									</div>
+									<FormControl>
+										<TagSelect
+											value={field.value}
+											onChange={field.onChange}
+											options={INVITE_SCOPE_OPTIONS}
+											placeholder="초대 범위를 선택해주세요"
+										/>
+									</FormControl>
 								</FormItem>
 							)}
 						/>
