@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
 	AppLayout,
 	Button,
@@ -25,6 +26,7 @@ import { usePreventPageExit } from '@/hooks/use-prevent-page-exit';
 import { TiptapEditorContainer } from './_components/TiptapEditorContainer';
 
 export default function CreateNoticePage() {
+	const router = useRouter();
 	const { form, handleSubmit, handleTemporarySave } = useNoticeForm();
 
 	// form 값 감시
@@ -58,14 +60,28 @@ export default function CreateNoticePage() {
 					>
 						<ChevronLeft className="text-icon-noraml" />
 					</Link>
-					<div className="flex items-center gap-2">
-						<Button variant="assistive" size="sm">
-							임시 0
+					<div className="flex items-center gap-4">
+						<Button
+							variant="assistive"
+							className="h-12"
+							onClick={() => {
+								const formData = form.getValues();
+								const params = new URLSearchParams({
+									category: formData.category,
+									title: formData.title,
+									content: formData.content,
+									isScheduled: String(formData.isScheduled),
+									sendNotification: String(formData.sendNotification),
+								});
+								router.push(`/notice/create/preview?${params.toString()}`);
+							}}
+						>
+							미리보기
 						</Button>
-						<Button variant="assistive" size="sm" onClick={handleTemporarySave}>
+						<Button variant="assistive" className="h-12" onClick={handleTemporarySave}>
 							임시저장
 						</Button>
-						<Button variant="secondary" size="sm" onClick={form.handleSubmit(handleSubmit)}>
+						<Button variant="secondary" className="h-12" onClick={form.handleSubmit(handleSubmit)}>
 							등록하기
 						</Button>
 					</div>
