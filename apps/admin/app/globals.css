@@ -18,6 +18,21 @@
 	line-height: 1.75;
 }
 
+/* Tiptap Editor 링크 스타일 */
+.ProseMirror a,
+.ProseMirror .link {
+	color: var(--color-primary-normal);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+	cursor: pointer;
+	transition: color 0.2s ease;
+}
+
+.ProseMirror a:hover,
+.ProseMirror .link:hover {
+	color: var(--color-primary-strong);
+}
+
 /* Tiptap Editor 리스트 스타일 */
 .ProseMirror ul,
 .ProseMirror ol {
