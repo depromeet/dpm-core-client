@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 // import * as motion from 'motion/react-client';
 import { useForm } from 'react-hook-form';
@@ -20,6 +21,7 @@ import {
 import { AppHeader } from '@/components/app-header';
 
 import { DateTimePickerDrawer } from '../_components/datetime-picker-drawer';
+import { ReviewDrawer } from '../_components/review-drawer';
 import { TagSelect } from '../_components/tag-select';
 
 // import { useScrollVisibility } from '../_hooks/useScrollVisibility';
@@ -53,6 +55,8 @@ const INVITE_SCOPE_OPTIONS = [
 	{ id: '17th-diper', label: '17기 디퍼' },
 ];
 
+const STORAGE_KEY = 'staff-together-create-form';
+
 const StaffTogetherCreatePage = () => {
 	// const { isVisible: showButton } = useScrollVisibility({ delay: 300 });
 
@@ -66,13 +70,43 @@ const StaffTogetherCreatePage = () => {
 		},
 	});
 
+	// sessionStorage에서 저장된 폼 데이터 불러오기 (새로고침 시 유지, 탭 닫으면 삭제)
+	useEffect(() => {
+		const saved = sessionStorage.getItem(STORAGE_KEY);
+		if (saved) {
+			try {
+				const parsed = JSON.parse(saved);
+				// Date 문자열을 Date 객체로 변환
+				if (parsed.scheduledAt) {
+					parsed.scheduledAt = new Date(parsed.scheduledAt);
+				}
+				if (parsed.closedAt) {
+					parsed.closedAt = new Date(parsed.closedAt);
+				}
+				form.reset(parsed);
+			} catch {
+				// 파싱 실패 시 무시
+			}
+		}
+	}, [form]);
+
+	// 폼 데이터가 변경될 때마다 sessionStorage에 저장
+	useEffect(() => {
+		const subscription = form.watch((data) => {
+			sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+		});
+		return () => subscription.unsubscribe();
+	}, [form]);
+
 	const titleValue = form.watch('title');
 	const descriptionValue = form.watch('description') ?? '';
 	const scheduledAtValue = form.watch('scheduledAt');
 
 	const handleSubmit = (data: CreateGatheringFormValues) => {
 		console.log('Form submitted:', data);
-		// TODO: API 호출 및 확인 Drawer 열기
+		// 제출 성공 시 저장된 데이터 삭제
+		sessionStorage.removeItem(STORAGE_KEY);
+		// TODO: API 호출 및 페이지 이동
 	};
 
 	return (
@@ -297,15 +331,26 @@ const StaffTogetherCreatePage = () => {
 
 			{/* 하단 CTA 버튼 */}
 			<div className="before:-top-[24px] relative shrink-0 bg-white px-[16px] pt-[12px] pb-[calc(12px+env(safe-area-inset-bottom))] before:pointer-events-none before:absolute before:right-0 before:left-0 before:h-[24px] before:bg-gradient-to-t before:from-white before:to-transparent">
-				<Button
-					type="submit"
-					variant="secondary"
-					size="full"
-					className="h-[48px] rounded-lg bg-[#1F2937] text-white"
-					onClick={form.handleSubmit(handleSubmit)}
+				<ReviewDrawer
+					data={{
+						title: form.watch('title'),
+						description: form.watch('description'),
+						scheduledAt: form.watch('scheduledAt'),
+						closedAt: form.watch('closedAt'),
+						inviteScopes: form.watch('inviteScopes'),
+					}}
+					inviteScopeOptions={INVITE_SCOPE_OPTIONS}
+					onConfirm={() => form.handleSubmit(handleSubmit)()}
 				>
-					회식 생성하기
-				</Button>
+					<Button
+						type="button"
+						variant="secondary"
+						size="full"
+						className="h-[48px] rounded-lg bg-[#1F2937] text-white"
+					>
+						회식 생성하기
+					</Button>
+				</ReviewDrawer>
 			</div>
 			{/* <motion.div
 				className="pointer-events-none fixed bottom-0 w-full max-w-lg px-[16px] pt-[12px] pb-[calc(12px+env(safe-area-inset-bottom))]"
