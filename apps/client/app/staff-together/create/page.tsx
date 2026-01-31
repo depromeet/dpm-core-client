@@ -68,6 +68,7 @@ const StaffTogetherCreatePage = () => {
 
 	const titleValue = form.watch('title');
 	const descriptionValue = form.watch('description') ?? '';
+	const scheduledAtValue = form.watch('scheduledAt');
 
 	const handleSubmit = (data: CreateGatheringFormValues) => {
 		console.log('Form submitted:', data);
@@ -201,7 +202,7 @@ const StaffTogetherCreatePage = () => {
 							)}
 						/>
 
-						{/* 참여 조사 마감 시간 - 4단계에서 구현 */}
+						{/* 참여 조사 마감 시간 */}
 						<FormField
 							control={form.control}
 							name="closedAt"
@@ -211,30 +212,48 @@ const StaffTogetherCreatePage = () => {
 										참여 조사 마감 시간
 									</Label>
 									<div className="flex gap-[8px]">
-										<button
-											type="button"
-											className="flex flex-1 items-center gap-[8px] rounded-lg border border-line-normal bg-white px-[16px] py-[12px]"
+										<DateTimePickerDrawer
+											title="참여 조사 마감 일시"
+											value={field.value}
+											onChange={field.onChange}
+											selectedLabel="마감"
+											highlightedDate={scheduledAtValue}
+											highlightedLabel="회식"
 										>
-											<CalendarIcon />
-											<span className="font-medium text-[#1F2937] text-body2">
-												{field.value ? formatDate(field.value) : '날짜 선택'}
-											</span>
-										</button>
-										<button
-											type="button"
-											className="flex items-center gap-[8px] rounded-lg border border-line-normal bg-white px-[16px] py-[12px]"
+											<button
+												type="button"
+												className="flex flex-1 items-center gap-[8px] rounded-lg border border-line-normal bg-white px-[16px] py-[12px]"
+											>
+												<CalendarIcon />
+												<span className="font-medium text-[#1F2937] text-body2">
+													{field.value ? formatDate(field.value) : '날짜 선택'}
+												</span>
+											</button>
+										</DateTimePickerDrawer>
+										<DateTimePickerDrawer
+											title="참여 조사 마감 일시"
+											value={field.value}
+											onChange={field.onChange}
+											selectedLabel="마감"
+											highlightedDate={scheduledAtValue}
+											highlightedLabel="회식"
 										>
-											<ClockIcon />
-											<span className="font-medium text-[#1F2937] text-body2">
-												{field.value ? formatTime(field.value) : '시간 선택'}
-											</span>
-										</button>
+											<button
+												type="button"
+												className="flex items-center gap-[8px] rounded-lg border border-line-normal bg-white px-[16px] py-[12px]"
+											>
+												<ClockIcon />
+												<span className="font-medium text-[#1F2937] text-body2">
+													{field.value ? formatTime(field.value) : '시간 선택'}
+												</span>
+											</button>
+										</DateTimePickerDrawer>
 									</div>
 								</FormItem>
 							)}
 						/>
 
-						{/* 참여 조사 마감 후 수정 허용 - 5단계에서 구현 */}
+						{/* 참여 조사 마감 후 수정 허용 */}
 						<FormField
 							control={form.control}
 							name="allowEditAfterClose"
