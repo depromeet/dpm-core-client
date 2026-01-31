@@ -2,6 +2,7 @@
 
 import { cn } from '@dpm-core/shared';
 
+import { LinkIcon } from '../icons';
 import type { EditorProps } from './types';
 
 /**
@@ -32,13 +33,13 @@ export const TiptapLink = ({ editor, handleTooltip }: EditorProps) => {
 			onFocus={(e) => handleTooltip?.(e, 'Link')}
 			onMouseOut={() => handleTooltip?.()}
 			onBlur={() => handleTooltip?.()}
-			className={cn(
-				'flex h-8 w-8 items-center justify-center rounded hover:bg-background-strong',
-				editor.isActive('link') && 'bg-background-strong',
-			)}
-			aria-label="Link"
-		>
-			<span className="text-body2 text-icon-noraml">🔗</span>
-		</button>
+				className={cn(
+					'flex h-8 w-8 items-center justify-center rounded hover:bg-background-strong',
+					editor.isActive('link') && 'bg-background-strong',
+				)}
+				aria-label="Link"
+			>
+				<LinkIcon className="text-icon-noraml" />
+			</button>
 	);
 };

@@ -2,6 +2,7 @@
 
 import { cn } from '@dpm-core/shared';
 
+import { RedoIcon, UndoIcon } from '../icons';
 import type { EditorProps } from './types';
 
 /**
@@ -23,7 +24,7 @@ export const History = ({ editor, handleTooltip }: EditorProps) => {
 				)}
 				aria-label="Undo"
 			>
-				<span className="text-body2 text-icon-noraml">↶</span>
+				<UndoIcon className="text-icon-noraml" />
 			</button>
 			<button
 				type="button"
@@ -38,7 +39,7 @@ export const History = ({ editor, handleTooltip }: EditorProps) => {
 				)}
 				aria-label="Redo"
 			>
-				<span className="text-body2 text-icon-noraml">↷</span>
+				<RedoIcon className="text-icon-noraml" />
 			</button>
 		</div>
 	);

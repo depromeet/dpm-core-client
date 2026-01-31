@@ -2,6 +2,7 @@
 
 import { cn } from '@dpm-core/shared';
 
+import { OrderIcon, UnorderIcon } from '../icons';
 import type { EditorProps } from './types';
 
 /**
@@ -24,7 +25,7 @@ export const List = ({ editor, handleTooltip }: EditorProps) => {
 				)}
 				aria-label="Unordered List"
 			>
-				<span className="text-body2 text-icon-noraml">•</span>
+				<UnorderIcon className="text-icon-noraml" />
 			</button>
 			<button
 				type="button"
@@ -40,7 +41,7 @@ export const List = ({ editor, handleTooltip }: EditorProps) => {
 				)}
 				aria-label="Ordered List"
 			>
-				<span className="text-body2 text-icon-noraml">1.</span>
+				<OrderIcon className="text-icon-noraml" />
 			</button>
 		</div>
 	);

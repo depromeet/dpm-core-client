@@ -2,6 +2,7 @@
 
 import { cn } from '@dpm-core/shared';
 
+import { BoldIcon, ItalicIcon, UnderlineIcon } from '../icons';
 import type { EditorProps } from './types';
 
 /**
@@ -24,7 +25,7 @@ export const FontStyles = ({ editor, handleTooltip }: EditorProps) => {
 				)}
 				aria-label="Bold"
 			>
-				<span className="font-bold text-body2 text-icon-noraml">B</span>
+				<BoldIcon className="text-icon-noraml" />
 			</button>
 			<button
 				type="button"
@@ -40,7 +41,7 @@ export const FontStyles = ({ editor, handleTooltip }: EditorProps) => {
 				)}
 				aria-label="Italic"
 			>
-				<span className="text-body2 italic text-icon-noraml">I</span>
+				<ItalicIcon className="text-icon-noraml" />
 			</button>
 			<button
 				type="button"
@@ -56,7 +57,7 @@ export const FontStyles = ({ editor, handleTooltip }: EditorProps) => {
 				)}
 				aria-label="Underline"
 			>
-				<span className="text-body2 underline text-icon-noraml">U</span>
+				<UnderlineIcon className="text-icon-noraml" />
 			</button>
 		</div>
 	);
