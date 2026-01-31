@@ -107,7 +107,7 @@ export const TiptapLink = ({ editor, handleTooltip }: EditorProps) => {
 					value={url}
 					onChange={(e) => setUrl(e.target.value)}
 					onKeyDown={handleKeyDown}
-					className="border-line-normal bg-background-normal pr-20"
+					className="border-line-normal bg-background-normal p-0 py-6 pr-[calc(60px+8px)] pl-4"
 					variant="line"
 					autoFocus
 				/>
@@ -115,7 +115,7 @@ export const TiptapLink = ({ editor, handleTooltip }: EditorProps) => {
 					onClick={handleSubmit}
 					variant="secondary"
 					size="md"
-					className="-translate-y-1/2 absolute top-1/2 right-2 h-10 shrink-0"
+					className="-translate-y-1/2 absolute top-1/2 right-1.5 h-10 shrink-0"
 				>
 					완료
 				</Button>
