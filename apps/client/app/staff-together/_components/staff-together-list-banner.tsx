@@ -49,6 +49,14 @@ const StaffTogetherBannerIcon = () => {
 	);
 };
 
+interface StaffTogetherBannerContainerProps {
+	Banner: React.ReactNode;
+}
+
+const StaffTogetherBannerContainer = ({ Banner }: StaffTogetherBannerContainerProps) => {
+	return <div className="px-[16px] py-[8px]">{Banner}</div>;
+};
+
 const StaffTogetherBanner = () => {
 	return (
 		<div className="h-[80px] rounded-lg bg-gray-50 px-[16px] py-[12px]">
@@ -69,4 +77,4 @@ const StaffTogetherBanner = () => {
 	);
 };
 
-export { StaffTogetherBanner };
+export { StaffTogetherBanner, StaffTogetherBannerContainer };

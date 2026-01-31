@@ -2,6 +2,7 @@
 export * from './components/app-shell-provider';
 export * from './components/badge';
 export * from './components/create-context';
+export * from './components/drag-scroll-container';
 export * from './components/filter-chip';
 export * from './components/google-analytics';
 export * from './components/icons';
