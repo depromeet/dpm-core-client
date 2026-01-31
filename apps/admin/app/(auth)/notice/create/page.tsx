@@ -29,9 +29,6 @@ export default function CreateNoticePage() {
 				<div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4 py-3 md:px-10 md:py-4">
 					<Link href="/notice" className="flex items-center gap-2">
 						<ChevronLeft className="text-icon-noraml" />
-						<span className="hidden text-body2 text-label-assistive md:inline">
-							홈 &gt; 공지 &gt; 등록
-						</span>
 					</Link>
 					<div className="flex items-center gap-2">
 						<Button variant="assistive" size="sm">
@@ -63,7 +60,7 @@ export default function CreateNoticePage() {
 							<ToggleGroupItem
 								value="required"
 								className={cn(
-									'rounded-[170px] border border-line-normal px-3 py-1 font-medium text-body2 text-label-assistive data-[state=on]:border-primary-normal data-[state=on]:bg-primary-normal data-[state=on]:font-semibold data-[state=on]:text-label-inverse',
+									'rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal',
 								)}
 							>
 								필수
@@ -71,7 +68,7 @@ export default function CreateNoticePage() {
 							<ToggleGroupItem
 								value="assignment"
 								className={cn(
-									'rounded-[170px] border border-line-normal px-3 py-1 font-medium text-body2 text-label-assistive data-[state=on]:border-primary-normal data-[state=on]:bg-primary-normal data-[state=on]:font-semibold data-[state=on]:text-label-inverse',
+									'rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal',
 								)}
 							>
 								과제
@@ -79,7 +76,7 @@ export default function CreateNoticePage() {
 							<ToggleGroupItem
 								value="other"
 								className={cn(
-									'rounded-[170px] border border-line-normal px-3 py-1 font-medium text-body2 text-label-assistive data-[state=on]:border-primary-normal data-[state=on]:bg-primary-normal data-[state=on]:font-semibold data-[state=on]:text-label-inverse',
+									'rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal',
 								)}
 							>
 								기타
