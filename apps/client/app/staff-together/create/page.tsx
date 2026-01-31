@@ -19,6 +19,7 @@ import {
 
 import { AppHeader } from '@/components/app-header';
 
+import { DateTimePickerDrawer } from '../_components/datetime-picker-drawer';
 import { TagSelect } from '../_components/tag-select';
 
 // import { useScrollVisibility } from '../_hooks/useScrollVisibility';
@@ -157,7 +158,7 @@ const StaffTogetherCreatePage = () => {
 							)}
 						/>
 
-						{/* 회식 시간 - 3단계에서 구현 */}
+						{/* 회식 시간 */}
 						<FormField
 							control={form.control}
 							name="scheduledAt"
@@ -165,24 +166,36 @@ const StaffTogetherCreatePage = () => {
 								<FormItem>
 									<Label className="font-semibold text-[#4B5563] text-body2">회식 시간</Label>
 									<div className="flex gap-[8px]">
-										<button
-											type="button"
-											className="flex flex-1 items-center gap-[8px] rounded-lg border border-line-normal bg-white px-[16px] py-[12px]"
+										<DateTimePickerDrawer
+											title="회식 시간"
+											value={field.value}
+											onChange={field.onChange}
 										>
-											<CalendarIcon />
-											<span className="font-medium text-[#1F2937] text-body2">
-												{field.value ? formatDate(field.value) : '날짜 선택'}
-											</span>
-										</button>
-										<button
-											type="button"
-											className="flex items-center gap-[8px] rounded-lg border border-line-normal bg-white px-[16px] py-[12px]"
+											<button
+												type="button"
+												className="flex flex-1 items-center gap-[8px] rounded-lg border border-line-normal bg-white px-[16px] py-[12px]"
+											>
+												<CalendarIcon />
+												<span className="font-medium text-[#1F2937] text-body2">
+													{field.value ? formatDate(field.value) : '날짜 선택'}
+												</span>
+											</button>
+										</DateTimePickerDrawer>
+										<DateTimePickerDrawer
+											title="회식 시간"
+											value={field.value}
+											onChange={field.onChange}
 										>
-											<ClockIcon />
-											<span className="font-medium text-[#1F2937] text-body2">
-												{field.value ? formatTime(field.value) : '시간 선택'}
-											</span>
-										</button>
+											<button
+												type="button"
+												className="flex items-center gap-[8px] rounded-lg border border-line-normal bg-white px-[16px] py-[12px]"
+											>
+												<ClockIcon />
+												<span className="font-medium text-[#1F2937] text-body2">
+													{field.value ? formatTime(field.value) : '시간 선택'}
+												</span>
+											</button>
+										</DateTimePickerDrawer>
 									</div>
 								</FormItem>
 							)}
