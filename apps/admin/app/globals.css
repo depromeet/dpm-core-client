@@ -13,11 +13,16 @@
 	}
 }
 
+/* Tiptap Editor 기본 스타일 */
+.ProseMirror {
+	line-height: 1.75;
+}
+
 /* Tiptap Editor 리스트 스타일 */
 .ProseMirror ul,
 .ProseMirror ol {
 	list-style-position: outside;
-	padding-left: 1rem; /* 16px - 2depth */
+	padding-left: 0.5rem; /* 8px - 2depth */
 	margin: 0.5rem 0;
 }
 
