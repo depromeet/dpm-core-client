@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { gaTrackHomeEnter, gaTrackSessionEnter } from '../../utils/google-analytics';
 
 interface GAPageTrackerProps {
-	type: 'home' | 'session' | 'session-detail' | 'staff-together';
+	type: 'home' | 'session' | 'session-detail' | 'staff-together' | 'staff-together-create';
 	sessionId?: string;
 }
 
