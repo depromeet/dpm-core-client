@@ -35,6 +35,7 @@ export const useTiptapEditor = ({ content, onChange }: UseTiptapEditorProps) => 
 	const editor = useEditor({
 		extensions: tiptapExtensions,
 		content,
+		immediatelyRender: false,
 		onUpdate: ({ editor }) => {
 			onChange(editor.getHTML());
 		},
