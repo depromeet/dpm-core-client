@@ -16,13 +16,12 @@ export const TiptapEditor = ({ editor, className }: TiptapEditorProps) => {
 	if (!editor) return null;
 
 	return (
-		<EditorContent
-			editor={editor}
-			className={cn(
-				'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none',
-				className,
-			)}
-		/>
+		<div className="w-full">
+			<EditorContent
+				editor={editor}
+				className={cn('w-full focus:outline-none', className)}
+			/>
+		</div>
 	);
 };
 
@@ -42,7 +41,7 @@ export const useTiptapEditor = ({ content, onChange }: UseTiptapEditorProps) => 
 		editorProps: {
 			attributes: {
 				class:
-					'min-h-[300px] w-full rounded-lg border border-transparent p-4 font-medium text-body2 outline-none transition-color placeholder:text-label-assistive focus:border-gray-900 bg-background-strong resize-none',
+					'min-h-[300px] w-full rounded-lg border border-transparent p-4 font-medium text-body2 outline-none transition-color placeholder:text-label-assistive focus:border-gray-900 bg-background-normal resize-none',
 			},
 		},
 	});

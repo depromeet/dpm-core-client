@@ -38,7 +38,7 @@ export const TiptapLink = ({ editor, handleTooltip }: EditorProps) => {
 			)}
 			aria-label="Link"
 		>
-			<span className="text-body2">🔗</span>
+			<span className="text-body2 text-icon-noraml">🔗</span>
 		</button>
 	);
 };

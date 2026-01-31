@@ -24,7 +24,7 @@ export const List = ({ editor, handleTooltip }: EditorProps) => {
 				)}
 				aria-label="Unordered List"
 			>
-				<span className="text-body2">•</span>
+				<span className="text-body2 text-icon-noraml">•</span>
 			</button>
 			<button
 				type="button"
@@ -40,7 +40,7 @@ export const List = ({ editor, handleTooltip }: EditorProps) => {
 				)}
 				aria-label="Ordered List"
 			>
-				<span className="text-body2">1.</span>
+				<span className="text-body2 text-icon-noraml">1.</span>
 			</button>
 		</div>
 	);

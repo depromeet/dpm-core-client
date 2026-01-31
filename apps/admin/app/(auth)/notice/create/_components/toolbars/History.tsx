@@ -23,7 +23,7 @@ export const History = ({ editor, handleTooltip }: EditorProps) => {
 				)}
 				aria-label="Undo"
 			>
-				<span className="text-body2">↶</span>
+				<span className="text-body2 text-icon-noraml">↶</span>
 			</button>
 			<button
 				type="button"
@@ -38,7 +38,7 @@ export const History = ({ editor, handleTooltip }: EditorProps) => {
 				)}
 				aria-label="Redo"
 			>
-				<span className="text-body2">↷</span>
+				<span className="text-body2 text-icon-noraml">↷</span>
 			</button>
 		</div>
 	);

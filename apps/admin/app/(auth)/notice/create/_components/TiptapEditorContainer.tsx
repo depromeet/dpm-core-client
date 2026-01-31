@@ -1,6 +1,9 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+
 import { TiptapEditor, useTiptapEditor } from './TiptapEditor';
+import { TiptapEditorSkeleton } from './TiptapEditorSkeleton';
 import { Toolbar } from './Toolbar';
 
 interface TiptapEditorContainerProps {
@@ -10,9 +13,16 @@ interface TiptapEditorContainerProps {
 }
 
 export const TiptapEditorContainer = ({ content, onChange }: TiptapEditorContainerProps) => {
+	const [isMounted, setIsMounted] = useState(false);
 	const editor = useTiptapEditor({ content, onChange });
 
-	if (!editor) return null;
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
+
+	if (!isMounted || !editor) {
+		return <TiptapEditorSkeleton />;
+	}
 
 	return (
 		<div className="flex w-full flex-col">

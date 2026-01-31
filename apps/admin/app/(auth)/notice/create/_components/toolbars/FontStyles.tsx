@@ -24,7 +24,7 @@ export const FontStyles = ({ editor, handleTooltip }: EditorProps) => {
 				)}
 				aria-label="Bold"
 			>
-				<span className="font-bold text-body2">B</span>
+				<span className="font-bold text-body2 text-icon-noraml">B</span>
 			</button>
 			<button
 				type="button"
@@ -40,7 +40,7 @@ export const FontStyles = ({ editor, handleTooltip }: EditorProps) => {
 				)}
 				aria-label="Italic"
 			>
-				<span className="text-body2 italic">I</span>
+				<span className="text-body2 italic text-icon-noraml">I</span>
 			</button>
 			<button
 				type="button"
@@ -56,7 +56,7 @@ export const FontStyles = ({ editor, handleTooltip }: EditorProps) => {
 				)}
 				aria-label="Underline"
 			>
-				<span className="text-body2 underline">U</span>
+				<span className="text-body2 underline text-icon-noraml">U</span>
 			</button>
 		</div>
 	);
