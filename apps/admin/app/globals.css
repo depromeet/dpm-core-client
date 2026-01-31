@@ -12,3 +12,32 @@
 		display: none;
 	}
 }
+
+/* Tiptap Editor 리스트 스타일 */
+.ProseMirror ul,
+.ProseMirror ol {
+	list-style-position: outside;
+	padding-left: 1rem; /* 16px - 2depth */
+	margin: 0.5rem 0;
+}
+
+.ProseMirror ul {
+	list-style-type: disc;
+}
+
+.ProseMirror ol {
+	list-style-type: decimal;
+}
+
+.ProseMirror li {
+	margin: 0.25rem 0;
+	padding-left: 0.25rem;
+}
+
+.ProseMirror ul ul,
+.ProseMirror ol ol,
+.ProseMirror ul ol,
+.ProseMirror ol ul {
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}

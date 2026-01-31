@@ -30,6 +30,7 @@ export const CustomStarterKit = StarterKit.configure({
 		},
 	},
 	bulletList: false,
+	// orderedList는 StarterKit 기본값 사용
 	heading: false,
 	codeBlock: false,
 	code: false,
