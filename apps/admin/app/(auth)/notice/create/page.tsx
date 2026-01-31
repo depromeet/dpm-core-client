@@ -1,9 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import z from 'zod';
 import {
 	AppLayout,
 	Button,
@@ -23,39 +20,10 @@ import {
 } from '@dpm-core/shared';
 
 import { Section } from '@/components/section';
-
-const noticeSchema = z.object({
-	category: z.enum(['required', 'assignment', 'other']),
-	title: z.string().min(1, '공지 제목을 입력해주세요.'),
-	content: z.string().min(1, '상세 내용을 입력해주세요.'),
-	isScheduled: z.boolean(),
-	sendNotification: z.boolean(),
-});
-
-type NoticeSchema = z.infer<typeof noticeSchema>;
+import { useNoticeForm } from '@/hooks/use-notice-form';
 
 export default function CreateNoticePage() {
-	const form = useForm<NoticeSchema>({
-		resolver: zodResolver(noticeSchema),
-		defaultValues: {
-			category: 'required',
-			title: '',
-			content: '',
-			isScheduled: false,
-			sendNotification: false,
-		},
-	});
-
-	const handleSubmit = (data: NoticeSchema) => {
-		console.log('Form submitted:', data);
-		// TODO: API 호출
-	};
-
-	const handleTemporarySave = () => {
-		const formData = form.getValues();
-		console.log('Temporary save:', formData);
-		// TODO: 임시저장 API 호출
-	};
+	const { form, handleSubmit, handleTemporarySave } = useNoticeForm();
 
 	return (
 		<AppLayout className="bg-background-normal">
