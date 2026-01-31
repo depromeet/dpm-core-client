@@ -14,13 +14,14 @@ import {
 	FormMessage,
 	Input,
 	Switch,
-	Textarea,
 	ToggleGroup,
 	ToggleGroupItem,
 } from '@dpm-core/shared';
 
 import { Section } from '@/components/section';
 import { useNoticeForm } from '@/hooks/use-notice-form';
+
+import { TiptapEditorContainer } from './_components/TiptapEditorContainer';
 
 export default function CreateNoticePage() {
 	const { form, handleSubmit, handleTemporarySave } = useNoticeForm();
@@ -120,59 +121,11 @@ export default function CreateNoticePage() {
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel>상세 내용</FormLabel>
-										{/* TODO: 리치 텍스트 에디터 툴바 추가 */}
-										<div className="flex items-center gap-2 border-line-normal border-b pb-2">
-											<button
-												type="button"
-												className="flex h-8 w-8 items-center justify-center rounded hover:bg-background-strong"
-												aria-label="Bold"
-											>
-												<span className="font-bold text-body2">B</span>
-											</button>
-											<button
-												type="button"
-												className="flex h-8 w-8 items-center justify-center rounded hover:bg-background-strong"
-												aria-label="Italic"
-											>
-												<span className="text-body2 italic">I</span>
-											</button>
-											<button
-												type="button"
-												className="flex h-8 w-8 items-center justify-center rounded hover:bg-background-strong"
-												aria-label="Underline"
-											>
-												<span className="text-body2 underline">U</span>
-											</button>
-											<div className="mx-1 h-4 w-px bg-line-normal" />
-											<button
-												type="button"
-												className="flex h-8 w-8 items-center justify-center rounded hover:bg-background-strong"
-												aria-label="Link"
-											>
-												<span className="text-body2">🔗</span>
-											</button>
-											<div className="mx-1 h-4 w-px bg-line-normal" />
-											<button
-												type="button"
-												className="flex h-8 w-8 items-center justify-center rounded hover:bg-background-strong"
-												aria-label="Unordered List"
-											>
-												<span className="text-body2">•</span>
-											</button>
-											<button
-												type="button"
-												className="flex h-8 w-8 items-center justify-center rounded hover:bg-background-strong"
-												aria-label="Ordered List"
-											>
-												<span className="text-body2">1.</span>
-											</button>
-										</div>
 										<FormControl>
-											<Textarea
+											<TiptapEditorContainer
+												content={field.value}
+												onChange={field.onChange}
 												placeholder="ex. 디프만 00기 OT"
-												variant="filled"
-												className="min-h-[300px]"
-												{...field}
 											/>
 										</FormControl>
 										<FormMessage className="text-red-400" />

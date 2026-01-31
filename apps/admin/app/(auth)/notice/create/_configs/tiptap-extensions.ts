@@ -1,7 +1,7 @@
-import StarterKit from '@tiptap/starter-kit';
 import BulletList from '@tiptap/extension-bullet-list';
 import Link from '@tiptap/extension-link';
 import Underline from '@tiptap/extension-underline';
+import StarterKit from '@tiptap/starter-kit';
 
 export const CustomStarterKit = StarterKit.configure({
 	listItem: {
@@ -34,10 +34,6 @@ export const CustomStarterKit = StarterKit.configure({
 	paragraph: false,
 	codeBlock: false,
 	code: false,
-	history: {
-		depth: 1000,
-		newGroupDelay: 100,
-	},
 	dropcursor: {
 		width: 2,
 	},
@@ -69,9 +65,4 @@ export const CustomUnderline = Underline.configure({
 });
 
 // 모든 확장을 배열로 export
-export const tiptapExtensions = [
-	CustomStarterKit,
-	CustomBulletList,
-	CustomLink,
-	CustomUnderline,
-];
+export const tiptapExtensions = [CustomStarterKit, CustomBulletList, CustomLink, CustomUnderline];

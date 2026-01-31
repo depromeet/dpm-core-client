@@ -1,0 +1,56 @@
+'use client';
+
+import { useEffect } from 'react';
+import type { Editor } from '@tiptap/react';
+import { EditorContent, useEditor } from '@tiptap/react';
+import { cn } from '@dpm-core/shared';
+
+import { tiptapExtensions } from '../_configs/tiptap-extensions';
+
+interface TiptapEditorProps {
+	editor: Editor | null;
+	className?: string;
+}
+
+export const TiptapEditor = ({ editor, className }: TiptapEditorProps) => {
+	if (!editor) return null;
+
+	return (
+		<EditorContent
+			editor={editor}
+			className={cn(
+				'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none',
+				className,
+			)}
+		/>
+	);
+};
+
+interface UseTiptapEditorProps {
+	content: string;
+	onChange: (content: string) => void;
+}
+
+export const useTiptapEditor = ({ content, onChange }: UseTiptapEditorProps) => {
+	const editor = useEditor({
+		extensions: tiptapExtensions,
+		content,
+		onUpdate: ({ editor }) => {
+			onChange(editor.getHTML());
+		},
+		editorProps: {
+			attributes: {
+				class:
+					'min-h-[300px] w-full rounded-lg border border-transparent p-4 font-medium text-body2 outline-none transition-color placeholder:text-label-assistive focus:border-gray-900 bg-background-strong resize-none',
+			},
+		},
+	});
+
+	useEffect(() => {
+		if (editor && content !== editor.getHTML()) {
+			editor.commands.setContent(content);
+		}
+	}, [content, editor]);
+
+	return editor;
+};
