@@ -1,4 +1,6 @@
+import { textblockTypeInputRule } from '@tiptap/core';
 import BulletList from '@tiptap/extension-bullet-list';
+import Heading from '@tiptap/extension-heading';
 import Link from '@tiptap/extension-link';
 import Underline from '@tiptap/extension-underline';
 import StarterKit from '@tiptap/starter-kit';
@@ -46,6 +48,23 @@ export const CustomBulletList = BulletList.configure({
 	},
 });
 
+type Level = 2 | 3 | 4 | 5 | 6;
+
+export const CustomHeading = Heading.extend({
+	addInputRules() {
+		const levels: Level[] = [2, 3, 4, 5, 6];
+		return levels.map((level) =>
+			textblockTypeInputRule({
+				find: new RegExp(`^(#{${level - 1}})\\s$`),
+				type: this.type,
+				getAttributes: { level },
+			}),
+		);
+	},
+}).configure({
+	levels: [2, 3, 4, 5, 6],
+});
+
 export const CustomLink = Link.configure({
 	// URL 자동 링크, HTTPS 강제
 	openOnClick: false,
@@ -65,4 +84,10 @@ export const CustomUnderline = Underline.configure({
 });
 
 // 모든 확장을 배열로 export
-export const tiptapExtensions = [CustomStarterKit, CustomBulletList, CustomLink, CustomUnderline];
+export const tiptapExtensions = [
+	CustomStarterKit,
+	CustomBulletList,
+	CustomHeading,
+	CustomLink,
+	CustomUnderline,
+];
