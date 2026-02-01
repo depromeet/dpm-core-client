@@ -38,7 +38,7 @@ export const useTiptapEditor = ({ content, onChange }: UseTiptapEditorProps) => 
 		editorProps: {
 			attributes: {
 				class:
-					'min-h-[300px] w-full p-4 font-medium text-body2 outline-none transition-color placeholder:text-label-assistive bg-background-normal resize-none',
+					'h-[300px] w-full p-4 font-medium text-body2 outline-none transition-color placeholder:text-label-assistive bg-background-normal resize-none overflow-y-auto',
 				style: 'line-height: 1.6;',
 			},
 		},
