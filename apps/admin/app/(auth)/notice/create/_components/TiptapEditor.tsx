@@ -17,10 +17,7 @@ export const TiptapEditor = ({ editor, className }: TiptapEditorProps) => {
 
 	return (
 		<div className="w-full">
-			<EditorContent
-				editor={editor}
-				className={cn('w-full focus:outline-none', className)}
-			/>
+			<EditorContent editor={editor} className={cn('w-full focus:outline-none', className)} />
 		</div>
 	);
 };
@@ -38,10 +35,11 @@ export const useTiptapEditor = ({ content, onChange }: UseTiptapEditorProps) => 
 		onUpdate: ({ editor }) => {
 			onChange(editor.getHTML());
 		},
-			editorProps: {
+		editorProps: {
 			attributes: {
 				class:
 					'min-h-[300px] w-full p-4 font-medium text-body2 outline-none transition-color placeholder:text-label-assistive bg-background-normal resize-none',
+				style: 'line-height: 1.6;',
 			},
 		},
 	});

@@ -7,11 +7,6 @@
 	}
 }
 
-/* Tiptap Editor 기본 스타일 */
-.ProseMirror {
-	line-height: 1.75;
-}
-
 /* Tiptap Editor 링크 hover 스타일 (기본 스타일은 inline CSS로 처리) */
 .ProseMirror a:hover,
 .ProseMirror .link:hover {
