@@ -10,7 +10,7 @@ import type { EditorProps } from './types';
 /**
  * @description 링크 삽입/편집 툴
  */
-export const TiptapLink = ({ editor, handleTooltip }: EditorProps) => {
+export const TiptapLink = ({ editor }: EditorProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [url, setUrl] = useState('');
 	const [position, setPosition] = useState({ top: 0, left: 0 });
@@ -129,10 +129,6 @@ export const TiptapLink = ({ editor, handleTooltip }: EditorProps) => {
 				<button
 					type="button"
 					onClick={handleOpen}
-					onMouseOver={(e) => handleTooltip?.(e, 'Link')}
-					onFocus={(e) => handleTooltip?.(e, 'Link')}
-					onMouseOut={() => handleTooltip?.()}
-					onBlur={() => handleTooltip?.()}
 					className={cn(
 						'flex h-8 w-8 items-center justify-center rounded hover:bg-background-strong',
 						editor.isActive('link') && 'bg-background-strong',

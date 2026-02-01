@@ -12,23 +12,18 @@ interface ToolbarProps {
  * @description Tiptap 에디터 툴바
  */
 export const Toolbar = ({ editor }: ToolbarProps) => {
-	// TODO: useHoverTooltip 훅 추가 예정
-	const handleTooltip = () => {
-		// Tooltip 기능은 다음에 구현
-	};
-
 	return (
 		<div className="relative flex h-11 w-full items-center overflow-x-auto bg-background-subtle">
 			<div className="flex w-full min-w-fit items-center justify-between gap-2.5 px-5">
 				<div className="flex items-center gap-2.5">
-					<FontStyles editor={editor} handleTooltip={handleTooltip} />
+					<FontStyles editor={editor} />
 					<VerticalDivider />
-					<TiptapLink editor={editor} handleTooltip={handleTooltip} />
+					<TiptapLink editor={editor} />
 					<VerticalDivider />
-					<List editor={editor} handleTooltip={handleTooltip} />
+					<List editor={editor} />
 				</div>
 				<section className="flex items-center gap-2.5">
-					<History editor={editor} handleTooltip={handleTooltip} />
+					<History editor={editor} />
 				</section>
 			</div>
 		</div>
