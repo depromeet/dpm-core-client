@@ -8,7 +8,7 @@ import StarterKit from '@tiptap/starter-kit';
 export const CustomStarterKit = StarterKit.configure({
 	listItem: {
 		HTMLAttributes: {
-			style: 'margin: 0.25rem 0; padding-left: 0.25rem; list-style-type: revert; margin-left: 8px;',
+			style: 'margin: 0; padding: 0; list-style-type: revert; margin-left: 22px;',
 		},
 	},
 	blockquote: {
@@ -34,8 +34,8 @@ export const CustomStarterKit = StarterKit.configure({
 	bulletList: false,
 	orderedList: {
 		HTMLAttributes: {
-			style:
-				'list-style-position: outside; padding-left: 0.5rem; margin: 0.5rem 0; list-style-type: decimal;',
+			// list-style-type은 globals.css의 CSS 선택자로 처리 (중첩 레벨별 스타일)
+			style: 'list-style-position: outside;',
 		},
 	},
 	heading: false,
@@ -48,9 +48,9 @@ export const CustomStarterKit = StarterKit.configure({
 
 export const CustomBulletList = BulletList.configure({
 	// 마크다운 지원 (- , + , * )
+	// list-style-type: revert로 브라우저 기본값 사용 (중첩 레벨 자동 처리)
 	HTMLAttributes: {
-		style:
-			'list-style-position: outside; padding-left: 0.5rem; margin: 0.5rem 0; list-style-type: disc;',
+		style: 'list-style-position: outside; list-style-type: revert;',
 	},
 });
 
