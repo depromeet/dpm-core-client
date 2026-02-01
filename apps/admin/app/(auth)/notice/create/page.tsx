@@ -103,7 +103,7 @@ export default function CreateNoticePage() {
 											<ToggleGroup
 												type="single"
 												value={field.value}
-												onValueChange={(value) => {
+												onValueChange={(value: string) => {
 													if (value) field.onChange(value);
 												}}
 												className="flex gap-2"
