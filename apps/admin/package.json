@@ -28,6 +28,7 @@
 		"@tiptap/extension-underline": "^3.18.0",
 		"@tiptap/react": "^3.18.0",
 		"@tiptap/starter-kit": "^3.18.0",
+		"class-variance-authority": "^0.7.1",
 		"dayjs": "^1.11.13",
 		"input-otp": "^1.4.2",
 		"ky": "^1.8.2",
