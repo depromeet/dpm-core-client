@@ -9,8 +9,10 @@ export const UndoIcon = ({ className, ...props }: SVGProps<SVGSVGElement>) => {
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 			className={className}
+			aria-label="Undo"
 			{...props}
 		>
+			<title>Undo</title>
 			<path
 				d="M2 4.66833V8.66834H6"
 				stroke="currentColor"

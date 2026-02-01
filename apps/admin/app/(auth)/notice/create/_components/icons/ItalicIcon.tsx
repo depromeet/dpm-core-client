@@ -9,8 +9,10 @@ export const ItalicIcon = ({ className, ...props }: SVGProps<SVGSVGElement>) => 
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 			className={className}
+			aria-label="Italic"
 			{...props}
 		>
+			<title>Italic</title>
 			<path
 				d="M12.6664 2.06665C12.9978 2.06665 13.2664 2.33528 13.2664 2.66665C13.2664 2.99802 12.9978 3.26665 12.6664 3.26665H6.66641C6.33504 3.26665 6.06641 2.99802 6.06641 2.66665C6.06641 2.33528 6.33504 2.06665 6.66641 2.06665H12.6664Z"
 				fill="currentColor"

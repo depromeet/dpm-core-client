@@ -9,8 +9,10 @@ export const RedoIcon = ({ className, ...props }: SVGProps<SVGSVGElement>) => {
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 			className={className}
+			aria-label="Redo"
 			{...props}
 		>
+			<title>Redo</title>
 			<path
 				d="M14 4.66833V8.66834H10"
 				stroke="currentColor"

@@ -9,8 +9,10 @@ export const OrderIcon = ({ className, ...props }: SVGProps<SVGSVGElement>) => {
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 			className={className}
+			aria-label="Ordered List"
 			{...props}
 		>
+			<title>Ordered List</title>
 			<path
 				d="M6.66797 8.00183H14.0018"
 				stroke="currentColor"

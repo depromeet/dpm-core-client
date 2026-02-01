@@ -9,8 +9,10 @@ export const UnorderIcon = ({ className, ...props }: SVGProps<SVGSVGElement>) =>
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 			className={className}
+			aria-label="Unordered List"
 			{...props}
 		>
+			<title>Unordered List</title>
 			<path
 				d="M2 8.00183H2.00667"
 				stroke="currentColor"
