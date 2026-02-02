@@ -26,29 +26,6 @@ export async function POST(request: NextRequest) {
 			const url = new URL('/login', request.url);
 			url.searchParams.set('error', `api_failed_${response.status}`);
 
-			// ---------- 에러 응답 본문 파싱 시도 ----------
-			try {
-				const clonedResponse = response.clone();
-				const errorData = await clonedResponse.json();
-
-				if (errorData.code) {
-					url.searchParams.set('code', errorData.code);
-				}
-				if (errorData.message) {
-					const message =
-						errorData.message.length > 200
-							? errorData.message.substring(0, 200) + '...'
-							: errorData.message;
-					url.searchParams.set('message', message);
-				}
-				if (errorData.status) {
-					url.searchParams.set('api_status', errorData.status);
-				}
-			} catch {
-				url.searchParams.set('response', 'unknown_error');
-			}
-			// ---------- 에러 응답 본문 파싱 시도 종료 ----------
-
 			return NextResponse.redirect(url, { status: 303 });
 		}
 
@@ -73,6 +50,7 @@ export async function POST(request: NextRequest) {
 	} catch (e) {
 		const url = new URL('/login', request.url);
 		url.searchParams.set('error', `catch_${e instanceof Error ? e.message : 'unknown'}`);
+
 		return NextResponse.redirect(url, { status: 303 });
 	}
 }
