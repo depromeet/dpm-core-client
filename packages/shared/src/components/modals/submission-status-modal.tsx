@@ -3,7 +3,6 @@
 import { X } from 'lucide-react';
 
 import { IconButton } from '../icon-button';
-import { ToggleGroup, ToggleGroupItem } from '../toggle-group';
 import { Button } from '../ui/button';
 import {
 	Dialog,
@@ -13,6 +12,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '../ui/dialog';
+import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
 
 export type SubmissionStatus = 'pending' | 'not_submitted' | 'late' | 'completed';
 
