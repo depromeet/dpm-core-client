@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				credentials: 'include',
 			},
 			body: JSON.stringify({ authorizationCode: code }),
 		});
