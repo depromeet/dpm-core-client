@@ -34,23 +34,23 @@ export async function POST(request: NextRequest) {
 
 		const redirectResponse = NextResponse.redirect(new URL('/', request.url), { status: 303 });
 
-		// 백엔드 응답의 Set-Cookie 헤더를 브라우저로 포워딩
-		const setCookieHeaders = response.headers.getSetCookie();
-		for (const cookie of setCookieHeaders) {
-			redirectResponse.headers.append('Set-Cookie', cookie);
-		}
+		// core.depromeet.shop → .depromeet.shop (api 서브도메인과 쿠키 공유)
+		const hostname = new URL(request.url).hostname;
+		const domain = hostname.substring(hostname.indexOf('.'));
 
 		redirectResponse.cookies.set(COOKIE_KEYS.ACCESS_TOKEN, accessToken, {
 			httpOnly: false,
 			secure: true,
 			sameSite: 'lax',
 			path: '/',
+			domain,
 		});
 		redirectResponse.cookies.set(COOKIE_KEYS.REFRESH_TOKEN, refreshToken, {
 			httpOnly: false,
 			secure: true,
 			sameSite: 'lax',
 			path: '/',
+			domain,
 		});
 
 		return redirectResponse;
