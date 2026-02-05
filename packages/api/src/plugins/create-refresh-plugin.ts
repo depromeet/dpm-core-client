@@ -56,11 +56,8 @@ export function createRefreshPlugin(options?: RefreshPluginOptions): AfterRespon
 			try {
 				logger.debug('fetch로 refresh 호출 시도...');
 				refreshPromise = fetch(refreshUrl, {
-					method: 'POST',
+					method: 'GET',
 					credentials: 'include',
-					headers: {
-						'Content-Type': 'application/json',
-					},
 				})
 					.then(async (res) => {
 						if (!res.ok) {
