@@ -1,17 +1,41 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { createWebView } from '@webview-bridge/react-native';
+import { SplashScreen } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { BackHandler, KeyboardAvoidingView, Platform } from 'react-native';
+import { BackHandler, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import WebView, { type WebViewNavigation } from 'react-native-webview';
+import type { WebView as NativeWebView, WebViewNavigation } from 'react-native-webview';
 
-import { useBehavior } from '@/hook/useBehavior';
+import { appBridge } from '@/bridge/app-bridge';
+import { useBehavior } from '@/hooks/useBehavior';
+
+export const { WebView } = createWebView({
+	bridge: appBridge,
+	debug: __DEV__,
+});
 
 const WEBVIEW_URL = __DEV__ ? 'https://core.depromeet.shop' : 'https://core.depromeet.com';
 
 export default function Home() {
-	const webViewRef = useRef<WebView>(null);
+	const webViewRef = useRef<NativeWebView>(null);
 	const [canGoBack, setCanGoBack] = useState(false);
 	const behavior = useBehavior();
+
+	const [appIsReady, setAppIsReady] = useState(false);
+
+	const hideSplashScreen = useCallback(async () => {
+		if (appIsReady) {
+			await SplashScreen.hideAsync();
+		}
+	}, [appIsReady]);
+
+	useEffect(() => {
+		hideSplashScreen();
+	}, [hideSplashScreen]);
+
+	const handleWebViewLoadEnd = () => {
+		setAppIsReady(true);
+	};
 
 	useEffect(() => {
 		if (Platform.OS !== 'android') return;
@@ -33,16 +57,16 @@ export default function Home() {
 
 	return (
 		<SafeAreaProvider>
-			<SafeAreaView style={{ flex: 1 }}>
-				<KeyboardAvoidingView behavior={behavior} style={{ flex: 1 }}>
+			<SafeAreaView style={styles.container}>
+				<KeyboardAvoidingView behavior={behavior} style={styles.container}>
 					<WebView
-						style={{
-							flex: 1,
-						}}
+						style={styles.webview}
 						ref={webViewRef}
 						source={{ uri: WEBVIEW_URL }}
 						onNavigationStateChange={handleNavigationChanage}
+						onLoadEnd={handleWebViewLoadEnd}
 						overScrollMode="never"
+						bounces={false}
 						sharedCookiesEnabled={true}
 						allowsBackForwardNavigationGestures={true}
 					/>
@@ -52,3 +76,8 @@ export default function Home() {
 		</SafeAreaProvider>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: { flex: 1 },
+	webview: { flex: 1 },
+});

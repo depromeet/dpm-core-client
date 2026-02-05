@@ -14,6 +14,8 @@ import { pretendard } from './fonts';
 
 import './globals.css';
 
+import { BridgeProvider } from '@/providers/bridge-provider';
+
 export const metadata: Metadata = {
 	title: 'Dpmcore',
 	description: 'Dpmcore',
@@ -45,7 +47,9 @@ export default function RootLayout({
 			<body className={pretendard.variable} suppressHydrationWarning>
 				<QueryProvider>
 					<GAInitializer />
-					<AppShell>{children}</AppShell>
+					<BridgeProvider>
+						<AppShell>{children}</AppShell>
+					</BridgeProvider>
 					<ReactQueryDevtools />
 					<Toaster
 						position="top-center"
