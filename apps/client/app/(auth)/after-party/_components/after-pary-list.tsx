@@ -173,13 +173,15 @@ const AfterPartyListContainer = () => {
 			: STAFF_TOGETHER_LIST.filter((item) => dayjs(item.closedAt).isAfter(dayjs()));
 
 	return (
-		<Virtuoso
-			useWindowScroll
-			data={filteredList}
-			itemContent={(_, item) => {
-				return <AfterPartyItem key={item.gatheringId} {...item} />;
-			}}
-		/>
+		<div className="h-full">
+			<Virtuoso
+				style={{ height: '100%' }}
+				data={filteredList}
+				itemContent={(_, item) => {
+					return <AfterPartyItem key={item.gatheringId} {...item} />;
+				}}
+			/>
+		</div>
 	);
 };
 
