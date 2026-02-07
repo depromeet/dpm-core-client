@@ -6,9 +6,9 @@ import { AppHeader } from '@/components/app-header';
 import { useAuth } from '@/providers/auth-provider';
 
 import { AfterPartyAddButton } from './_components/after-party-add-button';
+import { AfterPartyList } from './_components/after-party-list';
 import { AfterPartyBanner, AfterPartyBannerContainer } from './_components/after-party-list-banner';
 import { AfterPartyStatusFilter } from './_components/after-party-list-filter';
-import { AfterPartyList } from './_components/after-pary-list';
 
 const AfterPartyPage = () => {
 	const { user } = useAuth();

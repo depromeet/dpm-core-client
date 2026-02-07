@@ -5,11 +5,13 @@ import 'dayjs/locale/ko';
 import Link from 'next/link';
 import { Fragment } from 'react';
 import { ErrorBoundary, Suspense } from '@suspensive/react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
 import { cn } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
+import { getAfterPartiesQueryOptions } from '@/remotes/queries/after-party';
 
 import { useAfterPartyListFilterSearchParams } from '../_hooks/use-after-party-list-filter-search-pararms';
 import { getDaysUntilDeadline } from '../_utils/get-days-until-deadline';
@@ -196,10 +198,16 @@ const AfterPartyItem = ({
 
 const AfterPartyListContainer = () => {
 	const { afterPartyStatus } = useAfterPartyListFilterSearchParams();
+	const {
+		data: {
+			data: { gatherings },
+		},
+	} = useSuspenseQuery(getAfterPartiesQueryOptions);
+
 	const filteredList =
 		afterPartyStatus === 'ALL'
-			? STAFF_TOGETHER_LIST
-			: STAFF_TOGETHER_LIST.filter((item) => dayjs(item.closedAt).isAfter(dayjs()));
+			? gatherings
+			: gatherings.filter((item) => dayjs(item.closedAt).isAfter(dayjs()));
 
 	return (
 		<div className="[&_[data-virtuoso-scroller]]:scrollbar-hide h-full">
@@ -224,234 +232,5 @@ const AfterPartyList = ErrorBoundary.with(
 		</Suspense>
 	),
 );
-
-const STAFF_TOGETHER_LIST: AfterPartyItemProps[] = [
-	// === 마감된 회식 (과거) ===
-	{
-		gatheringId: 101,
-		title: '12월 송년회',
-		isOwner: false,
-		rsvpStatus: true,
-		isAttended: true,
-		isClosed: true,
-		isApproved: true,
-		description: '2025년을 마무리하는 송년회였습니다. 즐거운 시간이었어요!',
-		scheduledAt: '2025-12-20T19:00:00.000',
-		closedAt: '2025-12-18T18:00:00.000',
-		isRsvpGoingCount: 22,
-		isAttendedCount: 20,
-		inviteeCount: 25,
-		createdAt: '2025-12-01T10:00:00.000',
-	},
-	{
-		gatheringId: 102,
-		title: '프론트엔드팀 회식',
-		isOwner: true,
-		rsvpStatus: true,
-		isAttended: true,
-		isClosed: true,
-		isApproved: true,
-		description: '프론트엔드팀 분기별 회식이었습니다.',
-		scheduledAt: '2025-12-28T19:30:00.000',
-		closedAt: '2025-12-26T12:00:00.000',
-		isRsvpGoingCount: 6,
-		isAttendedCount: 5,
-		inviteeCount: 8,
-		createdAt: '2025-12-10T14:30:00.000',
-	},
-	{
-		gatheringId: 103,
-		title: '1월 신입 환영회',
-		isOwner: false,
-		rsvpStatus: true,
-		isAttended: true,
-		isClosed: true,
-		isApproved: true,
-		description: '1월 신입사원들을 환영하는 회식이었습니다.',
-		scheduledAt: '2026-01-10T18:30:00.000',
-		closedAt: '2026-01-08T18:00:00.000',
-		isRsvpGoingCount: 15,
-		isAttendedCount: 14,
-		inviteeCount: 20,
-		createdAt: '2025-12-28T09:00:00.000',
-	},
-	{
-		gatheringId: 104,
-		title: '백엔드팀 회식',
-		isOwner: false,
-		rsvpStatus: false,
-		isAttended: false,
-		isClosed: true,
-		isApproved: true,
-		description: '참석하지 못한 백엔드팀 회식입니다.',
-		scheduledAt: '2026-01-17T19:00:00.000',
-		closedAt: '2026-01-15T18:00:00.000',
-		isRsvpGoingCount: 10,
-		isAttendedCount: 9,
-		inviteeCount: 12,
-		createdAt: '2026-01-05T11:00:00.000',
-	},
-	// === 진행 중인 회식 (투표 마감 전) ===
-	{
-		gatheringId: 1,
-		title: '1월 신년회 회식',
-		isOwner: true,
-		rsvpStatus: true,
-		isAttended: false,
-		isClosed: false,
-		isApproved: true,
-		description: '새해를 맞아 팀원들과 함께하는 신년회입니다. 맛있는 음식과 즐거운 시간을 보내요!',
-		scheduledAt: '2026-02-05T19:00:00.000',
-		closedAt: '2026-02-03T18:00:00.000',
-		isRsvpGoingCount: 18,
-		isAttendedCount: 0,
-		inviteeCount: 25,
-		createdAt: '2026-01-20T10:00:00.000',
-	},
-	{
-		gatheringId: 2,
-		title: '개발팀 월간 회식',
-		isOwner: false,
-		rsvpStatus: true,
-		isAttended: false,
-		isClosed: false,
-		isApproved: true,
-		description: '개발팀 월간 정기 회식입니다.',
-		scheduledAt: '2026-02-07T19:30:00.000',
-		closedAt: '2026-02-05T12:00:00.000',
-		isRsvpGoingCount: 8,
-		isAttendedCount: 0,
-		inviteeCount: 12,
-		createdAt: '2026-01-25T14:30:00.000',
-	},
-	{
-		gatheringId: 3,
-		title: '프로젝트 완료 기념 회식',
-		isOwner: true,
-		rsvpStatus: false,
-		isAttended: false,
-		isClosed: false,
-		isApproved: false,
-		description: 'DPM 프로젝트 성공적인 런칭을 축하하는 자리입니다. 모두 참석 부탁드려요!',
-		scheduledAt: '2026-02-14T18:30:00.000',
-		closedAt: '2026-02-12T23:59:00.000',
-		isRsvpGoingCount: 5,
-		isAttendedCount: 0,
-		inviteeCount: 15,
-		createdAt: '2026-01-28T09:00:00.000',
-	},
-	{
-		gatheringId: 4,
-		title: '디자인팀 워크샵 후 회식',
-		isOwner: false,
-		rsvpStatus: false,
-		isAttended: false,
-		isClosed: false,
-		isApproved: true,
-		description: '워크샵 후 가볍게 저녁 먹어요.',
-		scheduledAt: '2026-02-20T19:00:00.000',
-		closedAt: '2026-02-18T18:00:00.000',
-		isRsvpGoingCount: 6,
-		isAttendedCount: 0,
-		inviteeCount: 8,
-		createdAt: '2026-02-01T11:00:00.000',
-	},
-	{
-		gatheringId: 5,
-		title: '신규 입사자 환영 회식',
-		isOwner: false,
-		rsvpStatus: false,
-		isAttended: false,
-		isClosed: false,
-		isApproved: true,
-		description: '새로 합류한 팀원들을 환영하는 자리입니다.',
-		scheduledAt: '2026-02-28T19:00:00.000',
-		closedAt: '2026-02-26T12:00:00.000',
-		isRsvpGoingCount: 20,
-		isAttendedCount: 0,
-		inviteeCount: 30,
-		createdAt: '2026-02-10T15:00:00.000',
-	},
-	{
-		gatheringId: 6,
-		title: '3월 정기 회식',
-		isOwner: true,
-		rsvpStatus: true,
-		isAttended: false,
-		isClosed: false,
-		isApproved: true,
-		description: '3월 정기 회식입니다. 이번엔 고기 먹으러 가요!',
-		scheduledAt: '2026-03-07T19:00:00.000',
-		closedAt: '2026-03-05T18:00:00.000',
-		isRsvpGoingCount: 15,
-		isAttendedCount: 0,
-		inviteeCount: 25,
-		createdAt: '2026-02-20T10:00:00.000',
-	},
-	{
-		gatheringId: 7,
-		title: 'QA팀 회식',
-		isOwner: false,
-		rsvpStatus: true,
-		isAttended: false,
-		isClosed: false,
-		isApproved: true,
-		description: 'QA팀 자체 회식입니다.',
-		scheduledAt: '2026-03-14T19:30:00.000',
-		closedAt: '2026-03-12T18:00:00.000',
-		isRsvpGoingCount: 4,
-		isAttendedCount: 0,
-		inviteeCount: 6,
-		createdAt: '2026-02-25T09:30:00.000',
-	},
-	{
-		gatheringId: 8,
-		title: '봄맞이 야유회 회식',
-		isOwner: false,
-		rsvpStatus: false,
-		isAttended: false,
-		isClosed: false,
-		isApproved: true,
-		description: '야유회 후 바베큐 파티! 가족 동반 가능합니다.',
-		scheduledAt: '2026-03-21T17:00:00.000',
-		closedAt: '2026-03-18T12:00:00.000',
-		isRsvpGoingCount: 35,
-		isAttendedCount: 0,
-		inviteeCount: 50,
-		createdAt: '2026-03-01T14:00:00.000',
-	},
-	{
-		gatheringId: 9,
-		title: '마케팅팀 런칭 기념 회식',
-		isOwner: true,
-		rsvpStatus: true,
-		isAttended: false,
-		isClosed: false,
-		isApproved: false,
-		description: '신규 캠페인 런칭 성공을 축하하는 자리입니다.',
-		scheduledAt: '2026-03-28T19:00:00.000',
-		closedAt: '2026-03-26T18:00:00.000',
-		isRsvpGoingCount: 10,
-		isAttendedCount: 0,
-		inviteeCount: 12,
-		createdAt: '2026-03-10T16:00:00.000',
-	},
-	{
-		gatheringId: 10,
-		title: '4월 벚꽃 회식',
-		isOwner: false,
-		rsvpStatus: false,
-		isAttended: false,
-		isClosed: false,
-		isApproved: true,
-		description: '벚꽃 구경하며 즐기는 봄 회식! 한강 근처 레스토랑 예정입니다.',
-		scheduledAt: '2026-04-04T18:30:00.000',
-		closedAt: '2026-04-01T18:00:00.000',
-		isRsvpGoingCount: 22,
-		isAttendedCount: 0,
-		inviteeCount: 30,
-		createdAt: '2026-03-15T11:00:00.000',
-	},
-];
 
 export { AfterPartyList };

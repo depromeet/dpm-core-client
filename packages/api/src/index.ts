@@ -1,3 +1,4 @@
+export * from './after-party';
 export * from './attendance';
 export * from './auth';
 export * from './bill';
