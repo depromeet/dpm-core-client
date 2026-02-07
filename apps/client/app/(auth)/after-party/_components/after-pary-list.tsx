@@ -3,6 +3,7 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import Link from 'next/link';
+import { Fragment } from 'react';
 import { ErrorBoundary, Suspense } from '@suspensive/react';
 import { Virtuoso } from 'react-virtuoso';
 import { cn } from '@dpm-core/shared';
@@ -46,7 +47,7 @@ interface AfterPartyItemProps {
 	createdAt: string;
 }
 
-type AfterPartyLabelType = 'createdByMe' | 'daysUntilDeadline';
+type AfterPartyLabelType = 'createdByMe' | 'daysUntilDeadline' | 'closed';
 
 interface AfterPartyItemLabelProps {
 	/** 라벨 타입 */
@@ -62,9 +63,22 @@ const AfterPartyItemLabel = ({ type, daysLeft }: AfterPartyItemLabelProps) => {
 		createdByMe: 'bg-green-100 text-green-500 ',
 		/** N일 뒤 투표 마감 */
 		daysUntilDeadline: 'bg-blue-50 text-blue-500',
+
+		closed: 'bg-[#F3F4F6] text-gray-400',
 	};
 
-	const text = type === 'createdByMe' ? '내가 생성한' : `${daysLeft}일 뒤 투표 마감`;
+	let text = '';
+	switch (type) {
+		case 'createdByMe':
+			text = '내가 생성한';
+			break;
+		case 'daysUntilDeadline':
+			text = `${daysLeft}일 뒤 투표 마감`;
+			break;
+		case 'closed':
+			text = '마감';
+			break;
+	}
 
 	return <span className={cn(styles.base, styles[type])}>{text}</span>;
 };
@@ -121,6 +135,7 @@ const AfterPartyItem = ({
 	gatheringId,
 	title,
 	isOwner,
+	isClosed,
 	description,
 	closedAt,
 	scheduledAt,
@@ -130,6 +145,7 @@ const AfterPartyItem = ({
 }: AfterPartyItemProps) => {
 	const styles = {
 		base: 'bg-gray-0 p-[16px] font-semibold text-caption1 h-[149px] border-b border-b-line-subtle space-y-[8px]',
+		closed: 'bg-[#F6F8FA]/70',
 		yellow: 'bg-[#FFFCF7]',
 		gray: 'bg-gray-50',
 	};
@@ -140,13 +156,19 @@ const AfterPartyItem = ({
 	const formattedDate = dayjs(scheduledAt).format('YY년 M월 D일 (ddd)');
 
 	return (
-		<div className={cn(styles.base)}>
+		<div className={cn(styles.base, isClosed && styles.closed)}>
 			<div className="relative flex items-center justify-between">
 				<div className="space-x-[4px]">
-					{isOwner && <AfterPartyItemLabel type="createdByMe" />}
-					{daysLeft > 0 && <AfterPartyItemLabel type="daysUntilDeadline" daysLeft={daysLeft} />}
+					{isClosed ? (
+						<AfterPartyItemLabel type="closed" />
+					) : (
+						<Fragment>
+							{isOwner && <AfterPartyItemLabel type="createdByMe" />}
+							{daysLeft > 0 && <AfterPartyItemLabel type="daysUntilDeadline" daysLeft={daysLeft} />}
+						</Fragment>
+					)}
 				</div>
-				<span className="font-medium text-blue-400 text-caption1">
+				<span className="relative z-10 font-medium text-blue-400 text-caption1">
 					{rsvpStatus ? '참석' : '참석 예정'}
 				</span>
 			</div>
