@@ -145,7 +145,7 @@ const AfterPartyItem = ({
 }: AfterPartyItemProps) => {
 	const styles = {
 		base: 'bg-gray-0 p-[16px] font-semibold text-caption1 h-[149px] border-b border-b-line-subtle space-y-[8px]',
-		closed: 'bg-[#F6F8FA]/70',
+		closed: 'bg-[#F6F8FA] opacity-70',
 		yellow: 'bg-[#FFFCF7]',
 		gray: 'bg-gray-50',
 	};
@@ -156,35 +156,40 @@ const AfterPartyItem = ({
 	const formattedDate = dayjs(scheduledAt).format('YY년 M월 D일 (ddd)');
 
 	return (
-		<div className={cn(styles.base, isClosed && styles.closed)}>
-			<div className="relative flex items-center justify-between">
-				<div className="flex items-center justify-center space-x-[4px]">
-					{isClosed ? (
-						<AfterPartyItemLabel type="closed" />
-					) : (
-						<Fragment>
-							{isOwner && <AfterPartyItemLabel type="createdByMe" />}
-							{daysLeft > 0 && <AfterPartyItemLabel type="daysUntilDeadline" daysLeft={daysLeft} />}
-						</Fragment>
-					)}
+		<div className="relative">
+			<div className={cn(styles.base, isClosed && styles.closed)}>
+				<div className="relative flex items-center justify-between">
+					<div className="flex items-center justify-center space-x-[4px]">
+						{isClosed ? (
+							<AfterPartyItemLabel type="closed" />
+						) : (
+							<Fragment>
+								{isOwner && <AfterPartyItemLabel type="createdByMe" />}
+								{daysLeft > 0 && (
+									<AfterPartyItemLabel type="daysUntilDeadline" daysLeft={daysLeft} />
+								)}
+							</Fragment>
+						)}
+					</div>
 				</div>
-				<span className="relative z-10 font-medium text-blue-400 text-caption1">
-					{rsvpStatus ? '참석' : '참석 예정'}
-				</span>
+				<Link href={`/after-party/${gatheringId}`} className="block space-y-[8px]">
+					<p className="font-semibold text-body1 text-gray-800">{title}</p>
+					<p className="text-ellipsis font-medium text-body2 text-gray-600">{description}</p>
+				</Link>
+				<div className="flex items-center font-medium text-body2 text-gray-400">
+					<CalendarIcon />
+					<span className="ml-[5px]">{formattedDate}</span>
+					<span className="mx-[8px] text-gray-300">·</span>
+					<UserIcon />
+					<span className="ml-[5px]">
+						{isRsvpGoingCount}/{inviteeCount}명 참여 예정
+					</span>
+				</div>
 			</div>
-			<Link href={`/after-party/${gatheringId}`} className="block space-y-[8px]">
-				<p className="font-semibold text-body1 text-gray-800">{title}</p>
-				<p className="text-ellipsis font-medium text-body2 text-gray-600">{description}</p>
-			</Link>
-			<div className="flex items-center font-medium text-body2 text-gray-400">
-				<CalendarIcon />
-				<span className="ml-[5px]">{formattedDate}</span>
-				<span className="mx-[8px] text-gray-300">·</span>
-				<UserIcon />
-				<span className="ml-[5px]">
-					{isRsvpGoingCount}/{inviteeCount}명 참여 예정
-				</span>
-			</div>
+			{/* opacity 영향을 받지 않는 별도 레이어 */}
+			<span className="absolute top-[16px] right-[16px] z-20 font-medium text-blue-400 text-caption1">
+				{rsvpStatus ? '참석' : '참석 예정'}
+			</span>
 		</div>
 	);
 };
