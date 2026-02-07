@@ -3,9 +3,15 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import Link from 'next/link';
+import { ErrorBoundary, Suspense } from '@suspensive/react';
+import { Virtuoso } from 'react-virtuoso';
 import { cn } from '@dpm-core/shared';
 
-import { getDaysUntilDeadline } from '../_utils/getDaysUntilDeadline';
+import { ErrorBox } from '@/components/error-box';
+import { LoadingBox } from '@/components/loading-box';
+
+import { useAfterPartyListFilterSearchParams } from '../_hooks/use-after-party-list-filter-search-pararms';
+import { getDaysUntilDeadline } from '../_utils/get-days-until-deadline';
 
 dayjs.locale('ko');
 
@@ -119,7 +125,6 @@ const AfterPartyItem = ({
 	isAttended,
 	isRsvpGoingCount,
 	inviteeCount,
-	...props
 }: AfterPartyItemProps) => {
 	const styles = {
 		base: 'bg-gray-0 p-[16px] font-semibold text-caption1 h-[149px] border-b border-b-line-subtle space-y-[8px]',
@@ -143,7 +148,7 @@ const AfterPartyItem = ({
 					{isAttended ? '참석' : '참석 예정'}
 				</span>
 			</div>
-			<Link href={`/staff-together/${gatheringId}`} className="block space-y-[8px]">
+			<Link href={`/after-party/${gatheringId}`} className="block space-y-[8px]">
 				<p className="font-semibold text-body1 text-gray-800">{title}</p>
 				<p className="text-ellipsis font-medium text-body2 text-gray-600">{description}</p>
 			</Link>
@@ -160,26 +165,34 @@ const AfterPartyItem = ({
 	);
 };
 
-type AfterPartyStatusType = 'ALL' | 'IN_PROGRESS';
-
-interface AfterPartyListProps {
-	filter: AfterPartyStatusType;
-}
-
-const AfterPartyList = ({ filter }: AfterPartyListProps) => {
+const AfterPartyListContainer = () => {
+	const { afterPartyStatus } = useAfterPartyListFilterSearchParams();
 	const filteredList =
-		filter === 'ALL'
+		afterPartyStatus === 'ALL'
 			? STAFF_TOGETHER_LIST
 			: STAFF_TOGETHER_LIST.filter((item) => dayjs(item.closedAt).isAfter(dayjs()));
 
 	return (
-		<div>
-			{filteredList.map((item) => (
-				<AfterPartyItem key={item.gatheringId} {...item} />
-			))}
-		</div>
+		<Virtuoso
+			useWindowScroll
+			data={filteredList}
+			itemContent={(_, item) => {
+				return <AfterPartyItem key={item.gatheringId} {...item} />;
+			}}
+		/>
 	);
 };
+
+const AfterPartyList = ErrorBoundary.with(
+	{
+		fallback: (props) => <ErrorBox onReset={() => props.reset()} />,
+	},
+	() => (
+		<Suspense fallback={<LoadingBox />}>
+			<AfterPartyListContainer />
+		</Suspense>
+	),
+);
 
 const STAFF_TOGETHER_LIST: AfterPartyItemProps[] = [
 	// === 마감된 회식 (과거) ===

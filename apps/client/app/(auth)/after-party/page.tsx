@@ -1,27 +1,23 @@
 'use client';
 
-import { useState } from 'react';
 import { AppLayout, GAPageTracker } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
 
 import { AfterPartyBanner, AfterPartyBannerContainer } from './_components/after-party-list-banner';
+import { AfterPartyStatusFilter } from './_components/after-party-list-filter';
 import { AfterPartyList } from './_components/after-pary-list';
-import {
-	AfterPartyStatusList,
-	type AfterPartyStatusType,
-} from './_components/after-pary-list-status';
 
 const AfterPartyPage = () => {
-	const [selectedStatus, setSelectedStatus] = useState<AfterPartyStatusType>('ALL');
+	// const [selectedStatus, setSelectedStatus] = useState<AfterPartyStatusType>('ALL');
 
 	return (
 		<AppLayout className="bg-background-normal">
-			<GAPageTracker type="staff-together" />
+			<GAPageTracker type="after-party" />
 			<AppHeader title="회식" className="mb-1.5" />
-			<AfterPartyStatusList selectedStatus={selectedStatus} onStatusChange={setSelectedStatus} />
+			<AfterPartyStatusFilter />
 			<AfterPartyBannerContainer Banner={<AfterPartyBanner />} />
-			<AfterPartyList filter={selectedStatus} />
+			<AfterPartyList />
 		</AppLayout>
 	);
 };
