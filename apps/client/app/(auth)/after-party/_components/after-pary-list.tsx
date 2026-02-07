@@ -9,7 +9,7 @@ import { getDaysUntilDeadline } from '../_utils/getDaysUntilDeadline';
 
 dayjs.locale('ko');
 
-interface StaffTogetherItemProps {
+interface AfterPartyItemProps {
 	/** 회식 고유 ID */
 	gatheringId: number;
 	/** 회식 제목 */
@@ -38,16 +38,16 @@ interface StaffTogetherItemProps {
 	createdAt: string;
 }
 
-type StaffTogetherLabelType = 'createdByMe' | 'daysUntilDeadline';
+type AfterPartyLabelType = 'createdByMe' | 'daysUntilDeadline';
 
-interface StaffTogetherItemLabelProps {
+interface AfterPartyItemLabelProps {
 	/** 라벨 타입 */
-	type: StaffTogetherLabelType;
+	type: AfterPartyLabelType;
 	/** N일 뒤 마감일 때 남은 일수 */
 	daysLeft?: number;
 }
 
-const StaffTogetherItemLabel = ({ type, daysLeft }: StaffTogetherItemLabelProps) => {
+const AfterPartyItemLabel = ({ type, daysLeft }: AfterPartyItemLabelProps) => {
 	const styles = {
 		base: 'h-[22px] rounded-sm font-caption1 px-[5px] py-[3px] inline-block',
 		/** 내가 생성한 회식 */
@@ -109,7 +109,7 @@ const UserIcon = () => {
 	);
 };
 
-const StaffTogetherItem = ({
+const AfterPartyItem = ({
 	gatheringId,
 	title,
 	isOwner,
@@ -120,7 +120,7 @@ const StaffTogetherItem = ({
 	isRsvpGoingCount,
 	inviteeCount,
 	...props
-}: StaffTogetherItemProps) => {
+}: AfterPartyItemProps) => {
 	const styles = {
 		base: 'bg-gray-0 p-[16px] font-semibold text-caption1 h-[149px] border-b border-b-line-subtle space-y-[8px]',
 		yellow: 'bg-[#FFFCF7]',
@@ -136,8 +136,8 @@ const StaffTogetherItem = ({
 		<div className={cn(styles.base)}>
 			<div className="relative flex items-center justify-between space-x-[4px]">
 				<div>
-					{isOwner && <StaffTogetherItemLabel type="createdByMe" />}
-					{daysLeft > 0 && <StaffTogetherItemLabel type="daysUntilDeadline" daysLeft={daysLeft} />}
+					{isOwner && <AfterPartyItemLabel type="createdByMe" />}
+					{daysLeft > 0 && <AfterPartyItemLabel type="daysUntilDeadline" daysLeft={daysLeft} />}
 				</div>
 				<span className="font-medium text-blue-400 text-caption1">
 					{isAttended ? '참석' : '참석 예정'}
@@ -160,13 +160,13 @@ const StaffTogetherItem = ({
 	);
 };
 
-type StaffTogetherStatusType = 'ALL' | 'IN_PROGRESS';
+type AfterPartyStatusType = 'ALL' | 'IN_PROGRESS';
 
-interface StaffTogetherListProps {
-	filter: StaffTogetherStatusType;
+interface AfterPartyListProps {
+	filter: AfterPartyStatusType;
 }
 
-const StaffTogetherList = ({ filter }: StaffTogetherListProps) => {
+const AfterPartyList = ({ filter }: AfterPartyListProps) => {
 	const filteredList =
 		filter === 'ALL'
 			? STAFF_TOGETHER_LIST
@@ -175,13 +175,13 @@ const StaffTogetherList = ({ filter }: StaffTogetherListProps) => {
 	return (
 		<div>
 			{filteredList.map((item) => (
-				<StaffTogetherItem key={item.gatheringId} {...item} />
+				<AfterPartyItem key={item.gatheringId} {...item} />
 			))}
 		</div>
 	);
 };
 
-const STAFF_TOGETHER_LIST: StaffTogetherItemProps[] = [
+const STAFF_TOGETHER_LIST: AfterPartyItemProps[] = [
 	// === 마감된 회식 (과거) ===
 	{
 		gatheringId: 101,
@@ -396,4 +396,4 @@ const STAFF_TOGETHER_LIST: StaffTogetherItemProps[] = [
 	},
 ];
 
-export { StaffTogetherList };
+export { AfterPartyList };

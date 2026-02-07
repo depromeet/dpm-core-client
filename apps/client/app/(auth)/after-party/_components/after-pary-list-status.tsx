@@ -2,11 +2,11 @@
 
 import { cn, DragScrollContainer } from '@dpm-core/shared';
 
-type StaffTogetherStatusType = 'ALL' | 'IN_PROGRESS';
+type AfterPartyStatusType = 'ALL' | 'IN_PROGRESS';
 
 interface ChipProps extends React.ComponentProps<'span'> {
 	label: string;
-	value: StaffTogetherStatusType;
+	value: AfterPartyStatusType;
 	selected: boolean;
 	onSelect: () => void;
 }
@@ -29,7 +29,7 @@ const Chip = ({ label, value, selected, onSelect, ...props }: ChipProps) => {
 	);
 };
 
-const STATUS_LIST: { label: string; value: StaffTogetherStatusType }[] = [
+const STATUS_LIST: { label: string; value: AfterPartyStatusType }[] = [
 	{
 		label: '전체',
 		value: 'ALL',
@@ -40,15 +40,12 @@ const STATUS_LIST: { label: string; value: StaffTogetherStatusType }[] = [
 	},
 ];
 
-interface StaffTogetherStatusListProps {
-	selectedStatus: StaffTogetherStatusType;
-	onStatusChange: (status: StaffTogetherStatusType) => void;
+interface AfterPartyStatusListProps {
+	selectedStatus: AfterPartyStatusType;
+	onStatusChange: (status: AfterPartyStatusType) => void;
 }
 
-const StaffTogetherStatusList = ({
-	selectedStatus,
-	onStatusChange,
-}: StaffTogetherStatusListProps) => {
+const AfterPartyStatusList = ({ selectedStatus, onStatusChange }: AfterPartyStatusListProps) => {
 	return (
 		<DragScrollContainer className="space-x-[8px] px-[16px] py-[12px]">
 			{STATUS_LIST.map((status) => (
@@ -64,4 +61,4 @@ const StaffTogetherStatusList = ({
 	);
 };
 
-export { StaffTogetherStatusList, type StaffTogetherStatusType };
+export { AfterPartyStatusList, type AfterPartyStatusType };

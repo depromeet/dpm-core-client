@@ -1,6 +1,6 @@
 'use client';
 
-const StaffTogetherBannerIcon = () => {
+const AfterPartyBannerIcon = () => {
 	return (
 		<svg
 			width="40"
@@ -49,15 +49,15 @@ const StaffTogetherBannerIcon = () => {
 	);
 };
 
-interface StaffTogetherBannerContainerProps {
+interface AfterPartyBannerContainerProps {
 	Banner: React.ReactNode;
 }
 
-const StaffTogetherBannerContainer = ({ Banner }: StaffTogetherBannerContainerProps) => {
+const AfterPartyBannerContainer = ({ Banner }: AfterPartyBannerContainerProps) => {
 	return <div className="px-[16px] py-[8px]">{Banner}</div>;
 };
 
-const StaffTogetherBanner = () => {
+const AfterPartyBanner = () => {
 	return (
 		<div className="h-[80px] rounded-lg bg-gray-50 px-[16px] py-[12px]">
 			<div className="relative">
@@ -70,11 +70,11 @@ const StaffTogetherBanner = () => {
 					변동이 생기면 운영진과 식당에 어려움이 생길 수 있어요.
 				</p>
 				<span className="absolute top-0 right-0">
-					<StaffTogetherBannerIcon />
+					<AfterPartyBannerIcon />
 				</span>
 			</div>
 		</div>
 	);
 };
 
-export { StaffTogetherBanner, StaffTogetherBannerContainer };
+export { AfterPartyBanner, AfterPartyBannerContainer };
