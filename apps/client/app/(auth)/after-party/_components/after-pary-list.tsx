@@ -58,7 +58,7 @@ interface AfterPartyItemLabelProps {
 
 const AfterPartyItemLabel = ({ type, daysLeft }: AfterPartyItemLabelProps) => {
 	const styles = {
-		base: 'h-[22px] rounded-sm font-caption1 px-[5px] py-[3px] inline-block',
+		base: 'h-[22px] rounded-sm font-caption1 px-[5px] py-[3px] flex items-center justify-center leading-none',
 		/** 내가 생성한 회식 */
 		createdByMe: 'bg-green-100 text-green-500 ',
 		/** N일 뒤 투표 마감 */
@@ -158,7 +158,7 @@ const AfterPartyItem = ({
 	return (
 		<div className={cn(styles.base, isClosed && styles.closed)}>
 			<div className="relative flex items-center justify-between">
-				<div className="space-x-[4px]">
+				<div className="flex items-center justify-center space-x-[4px]">
 					{isClosed ? (
 						<AfterPartyItemLabel type="closed" />
 					) : (
