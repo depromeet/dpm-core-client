@@ -8,7 +8,7 @@ const StaffTogetherCreateCompletePage = () => {
 	const router = useRouter();
 
 	const handleGoHome = () => {
-		router.replace('/staff-together');
+		router.replace('/after-party');
 	};
 
 	return (

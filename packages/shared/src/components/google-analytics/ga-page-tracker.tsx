@@ -10,8 +10,8 @@ interface GAPageTrackerProps {
 		| 'session'
 		| 'session-detail'
 		| 'after-party'
-		| 'staff-together'
-		| 'staff-together-create';
+		| 'after-party'
+		| 'after-party-create';
 	sessionId?: string;
 }
 

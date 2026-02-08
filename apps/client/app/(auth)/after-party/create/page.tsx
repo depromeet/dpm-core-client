@@ -21,9 +21,9 @@ import {
 
 import { AppHeader } from '@/components/app-header';
 
-import { DateTimePickerDrawer } from '../_components/datetime-picker-drawer';
-import { ReviewDrawer } from '../_components/review-drawer';
-import { TagSelect } from '../_components/tag-select';
+import { DateTimePickerDrawer } from './_components/datetime-picker-drawer';
+import { ReviewDrawer } from './_components/review-drawer';
+import { TagSelect } from './_components/tag-select';
 
 // import { useScrollVisibility } from '../_hooks/useScrollVisibility';
 
@@ -56,7 +56,7 @@ const INVITE_SCOPE_OPTIONS = [
 	{ id: '17th-diper', label: '17기 디퍼' },
 ];
 
-const STORAGE_KEY = 'staff-together-create-form';
+const STORAGE_KEY = 'after-party-create-form';
 
 const StaffTogetherCreatePage = () => {
 	const router = useRouter();
@@ -114,13 +114,13 @@ const StaffTogetherCreatePage = () => {
 		sessionStorage.removeItem(STORAGE_KEY);
 
 		// 완료 페이지로 이동
-		router.replace('/staff-together/create/complete');
+		router.replace('/after-party/create/complete');
 	};
 
 	return (
 		<AppLayout className="h-[100dvh] bg-white">
 			{/* <AppLayout className="bg-white"> */}
-			<GAPageTracker type="staff-together-create" />
+			<GAPageTracker type="after-party-create" />
 			<AppHeader title="회식 생성하기" className="shrink-0" />
 			{/* <AppHeader title="회식 생성하기" className="mb-1.5" /> */}
 
