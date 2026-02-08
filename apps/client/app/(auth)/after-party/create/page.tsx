@@ -22,7 +22,7 @@ import {
 import { AppHeader } from '@/components/app-header';
 
 import { DateTimePickerDrawer } from './_components/datetime-picker-drawer';
-import { ReviewDrawer } from './_components/review-drawer';
+import { ReviewBottomSheet } from './_components/review-bottom-sheet';
 import { TagSelect } from './_components/tag-select';
 
 // import { useScrollVisibility } from '../_hooks/useScrollVisibility';
@@ -58,9 +58,8 @@ const INVITE_SCOPE_OPTIONS = [
 
 const STORAGE_KEY = 'after-party-create-form';
 
-const StaffTogetherCreatePage = () => {
+const AfterPartyCreatePage = () => {
 	const router = useRouter();
-	// const { isVisible: showButton } = useScrollVisibility({ delay: 300 });
 
 	const form = useForm<CreateGatheringFormValues>({
 		resolver: zodResolver(createGatheringSchema),
@@ -108,7 +107,7 @@ const StaffTogetherCreatePage = () => {
 		console.log('Form submitted:', data);
 
 		// TODO: API 호출
-		// await createStaffTogether(data);
+		// await createAfterParty(data);
 
 		// 제출 성공 시 저장된 데이터 삭제
 		sessionStorage.removeItem(STORAGE_KEY);
@@ -339,7 +338,7 @@ const StaffTogetherCreatePage = () => {
 
 			{/* 하단 CTA 버튼 */}
 			<div className="before:-top-[24px] relative shrink-0 bg-white px-[16px] pt-[12px] pb-[calc(12px+env(safe-area-inset-bottom))] before:pointer-events-none before:absolute before:right-0 before:left-0 before:h-[24px] before:bg-gradient-to-t before:from-white before:to-transparent">
-				<ReviewDrawer
+				<ReviewBottomSheet
 					data={{
 						title: form.watch('title'),
 						description: form.watch('description'),
@@ -358,24 +357,8 @@ const StaffTogetherCreatePage = () => {
 					>
 						회식 생성하기
 					</Button>
-				</ReviewDrawer>
+				</ReviewBottomSheet>
 			</div>
-			{/* <motion.div
-				className="pointer-events-none fixed bottom-0 w-full max-w-lg px-[16px] pt-[12px] pb-[calc(12px+env(safe-area-inset-bottom))]"
-				initial={{ y: '100%' }}
-				animate={{ y: showButton ? 0 : '100%' }}
-				transition={{ type: 'spring', stiffness: 400, damping: 25, mass: 0.8 }}
-			>
-				<Button
-					type="submit"
-					variant="secondary"
-					size="full"
-					className="pointer-events-auto h-[48px] rounded-lg bg-[#1F2937] text-white"
-					onClick={form.handleSubmit(handleSubmit)}
-				>
-					회식 생성하기
-				</Button>
-			</motion.div> */}
 		</AppLayout>
 	);
 };
@@ -465,4 +448,4 @@ const formatTime = (date: Date) => {
 	return `${period} ${displayHours}시`;
 };
 
-export default StaffTogetherCreatePage;
+export default AfterPartyCreatePage;

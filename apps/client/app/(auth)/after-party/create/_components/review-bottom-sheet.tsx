@@ -12,7 +12,7 @@ import {
 	DrawerTrigger,
 } from '@dpm-core/shared';
 
-interface ReviewDrawerProps {
+interface ReviewBottomSheetProps {
 	children: React.ReactNode;
 	data: {
 		title: string;
@@ -38,12 +38,12 @@ const formatDateTimeWithDay = (date: Date) => {
 	return dayjs(date).format('YY년 MM월 DD일 (ddd) A h시 까지');
 };
 
-export const ReviewDrawer = ({
+export const ReviewBottomSheet = ({
 	children,
 	data,
 	inviteScopeOptions,
 	onConfirm,
-}: ReviewDrawerProps) => {
+}: ReviewBottomSheetProps) => {
 	const { title, description, scheduledAt, closedAt, inviteScopes } = data;
 
 	// id를 label로 변환
@@ -55,7 +55,7 @@ export const ReviewDrawer = ({
 		.filter(Boolean);
 
 	return (
-		<Drawer modal={false}>
+		<Drawer>
 			<DrawerTrigger asChild>{children}</DrawerTrigger>
 			<DrawerContent
 				aria-describedby={undefined}

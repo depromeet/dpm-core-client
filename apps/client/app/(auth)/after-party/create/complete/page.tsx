@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { CircleCheck } from 'lucide-react';
 import { AppLayout, Button } from '@dpm-core/shared';
 
-const StaffTogetherCreateCompletePage = () => {
+const AfterPartyCreateCompletePage = () => {
 	const router = useRouter();
 
 	const handleGoHome = () => {
@@ -36,4 +36,4 @@ const StaffTogetherCreateCompletePage = () => {
 	);
 };
 
-export default StaffTogetherCreateCompletePage;
+export default AfterPartyCreateCompletePage;
