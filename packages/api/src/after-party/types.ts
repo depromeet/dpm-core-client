@@ -15,6 +15,4 @@ export interface AfterParty {
 	createdAt: string;
 }
 
-export interface GetAfterPartiesResponse {
-	gatherings: AfterParty[];
-}
+export type GetAfterPartiesResponse = AfterParty[];

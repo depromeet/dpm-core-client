@@ -199,9 +199,7 @@ const AfterPartyItem = ({
 const AfterPartyListContainer = () => {
 	const { afterPartyStatus } = useAfterPartyListFilterSearchParams();
 	const {
-		data: {
-			data: { gatherings },
-		},
+		data: { data: gatherings },
 	} = useSuspenseQuery(getAfterPartiesQueryOptions);
 
 	const filteredList =
