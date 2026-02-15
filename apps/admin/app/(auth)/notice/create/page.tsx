@@ -6,7 +6,6 @@ import {
 	AppLayout,
 	Button,
 	ChevronLeft,
-	cn,
 	Form,
 	FormControl,
 	FormField,
@@ -24,6 +23,12 @@ import { useNoticeForm } from '@/hooks/use-notice-form';
 import { usePreventPageExit } from '@/hooks/use-prevent-page-exit';
 
 import { TiptapEditorContainer } from './_components/TiptapEditorContainer';
+
+const CATEGORY_OPTIONS = [
+	{ value: 'required', label: '필수' },
+	{ value: 'assignment', label: '과제' },
+	{ value: 'other', label: '기타' },
+] as const;
 
 export default function CreateNoticePage() {
 	const router = useRouter();
@@ -108,30 +113,15 @@ export default function CreateNoticePage() {
 												}}
 												className="flex gap-2"
 											>
-												<ToggleGroupItem
-													value="required"
-													className={cn(
-														'rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal',
-													)}
-												>
-													필수
-												</ToggleGroupItem>
-												<ToggleGroupItem
-													value="assignment"
-													className={cn(
-														'rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal',
-													)}
-												>
-													과제
-												</ToggleGroupItem>
-												<ToggleGroupItem
-													value="other"
-													className={cn(
-														'rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal',
-													)}
-												>
-													기타
-												</ToggleGroupItem>
+												{CATEGORY_OPTIONS.map(({ value, label }) => (
+													<ToggleGroupItem
+														key={value}
+														value={value}
+														className="rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
+													>
+														{label}
+													</ToggleGroupItem>
+												))}
 											</ToggleGroup>
 										</FormControl>
 										<FormMessage className="text-red-400" />
