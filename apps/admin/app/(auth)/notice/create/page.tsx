@@ -10,6 +10,7 @@ import {
 	Button,
 	Calendar,
 	ChevronLeft,
+	cn,
 	Form,
 	FormControl,
 	FormField,
@@ -199,108 +200,111 @@ export default function CreateNoticePage() {
 
 								{isScheduled && (
 									<div className="flex items-start gap-2">
-									<FormField
-										control={form.control}
-										name="scheduledDate"
-										render={({ field }) => (
-											<FormItem className="flex-1">
-												<FormLabel className="sr-only">예약 날짜</FormLabel>
-												<Popover open={scheduledDateOpen} onOpenChange={setScheduledDateOpen}>
-													<PopoverTrigger asChild>
+										<FormField
+											control={form.control}
+											name="scheduledDate"
+											render={({ field }) => (
+												<FormItem className="flex-1">
+													<FormLabel className="sr-only">예약 날짜</FormLabel>
+													<Popover open={scheduledDateOpen} onOpenChange={setScheduledDateOpen}>
+														<PopoverTrigger asChild>
+															<FormControl>
+																<Button
+																	variant="none"
+																	type="button"
+																	className="h-12 w-full justify-between border border-line-normal bg-background-normal p-4 font-medium text-body2 aria-invalid:border-red-400"
+																>
+																	{field.value ? (
+																		formatDateWithDay(field.value)
+																	) : (
+																		<span className="text-label-assistive">
+																			{formatDateWithDay(new Date())}
+																		</span>
+																	)}
+																	<CalendarIcon size={20} className="text-icon-noraml" />
+																</Button>
+															</FormControl>
+														</PopoverTrigger>
+														<PopoverContent
+															className="w-auto overflow-hidden border-line-subtle bg-background-normal p-0 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
+															align="start"
+														>
+															<Calendar
+																className="px-5 py-3.5"
+																mode="single"
+																formatters={{
+																	formatCaption: (date) =>
+																		date.toLocaleDateString('ko-KR', { month: 'long' }),
+																}}
+																selected={field.value}
+																onSelect={(date) => {
+																	field.onChange(date);
+																	setScheduledDateOpen(false);
+																}}
+																disabled={(date) => {
+																	const today = new Date();
+																	today.setHours(0, 0, 0, 0);
+																	const d = new Date(date);
+																	d.setHours(0, 0, 0, 0);
+																	return d < today;
+																}}
+															/>
+														</PopoverContent>
+													</Popover>
+													<FormMessage className="text-red-400" />
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
+											name="scheduledTime"
+											render={({ field }) => {
+												const scheduleError = form.formState.errors.scheduledDate;
+												return (
+													<FormItem className="flex-1">
+														<FormLabel className="sr-only">예약 시간</FormLabel>
 														<FormControl>
-															<Button
-																variant="none"
-																type="button"
-																className="h-12 w-full justify-between border border-line-normal bg-background-normal p-4 font-medium text-body2"
-															>
-																{field.value ? (
-																	formatDateWithDay(field.value)
-																) : (
-																	<span className="text-label-assistive">
-																		{formatDateWithDay(new Date())}
-																	</span>
+															<InputOTP
+																pattern={REGEXP_ONLY_DIGITS}
+																containerClassName={cn(
+																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400 [&_[data-slot=input-otp-slot]]:text-label-assistive [&_[data-slot=input-otp-slot]:not(:empty)]:text-label-normal',
+																	scheduleError ? 'border-red-400' : 'border-line-normal',
 																)}
-																<CalendarIcon size={20} className="text-icon-noraml" />
-															</Button>
+																maxLength={4}
+																placeholder="0000"
+																{...field}
+															>
+																<InputOTPGroup className="gap-0">
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		index={0}
+																	/>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		index={1}
+																	/>
+																	<p className="mx-2.5 font-medium text-body2 text-label-assistive">
+																		시
+																	</p>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		index={2}
+																	/>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		index={3}
+																	/>
+																	<p className="ml-2.5 font-medium text-body2 text-label-assistive">
+																		분
+																	</p>
+																</InputOTPGroup>
+															</InputOTP>
 														</FormControl>
-													</PopoverTrigger>
-													<PopoverContent
-														className="w-auto overflow-hidden border-line-subtle bg-background-normal p-0 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
-														align="start"
-													>
-														<Calendar
-															className="px-5 py-3.5"
-															mode="single"
-															formatters={{
-																formatCaption: (date) =>
-																	date.toLocaleDateString('ko-KR', { month: 'long' }),
-															}}
-															selected={field.value}
-															onSelect={(date) => {
-																field.onChange(date);
-																setScheduledDateOpen(false);
-															}}
-															disabled={(date) => {
-																const today = new Date();
-																today.setHours(0, 0, 0, 0);
-																const d = new Date(date);
-																d.setHours(0, 0, 0, 0);
-																return d < today;
-															}}
-														/>
-													</PopoverContent>
-												</Popover>
-												<FormMessage className="text-red-400" />
-											</FormItem>
-										)}
-									/>
-									<FormField
-										control={form.control}
-										name="scheduledTime"
-										render={({ field }) => (
-											<FormItem className="flex-1">
-												<FormLabel className="sr-only">예약 시간</FormLabel>
-												<FormControl>
-													<InputOTP
-														pattern={REGEXP_ONLY_DIGITS}
-														containerClassName="h-12 rounded-lg border border-line-normal px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400 [&_[data-slot=input-otp-slot]]:text-label-assistive [&_[data-slot=input-otp-slot]:not(:empty)]:text-label-normal"
-														maxLength={4}
-														placeholder="0000"
-														{...field}
-													>
-														<InputOTPGroup className="gap-0">
-															<InputOTPSlot
-																className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-																index={0}
-															/>
-															<InputOTPSlot
-																className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-																index={1}
-															/>
-															<p className="mx-2.5 font-medium text-body2 text-label-assistive">
-																시
-															</p>
-															<InputOTPSlot
-																className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-																index={2}
-															/>
-															<InputOTPSlot
-																className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-																index={3}
-															/>
-															<p className="ml-2.5 font-medium text-body2 text-label-assistive">
-																분
-															</p>
-															<p className="ml-2.5 font-medium text-body2 text-label-assistive">
-																부터
-															</p>
-														</InputOTPGroup>
-													</InputOTP>
-												</FormControl>
-												<FormMessage className="text-red-400" />
-															</FormItem>
-										)}
-									/>
+														<FormMessage className="text-red-400" />
+													</FormItem>
+												);
+											}}
+										/>
 									</div>
 								)}
 							</div>

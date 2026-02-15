@@ -29,7 +29,7 @@ export const TiptapEditorContainer = ({
 	}
 
 	return (
-		<div className="flex w-full flex-col overflow-hidden rounded-lg border border-line-normal">
+		<div className="flex w-full flex-col overflow-hidden rounded-lg border border-line-normal aria-invalid:border-red-400">
 			<Toolbar editor={editor} />
 			<TiptapEditor editor={editor} placeholder={placeholder} />
 		</div>
