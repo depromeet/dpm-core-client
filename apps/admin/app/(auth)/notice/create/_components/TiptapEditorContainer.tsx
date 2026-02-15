@@ -12,7 +12,11 @@ interface TiptapEditorContainerProps {
 	placeholder?: string;
 }
 
-export const TiptapEditorContainer = ({ content, onChange }: TiptapEditorContainerProps) => {
+export const TiptapEditorContainer = ({
+	content,
+	onChange,
+	placeholder = 'ex. 디프만 00기 OT',
+}: TiptapEditorContainerProps) => {
 	const [isMounted, setIsMounted] = useState(false);
 	const editor = useTiptapEditor({ content, onChange });
 
@@ -27,7 +31,7 @@ export const TiptapEditorContainer = ({ content, onChange }: TiptapEditorContain
 	return (
 		<div className="flex w-full flex-col overflow-hidden rounded-lg border border-line-normal">
 			<Toolbar editor={editor} />
-			<TiptapEditor editor={editor} />
+			<TiptapEditor editor={editor} placeholder={placeholder} />
 		</div>
 	);
 };
