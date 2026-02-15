@@ -44,6 +44,11 @@ export const CustomStarterKit = StarterKit.configure({
 	dropcursor: {
 		width: 2,
 	},
+	horizontalRule: {
+		HTMLAttributes: {
+			style: 'margin: 16px 0;',
+		},
+	},
 });
 
 export const CustomBulletList = BulletList.configure({
