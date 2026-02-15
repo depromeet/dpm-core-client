@@ -1,0 +1,40 @@
+'use client';
+
+import { cn } from '@dpm-core/shared';
+
+import { OrderIcon, UnorderIcon } from '../icons';
+import type { EditorProps } from './types';
+
+/**
+ * @description BulletList, OrderedList 툴
+ */
+export const List = ({ editor }: EditorProps) => {
+	return (
+		<div className="flex items-center gap-1">
+			<button
+				type="button"
+				onClick={() => editor.chain().focus().toggleBulletList().run()}
+				disabled={!editor.can().chain().focus().toggleBulletList().run()}
+				className={cn(
+					'flex h-8 w-8 items-center justify-center rounded hover:bg-background-strong',
+					editor.isActive('bulletList') && 'bg-background-strong',
+				)}
+				aria-label="Unordered List"
+			>
+				<UnorderIcon className="text-icon-noraml" />
+			</button>
+			<button
+				type="button"
+				onClick={() => editor.chain().focus().toggleOrderedList().run()}
+				disabled={!editor.can().chain().focus().toggleOrderedList().run()}
+				className={cn(
+					'flex h-8 w-8 items-center justify-center rounded hover:bg-background-strong',
+					editor.isActive('orderedList') && 'bg-background-strong',
+				)}
+				aria-label="Ordered List"
+			>
+				<OrderIcon className="text-icon-noraml" />
+			</button>
+		</div>
+	);
+};
