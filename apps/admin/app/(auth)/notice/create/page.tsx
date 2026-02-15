@@ -2,9 +2,13 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { REGEXP_ONLY_DIGITS } from 'input-otp';
+import { CalendarIcon } from 'lucide-react';
 import {
 	AppLayout,
 	Button,
+	Calendar,
 	ChevronLeft,
 	Form,
 	FormControl,
@@ -13,6 +17,12 @@ import {
 	FormLabel,
 	FormMessage,
 	Input,
+	InputOTP,
+	InputOTPGroup,
+	InputOTPSlot,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
 	Switch,
 	ToggleGroup,
 	ToggleGroupItem,
@@ -21,6 +31,7 @@ import {
 import { Section } from '@/components/section';
 import { useNoticeForm } from '@/hooks/use-notice-form';
 import { usePreventPageExit } from '@/hooks/use-prevent-page-exit';
+import { formatDateWithDay } from '@/lib/date';
 
 import { TiptapEditorContainer } from './_components/TiptapEditorContainer';
 
@@ -33,6 +44,7 @@ const CATEGORY_OPTIONS = [
 export default function CreateNoticePage() {
 	const router = useRouter();
 	const { form, handleSubmit, handleTemporarySave } = useNoticeForm();
+	const [scheduledDateOpen, setScheduledDateOpen] = useState(false);
 
 	// form 값 감시
 	const title = form.watch('title');
@@ -78,6 +90,10 @@ export default function CreateNoticePage() {
 									isScheduled: String(formData.isScheduled),
 									sendNotification: String(formData.sendNotification),
 								});
+								if (formData.isScheduled && formData.scheduledDate != null) {
+									params.set('scheduledDate', formData.scheduledDate.toISOString());
+									params.set('scheduledTime', formData.scheduledTime ?? '0000');
+								}
 								router.push(`/notice/create/preview?${params.toString()}`);
 							}}
 						>
@@ -179,6 +195,104 @@ export default function CreateNoticePage() {
 									</FormItem>
 								)}
 							/>
+
+							{isScheduled && (
+								<div className="flex items-start gap-2">
+									<FormField
+										control={form.control}
+										name="scheduledDate"
+										render={({ field }) => (
+											<FormItem className="flex-1">
+												<FormLabel className="sr-only">예약 날짜</FormLabel>
+												<Popover open={scheduledDateOpen} onOpenChange={setScheduledDateOpen}>
+													<PopoverTrigger asChild>
+														<FormControl>
+															<Button
+																variant="none"
+																type="button"
+																className="h-12 w-full justify-between border border-line-normal bg-background-normal p-4 font-medium text-body2"
+															>
+																{field.value
+																	? formatDateWithDay(field.value)
+																	: '날짜를 선택해주세요'}
+																<CalendarIcon size={20} className="text-icon-noraml" />
+															</Button>
+														</FormControl>
+													</PopoverTrigger>
+													<PopoverContent
+														className="w-auto overflow-hidden border-line-subtle bg-background-normal p-0 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
+														align="start"
+													>
+														<Calendar
+															className="px-5 py-3.5"
+															mode="single"
+															formatters={{
+																formatCaption: (date) =>
+																	date.toLocaleDateString('ko-KR', { month: 'long' }),
+															}}
+															selected={field.value}
+															onSelect={(date) => {
+																field.onChange(date);
+																setScheduledDateOpen(false);
+															}}
+															disabled={(date) => {
+																const today = new Date();
+																today.setHours(0, 0, 0, 0);
+																const d = new Date(date);
+																d.setHours(0, 0, 0, 0);
+																return d < today;
+															}}
+														/>
+													</PopoverContent>
+												</Popover>
+												<FormMessage className="text-red-400" />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="scheduledTime"
+										render={({ field }) => (
+											<FormItem className="flex-1">
+												<FormLabel className="sr-only">예약 시간</FormLabel>
+												<FormControl>
+													<InputOTP
+														pattern={REGEXP_ONLY_DIGITS}
+														containerClassName="h-12 rounded-lg border border-line-normal px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400"
+														maxLength={4}
+														placeholder="0000"
+														{...field}
+													>
+														<InputOTPGroup>
+															<InputOTPSlot
+																className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																index={0}
+															/>
+															<InputOTPSlot
+																className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																index={1}
+															/>
+															<p className="mx-1 font-medium text-body2 text-label-assistive">시</p>
+															<InputOTPSlot
+																className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																index={2}
+															/>
+															<InputOTPSlot
+																className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																index={3}
+															/>
+															<p className="ml-1 font-medium text-body2 text-label-assistive">
+																분 부터
+															</p>
+														</InputOTPGroup>
+													</InputOTP>
+												</FormControl>
+												<FormMessage className="text-red-400" />
+											</FormItem>
+										)}
+									/>
+								</div>
+							)}
 
 							{/* 등록알림 보내기 */}
 							<FormField
