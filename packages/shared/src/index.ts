@@ -18,7 +18,6 @@ export * from './components/status-badge';
 export * from './components/table';
 export * from './components/team-tab-bar';
 export * from './components/toggle-button';
-export * from './components/toggle-group';
 export * from './components/ui/avatar';
 export * from './components/ui/button';
 export * from './components/ui/calendar';
@@ -43,6 +42,7 @@ export * from './components/ui/table';
 export * from './components/ui/tabs';
 export * from './components/ui/toast';
 export * from './components/ui/toggle';
+export * from './components/ui/toggle-group';
 // Constants
 export * from './constants/attendance';
 export * from './constants/google-analytics';
