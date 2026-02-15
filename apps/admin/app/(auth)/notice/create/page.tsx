@@ -180,24 +180,25 @@ export default function CreateNoticePage() {
 							/>
 
 							{/* 공지 예약하기 */}
-							<FormField
-								control={form.control}
-								name="isScheduled"
-								render={({ field }) => (
-									<FormItem>
-										<div className="flex items-center justify-between">
-											<FormLabel className="text-body1">공지 예약하기</FormLabel>
-											<FormControl>
-												<Switch checked={field.value} onCheckedChange={field.onChange} />
-											</FormControl>
-										</div>
-										<FormMessage className="text-red-400" />
-									</FormItem>
-								)}
-							/>
+							<div className="flex flex-col gap-2">
+								<FormField
+									control={form.control}
+									name="isScheduled"
+									render={({ field }) => (
+										<FormItem>
+											<div className="flex items-center justify-between">
+												<FormLabel className="text-body1">공지 예약하기</FormLabel>
+												<FormControl>
+													<Switch checked={field.value} onCheckedChange={field.onChange} />
+												</FormControl>
+											</div>
+											<FormMessage className="text-red-400" />
+										</FormItem>
+									)}
+								/>
 
-							{isScheduled && (
-								<div className="flex items-start gap-2">
+								{isScheduled && (
+									<div className="flex items-start gap-2">
 									<FormField
 										control={form.control}
 										name="scheduledDate"
@@ -212,9 +213,13 @@ export default function CreateNoticePage() {
 																type="button"
 																className="h-12 w-full justify-between border border-line-normal bg-background-normal p-4 font-medium text-body2"
 															>
-																{field.value
-																	? formatDateWithDay(field.value)
-																	: '날짜를 선택해주세요'}
+																{field.value ? (
+																	formatDateWithDay(field.value)
+																) : (
+																	<span className="text-label-assistive">
+																		{formatDateWithDay(new Date())}
+																	</span>
+																)}
 																<CalendarIcon size={20} className="text-icon-noraml" />
 															</Button>
 														</FormControl>
@@ -258,12 +263,12 @@ export default function CreateNoticePage() {
 												<FormControl>
 													<InputOTP
 														pattern={REGEXP_ONLY_DIGITS}
-														containerClassName="h-12 rounded-lg border border-line-normal px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400"
+														containerClassName="h-12 rounded-lg border border-line-normal px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400 [&_[data-slot=input-otp-slot]]:text-label-assistive [&_[data-slot=input-otp-slot]:not(:empty)]:text-label-normal"
 														maxLength={4}
 														placeholder="0000"
 														{...field}
 													>
-														<InputOTPGroup>
+														<InputOTPGroup className="gap-0">
 															<InputOTPSlot
 																className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
 																index={0}
@@ -272,7 +277,9 @@ export default function CreateNoticePage() {
 																className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
 																index={1}
 															/>
-															<p className="mx-1 font-medium text-body2 text-label-assistive">시</p>
+															<p className="mx-2.5 font-medium text-body2 text-label-assistive">
+																시
+															</p>
 															<InputOTPSlot
 																className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
 																index={2}
@@ -281,18 +288,22 @@ export default function CreateNoticePage() {
 																className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
 																index={3}
 															/>
-															<p className="ml-1 font-medium text-body2 text-label-assistive">
-																분 부터
+															<p className="ml-2.5 font-medium text-body2 text-label-assistive">
+																분
+															</p>
+															<p className="ml-2.5 font-medium text-body2 text-label-assistive">
+																부터
 															</p>
 														</InputOTPGroup>
 													</InputOTP>
 												</FormControl>
 												<FormMessage className="text-red-400" />
-											</FormItem>
+															</FormItem>
 										)}
 									/>
-								</div>
-							)}
+									</div>
+								)}
+							</div>
 
 							{/* 등록알림 보내기 */}
 							<FormField
