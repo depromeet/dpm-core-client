@@ -76,7 +76,7 @@ export default function CreateNoticePage() {
 	return (
 		<AppLayout className="bg-background-normal">
 			{/* 상단 헤더 */}
-			<header className="sticky top-0 z-10 border-line-normal border-b bg-background-normal">
+			<header className="sticky top-0 z-20 border-line-normal border-b bg-background-normal">
 				<div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4 py-3 md:px-10 md:py-4">
 					<Link
 						href="/notice"
@@ -147,7 +147,7 @@ export default function CreateNoticePage() {
 													<ToggleGroupItem
 														key={value}
 														value={value}
-														className="rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
+														className="w-fit rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
 													>
 														{label}
 													</ToggleGroupItem>
@@ -179,7 +179,7 @@ export default function CreateNoticePage() {
 														<ToggleGroupItem
 															key={value}
 															value={value}
-															className="rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
+															className="w-fit rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
 														>
 															{label}
 														</ToggleGroupItem>
@@ -315,49 +315,50 @@ export default function CreateNoticePage() {
 										<FormField
 											control={form.control}
 											name="submissionStartTime"
-											render={({ field }) => (
-												<FormItem className="flex-1">
-													<FormLabel className="sr-only">제출 시작 시간</FormLabel>
-													<FormControl>
-														<InputOTP
-															pattern={REGEXP_ONLY_DIGITS}
-															containerClassName="h-12 rounded-lg border border-line-normal px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400 [&_[data-slot=input-otp-slot]]:text-label-assistive [&_[data-slot=input-otp-slot]:not(:empty)]:text-label-normal"
-															maxLength={4}
-															placeholder="0000"
-															{...field}
-														>
-															<InputOTPGroup className="gap-0">
-																<InputOTPSlot
-																	className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-																	index={0}
-																/>
-																<InputOTPSlot
-																	className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-																	index={1}
-																/>
-																<p className="mx-2 font-medium text-body2 text-label-assistive">
-																	시
-																</p>
-																<InputOTPSlot
-																	className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-																	index={2}
-																/>
-																<InputOTPSlot
-																	className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-																	index={3}
-																/>
-																<p className="ml-2 font-medium text-body2 text-label-assistive">
-																	분
-																</p>
-																<p className="ml-2 font-medium text-body2 text-label-assistive">
-																	부터
-																</p>
-															</InputOTPGroup>
-														</InputOTP>
-													</FormControl>
-													<FormMessage className="text-red-400" />
-												</FormItem>
-											)}
+											render={({ field }) => {
+												const submissionDeadlineError = form.formState.errors.submissionStartDate;
+												return (
+													<FormItem className="flex-1">
+														<FormLabel className="sr-only">제출 시작 시간</FormLabel>
+														<FormControl>
+															<InputOTP
+																pattern={REGEXP_ONLY_DIGITS}
+																containerClassName={cn(
+																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400 [&_[data-slot=input-otp-slot]]:text-label-assistive [&_[data-slot=input-otp-slot]:not(:empty)]:text-label-normal',
+																	submissionDeadlineError ? 'border-red-400' : 'border-line-normal',
+																)}
+																maxLength={4}
+																placeholder="0000"
+																{...field}
+															>
+																<InputOTPGroup className="gap-0">
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		index={0}
+																	/>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		index={1}
+																	/>
+																	<p className="mx-2 font-medium text-body2 text-label-assistive">시</p>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		index={2}
+																	/>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		index={3}
+																	/>
+																	<p className="ml-2 font-medium text-body2 text-label-assistive">
+																		분 부터
+																	</p>
+																</InputOTPGroup>
+															</InputOTP>
+														</FormControl>
+														<FormMessage className="text-red-400" />
+													</FormItem>
+												);
+											}}
 										/>
 									</div>
 									{/* 제출 마감 (까지) */}
@@ -365,7 +366,9 @@ export default function CreateNoticePage() {
 										<FormField
 											control={form.control}
 											name="submissionEndDate"
-											render={({ field }) => (
+											render={({ field }) => {
+												const submissionDeadlineError = form.formState.errors.submissionStartDate;
+												return (
 												<FormItem className="flex-1">
 													<FormLabel className="sr-only">제출 마감 날짜</FormLabel>
 													<Popover
@@ -377,7 +380,10 @@ export default function CreateNoticePage() {
 																<Button
 																	variant="none"
 																	type="button"
-																	className="h-12 w-full justify-between border border-line-normal bg-background-normal p-4 font-medium text-body2 aria-invalid:border-red-400"
+																	className={cn(
+																		'h-12 w-full justify-between border bg-background-normal p-4 font-medium text-body2 aria-invalid:border-red-400',
+																		submissionDeadlineError ? 'border-red-400' : 'border-line-normal',
+																	)}
 																>
 																	{field.value ? (
 																		formatDateWithDay(field.value)
@@ -418,54 +424,56 @@ export default function CreateNoticePage() {
 													</Popover>
 													<FormMessage className="text-red-400" />
 												</FormItem>
-											)}
+												);
+											}}
 										/>
 										<FormField
 											control={form.control}
 											name="submissionEndTime"
-											render={({ field }) => (
-												<FormItem className="flex-1">
-													<FormLabel className="sr-only">제출 마감 시간</FormLabel>
-													<FormControl>
-														<InputOTP
-															pattern={REGEXP_ONLY_DIGITS}
-															containerClassName="h-12 rounded-lg border border-line-normal px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400 [&_[data-slot=input-otp-slot]]:text-label-assistive [&_[data-slot=input-otp-slot]:not(:empty)]:text-label-normal"
-															maxLength={4}
-															placeholder="0000"
-															{...field}
-														>
-															<InputOTPGroup className="gap-0">
-																<InputOTPSlot
-																	className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-																	index={0}
-																/>
-																<InputOTPSlot
-																	className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-																	index={1}
-																/>
-																<p className="mx-2 font-medium text-body2 text-label-assistive">
-																	시
-																</p>
-																<InputOTPSlot
-																	className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-																	index={2}
-																/>
-																<InputOTPSlot
-																	className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-																	index={3}
-																/>
-																<p className="ml-2 font-medium text-body2 text-label-assistive">
-																	분
-																</p>
-																<p className="ml-2 font-medium text-body2 text-label-assistive">
-																	까지
-																</p>
-															</InputOTPGroup>
-														</InputOTP>
-													</FormControl>
-													<FormMessage className="text-red-400" />
-												</FormItem>
-											)}
+											render={({ field }) => {
+												const submissionDeadlineError = form.formState.errors.submissionStartDate;
+												return (
+													<FormItem className="flex-1">
+														<FormLabel className="sr-only">제출 마감 시간</FormLabel>
+														<FormControl>
+															<InputOTP
+																pattern={REGEXP_ONLY_DIGITS}
+																containerClassName={cn(
+																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400 [&_[data-slot=input-otp-slot]]:text-label-assistive [&_[data-slot=input-otp-slot]:not(:empty)]:text-label-normal',
+																	submissionDeadlineError ? 'border-red-400' : 'border-line-normal',
+																)}
+																maxLength={4}
+																placeholder="0000"
+																{...field}
+															>
+																<InputOTPGroup className="gap-0">
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		index={0}
+																	/>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		index={1}
+																	/>
+																	<p className="mx-2 font-medium text-body2 text-label-assistive">시</p>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		index={2}
+																	/>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		index={3}
+																	/>
+																	<p className="ml-2 font-medium text-body2 text-label-assistive">
+																		분 까지
+																	</p>
+																</InputOTPGroup>
+															</InputOTP>
+														</FormControl>
+														<FormMessage className="text-red-400" />
+													</FormItem>
+												);
+											}}
 										/>
 									</div>
 								</div>

@@ -8,7 +8,7 @@ const urlSchema = z
 	.string()
 	.optional()
 	.refine((val) => !val || val === '' || /^https?:\/\//.test(val), {
-		message: '올바른 링크 형식을 입력해주세요.',
+		message: '링크 타입으로 입력해주세요!',
 	});
 
 export const noticeSchema = z
@@ -35,6 +35,23 @@ export const noticeSchema = z
 			);
 		},
 		{ message: '예약일을 입력해주세요!', path: ['scheduledDate'] },
+	)
+	.refine(
+		(data) => {
+			if (data.category !== 'assignment') return true;
+			return (
+				data.submissionStartDate != null &&
+				data.submissionStartTime != null &&
+				data.submissionStartTime.length === 4 &&
+				data.submissionEndDate != null &&
+				data.submissionEndTime != null &&
+				data.submissionEndTime.length === 4
+			);
+		},
+		{
+			message: '제출 기한을 입력해주세요!',
+			path: ['submissionStartDate'],
+		},
 	);
 
 export type NoticeSchema = z.infer<typeof noticeSchema>;
