@@ -49,7 +49,7 @@ const ASSIGNMENT_TYPE_OPTIONS = [
 
 export default function CreateNoticePage() {
 	const router = useRouter();
-	const { form, handleSubmit, handleTemporarySave } = useNoticeForm();
+	const { form, handleSubmit, handleTemporarySave, isSubmitPending } = useNoticeForm();
 	const [scheduledDateOpen, setScheduledDateOpen] = useState(false);
 	const [submissionStartDateOpen, setSubmissionStartDateOpen] = useState(false);
 	const [submissionEndDateOpen, setSubmissionEndDateOpen] = useState(false);
@@ -116,7 +116,12 @@ export default function CreateNoticePage() {
 						<Button variant="assistive" className="h-12" onClick={handleTemporarySave}>
 							임시저장
 						</Button>
-						<Button variant="secondary" className="h-12" onClick={form.handleSubmit(handleSubmit)}>
+						<Button
+							variant="secondary"
+							className="h-12"
+							disabled={isSubmitPending}
+							onClick={form.handleSubmit(handleSubmit)}
+						>
 							등록하기
 						</Button>
 					</div>
@@ -124,7 +129,13 @@ export default function CreateNoticePage() {
 			</header>
 
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(handleSubmit)}>
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						if (isSubmitPending) return;
+						form.handleSubmit(handleSubmit)(e);
+					}}
+				>
 					<Section className="mx-auto w-full max-w-[800px] py-8">
 						<div className="flex flex-col gap-8">
 							{/* 카테고리 */}

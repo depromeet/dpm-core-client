@@ -1,11 +1,30 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from '@dpm-core/shared';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
 import { type NoticeSchema, noticeSchema } from '@/app/(auth)/notice/create/_schemas/notice-schema';
+import { buildAnnouncementPayload } from '@/app/(auth)/notice/create/_utils/build-announcement-payload';
+import { createAnnouncementMutationOptions } from '@/remotes/mutations/announcement';
 
 export const useNoticeForm = (defaultValues?: Partial<NoticeSchema>) => {
+	const router = useRouter();
+
+	const { mutate: createAnnouncement, isPending: isSubmitPending } = useMutation(
+		createAnnouncementMutationOptions({
+			onSuccess: () => {
+				toast.success('공지를 등록하였습니다.');
+				router.replace('/notice');
+			},
+			onError: () => {
+				toast.error('공지 등록에 실패하였습니다.');
+			},
+		}),
+	);
+
 	const form = useForm<NoticeSchema>({
 		resolver: zodResolver(noticeSchema),
 		defaultValues: {
@@ -27,8 +46,8 @@ export const useNoticeForm = (defaultValues?: Partial<NoticeSchema>) => {
 	});
 
 	const handleSubmit = (data: NoticeSchema) => {
-		console.log('Form submitted:', data);
-		// TODO: API 호출
+		const payload = buildAnnouncementPayload(data);
+		createAnnouncement(payload);
 	};
 
 	const handleTemporarySave = () => {
@@ -41,5 +60,6 @@ export const useNoticeForm = (defaultValues?: Partial<NoticeSchema>) => {
 		form,
 		handleSubmit,
 		handleTemporarySave,
+		isSubmitPending,
 	};
 };
