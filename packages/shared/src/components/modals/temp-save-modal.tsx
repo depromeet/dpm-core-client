@@ -43,7 +43,7 @@ export const TempSaveModal = ({
 					<DialogTitle className="font-bold text-headline2 text-label-normal">임시저장</DialogTitle>
 				</DialogHeader>
 
-				<DialogDescription className="min-h-0 shrink-0 px-0 py-3 font-medium text-body1 text-label-tertiary">
+				<DialogDescription className="min-h-0 shrink-0 px-0 py-3 font-medium text-body1 text-gray-400">
 					지금까지 작성된 내용을 임시저장할까요?
 					<br />
 					나중에 이어서 작성할 수 있어요.
@@ -53,7 +53,7 @@ export const TempSaveModal = ({
 					<Button
 						variant="secondary"
 						size="lg"
-						className="flex-1 bg-gray-350 text-white hover:bg-gray-400"
+						className="flex-1 bg-gray-400 text-white hover:bg-gray-500"
 						onClick={handleCancel}
 					>
 						취소
