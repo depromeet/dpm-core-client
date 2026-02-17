@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import dayjs from 'dayjs';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import {
 	Button,
@@ -57,9 +58,10 @@ const createCustomDayButton = (
 	highlightedDate?: Date,
 	highlightedLabel?: string,
 ) => {
-	// highlightedDate가 있으면 마감 Drawer (선택=검은색, 회식=파란색)
-	// highlightedDate가 없으면 회식 Drawer (선택=파란색)
-	const isDeadlineMode = !!highlightedDate;
+	// selectedLabel이 "마감"이면 마감 Drawer (선택=검은색), 아니면 회식 Drawer (선택=파란색)
+	// highlightedDate가 있으면 회식 날짜를 파란색으로 하이라이트
+	// ※ 회식 날짜 #5E83FE, 마감 날짜 #1F2937 - 색상 고정
+	const isDeadlineMode = selectedLabel === '마감';
 
 	const CustomDayButton = ({
 		day,
@@ -73,11 +75,7 @@ const createCustomDayButton = (
 		const isOutside = modifiers.outside;
 
 		// highlightedDate와 같은 날짜인지 확인 (회식 날짜)
-		const isHighlighted =
-			highlightedDate &&
-			day.date.getFullYear() === highlightedDate.getFullYear() &&
-			day.date.getMonth() === highlightedDate.getMonth() &&
-			day.date.getDate() === highlightedDate.getDate();
+		const isHighlighted = highlightedDate && dayjs(day.date).isSame(dayjs(highlightedDate), 'day');
 
 		// 선택된 날짜와 하이라이트 날짜가 같으면 하이라이트(회식) 스타일 우선
 		const showHighlight = isHighlighted && !isSelected;
@@ -86,11 +84,12 @@ const createCustomDayButton = (
 			<button
 				type="button"
 				className={cn(
-					'flex h-[45px] w-full flex-col items-center justify-center rounded-md px-[11px] py-[5px]',
-					// 마감 Drawer: 선택(마감)=검은색, 회식 Drawer: 선택(회식)=파란색
+					'flex h-[45px] w-full min-w-0 flex-col items-center justify-center rounded-md p-0',
+					// 마감 날짜(선택): #1F2937 고정
 					isSelected && isDeadlineMode && 'bg-[#1F2937]',
+					// 회식 날짜(선택): #5E83FE 고정
 					isSelected && !isDeadlineMode && 'bg-[#5E83FE]',
-					// 회식 날짜 (하이라이트): 파란색
+					// 회식 날짜(하이라이트): #5E83FE 고정
 					showHighlight && 'bg-[#5E83FE]',
 					isToday && !isSelected && !showHighlight && 'bg-[#F3F4F6]',
 					!isSelected && !isToday && !showHighlight && 'bg-white',
@@ -99,7 +98,7 @@ const createCustomDayButton = (
 			>
 				<span
 					className={cn(
-						'font-medium text-[14px] leading-[142%]',
+						'shrink-0 font-medium text-[14px] leading-[142%] whitespace-nowrap',
 						// 마감/회식 날짜 텍스트: 흰색
 						isSelected && 'text-white',
 						showHighlight && 'text-white',
@@ -107,7 +106,7 @@ const createCustomDayButton = (
 						!isSelected && !showHighlight && !isOutside && 'text-[#4B5563]',
 					)}
 				>
-					{day.date.getDate()}
+					{dayjs(day.date).date()}
 				</span>
 				{isToday && !isSelected && !showHighlight && (
 					<span className="font-medium text-[#4B5563] text-[10px] leading-[133%]">오늘</span>
@@ -141,12 +140,12 @@ export const DateTimePickerDrawer = ({
 	// 시간 값 추출
 	const getInitialPeriod = () => {
 		if (!value) return '오후';
-		return value.getHours() < 12 ? '오전' : '오후';
+		return dayjs(value).hour() < 12 ? '오전' : '오후';
 	};
 
 	const getInitialHour = () => {
 		if (!value) return '6';
-		const hours = value.getHours();
+		const hours = dayjs(value).hour();
 		if (hours === 0) return '12';
 		if (hours > 12) return String(hours - 12);
 		return String(hours);
@@ -158,12 +157,9 @@ export const DateTimePickerDrawer = ({
 	const handleConfirm = () => {
 		if (!selectedDate) return;
 
-		const date = new Date(selectedDate);
 		const hour = Number(selectedHour);
-		const hours = selectedPeriod === '오전' ? hour % 12 : (hour % 12) + 12;
-		date.setHours(hours);
-		date.setMinutes(0);
-		date.setSeconds(0);
+		const hours24 = selectedPeriod === '오전' ? hour % 12 : (hour % 12) + 12;
+		const date = dayjs(selectedDate).hour(hours24).minute(0).second(0).millisecond(0).toDate();
 
 		onChange(date);
 		setOpen(false);
@@ -229,6 +225,19 @@ export const DateTimePickerDrawer = ({
 							className="w-full p-0"
 							components={{
 								DayButton: createCustomDayButton(selectedLabel, highlightedDate, highlightedLabel),
+							}}
+							classNames={{
+								root: 'w-full',
+								table: 'w-full table-fixed border-collapse',
+								nav: 'flex items-center gap-1 w-full absolute top-0 inset-x-0 justify-between h-[28px]',
+								button_previous:
+									'inline-flex shrink-0 cursor-pointer items-center justify-center size-7 border border-line-subtle rounded-md p-0 select-none outline-none aria-disabled:opacity-50 disabled:pointer-events-none',
+								button_next:
+									'inline-flex shrink-0 cursor-pointer items-center justify-center size-7 border border-line-subtle rounded-md p-0 select-none outline-none aria-disabled:opacity-50 disabled:pointer-events-none',
+								// aspect-square 제거: 높이 45px일 때 너비도 45px로 늘어나 가로 스크롤 발생 → table-fixed로 열 균등 분배
+								day: 'relative text-label-subtie font-medium text-body2 w-full h-full p-0 text-center [&:last-child[data-selected=true]_button]:rounded-r-md group/day select-none',
+								weekday:
+									'text-label-assistive flex items-center justify-center w-full rounded-md font-normal text-body2 font-medium select-none',
 							}}
 						/>
 					</div>

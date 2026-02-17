@@ -1,5 +1,6 @@
 'use client';
 
+import dayjs from 'dayjs';
 // import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,7 +16,6 @@ import {
 	FormControl,
 	FormField,
 	FormItem,
-	formatDate,
 	GAPageTracker,
 	Input,
 	Label,
@@ -95,12 +95,12 @@ const AfterPartyCreatePage = () => {
 		if (saved) {
 			try {
 				const parsed = JSON.parse(saved);
-				// Date 문자열을 Date 객체로 변환
+				// ISO 문자열을 dayjs로 파싱 후 Date로 변환 (폼은 Date 기대)
 				if (parsed.scheduledAt) {
-					parsed.scheduledAt = new Date(parsed.scheduledAt);
+					parsed.scheduledAt = dayjs(parsed.scheduledAt).toDate();
 				}
 				if (parsed.closedAt) {
-					parsed.closedAt = new Date(parsed.closedAt);
+					parsed.closedAt = dayjs(parsed.closedAt).toDate();
 				}
 				form.reset(parsed);
 			} catch {
@@ -121,17 +121,18 @@ const AfterPartyCreatePage = () => {
 	const descriptionValue = form.watch('description') ?? '';
 	const scheduledAtValue = form.watch('scheduledAt');
 
-	const handleSubmit = async (data: CreateGatheringFormValues) => {
-		console.log('Form submitted:', data);
-
-		// TODO: API 호출
-		// await createAfterParty(data);
-		// createAfterParty(data);
-
-		console.log('data', data);
-
-		// 완료 페이지로 이동
-		// router.replace('/after-party/create');
+	const handleSubmit = (data: CreateGatheringFormValues) => {
+		const payload = {
+			title: data.title,
+			description: data.description ?? '',
+			inviteTags: [], // TODO: inviteScopes를 inviteTags 형식으로 매핑
+			scheduledAt: data.scheduledAt ? dayjs(data.scheduledAt).toISOString() : '',
+			closedAt: data.closedAt ? dayjs(data.closedAt).toISOString() : '',
+			allowEditAfterClose: data.allowEditAfterClose,
+			canEditAfterApproval: false,
+		};
+		// createAfterParty(payload);
+		console.log('API payload:', payload);
 	};
 
 	return (
@@ -285,7 +286,7 @@ const AfterPartyCreatePage = () => {
 											>
 												<CalendarIcon />
 												<span className="font-medium text-[#1F2937] text-body2">
-													{field.value ? formatDate(field.value) : '날짜 선택'}
+													{field.value ? afterPartyFormatDate(field.value) : '날짜 선택'}
 												</span>
 											</button>
 										</DateTimePickerDrawer>
