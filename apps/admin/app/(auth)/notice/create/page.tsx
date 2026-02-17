@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { CalendarIcon } from 'lucide-react';
@@ -48,7 +47,6 @@ const ASSIGNMENT_TYPE_OPTIONS = [
 ] as const;
 
 export default function CreateNoticePage() {
-	const router = useRouter();
 	const { form, handleSubmit, handleTemporarySave, isSubmitPending } = useNoticeForm();
 	const [scheduledDateOpen, setScheduledDateOpen] = useState(false);
 	const [submissionStartDateOpen, setSubmissionStartDateOpen] = useState(false);
@@ -92,27 +90,7 @@ export default function CreateNoticePage() {
 						<ChevronLeft className="text-icon-noraml" />
 					</Link>
 					<div className="flex items-center gap-4">
-						<Button
-							variant="assistive"
-							className="h-12"
-							onClick={() => {
-								const formData = form.getValues();
-								const params = new URLSearchParams({
-									category: formData.category,
-									title: formData.title,
-									content: formData.content,
-									isScheduled: String(formData.isScheduled),
-									sendNotification: String(formData.sendNotification),
-								});
-								if (formData.isScheduled && formData.scheduledDate != null) {
-									params.set('scheduledDate', formData.scheduledDate.toISOString());
-									params.set('scheduledTime', formData.scheduledTime ?? '0000');
-								}
-								router.push(`/notice/create/preview?${params.toString()}`);
-							}}
-						>
-							미리보기
-						</Button>
+						{/* TODO: 미리보기 버튼 */}
 						<Button variant="assistive" className="h-12" onClick={handleTemporarySave}>
 							임시저장
 						</Button>
@@ -271,60 +249,62 @@ export default function CreateNoticePage() {
 											render={({ field }) => {
 												const submissionDeadlineError = form.formState.errors.submissionStartDate;
 												return (
-												<FormItem className="flex-1">
-													<FormLabel className="sr-only">제출 시작 날짜</FormLabel>
-													<Popover
-														open={submissionStartDateOpen}
-														onOpenChange={setSubmissionStartDateOpen}
-													>
-														<PopoverTrigger asChild>
-															<FormControl>
-																<Button
-																	variant="none"
-																	type="button"
-																	className={cn(
-																		'h-12 w-full justify-between border bg-background-normal p-4 font-medium text-body2 aria-invalid:border-red-400',
-																		submissionDeadlineError ? 'border-red-400' : 'border-line-normal',
-																	)}
-																>
-																	{field.value ? (
-																		formatDateWithDay(field.value)
-																	) : (
-																		<span className="text-label-assistive">
-																			{formatDateWithDay(new Date())}
-																		</span>
-																	)}
-																	<CalendarIcon size={20} className="text-icon-noraml" />
-																</Button>
-															</FormControl>
-														</PopoverTrigger>
-														<PopoverContent
-															className="w-auto overflow-hidden border-line-subtle bg-background-normal p-0 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
-															align="start"
+													<FormItem className="flex-1">
+														<FormLabel className="sr-only">제출 시작 날짜</FormLabel>
+														<Popover
+															open={submissionStartDateOpen}
+															onOpenChange={setSubmissionStartDateOpen}
 														>
-															<Calendar
-																className="px-5 py-3.5"
-																mode="single"
-																formatters={{
-																	formatCaption: (date) =>
-																		date.toLocaleDateString('ko-KR', { month: 'long' }),
-																}}
-																selected={field.value}
-																onSelect={(date) => {
-																	field.onChange(date);
-																	setSubmissionStartDateOpen(false);
-																}}
-																disabled={(date) => {
-																	const today = new Date();
-																	today.setHours(0, 0, 0, 0);
-																	const d = new Date(date);
-																	d.setHours(0, 0, 0, 0);
-																	return d < today;
-																}}
-															/>
-														</PopoverContent>
-													</Popover>
-												</FormItem>
+															<PopoverTrigger asChild>
+																<FormControl>
+																	<Button
+																		variant="none"
+																		type="button"
+																		className={cn(
+																			'h-12 w-full justify-between border bg-background-normal p-4 font-medium text-body2 aria-invalid:border-red-400',
+																			submissionDeadlineError
+																				? 'border-red-400'
+																				: 'border-line-normal',
+																		)}
+																	>
+																		{field.value ? (
+																			formatDateWithDay(field.value)
+																		) : (
+																			<span className="text-label-assistive">
+																				{formatDateWithDay(new Date())}
+																			</span>
+																		)}
+																		<CalendarIcon size={20} className="text-icon-noraml" />
+																	</Button>
+																</FormControl>
+															</PopoverTrigger>
+															<PopoverContent
+																className="w-auto overflow-hidden border-line-subtle bg-background-normal p-0 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
+																align="start"
+															>
+																<Calendar
+																	className="px-5 py-3.5"
+																	mode="single"
+																	formatters={{
+																		formatCaption: (date) =>
+																			date.toLocaleDateString('ko-KR', { month: 'long' }),
+																	}}
+																	selected={field.value}
+																	onSelect={(date) => {
+																		field.onChange(date);
+																		setSubmissionStartDateOpen(false);
+																	}}
+																	disabled={(date) => {
+																		const today = new Date();
+																		today.setHours(0, 0, 0, 0);
+																		const d = new Date(date);
+																		d.setHours(0, 0, 0, 0);
+																		return d < today;
+																	}}
+																/>
+															</PopoverContent>
+														</Popover>
+													</FormItem>
 												);
 											}}
 										/>
@@ -356,7 +336,9 @@ export default function CreateNoticePage() {
 																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
 																		index={1}
 																	/>
-																	<p className="mx-2 font-medium text-body2 text-label-assistive">시</p>
+																	<p className="mx-2 font-medium text-body2 text-label-assistive">
+																		시
+																	</p>
 																	<InputOTPSlot
 																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
 																		index={2}
@@ -384,65 +366,67 @@ export default function CreateNoticePage() {
 											render={({ field }) => {
 												const submissionDeadlineError = form.formState.errors.submissionStartDate;
 												return (
-												<FormItem className="flex-1">
-													<FormLabel className="sr-only">제출 마감 날짜</FormLabel>
-													<Popover
-														open={submissionEndDateOpen}
-														onOpenChange={setSubmissionEndDateOpen}
-													>
-														<PopoverTrigger asChild>
-															<FormControl>
-																<Button
-																	variant="none"
-																	type="button"
-																	className={cn(
-																		'h-12 w-full justify-between border bg-background-normal p-4 font-medium text-body2 aria-invalid:border-red-400',
-																		submissionDeadlineError ? 'border-red-400' : 'border-line-normal',
-																	)}
-																>
-																	{field.value ? (
-																		formatDateWithDay(field.value)
-																	) : (
-																		<span className="text-label-assistive">
-																			{formatDateWithDay(new Date())}
-																		</span>
-																	)}
-																	<CalendarIcon size={20} className="text-icon-noraml" />
-																</Button>
-															</FormControl>
-														</PopoverTrigger>
-														<PopoverContent
-															className="w-auto overflow-hidden border-line-subtle bg-background-normal p-0 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
-															align="start"
+													<FormItem className="flex-1">
+														<FormLabel className="sr-only">제출 마감 날짜</FormLabel>
+														<Popover
+															open={submissionEndDateOpen}
+															onOpenChange={setSubmissionEndDateOpen}
 														>
-															<Calendar
-																className="px-5 py-3.5"
-																mode="single"
-																formatters={{
-																	formatCaption: (date) =>
-																		date.toLocaleDateString('ko-KR', { month: 'long' }),
-																}}
-																selected={field.value}
-																onSelect={(date) => {
-																	field.onChange(date);
-																	setSubmissionEndDateOpen(false);
-																}}
-																disabled={(date) => {
-																	const today = new Date();
-																	today.setHours(0, 0, 0, 0);
-																	const d = new Date(date);
-																	d.setHours(0, 0, 0, 0);
-																	return d < today;
-																}}
-															/>
-														</PopoverContent>
-													</Popover>
-													{form.formState.errors.submissionStartDate && (
-														<p className="font-medium text-caption1 text-red-400" role="alert">
-															{form.formState.errors.submissionStartDate.message}
-														</p>
-													)}
-												</FormItem>
+															<PopoverTrigger asChild>
+																<FormControl>
+																	<Button
+																		variant="none"
+																		type="button"
+																		className={cn(
+																			'h-12 w-full justify-between border bg-background-normal p-4 font-medium text-body2 aria-invalid:border-red-400',
+																			submissionDeadlineError
+																				? 'border-red-400'
+																				: 'border-line-normal',
+																		)}
+																	>
+																		{field.value ? (
+																			formatDateWithDay(field.value)
+																		) : (
+																			<span className="text-label-assistive">
+																				{formatDateWithDay(new Date())}
+																			</span>
+																		)}
+																		<CalendarIcon size={20} className="text-icon-noraml" />
+																	</Button>
+																</FormControl>
+															</PopoverTrigger>
+															<PopoverContent
+																className="w-auto overflow-hidden border-line-subtle bg-background-normal p-0 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
+																align="start"
+															>
+																<Calendar
+																	className="px-5 py-3.5"
+																	mode="single"
+																	formatters={{
+																		formatCaption: (date) =>
+																			date.toLocaleDateString('ko-KR', { month: 'long' }),
+																	}}
+																	selected={field.value}
+																	onSelect={(date) => {
+																		field.onChange(date);
+																		setSubmissionEndDateOpen(false);
+																	}}
+																	disabled={(date) => {
+																		const today = new Date();
+																		today.setHours(0, 0, 0, 0);
+																		const d = new Date(date);
+																		d.setHours(0, 0, 0, 0);
+																		return d < today;
+																	}}
+																/>
+															</PopoverContent>
+														</Popover>
+														{form.formState.errors.submissionStartDate && (
+															<p className="font-medium text-caption1 text-red-400" role="alert">
+																{form.formState.errors.submissionStartDate.message}
+															</p>
+														)}
+													</FormItem>
 												);
 											}}
 										/>
@@ -474,7 +458,9 @@ export default function CreateNoticePage() {
 																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
 																		index={1}
 																	/>
-																	<p className="mx-2 font-medium text-body2 text-label-assistive">시</p>
+																	<p className="mx-2 font-medium text-body2 text-label-assistive">
+																		시
+																	</p>
 																	<InputOTPSlot
 																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
 																		index={2}
