@@ -21,6 +21,7 @@
 	--color-gray-100: #f3f4f6;
 	--color-gray-200: #e5e7eb;
 	--color-gray-300: #d1d5db;
+	--color-gray-350: #a5a9af;
 	--color-gray-400: #9ca3af;
 	--color-gray-500: #6b7280;
 	--color-gray-600: #4b5563;
@@ -74,6 +75,7 @@
 	--color-label-disable: var(--color-gray-300);
 	--color-label-assistive: var(--color-gray-400);
 	--color-label-subtle: var(--color-gray-600);
+	--color-label-tertiary: var(--color-gray-500);
 	--color-label-normal: var(--color-gray-800);
 	--color-label-strong: var(--color-gray-900);
 	--color-label-alternative: var(--color-neutral-60);
