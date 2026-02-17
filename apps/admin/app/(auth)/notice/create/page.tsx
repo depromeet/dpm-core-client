@@ -147,7 +147,7 @@ export default function CreateNoticePage() {
 													<ToggleGroupItem
 														key={value}
 														value={value}
-														className="w-fit rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
+														className="w-fit flex-none cursor-pointer rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
 													>
 														{label}
 													</ToggleGroupItem>
@@ -179,7 +179,7 @@ export default function CreateNoticePage() {
 														<ToggleGroupItem
 															key={value}
 															value={value}
-															className="w-fit rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
+															className="w-fit flex-none cursor-pointer rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
 														>
 															{label}
 														</ToggleGroupItem>
@@ -250,14 +250,16 @@ export default function CreateNoticePage() {
 							)}
 
 							{isAssignment && (
-								<div className="flex flex-col gap-4">
+								<div className="flex flex-col gap-2">
 									<span className="font-semibold text-body1 text-label-subtle">제출 기한</span>
 									{/* 제출 시작 (부터) */}
 									<div className="flex items-start gap-2">
 										<FormField
 											control={form.control}
 											name="submissionStartDate"
-											render={({ field }) => (
+											render={({ field }) => {
+												const submissionDeadlineError = form.formState.errors.submissionStartDate;
+												return (
 												<FormItem className="flex-1">
 													<FormLabel className="sr-only">제출 시작 날짜</FormLabel>
 													<Popover
@@ -269,7 +271,10 @@ export default function CreateNoticePage() {
 																<Button
 																	variant="none"
 																	type="button"
-																	className="h-12 w-full justify-between border border-line-normal bg-background-normal p-4 font-medium text-body2 aria-invalid:border-red-400"
+																	className={cn(
+																		'h-12 w-full justify-between border bg-background-normal p-4 font-medium text-body2 aria-invalid:border-red-400',
+																		submissionDeadlineError ? 'border-red-400' : 'border-line-normal',
+																	)}
 																>
 																	{field.value ? (
 																		formatDateWithDay(field.value)
@@ -308,9 +313,9 @@ export default function CreateNoticePage() {
 															/>
 														</PopoverContent>
 													</Popover>
-													<FormMessage className="text-red-400" />
 												</FormItem>
-											)}
+												);
+											}}
 										/>
 										<FormField
 											control={form.control}
@@ -355,13 +360,12 @@ export default function CreateNoticePage() {
 																</InputOTPGroup>
 															</InputOTP>
 														</FormControl>
-														<FormMessage className="text-red-400" />
 													</FormItem>
 												);
 											}}
 										/>
 									</div>
-									{/* 제출 마감 (까지) */}
+									{/* 제출 마감 (까지) - 에러 문구는 이 행(submissionEndTime) 하단에 표시 */}
 									<div className="flex items-start gap-2">
 										<FormField
 											control={form.control}
@@ -422,7 +426,11 @@ export default function CreateNoticePage() {
 															/>
 														</PopoverContent>
 													</Popover>
-													<FormMessage className="text-red-400" />
+													{form.formState.errors.submissionStartDate && (
+														<p className="font-medium text-caption1 text-red-400" role="alert">
+															{form.formState.errors.submissionStartDate.message}
+														</p>
+													)}
 												</FormItem>
 												);
 											}}
@@ -470,7 +478,6 @@ export default function CreateNoticePage() {
 																</InputOTPGroup>
 															</InputOTP>
 														</FormControl>
-														<FormMessage className="text-red-400" />
 													</FormItem>
 												);
 											}}
