@@ -205,7 +205,7 @@ export const DateTimePickerDrawer = ({
 	};
 
 	return (
-		<Drawer modal={false} open={open} onOpenChange={handleOpenChange}>
+		<Drawer open={open} onOpenChange={handleOpenChange}>
 			<DrawerTrigger asChild>{children}</DrawerTrigger>
 			<DrawerContent
 				aria-describedby={undefined}

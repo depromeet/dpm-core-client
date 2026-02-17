@@ -147,14 +147,16 @@ export const ReviewBottomSheet = ({
 								수정하기
 							</Button>
 						</DrawerTrigger>
-						<Button
-							variant="secondary"
-							size="full"
-							className="h-[48px] flex-1 rounded-lg bg-[#1F2937] font-semibold text-[16px] text-white leading-[150%] hover:bg-[#1F2937]/90"
-							onClick={onConfirm}
-						>
-							생성하기
-						</Button>
+						<DrawerTrigger asChild>
+							<Button
+								variant="secondary"
+								size="full"
+								className="h-[48px] flex-1 rounded-lg bg-[#1F2937] font-semibold text-[16px] text-white leading-[150%] hover:bg-[#1F2937]/90"
+								onClick={onConfirm}
+							>
+								생성하기
+							</Button>
+						</DrawerTrigger>
 					</div>
 				</DrawerFooter>
 			</DrawerContent>

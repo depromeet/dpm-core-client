@@ -1,8 +1,9 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
+// import { useMutation } from '@tanstack/react-query';
 // import * as motion from 'motion/react-client';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -14,6 +15,7 @@ import {
 	FormControl,
 	FormField,
 	FormItem,
+	formatDate,
 	GAPageTracker,
 	Input,
 	Label,
@@ -21,9 +23,12 @@ import {
 
 import { AppHeader } from '@/components/app-header';
 
+// import { createAfterPartyOptions } from '@/remotes/mutations/after-party';
+
 import { DateTimePickerDrawer } from './_components/datetime-picker-drawer';
 import { ReviewBottomSheet } from './_components/review-bottom-sheet';
 import { TagSelect } from './_components/tag-select';
+import { afterPartyFormatDate, afterPartyFormatTime } from './_utils/timeFomat';
 
 // import { useScrollVisibility } from '../_hooks/useScrollVisibility';
 
@@ -59,7 +64,7 @@ const INVITE_SCOPE_OPTIONS = [
 const STORAGE_KEY = 'after-party-create-form';
 
 const AfterPartyCreatePage = () => {
-	const router = useRouter();
+	// const router = useRouter();
 
 	const form = useForm<CreateGatheringFormValues>({
 		resolver: zodResolver(createGatheringSchema),
@@ -70,6 +75,19 @@ const AfterPartyCreatePage = () => {
 			allowEditAfterClose: false,
 		},
 	});
+
+	// const { mutate: createAfterParty } = useMutation(
+	// 	createAfterPartyOptions({
+	// 		onSuccess: () => {
+	// 			// router.replace('/after-party/create');
+	// 			// 제출 성공 시 저장된 데이터 삭제
+	// 			sessionStorage.removeItem(STORAGE_KEY);
+	// 		},
+	// 		onError: (error) => {
+	// 			console.error('Error creating after party:', error);
+	// 		},
+	// 	}),
+	// );
 
 	// sessionStorage에서 저장된 폼 데이터 불러오기 (새로고침 시 유지, 탭 닫으면 삭제)
 	useEffect(() => {
@@ -108,12 +126,12 @@ const AfterPartyCreatePage = () => {
 
 		// TODO: API 호출
 		// await createAfterParty(data);
+		// createAfterParty(data);
 
-		// 제출 성공 시 저장된 데이터 삭제
-		sessionStorage.removeItem(STORAGE_KEY);
+		console.log('data', data);
 
 		// 완료 페이지로 이동
-		router.replace('/after-party/create/complete');
+		// router.replace('/after-party/create');
 	};
 
 	return (
@@ -219,7 +237,7 @@ const AfterPartyCreatePage = () => {
 											>
 												<CalendarIcon />
 												<span className="font-medium text-[#1F2937] text-body2">
-													{field.value ? formatDate(field.value) : '날짜 선택'}
+													{field.value ? afterPartyFormatDate(field.value) : '날짜 선택'}
 												</span>
 											</button>
 										</DateTimePickerDrawer>
@@ -234,7 +252,7 @@ const AfterPartyCreatePage = () => {
 											>
 												<ClockIcon />
 												<span className="font-medium text-[#1F2937] text-body2">
-													{field.value ? formatTime(field.value) : '시간 선택'}
+													{field.value ? afterPartyFormatTime(field.value) : '시간 선택'}
 												</span>
 											</button>
 										</DateTimePickerDrawer>
@@ -285,7 +303,7 @@ const AfterPartyCreatePage = () => {
 											>
 												<ClockIcon />
 												<span className="font-medium text-[#1F2937] text-body2">
-													{field.value ? formatTime(field.value) : '시간 선택'}
+													{field.value ? afterPartyFormatTime(field.value) : '시간 선택'}
 												</span>
 											</button>
 										</DateTimePickerDrawer>
@@ -430,22 +448,5 @@ const ClockIcon = () => (
 		/>
 	</svg>
 );
-
-/** 날짜 포맷 함수 */
-const formatDate = (date: Date) => {
-	const year = date.getFullYear();
-	const month = date.getMonth() + 1;
-	const day = date.getDate();
-	const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
-	return `${year}년 ${month}월 ${day}일 (${dayOfWeek})`;
-};
-
-/** 시간 포맷 함수 */
-const formatTime = (date: Date) => {
-	const hours = date.getHours();
-	const period = hours < 12 ? '오전' : '오후';
-	const displayHours = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
-	return `${period} ${displayHours}시`;
-};
 
 export default AfterPartyCreatePage;

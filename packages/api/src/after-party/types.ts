@@ -16,3 +16,20 @@ export interface AfterParty {
 }
 
 export type GetAfterPartiesResponse = AfterParty[];
+
+export interface CreateAfterPartyRequest {
+	title: string;
+	description: string;
+	inviteTags: {
+		cohortId: number;
+		authorityId: number;
+	}[];
+	scheduledAt: string;
+	closedAt: string;
+	allowEditAfterClose: boolean;
+	canEditAfterApproval: boolean;
+}
+
+export interface CreateAfterPartyResponse {
+	gatheringId: string; // 회식 ID
+}
