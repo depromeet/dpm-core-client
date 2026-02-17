@@ -3,7 +3,7 @@ import Link from 'next/link';
 export const AfterPartyAddButton = () => {
 	return (
 		<Link
-			href="/after-party/create"
+			href="/after-party/create?new=1"
 			className="absolute right-[20px] bottom-[32px] flex h-[48px] items-center justify-center space-x-[6px] rounded-[38px] bg-gray-800 px-[10px]"
 		>
 			<AddIcon />

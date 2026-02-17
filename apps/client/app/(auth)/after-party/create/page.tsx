@@ -1,9 +1,9 @@
 'use client';
 
-import dayjs from 'dayjs';
-// import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import dayjs from 'dayjs';
 // import { useMutation } from '@tanstack/react-query';
 // import * as motion from 'motion/react-client';
 import { useForm } from 'react-hook-form';
@@ -16,6 +16,7 @@ import {
 	FormControl,
 	FormField,
 	FormItem,
+	FormMessage,
 	GAPageTracker,
 	Input,
 	Label,
@@ -44,9 +45,9 @@ const createGatheringSchema = z.object({
 	/** 회식 초대 범위 */
 	inviteScopes: z.array(z.string()).min(1, '초대 범위를 선택해주세요'),
 	/** 회식 시간 */
-	scheduledAt: z.date().optional(),
+	scheduledAt: z.date().optional().refine((val) => val !== undefined, '회식 날짜를 선택해주세요'),
 	/** 참여 조사 마감 시간 */
-	closedAt: z.date().optional(),
+	closedAt: z.date().optional().refine((val) => val !== undefined, '참여 조사 마감 시간을 선택해주세요'),
 	/** 참여 조사 마감 후 수정 허용 */
 	allowEditAfterClose: z.boolean(),
 });
@@ -64,7 +65,8 @@ const INVITE_SCOPE_OPTIONS = [
 const STORAGE_KEY = 'after-party-create-form';
 
 const AfterPartyCreatePage = () => {
-	// const router = useRouter();
+	const router = useRouter();
+	const searchParams = useSearchParams();
 
 	const form = useForm<CreateGatheringFormValues>({
 		resolver: zodResolver(createGatheringSchema),
@@ -89,13 +91,20 @@ const AfterPartyCreatePage = () => {
 	// 	}),
 	// );
 
-	// sessionStorage에서 저장된 폼 데이터 불러오기 (새로고침 시 유지, 탭 닫으면 삭제)
+	// sessionStorage: ?new=1이면 초기화(새로 생성), 없으면 복원(새로고침)
 	useEffect(() => {
+		const isNewCreation = searchParams.get('new') === '1';
+
+		if (isNewCreation) {
+			sessionStorage.removeItem(STORAGE_KEY);
+			router.replace('/after-party/create');
+			return;
+		}
+
 		const saved = sessionStorage.getItem(STORAGE_KEY);
 		if (saved) {
 			try {
 				const parsed = JSON.parse(saved);
-				// ISO 문자열을 dayjs로 파싱 후 Date로 변환 (폼은 Date 기대)
 				if (parsed.scheduledAt) {
 					parsed.scheduledAt = dayjs(parsed.scheduledAt).toDate();
 				}
@@ -107,7 +116,7 @@ const AfterPartyCreatePage = () => {
 				// 파싱 실패 시 무시
 			}
 		}
-	}, [form]);
+	}, [form, router, searchParams]);
 
 	// 폼 데이터가 변경될 때마다 sessionStorage에 저장
 	useEffect(() => {
@@ -167,6 +176,7 @@ const AfterPartyCreatePage = () => {
 											maxLength={20}
 										/>
 									</FormControl>
+									<FormMessage className="font-medium text-red-500 text-caption1" />
 									<p className="text-right font-medium text-[#4B5563] text-caption1">
 										{titleValue.length} / 20자
 									</p>
@@ -178,7 +188,7 @@ const AfterPartyCreatePage = () => {
 						<FormField
 							control={form.control}
 							name="description"
-							render={({ field }) => (
+							render={({ field, fieldState }) => (
 								<FormItem>
 									<Label className="font-semibold text-[#4B5563] text-body2">
 										회식 설명 <span className="font-medium text-[#9CA3AF]">(선택)</span>
@@ -187,12 +197,14 @@ const AfterPartyCreatePage = () => {
 										<textarea
 											{...field}
 											className={cn(
-												'flex min-h-[120px] w-full resize-none rounded-lg border border-line-normal bg-white p-4 font-medium text-body2 outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-gray-900',
+												'flex min-h-[120px] w-full resize-none rounded-lg border bg-white p-4 font-medium text-body2 outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-gray-900',
+												fieldState.error ? 'border-red-400' : 'border-line-normal',
 											)}
 											placeholder="ex. 17기 OT 회식"
 											maxLength={500}
 										/>
 									</FormControl>
+									<FormMessage className="font-medium text-red-500 text-caption1" />
 									<p className="text-right font-medium text-[#4B5563] text-caption1">
 										{descriptionValue.length} / 500자
 									</p>
@@ -204,7 +216,7 @@ const AfterPartyCreatePage = () => {
 						<FormField
 							control={form.control}
 							name="inviteScopes"
-							render={({ field }) => (
+							render={({ field, fieldState }) => (
 								<FormItem>
 									<Label className="font-semibold text-[#4B5563] text-body2">회식 초대 범위</Label>
 									<FormControl>
@@ -213,8 +225,10 @@ const AfterPartyCreatePage = () => {
 											onChange={field.onChange}
 											options={INVITE_SCOPE_OPTIONS}
 											placeholder="초대 범위를 선택해주세요"
+											className={fieldState.error ? '!border-red-400' : undefined}
 										/>
 									</FormControl>
+									<FormMessage className="font-medium text-red-500 text-caption1" />
 								</FormItem>
 							)}
 						/>
@@ -223,9 +237,10 @@ const AfterPartyCreatePage = () => {
 						<FormField
 							control={form.control}
 							name="scheduledAt"
-							render={({ field }) => (
+							render={({ field, fieldState }) => (
 								<FormItem>
 									<Label className="font-semibold text-[#4B5563] text-body2">회식 시간</Label>
+									<FormMessage className="font-medium text-red-500 text-caption1" />
 									<div className="flex gap-[8px]">
 										<DateTimePickerDrawer
 											title="회식 시간"
@@ -234,7 +249,10 @@ const AfterPartyCreatePage = () => {
 										>
 											<button
 												type="button"
-												className="flex flex-1 items-center gap-[8px] rounded-lg border border-line-normal bg-white px-[16px] py-[12px]"
+												className={cn(
+													'flex flex-1 items-center gap-[8px] rounded-lg border bg-white px-[16px] py-[12px]',
+													fieldState.error ? 'border-red-400' : 'border-line-normal',
+												)}
 											>
 												<CalendarIcon />
 												<span className="font-medium text-[#1F2937] text-body2">
@@ -249,7 +267,10 @@ const AfterPartyCreatePage = () => {
 										>
 											<button
 												type="button"
-												className="flex items-center gap-[8px] rounded-lg border border-line-normal bg-white px-[16px] py-[12px]"
+												className={cn(
+													'flex items-center gap-[8px] rounded-lg border bg-white px-[16px] py-[12px]',
+													fieldState.error ? 'border-red-400' : 'border-line-normal',
+												)}
 											>
 												<ClockIcon />
 												<span className="font-medium text-[#1F2937] text-body2">
@@ -266,11 +287,12 @@ const AfterPartyCreatePage = () => {
 						<FormField
 							control={form.control}
 							name="closedAt"
-							render={({ field }) => (
+							render={({ field, fieldState }) => (
 								<FormItem>
 									<Label className="font-semibold text-[#4B5563] text-body2">
 										참여 조사 마감 시간
 									</Label>
+									<FormMessage className="font-medium text-red-500 text-caption1" />
 									<div className="flex gap-[8px]">
 										<DateTimePickerDrawer
 											title="참여 조사 마감 일시"
@@ -282,7 +304,10 @@ const AfterPartyCreatePage = () => {
 										>
 											<button
 												type="button"
-												className="flex flex-1 items-center gap-[8px] rounded-lg border border-line-normal bg-white px-[16px] py-[12px]"
+												className={cn(
+													'flex flex-1 items-center gap-[8px] rounded-lg border bg-white px-[16px] py-[12px]',
+													fieldState.error ? 'border-red-400' : 'border-line-normal',
+												)}
 											>
 												<CalendarIcon />
 												<span className="font-medium text-[#1F2937] text-body2">
@@ -300,7 +325,10 @@ const AfterPartyCreatePage = () => {
 										>
 											<button
 												type="button"
-												className="flex items-center gap-[8px] rounded-lg border border-line-normal bg-white px-[16px] py-[12px]"
+												className={cn(
+													'flex items-center gap-[8px] rounded-lg border bg-white px-[16px] py-[12px]',
+													fieldState.error ? 'border-red-400' : 'border-line-normal',
+												)}
 											>
 												<ClockIcon />
 												<span className="font-medium text-[#1F2937] text-body2">
