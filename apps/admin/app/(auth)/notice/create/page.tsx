@@ -78,17 +78,7 @@ export default function CreateNoticePage() {
 			{/* 상단 헤더 */}
 			<header className="sticky top-0 z-20 border-line-normal border-b bg-background-normal">
 				<div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4 py-3 md:px-10 md:py-4">
-					<Link
-						href="/notice"
-						className="flex items-center gap-2"
-						onClick={(e) => {
-							if (hasChanges) {
-								if (!window.confirm('작성 중인 내용이 있습니다. 정말 나가시겠습니까?')) {
-									e.preventDefault();
-								}
-							}
-						}}
-					>
+					<Link href="/notice" className="flex items-center gap-2">
 						<ChevronLeft className="text-icon-noraml" />
 					</Link>
 					<div className="flex items-center gap-4">
