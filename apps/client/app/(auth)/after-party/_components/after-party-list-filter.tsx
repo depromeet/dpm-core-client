@@ -3,7 +3,7 @@
 import { type ComponentPropsWithoutRef, type PropsWithChildren, useState } from 'react';
 import { cn, createContext, DragScrollContainer } from '@dpm-core/shared';
 
-import { useAfterPartyListFilterSearchParams } from '../_hooks/use-after-party-list-filter-search-pararms';
+import { useAfterPartyListFilterSearchParams } from '../_hooks/use-after-party-list-filter-search-params';
 
 interface AfterPartyListFilterProps<T = string> {
 	value?: T;

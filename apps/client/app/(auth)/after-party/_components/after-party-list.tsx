@@ -13,7 +13,7 @@ import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { getAfterPartiesQueryOptions } from '@/remotes/queries/after-party';
 
-import { useAfterPartyListFilterSearchParams } from '../_hooks/use-after-party-list-filter-search-pararms';
+import { useAfterPartyListFilterSearchParams } from '../_hooks/use-after-party-list-filter-search-params';
 import { getDaysUntilDeadline } from '../_utils/get-days-until-deadline';
 
 dayjs.locale('ko');
