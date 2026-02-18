@@ -40,7 +40,7 @@ export const LoginEamilForm = () => {
 		}
 	};
 
-	const isDisabled = !form.formState.isValid || form.formState.isSubmitting;
+	const isDisabled = form.formState.isSubmitting;
 
 	return (
 		<Form {...form}>

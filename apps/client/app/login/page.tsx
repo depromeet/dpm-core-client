@@ -15,21 +15,21 @@ const LoginPage = () => {
 						<DpmText className="w-fit text-gray-800" />
 					</div>
 				</div>
-				<p>
-					출석, 번개, 커피챗까지
+				<p className="font-medium text-label-subtle">
+					출석부터 회식까지
 					<br />
-					17기의 모든 네트워킹을 코어에서 서포트합니다
+					디프만을 더 쉽게
 				</p>
 				<div className="flex flex-col items-center gap-3">
 					<AppleLoginButton
 						variant="none"
 						size="full"
-						className="h-auto justify-between rounded-xl bg-black px-4 py-3.5 font-medium text-white leading-1"
+						className="h-auto min-w-65 justify-between rounded-xl bg-black px-4 py-3.5 font-medium text-white leading-1"
 					/>
 					<LoginButton
 						size="full"
 						variant="none"
-						className="h-auto justify-between rounded-xl bg-[#FEE500] px-4 py-3.5 font-medium leading-1"
+						className="h-auto min-w-65 justify-between rounded-xl bg-[#FEE500] px-4 py-3.5 font-medium leading-1"
 					/>
 					<EmailLoginButton />
 				</div>
