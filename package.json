@@ -4,6 +4,7 @@
 	"scripts": {
 		"dev": "turbo dev",
 		"setup": "scripts/local-server-setup.sh",
+		"setup:windows": "powershell -File scripts/local-server-setup.ps1",
 		"dev:client": "turbo dev --filter client",
 		"dev:admin": "turbo dev --filter admin",
 		"dev:native": "pnpm --filter @dpm-core/native start",
@@ -33,5 +34,9 @@
 	"packageManager": "pnpm@10.27.0",
 	"engines": {
 		"node": ">=18"
+	},
+	"dependencies": {
+		"@tiptap/core": "^3.18.0",
+		"@tiptap/extension-heading": "^3.18.0"
 	}
 }
