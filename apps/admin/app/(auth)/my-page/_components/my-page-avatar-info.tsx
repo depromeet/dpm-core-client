@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Suspense } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
+import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
 import { fadeInOutVariatns } from '@dpm-core/shared';
@@ -43,8 +43,8 @@ const MyPageAvatarInfoContainer = () => {
 
 const MyPageAvatarInfo = ErrorBoundary.with(
 	{
-		fallback: (props) => {
-			return <ErrorBox onReset={() => props.reset()} />;
+		fallback: ({ reset }: ErrorBoundaryFallbackProps<Error>) => {
+			return <ErrorBox onReset={reset} />;
 		},
 	},
 	() => (

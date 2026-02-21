@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useEffect } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
+import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Aesterisk, gaTrackHomeEnter } from '@dpm-core/shared';
 
@@ -45,11 +45,11 @@ const CurrentWeekSessionContainer = () => {
 
 const CurrentWeekSession = ErrorBoundary.with(
 	{
-		fallback: (props) => {
+		fallback: ({ reset }: ErrorBoundaryFallbackProps<Error>) => {
 			return (
 				<div className="flex h-full flex-col items-center justify-center">
 					<p className="font-semibold text-body2">세선 정보 조회에 실패했어요.</p>
-					<button type="button" onClick={() => props.reset()}>
+					<button type="button" onClick={reset}>
 						다시 시도
 					</button>
 				</div>

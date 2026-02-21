@@ -1,7 +1,7 @@
 'use client';
 
 import { type PropsWithChildren, Suspense } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
+import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import {
 	CopyButton,
@@ -104,7 +104,7 @@ const SessionDetailInfoBox = ({
 
 export const SessionDetailInfo = ({ sessionId }: SessionDetailInfoProps) => {
 	return (
-		<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
+		<ErrorBoundary fallback={({ reset }: ErrorBoundaryFallbackProps<Error>) => <ErrorBox onReset={reset} />}>
 			<Suspense fallback={<LoadingBox />}>
 				<SessionDetailInfoContainer sessionId={sessionId} />
 			</Suspense>

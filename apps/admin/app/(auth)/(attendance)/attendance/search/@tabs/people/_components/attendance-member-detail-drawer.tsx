@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useState } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
+import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import type { AttendanceSession } from '@dpm-core/api';
 import {
@@ -251,7 +251,7 @@ export const AttendanceMemberDetailDrawer = ({
 								</Button>
 							</SheetClose>
 						</SheetHeader>
-						<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
+						<ErrorBoundary fallback={({ reset }: ErrorBoundaryFallbackProps<Error>) => <ErrorBox onReset={reset} />}>
 							<Suspense fallback={<LoadingBox />}>
 								<div className="flex-1 overflow-y-auto px-10 py-6">
 									<section className="mb-10">
@@ -269,7 +269,7 @@ export const AttendanceMemberDetailDrawer = ({
 				) : (
 					<>
 						<AttendanceDetailHeader title="출석 상세" onBack={handleBack} />
-						<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
+						<ErrorBoundary fallback={({ reset }: ErrorBoundaryFallbackProps<Error>) => <ErrorBox onReset={reset} />}>
 							<Suspense fallback={<LoadingBox />}>
 								{selectedSessionId && (
 									<_AttendanceSessionDetailView memberId={memberId} sessionId={selectedSessionId} />
