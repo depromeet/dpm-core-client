@@ -55,7 +55,7 @@ export default function CreateNoticePage() {
 					<Link
 						href="/notice"
 						className="flex items-center gap-2"
-						onClick={(e) => {
+						onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
 							if (hasChanges) {
 								if (!window.confirm('작성 중인 내용이 있습니다. 정말 나가시겠습니까?')) {
 									e.preventDefault();
