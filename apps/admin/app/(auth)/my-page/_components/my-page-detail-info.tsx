@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense } from 'react';
-import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useIsMutating, useSuspenseQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
 import { ChevronRight, fadeInOutVariatns } from '@dpm-core/shared';
@@ -70,8 +70,8 @@ function MyPageDetailWithdrawBox() {
 
 const MyPageDetailInfo = ErrorBoundary.with(
 	{
-		fallback: ({ reset }: ErrorBoundaryFallbackProps<Error>) => {
-			return <ErrorBox onReset={reset} />;
+		fallback: (props) => {
+			return <ErrorBox onReset={() => props.reset()} />;
 		},
 	},
 	() => {

@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
-import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { CircleCheck, CircleMinus } from '@dpm-core/shared';
 
@@ -83,7 +83,7 @@ const AttendanceResultContainer = ({ sessionId }: AttendanceResultProps) => {
 export const AttendanceResult = (props: AttendanceResultProps) => {
 	return (
 		<ErrorBoundary
-			fallback={({ reset }: ErrorBoundaryFallbackProps<Error>) => <ErrorBox onReset={reset} />}
+			fallback={(props) => <ErrorBox onReset={() => props.reset()} />}
 		>
 			<Suspense fallback={<LoadingBox />}>
 				<AttendanceResultContainer {...props} />

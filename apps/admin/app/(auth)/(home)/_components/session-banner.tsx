@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
-import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
 import { ArrowRight, Button, ChevronRight, fadeInOutVariatns, useIsMobile } from '@dpm-core/shared';
@@ -53,11 +53,11 @@ const SessionBannerContainer = () => {
 export const SessionBanner = () => {
 	return (
 		<ErrorBoundary
-			fallback={({ reset }: ErrorBoundaryFallbackProps<Error>) => {
+			fallback={(props) => {
 				return (
 					<div className="flex flex-col items-center justify-center">
 						<p className="font-semibold text-body2">진행중인 세션 정보 조회에 실패했어요.</p>
-						<button type="button" onClick={reset}>
+						<button type="button" onClick={() => props.reset()}>
 							다시 시도
 						</button>
 					</div>

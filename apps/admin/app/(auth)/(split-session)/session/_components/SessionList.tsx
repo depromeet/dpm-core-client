@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { Suspense } from 'react';
-import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
 import type { Session } from '@dpm-core/api';
@@ -97,7 +97,7 @@ function SessionItem({ session }: { session: Session }) {
 
 export const SessionList = () => {
 	return (
-		<ErrorBoundary fallback={({ reset }: ErrorBoundaryFallbackProps<Error>) => <ErrorBox onReset={reset} />}>
+		<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
 			<Suspense
 				fallback={
 					<div className="flex h-full flex-col">
