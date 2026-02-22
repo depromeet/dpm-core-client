@@ -27,6 +27,19 @@ export const formatDotFullDate = (date: Date | string) => {
 	return dayjs(date).format('YYYY.MM.DD (ddd)');
 };
 
+export const formatKoreanDate = (date: Date | string) => {
+	return dayjs(date).format('YY년 MM월 DD일 (ddd)');
+};
+
+export const formatKoreanDateWithTime = (date: Date | string) => {
+	const d = dayjs(date);
+	const dateStr = d.format('YY년 MM월 DD일 (ddd)');
+	const hour = d.hour();
+	const ampm = hour < 12 ? '오전' : '오후';
+	const displayHour = hour % 12 || 12;
+	return `${dateStr} ${ampm} ${String(displayHour).padStart(2, '0')}시 까지`;
+};
+
 export const calcSessionAttendanceTime = (attendanceStartTime: string) =>
 	dayjs(new Date(attendanceStartTime).getTime() + ATTENDANCE_GAP_DURATION);
 
