@@ -37,9 +37,9 @@ import { formatDateWithDay } from '@/lib/date';
 import { TiptapEditorContainer } from './_components/TiptapEditorContainer';
 
 const CATEGORY_OPTIONS = [
-	{ value: 'required', label: '필수' },
-	{ value: 'assignment', label: '과제' },
-	{ value: 'other', label: '기타' },
+	{ value: 'required', label: '필수 공지' },
+	{ value: 'assignment', label: '과제 공지' },
+	{ value: 'other', label: '기타 공지' },
 ] as const;
 
 const ASSIGNMENT_TYPE_OPTIONS = [
