@@ -319,32 +319,45 @@ export default function CreateNoticePage() {
 															<InputOTP
 																pattern={REGEXP_ONLY_DIGITS}
 																containerClassName={cn(
-																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400 [&_[data-slot=input-otp-slot]]:text-label-assistive [&_[data-slot=input-otp-slot]:not(:empty)]:text-label-normal',
+																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400',
+																	field.value
+																		? '[&_[data-slot=input-otp-slot]]:text-label-normal'
+																		: '[&_[data-slot=input-otp-slot]]:text-label-assistive',
 																	submissionDeadlineError ? 'border-red-400' : 'border-line-normal',
 																)}
 																maxLength={4}
 																placeholder="0000"
+																onKeyDown={(e) => {
+																	if (e.key === 'Tab' && !e.shiftKey) {
+																		e.preventDefault();
+																		form.setFocus('submissionEndTime');
+																	}
+																}}
 																{...field}
 															>
 																<InputOTPGroup className="gap-0">
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={0}
+																		placeholderChar="0"
 																	/>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={1}
+																		placeholderChar="0"
 																	/>
 																	<p className="mx-2 font-medium text-body2 text-label-assistive">
 																		시
 																	</p>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={2}
+																		placeholderChar="0"
 																	/>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={3}
+																		placeholderChar="0"
 																	/>
 																	<p className="ml-2 font-medium text-body2 text-label-assistive">
 																		분 부터
@@ -441,32 +454,39 @@ export default function CreateNoticePage() {
 															<InputOTP
 																pattern={REGEXP_ONLY_DIGITS}
 																containerClassName={cn(
-																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400 [&_[data-slot=input-otp-slot]]:text-label-assistive [&_[data-slot=input-otp-slot]:not(:empty)]:text-label-normal',
+																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400',
+																	field.value
+																		? '[&_[data-slot=input-otp-slot]]:text-label-normal'
+																		: '[&_[data-slot=input-otp-slot]]:text-label-assistive',
 																	submissionDeadlineError ? 'border-red-400' : 'border-line-normal',
 																)}
 																maxLength={4}
-																placeholder="0000"
+																placeholder="2359"
 																{...field}
 															>
 																<InputOTPGroup className="gap-0">
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={0}
+																		placeholderChar="2"
 																	/>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={1}
+																		placeholderChar="3"
 																	/>
 																	<p className="mx-2 font-medium text-body2 text-label-assistive">
 																		시
 																	</p>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={2}
+																		placeholderChar="5"
 																	/>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={3}
+																		placeholderChar="9"
 																	/>
 																	<p className="ml-2 font-medium text-body2 text-label-assistive">
 																		분 까지
@@ -569,7 +589,10 @@ export default function CreateNoticePage() {
 															<InputOTP
 																pattern={REGEXP_ONLY_DIGITS}
 																containerClassName={cn(
-																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400 [&_[data-slot=input-otp-slot]]:text-label-assistive [&_[data-slot=input-otp-slot]:not(:empty)]:text-label-normal',
+																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400',
+																	field.value
+																		? '[&_[data-slot=input-otp-slot]]:text-label-normal'
+																		: '[&_[data-slot=input-otp-slot]]:text-label-assistive',
 																	scheduleError ? 'border-red-400' : 'border-line-normal',
 																)}
 																maxLength={4}
@@ -578,23 +601,27 @@ export default function CreateNoticePage() {
 															>
 																<InputOTPGroup className="gap-0">
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={0}
+																		placeholderChar="0"
 																	/>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={1}
+																		placeholderChar="0"
 																	/>
 																	<p className="mx-2.5 font-medium text-body2 text-label-assistive">
 																		시
 																	</p>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={2}
+																		placeholderChar="0"
 																	/>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={3}
+																		placeholderChar="0"
 																	/>
 																	<p className="ml-2.5 font-medium text-body2 text-label-assistive">
 																		분
