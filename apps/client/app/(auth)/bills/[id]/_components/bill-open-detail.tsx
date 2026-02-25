@@ -28,8 +28,8 @@ import { AppHeader } from '@/components/app-header';
 
 import { BillDetailSubmitButton } from './bill-detail-submit-button';
 
-const gatheringStatusSchema = z.object({
-	gatheringJoins: z.array(
+const afterPartyStatusSchema = z.object({
+	afterPartyJoins: z.array(
 		z.object({
 			gatheringId: z.number(),
 			isJoined: z.boolean(),
@@ -41,30 +41,30 @@ const BillOpenDetail = ({ billDetail }: { billDetail: Bill }) => {
 	const { ref } = useAppShell();
 	const formId = useId();
 	const form = useForm({
-		resolver: zodResolver(gatheringStatusSchema),
+		resolver: zodResolver(afterPartyStatusSchema),
 		defaultValues: {
-			gatheringJoins: billDetail.gatherings.map((gathering) => ({
-				gatheringId: gathering.gatheringId,
+			afterPartyJoins: billDetail.gatherings.map((afterParty) => ({
+				gatheringId: afterParty.gatheringId,
 				isJoined: false,
 			})),
 		},
 	});
 
 	const { mutate, isPending } = useMutation({
-		mutationFn: (data: z.infer<typeof gatheringStatusSchema>) => {
+		mutationFn: (data: z.infer<typeof afterPartyStatusSchema>) => {
 			//TODO: 정합성 ok?
 			return Promise.all([
-				bill.patchBillGatheringJoins(billDetail.billId, data.gatheringJoins),
+				bill.patchBillAfterPartyJoins(billDetail.billId, data.afterPartyJoins),
 				bill.patchBillParticipationConfirm(billDetail.billId),
 			]);
 		},
-		onError(error) {
+		onError(error: Error) {
 			//TODO: 에러 처리
 			console.log(error.message);
 		},
 	});
 
-	const handleSubmit = (data: z.infer<typeof gatheringStatusSchema>) => {
+	const handleSubmit = (data: z.infer<typeof afterPartyStatusSchema>) => {
 		mutate(data);
 	};
 
@@ -115,12 +115,12 @@ const BillOpenDetail = ({ billDetail }: { billDetail: Bill }) => {
 
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(handleSubmit)} id={formId}>
-					{billDetail.gatherings.map((gathering, gatheringIndex) => {
+					{billDetail.gatherings.map((afterParty, afterPartyIndex) => {
 						return (
-							<GatheringDetail
-								key={gathering.gatheringId}
-								title={gathering.title}
-								gatheringIndex={gatheringIndex}
+							<AfterPartyRoundDetail
+								key={afterParty.gatheringId}
+								title={afterParty.title}
+								afterPartyIndex={afterPartyIndex}
 								control={form.control}
 							/>
 						);
@@ -144,7 +144,7 @@ const BillOpenDetail = ({ billDetail }: { billDetail: Bill }) => {
 						- 참석 여부는 모든 디퍼에게 공개됩니다.
 						<br />- 멤버 확정 후에는 수정이 불가능하니, 제출 전 한번 더 확인해 주세요.
 					</DrawerDescription>
-					<DrawerHeader className="!text-left !gap-y-2 items-start px-5 pt-[30px]">
+					<DrawerHeader className="text-left! gap-y-2! items-start px-5 pt-[30px]">
 						<h3 className="font-semibold text-label-normal text-title2">제출 전 확인</h3>
 					</DrawerHeader>
 					<div className="mt-3 flex flex-col gap-y-2 px-5">
@@ -152,22 +152,22 @@ const BillOpenDetail = ({ billDetail }: { billDetail: Bill }) => {
 						<div className="flex flex-col gap-y-3 rounded-lg bg-background-subtle px-5 py-3">
 							<FormField
 								control={form.control}
-								name="gatheringJoins"
+								name="afterPartyJoins"
 								render={({ field }) => {
 									return (
 										<>
-											{field.value.map((gatheringJoin) => {
-												const gathering = billDetail.gatherings.find(
-													(gathering) => gathering.gatheringId === gatheringJoin.gatheringId,
+											{field.value.map((joinItem) => {
+												const afterParty = billDetail.gatherings.find(
+													(ap) => ap.gatheringId === joinItem.gatheringId,
 												);
-												if (!gathering) return null;
+												if (!afterParty) return null;
 												return (
-													<div className="flex gap-4 text-body2" key={gatheringJoin.gatheringId}>
+													<div className="flex gap-4 text-body2" key={joinItem.gatheringId}>
 														<p className="w-17.5 shrink-0 font-semibold text-label-assistive">
-															{gathering.roundNumber}차
+															{afterParty.roundNumber}차
 														</p>
 														{/* FIXME */}
-														{gatheringJoin.isJoined ? (
+														{joinItem.isJoined ? (
 															<div className="flex items-center gap-x-0.5">
 																<CheckBlue />
 																<p className="font-semibold text-label-subtle">참석함</p>
@@ -219,29 +219,29 @@ const BillOpenDetail = ({ billDetail }: { billDetail: Bill }) => {
 		</>
 	);
 };
-function GatheringDetail({
+function AfterPartyRoundDetail({
 	title,
-	gatheringIndex,
+	afterPartyIndex,
 	control,
 }: {
 	title: string;
-	gatheringIndex: number;
-	control: Control<z.infer<typeof gatheringStatusSchema>>;
+	afterPartyIndex: number;
+	control: Control<z.infer<typeof afterPartyStatusSchema>>;
 }) {
 	return (
 		<div className="flex flex-col gap-y-3 px-4 py-8">
 			<p className="font-semibold text-body1 text-label-subtle">{title}</p>
 			<FormField
 				control={control}
-				name={`gatheringJoins.${gatheringIndex}.isJoined`}
+				name={`afterPartyJoins.${afterPartyIndex}.isJoined`}
 				render={({ field }) => {
 					return (
 						<div
 							className="flex overflow-hidden rounded-lg border border-line-normal"
 							role="radiogroup"
-							aria-labelledby={`gathering-title-${gatheringIndex}`}
+							aria-labelledby={`after-party-title-${afterPartyIndex}`}
 						>
-							<label className="h-auto flex-1 cursor-pointer rounded-none bg-background-normal px-3 py-3.5 text-center font-medium text-body2 text-label-assistive duration-200 has-[:checked]:bg-primary-extralight has-[:checked]:font-semibold has-[:checked]:text-primary-normal">
+							<label className="h-auto flex-1 cursor-pointer rounded-none bg-background-normal px-3 py-3.5 text-center font-medium text-body2 text-label-assistive duration-200 has-checked:bg-primary-extralight has-checked:font-semibold has-checked:text-primary-normal">
 								<input
 									type="radio"
 									{...field}
@@ -252,7 +252,7 @@ function GatheringDetail({
 								/>
 								참석 안함
 							</label>
-							<label className="h-auto flex-1 cursor-pointer rounded-none bg-background-normal px-3 py-3.5 text-center font-medium text-body2 text-label-assistive duration-200 has-[:checked]:bg-primary-extralight has-[:checked]:font-semibold has-[:checked]:text-primary-normal">
+							<label className="h-auto flex-1 cursor-pointer rounded-none bg-background-normal px-3 py-3.5 text-center font-medium text-body2 text-label-assistive duration-200 has-checked:bg-primary-extralight has-checked:font-semibold has-checked:text-primary-normal">
 								<input
 									type="radio"
 									{...field}
