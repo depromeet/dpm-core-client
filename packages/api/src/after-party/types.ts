@@ -2,7 +2,7 @@ export interface AfterParty {
 	gatheringId: number;
 	title: string;
 	isOwner: boolean;
-	rsvpStatus: boolean;
+	rsvpStatus: boolean | null;
 	isAttended: boolean;
 	isApproved: boolean;
 	isClosed: boolean;
@@ -32,4 +32,16 @@ export interface CreateAfterPartyRequest {
 
 export interface CreateAfterPartyResponse {
 	gatheringId: string; // 회식 ID
+}
+
+export type UpdateAfterPartyRequest = CreateAfterPartyRequest;
+
+export interface InviteTag {
+	cohortId: number;
+	authorityId: number;
+	tagName: string;
+}
+
+export interface GetInviteTagsResponse {
+	inviteTags: InviteTag[];
 }

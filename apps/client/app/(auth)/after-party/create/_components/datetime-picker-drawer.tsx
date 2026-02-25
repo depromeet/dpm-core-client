@@ -40,6 +40,10 @@ interface DateTimePickerDrawerProps {
 	highlightedDate?: Date;
 	/** highlightedDate에 표시할 라벨 (예: "회식") */
 	highlightedLabel?: string;
+	/** 이 시각 이후만 선택 가능 (회식 시간 등) */
+	minDateTime?: Date;
+	/** 이 시각 이전만 선택 가능 (마감 시간 등) */
+	maxDateTime?: Date;
 }
 
 const PERIOD_OPTIONS = [
@@ -98,7 +102,7 @@ const createCustomDayButton = (
 			>
 				<span
 					className={cn(
-						'shrink-0 font-medium text-[14px] leading-[142%] whitespace-nowrap',
+						'shrink-0 whitespace-nowrap font-medium text-[14px] leading-[142%]',
 						// 마감/회식 날짜 텍스트: 흰색
 						isSelected && 'text-white',
 						showHighlight && 'text-white',
@@ -133,6 +137,8 @@ export const DateTimePickerDrawer = ({
 	selectedLabel = '회식',
 	highlightedDate,
 	highlightedLabel,
+	minDateTime,
+	maxDateTime,
 }: DateTimePickerDrawerProps) => {
 	const [open, setOpen] = useState(false);
 	const [selectedDate, setSelectedDate] = useState<Date | undefined>(value);
@@ -161,9 +167,29 @@ export const DateTimePickerDrawer = ({
 		const hours24 = selectedPeriod === '오전' ? hour % 12 : (hour % 12) + 12;
 		const date = dayjs(selectedDate).hour(hours24).minute(0).second(0).millisecond(0).toDate();
 
+		if (minDateTime && !dayjs(date).isAfter(dayjs(minDateTime))) return;
+		if (maxDateTime && !dayjs(date).isBefore(dayjs(maxDateTime))) return;
+
 		onChange(date);
 		setOpen(false);
 	};
+
+	const isConfirmDisabled = (() => {
+		if (!selectedDate) return true;
+		const hour = Number(selectedHour);
+		const hours24 = selectedPeriod === '오전' ? hour % 12 : (hour % 12) + 12;
+		const date = dayjs(selectedDate).hour(hours24).minute(0).second(0).millisecond(0);
+		if (minDateTime && !date.isAfter(dayjs(minDateTime))) return true;
+		if (maxDateTime && !date.isBefore(dayjs(maxDateTime))) return true;
+		return false;
+	})();
+
+	const confirmDisabledReason =
+		isConfirmDisabled && minDateTime && !maxDateTime
+			? '현재 시각 이후로 선택해주세요'
+			: isConfirmDisabled && maxDateTime
+				? '회식 시간 이전으로 선택해주세요'
+				: null;
 
 	const handleOpenChange = (isOpen: boolean) => {
 		// Drawer가 열릴 때 트리거 버튼에서 포커스 해제 (aria-hidden 경고 방지)
@@ -222,6 +248,16 @@ export const DateTimePickerDrawer = ({
 							locale={koLocale}
 							selected={selectedDate}
 							onSelect={setSelectedDate}
+							disabled={
+								minDateTime || maxDateTime
+									? [
+											...(minDateTime
+												? [{ before: dayjs(minDateTime).startOf('day').toDate() }]
+												: []),
+											...(maxDateTime ? [{ after: dayjs(maxDateTime).endOf('day').toDate() }] : []),
+										]
+									: undefined
+							}
 							className="w-full p-0"
 							components={{
 								DayButton: createCustomDayButton(selectedLabel, highlightedDate, highlightedLabel),
@@ -246,7 +282,7 @@ export const DateTimePickerDrawer = ({
 					<div className="flex flex-col gap-3">
 						<p className="font-semibold text-[#4B5563] text-[14px] leading-[142%]">시간 선택</p>
 						<div className="flex items-center justify-center gap-3">
-							{/* 오전/오후 선택 */}
+							{/* 오전/오후 선택 - visibleCount=12, optionItemHeight=37 → ee=137px, 138px 컨테이너와 좌표 일치 */}
 							<div className="flex flex-1 flex-col items-center">
 								<button
 									type="button"
@@ -255,26 +291,25 @@ export const DateTimePickerDrawer = ({
 								>
 									<ChevronUp className="h-5 w-5 text-[#1F2937]" />
 								</button>
-								<div className="relative flex h-[138px] w-full items-center justify-center overflow-hidden rounded-xl bg-[#F6F7F9]">
+								<div className="relative flex h-[138px] w-full touch-none items-center justify-center overflow-hidden rounded-xl bg-[#F6F7F9]">
 									<WheelPickerWrapper className="[&_[data-rwp]]:!h-[138px] h-[138px] w-full rounded-xl border-none bg-transparent px-0 shadow-none">
 										<WheelPicker
 											options={PERIOD_OPTIONS}
 											value={selectedPeriod}
 											onValueChange={setSelectedPeriod}
-											optionItemHeight={46}
+											visibleCount={12}
+											optionItemHeight={37}
 											classNames={{
 												optionItem:
-													'!h-[46px] !text-[20px] !font-medium !leading-[46px] !text-[#D1D5DB] !flex !items-center !justify-center',
-												highlightWrapper: '!h-[46px] !bg-transparent',
+													'!h-[37px] !text-[20px] !font-medium !leading-[37px] !text-[#D1D5DB] !flex !items-center !justify-center',
+												highlightWrapper: '!h-[37px] !bg-transparent',
 												highlightItem:
-													'!h-[46px] !text-[20px] !font-medium !leading-[46px] !text-[#131416] !flex !items-center !justify-center',
+													'!h-[37px] !text-[20px] !font-medium !leading-[37px] !text-[#131416] !flex !items-center !justify-center',
 											}}
 										/>
 									</WheelPickerWrapper>
-									{/* 상단 그라데이션 */}
-									<div className="pointer-events-none absolute top-0 right-0 left-0 h-[46px] bg-gradient-to-b from-[#F6F7F9] to-transparent" />
-									{/* 하단 그라데이션 */}
-									<div className="pointer-events-none absolute right-0 bottom-0 left-0 h-[46px] bg-gradient-to-t from-[#F6F7F9] to-transparent" />
+									<div className="pointer-events-none absolute top-0 right-0 left-0 h-[37px] bg-gradient-to-b from-[#F6F7F9] to-transparent" />
+									<div className="pointer-events-none absolute right-0 bottom-0 left-0 h-[37px] bg-gradient-to-t from-[#F6F7F9] to-transparent" />
 								</div>
 								<button
 									type="button"
@@ -294,26 +329,25 @@ export const DateTimePickerDrawer = ({
 								>
 									<ChevronUp className="h-5 w-5 text-[#1F2937]" />
 								</button>
-								<div className="relative flex h-[138px] w-full items-center justify-center overflow-hidden rounded-xl bg-[#F6F7F9]">
+								<div className="relative flex h-[138px] w-full touch-none items-center justify-center overflow-hidden rounded-xl bg-[#F6F7F9]">
 									<WheelPickerWrapper className="[&_[data-rwp]]:!h-[138px] h-[138px] w-full rounded-xl border-none bg-transparent px-0 shadow-none">
 										<WheelPicker
 											options={HOUR_OPTIONS}
 											value={selectedHour}
 											onValueChange={setSelectedHour}
-											optionItemHeight={46}
+											visibleCount={12}
+											optionItemHeight={37}
 											classNames={{
 												optionItem:
-													'!h-[46px] !text-[20px] !font-medium !leading-[46px] !text-[#D1D5DB] !flex !items-center !justify-center',
-												highlightWrapper: '!h-[46px] !bg-transparent',
+													'!h-[37px] !text-[20px] !font-medium !leading-[37px] !text-[#D1D5DB] !flex !items-center !justify-center',
+												highlightWrapper: '!h-[37px] !bg-transparent',
 												highlightItem:
-													'!h-[46px] !text-[20px] !font-medium !leading-[46px] !text-[#131416] !flex !items-center !justify-center',
+													'!h-[37px] !text-[20px] !font-medium !leading-[37px] !text-[#131416] !flex !items-center !justify-center',
 											}}
 										/>
 									</WheelPickerWrapper>
-									{/* 상단 그라데이션 */}
-									<div className="pointer-events-none absolute top-0 right-0 left-0 h-[46px] bg-gradient-to-b from-[#F6F7F9] to-transparent" />
-									{/* 하단 그라데이션 */}
-									<div className="pointer-events-none absolute right-0 bottom-0 left-0 h-[46px] bg-gradient-to-t from-[#F6F7F9] to-transparent" />
+									<div className="pointer-events-none absolute top-0 right-0 left-0 h-[37px] bg-gradient-to-b from-[#F6F7F9] to-transparent" />
+									<div className="pointer-events-none absolute right-0 bottom-0 left-0 h-[37px] bg-gradient-to-t from-[#F6F7F9] to-transparent" />
 								</div>
 								<button
 									type="button"
@@ -327,14 +361,19 @@ export const DateTimePickerDrawer = ({
 					</div>
 				</div>
 
-				<DrawerFooter className="shrink-0 px-5 pt-3 pb-5">
+				<DrawerFooter className="flex shrink-0 flex-col gap-2 px-5 pt-3 pb-5">
+					{confirmDisabledReason && (
+						<p className="text-center font-medium text-[#EF4444] text-[14px] leading-[142%]">
+							{confirmDisabledReason}
+						</p>
+					)}
 					<Button
 						type="button"
 						variant="secondary"
 						size="full"
 						className="h-[48px] rounded-lg bg-[#1F2937] font-semibold text-[16px] text-white leading-[150%] hover:bg-[#1F2937]/90"
 						onClick={handleConfirm}
-						disabled={!selectedDate}
+						disabled={!selectedDate || isConfirmDisabled}
 					>
 						적용하기
 					</Button>

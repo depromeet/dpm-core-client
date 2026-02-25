@@ -1,8 +1,12 @@
 import { http } from '../http';
+import type { ApiResponse } from '../type';
 import type {
+	AfterParty,
 	CreateAfterPartyRequest,
 	CreateAfterPartyResponse,
 	GetAfterPartiesResponse,
+	GetInviteTagsResponse,
+	UpdateAfterPartyRequest,
 } from './types';
 
 export const afterParty = {
@@ -11,9 +15,30 @@ export const afterParty = {
 		return res;
 	},
 
+	getAfterPartyById: async (gatheringId: number) => {
+		const res = await http.get<AfterParty>(`v2/gatherings/${gatheringId}`);
+		return res;
+	},
+
+	getInviteTags: async () => {
+		const res = await http.get<GetInviteTagsResponse>('v2/gatherings/invite-tags');
+		return res;
+	},
+
 	createAfterParty: async (params: CreateAfterPartyRequest) => {
-		console.log('API params', params);
 		const res = await http.post<CreateAfterPartyResponse>('v2/gatherings', { json: params });
 		return res;
+	},
+
+	updateAfterParty: async (gatheringId: number, params: UpdateAfterPartyRequest) => {
+		const text = await http.patch<CreateAfterPartyResponse>(`v2/gatherings/${gatheringId}`, {
+			json: params,
+		});
+		if (!text || String(text).trim() === '') {
+			return {
+				data: { gatheringId: String(gatheringId) },
+			} as ApiResponse<CreateAfterPartyResponse>;
+		}
+		return JSON.parse(String(text)) as ApiResponse<CreateAfterPartyResponse>;
 	},
 };

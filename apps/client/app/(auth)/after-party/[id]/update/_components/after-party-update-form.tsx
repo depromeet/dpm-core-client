@@ -1,11 +1,9 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-// import { useMutation } from '@tanstack/react-query';
-// import * as motion from 'motion/react-client';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -21,31 +19,25 @@ import {
 	GAPageTracker,
 	Input,
 	Label,
-	toast,
 } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
-import { createAfterPartyOptions } from '@/remotes/mutations/after-party';
-import { getInviteTagsQueryOptions } from '@/remotes/queries/after-party';
+import { updateAfterPartyOptions } from '@/remotes/mutations/after-party';
+import { getAfterPartyByIdQueryOptions } from '@/remotes/queries/after-party';
 
-import { DateTimePickerDrawer } from './_components/datetime-picker-drawer';
-import { ReviewBottomSheet } from './_components/review-bottom-sheet';
-import { TagSelect } from './_components/tag-select';
-import { afterPartyFormatDate, afterPartyFormatTime } from './_utils/timeFomat';
+import { DateTimePickerDrawer } from '../../../create/_components/datetime-picker-drawer';
+import { ReviewBottomSheet } from '../../../create/_components/review-bottom-sheet';
+import { TagSelect } from '../../../create/_components/tag-select';
+import { afterPartyFormatDate, afterPartyFormatTime } from '../../../create/_utils/timeFomat';
 
-// import { useScrollVisibility } from '../_hooks/useScrollVisibility';
-
-/** 폼 스키마 정의 */
-const createGatheringSchema = z
+/** 폼 스키마 정의 (create와 동일) */
+const gatheringSchema = z
 	.object({
-		/** 회식 이름 (필수, 1-20자) */
 		title: z
 			.string()
 			.min(1, '회식 이름을 입력해주세요')
 			.max(20, '회식 이름은 20자 이내로 입력해주세요'),
-		/** 회식 설명 (선택, 최대 500자) */
 		description: z.string().max(500, '회식 설명은 500자 이내로 입력해주세요').optional(),
-		/** 회식 초대 범위 (형식: cohortId-authorityId, 1개 이상 필수) */
 		inviteScopes: z
 			.array(z.string().regex(/^\d+-\d+$/, '올바른 초대 범위 형식이 아닙니다'))
 			.min(1, '초대 범위를 1개 이상 선택해주세요')
@@ -57,7 +49,6 @@ const createGatheringSchema = z
 					}),
 				'선택한 초대 범위가 올바르지 않습니다',
 			),
-		/** 회식 시간 (현재 시각 이후만 허용) */
 		scheduledAt: z
 			.date()
 			.optional()
@@ -66,12 +57,10 @@ const createGatheringSchema = z
 				(val) => val !== undefined && dayjs(val).isAfter(dayjs()),
 				'회식 시간은 현재 시각 이후로 선택해주세요',
 			),
-		/** 참여 조사 마감 시간 (현재 시각 이후, 회식 시간 이전) */
 		closedAt: z
 			.date()
 			.optional()
 			.refine((val) => val !== undefined, '참여 조사 마감 시간을 선택해주세요'),
-		/** 참여 조사 마감 후 수정 허용 */
 		allowEditAfterClose: z.boolean(),
 	})
 	.superRefine((data, ctx) => {
@@ -95,126 +84,176 @@ const createGatheringSchema = z
 		}
 	});
 
-type CreateGatheringFormValues = z.infer<typeof createGatheringSchema>;
+type GatheringFormValues = z.infer<typeof gatheringSchema>;
 
-const STORAGE_KEY = 'after-party-create-form';
+const INVITE_SCOPE_OPTIONS = [
+	{ id: '18th-staff', label: '18기 운영진' },
+	{ id: '18th-diper', label: '18기 디퍼' },
+	{ id: '17th-staff', label: '17기 운영진' },
+	{ id: '17th-diper', label: '17기 디퍼' },
+];
 
-/** InviteTag를 TagSelect options 형식으로 변환 (id: cohortId-authorityId) */
-const mapInviteTagsToOptions = (
-	inviteTags: { cohortId: number; authorityId: number; tagName: string }[],
-) =>
-	inviteTags.map((t) => ({
-		id: `${t.cohortId}-${t.authorityId}`,
-		label: t.tagName,
-	}));
+const CalendarIcon = () => (
+	<svg
+		width="20"
+		height="20"
+		viewBox="0 0 20 20"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+		aria-hidden="true"
+	>
+		<path
+			d="M15.8333 3.33334H4.16667C3.24619 3.33334 2.5 4.07954 2.5 5.00001V16.6667C2.5 17.5872 3.24619 18.3333 4.16667 18.3333H15.8333C16.7538 18.3333 17.5 17.5872 17.5 16.6667V5.00001C17.5 4.07954 16.7538 3.33334 15.8333 3.33334Z"
+			stroke="#9CA3AF"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M13.3333 1.66666V4.99999"
+			stroke="#9CA3AF"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M6.66669 1.66666V4.99999"
+			stroke="#9CA3AF"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M2.5 8.33334H17.5"
+			stroke="#9CA3AF"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+);
 
-const AfterPartyCreatePage = () => {
+const ClockIcon = () => (
+	<svg
+		width="20"
+		height="20"
+		viewBox="0 0 20 20"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+		aria-hidden="true"
+	>
+		<path
+			d="M10 18.3333C14.6024 18.3333 18.3334 14.6024 18.3334 10C18.3334 5.39763 14.6024 1.66666 10 1.66666C5.39765 1.66666 1.66669 5.39763 1.66669 10C1.66669 14.6024 5.39765 18.3333 10 18.3333Z"
+			stroke="#9CA3AF"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M10 5V10L13.3333 11.6667"
+			stroke="#9CA3AF"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+);
+
+interface AfterPartyUpdateFormProps {
+	gatheringId: number;
+}
+
+const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 	const router = useRouter();
-	const searchParams = useSearchParams();
 	const queryClient = useQueryClient();
-	const { data: inviteTagsData, isLoading: isInviteTagsLoading } =
-		useQuery(getInviteTagsQueryOptions);
-	const inviteScopeOptions = inviteTagsData?.data?.inviteTags
-		? mapInviteTagsToOptions(inviteTagsData.data.inviteTags)
-		: [];
+	const {
+		data: { data: detail },
+	} = useSuspenseQuery(getAfterPartyByIdQueryOptions(gatheringId));
 
-	const form = useForm<CreateGatheringFormValues>({
-		resolver: zodResolver(createGatheringSchema),
+	const canEdit = detail.isOwner && !detail.isClosed;
+
+	const form = useForm<GatheringFormValues>({
+		resolver: zodResolver(gatheringSchema),
 		defaultValues: {
-			title: '',
-			description: '',
-			inviteScopes: [],
+			title: detail.title,
+			description: detail.description ?? '',
+			inviteScopes: [], // TODO: API에서 inviteTags 반환 시 매핑
+			scheduledAt: dayjs(detail.scheduledAt).toDate(),
+			closedAt: dayjs(detail.closedAt).toDate(),
 			allowEditAfterClose: false,
 		},
 	});
 
-	const { mutate: createAfterParty, isPending } = useMutation(
-		createAfterPartyOptions({
+	// 서버 데이터로 폼 초기화
+	useEffect(() => {
+		form.reset({
+			title: detail.title,
+			description: detail.description ?? '',
+			inviteScopes: [],
+			scheduledAt: dayjs(detail.scheduledAt).toDate(),
+			closedAt: dayjs(detail.closedAt).toDate(),
+			allowEditAfterClose: false,
+		});
+	}, [detail, form]);
+
+	const { mutate: updateAfterParty, isPending } = useMutation(
+		updateAfterPartyOptions({
 			onSuccess: () => {
-				sessionStorage.removeItem(STORAGE_KEY);
 				queryClient.invalidateQueries({ queryKey: ['after-parties'] });
-				router.replace('/after-party/create/complete');
+				queryClient.invalidateQueries({ queryKey: ['after-party', gatheringId] });
+				router.replace(`/after-party/${gatheringId}`);
 			},
-			onError: () => {
-				toast.error('회식 생성에 실패했습니다.');
+			onError: (error) => {
+				console.error('Error updating after party:', error);
 			},
 		}),
 	);
 
-	// sessionStorage: ?new=1이면 초기화(새로 생성), 없으면 복원(새로고침)
+	// 수정 불가 시 상세로 리다이렉트
 	useEffect(() => {
-		const isNewCreation = searchParams.get('new') === '1';
-
-		if (isNewCreation) {
-			sessionStorage.removeItem(STORAGE_KEY);
-			router.replace('/after-party/create');
-			return;
+		if (!canEdit) {
+			router.replace(`/after-party/${gatheringId}`);
 		}
-
-		const saved = sessionStorage.getItem(STORAGE_KEY);
-		if (saved) {
-			try {
-				const parsed = JSON.parse(saved);
-				if (parsed.scheduledAt) {
-					parsed.scheduledAt = dayjs(parsed.scheduledAt).toDate();
-				}
-				if (parsed.closedAt) {
-					parsed.closedAt = dayjs(parsed.closedAt).toDate();
-				}
-				form.reset(parsed);
-			} catch {
-				// 파싱 실패 시 무시
-			}
-		}
-	}, [form, router, searchParams]);
-
-	// 폼 데이터가 변경될 때마다 sessionStorage에 저장
-	useEffect(() => {
-		const subscription = form.watch((data) => {
-			sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-		});
-		return () => subscription.unsubscribe();
-	}, [form]);
+	}, [canEdit, gatheringId, router]);
 
 	const titleValue = form.watch('title');
 	const descriptionValue = form.watch('description') ?? '';
 	const scheduledAtValue = form.watch('scheduledAt');
 
-	const handleSubmit = (data: CreateGatheringFormValues) => {
-		const inviteTags = data.inviteScopes.map((id) => {
-			const [cohortId, authorityId] = id.split('-').map(Number);
-			return { cohortId, authorityId };
-		});
+	const handleSubmit = (data: GatheringFormValues) => {
 		const payload = {
 			title: data.title,
 			description: data.description ?? '',
-			inviteTags,
+			inviteTags: [],
 			scheduledAt: data.scheduledAt ? dayjs(data.scheduledAt).toISOString() : '',
 			closedAt: data.closedAt ? dayjs(data.closedAt).toISOString() : '',
 			allowEditAfterClose: data.allowEditAfterClose,
 			canEditAfterApproval: false,
 		};
-		createAfterParty(payload);
+		updateAfterParty({ gatheringId, params: payload });
 	};
+
+	if (!canEdit) {
+		return null;
+	}
 
 	return (
 		<AppLayout className="h-[100dvh] bg-white">
-			{/* <AppLayout className="bg-white"> */}
-			<GAPageTracker type="after-party-create" />
-			<AppHeader title="회식 생성하기" className="shrink-0" />
-			{/* <AppHeader title="회식 생성하기" className="mb-1.5" /> */}
+			<GAPageTracker type="after-party-update" />
+			<AppHeader
+				title="회식 수정하기"
+				backHref={`/after-party/${gatheringId}`}
+				className="shrink-0"
+			/>
 
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(handleSubmit)}
 					className="flex flex-1 flex-col overflow-y-auto px-[16px] pt-1.5 pb-[24px]"
-					// className="flex flex-1 flex-col px-[16px] pb-[100px]"
 				>
-					{/* 기본 정보 섹션 */}
 					<section className="space-y-[24px]">
 						<h2 className="font-semibold text-[#111827] text-title2">기본 정보</h2>
 
-						{/* 회식 이름 */}
 						<FormField
 							control={form.control}
 							name="title"
@@ -237,7 +276,6 @@ const AfterPartyCreatePage = () => {
 							)}
 						/>
 
-						{/* 회식 설명 */}
 						<FormField
 							control={form.control}
 							name="description"
@@ -265,7 +303,6 @@ const AfterPartyCreatePage = () => {
 							)}
 						/>
 
-						{/* 회식 초대 범위 */}
 						<FormField
 							control={form.control}
 							name="inviteScopes"
@@ -273,29 +310,19 @@ const AfterPartyCreatePage = () => {
 								<FormItem>
 									<Label className="font-semibold text-[#4B5563] text-body2">회식 초대 범위</Label>
 									<FormControl>
-										{isInviteTagsLoading ? (
-											<div
-												className={cn(
-													'min-h-[48px] animate-pulse rounded-lg border border-line-normal bg-[#F3F4F6]',
-													fieldState.error && '!border-red-400',
-												)}
-											/>
-										) : (
-											<TagSelect
-												value={field.value}
-												onChange={field.onChange}
-												options={inviteScopeOptions}
-												placeholder="초대 범위를 선택해주세요"
-												className={fieldState.error ? '!border-red-400' : undefined}
-											/>
-										)}
+										<TagSelect
+											value={field.value}
+											onChange={field.onChange}
+											options={INVITE_SCOPE_OPTIONS}
+											placeholder="초대 범위를 선택해주세요"
+											className={fieldState.error ? '!border-red-400' : undefined}
+										/>
 									</FormControl>
 									<FormMessage className="font-medium text-caption1 text-red-500" />
 								</FormItem>
 							)}
 						/>
 
-						{/* 회식 시간 */}
 						<FormField
 							control={form.control}
 							name="scheduledAt"
@@ -308,7 +335,6 @@ const AfterPartyCreatePage = () => {
 											title="회식 시간"
 											value={field.value}
 											onChange={field.onChange}
-											minDateTime={dayjs().toDate()}
 										>
 											<button
 												type="button"
@@ -327,7 +353,6 @@ const AfterPartyCreatePage = () => {
 											title="회식 시간"
 											value={field.value}
 											onChange={field.onChange}
-											minDateTime={dayjs().toDate()}
 										>
 											<button
 												type="button"
@@ -347,7 +372,6 @@ const AfterPartyCreatePage = () => {
 							)}
 						/>
 
-						{/* 참여 조사 마감 시간 */}
 						<FormField
 							control={form.control}
 							name="closedAt"
@@ -407,7 +431,6 @@ const AfterPartyCreatePage = () => {
 							)}
 						/>
 
-						{/* 참여 조사 마감 후 수정 허용 */}
 						<FormField
 							control={form.control}
 							name="allowEditAfterClose"
@@ -449,7 +472,6 @@ const AfterPartyCreatePage = () => {
 				</form>
 			</Form>
 
-			{/* 하단 CTA 버튼 */}
 			<div className="before:-top-[24px] relative shrink-0 bg-white px-[16px] pt-[12px] pb-[calc(12px+env(safe-area-inset-bottom))] before:pointer-events-none before:absolute before:right-0 before:left-0 before:h-[24px] before:bg-gradient-to-t before:from-white before:to-transparent">
 				<ReviewBottomSheet
 					data={{
@@ -459,8 +481,9 @@ const AfterPartyCreatePage = () => {
 						closedAt: form.watch('closedAt'),
 						inviteScopes: form.watch('inviteScopes'),
 					}}
-					inviteScopeOptions={inviteScopeOptions}
+					inviteScopeOptions={INVITE_SCOPE_OPTIONS}
 					onConfirm={() => form.handleSubmit(handleSubmit)()}
+					mode="update"
 					isPending={isPending}
 				>
 					<Button
@@ -470,7 +493,7 @@ const AfterPartyCreatePage = () => {
 						className="h-[48px] rounded-lg bg-[#1F2937] text-white"
 						disabled={isPending}
 					>
-						회식 생성하기
+						회식 수정하기
 					</Button>
 				</ReviewBottomSheet>
 			</div>
@@ -478,72 +501,4 @@ const AfterPartyCreatePage = () => {
 	);
 };
 
-/** 캘린더 아이콘 */
-const CalendarIcon = () => (
-	<svg
-		width="20"
-		height="20"
-		viewBox="0 0 20 20"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-		aria-hidden="true"
-	>
-		<path
-			d="M15.8333 3.33334H4.16667C3.24619 3.33334 2.5 4.07954 2.5 5.00001V16.6667C2.5 17.5872 3.24619 18.3333 4.16667 18.3333H15.8333C16.7538 18.3333 17.5 17.5872 17.5 16.6667V5.00001C17.5 4.07954 16.7538 3.33334 15.8333 3.33334Z"
-			stroke="#9CA3AF"
-			strokeWidth="1.5"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		/>
-		<path
-			d="M13.3333 1.66666V4.99999"
-			stroke="#9CA3AF"
-			strokeWidth="1.5"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		/>
-		<path
-			d="M6.66669 1.66666V4.99999"
-			stroke="#9CA3AF"
-			strokeWidth="1.5"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		/>
-		<path
-			d="M2.5 8.33334H17.5"
-			stroke="#9CA3AF"
-			strokeWidth="1.5"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		/>
-	</svg>
-);
-
-/** 시계 아이콘 */
-const ClockIcon = () => (
-	<svg
-		width="20"
-		height="20"
-		viewBox="0 0 20 20"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-		aria-hidden="true"
-	>
-		<path
-			d="M10 18.3333C14.6024 18.3333 18.3334 14.6024 18.3334 10C18.3334 5.39763 14.6024 1.66666 10 1.66666C5.39765 1.66666 1.66669 5.39763 1.66669 10C1.66669 14.6024 5.39765 18.3333 10 18.3333Z"
-			stroke="#9CA3AF"
-			strokeWidth="1.5"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		/>
-		<path
-			d="M10 5V10L13.3333 11.6667"
-			stroke="#9CA3AF"
-			strokeWidth="1.5"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		/>
-	</svg>
-);
-
-export default AfterPartyCreatePage;
+export { AfterPartyUpdateForm };

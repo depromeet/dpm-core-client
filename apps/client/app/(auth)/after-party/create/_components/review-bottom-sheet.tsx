@@ -24,6 +24,10 @@ interface ReviewBottomSheetProps {
 	/** 초대 범위 옵션 (id -> label 매핑용) */
 	inviteScopeOptions: { id: string; label: string }[];
 	onConfirm: () => void;
+	/** 생성/수정 모드 (기본: create) */
+	mode?: 'create' | 'update';
+	/** 제출 중 (버튼 비활성화) */
+	isPending?: boolean;
 }
 
 dayjs.locale('ko');
@@ -38,13 +42,29 @@ const formatDateTimeWithDay = (date: Date) => {
 	return dayjs(date).format('YY년 MM월 DD일 (ddd) A h시 까지');
 };
 
+const MODE_CONFIG = {
+	create: {
+		confirmButtonText: '생성하기',
+		description:
+			'회식을 생성하면 디퍼들에게 참여 조사가 발송돼요.\n생성 후에는 수정할 수 없으니, 제출 전 한 번 더 확인해 주세요.',
+	},
+	update: {
+		confirmButtonText: '수정하기',
+		description:
+			'수정 내용이 반영되면 디퍼들에게 알림이 발송돼요.\n제출 전 한 번 더 확인해 주세요.',
+	},
+} as const;
+
 export const ReviewBottomSheet = ({
 	children,
 	data,
 	inviteScopeOptions,
 	onConfirm,
+	mode = 'create',
+	isPending = false,
 }: ReviewBottomSheetProps) => {
 	const { title, description, scheduledAt, closedAt, inviteScopes } = data;
+	const config = MODE_CONFIG[mode];
 
 	// id를 label로 변환
 	const scopeLabels = inviteScopes
@@ -129,10 +149,8 @@ export const ReviewBottomSheet = ({
 					</div>
 
 					{/* 안내 문구 */}
-					<p className="mt-4 font-medium text-[#4B5563] text-[14px] leading-[142%]">
-						회식을 생성하면 디퍼들에게 참여 조사가 발송돼요.
-						<br />
-						생성 후에는 수정할 수 없으니, 제출 전 한 번 더 확인해 주세요.
+					<p className="mt-4 whitespace-pre-line font-medium text-[#4B5563] text-[14px] leading-[142%]">
+						{config.description}
 					</p>
 				</div>
 
@@ -153,8 +171,9 @@ export const ReviewBottomSheet = ({
 								size="full"
 								className="h-[48px] flex-1 rounded-lg bg-[#1F2937] font-semibold text-[16px] text-white leading-[150%] hover:bg-[#1F2937]/90"
 								onClick={onConfirm}
+								disabled={isPending}
 							>
-								생성하기
+								{config.confirmButtonText}
 							</Button>
 						</DrawerTrigger>
 					</div>

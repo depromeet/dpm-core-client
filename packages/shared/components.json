@@ -1,24 +1,24 @@
 {
-  "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "new-york",
-  "rsc": true,
-  "tsx": true,
-  "tailwind": {
-    "config": "",
-    "css": "./src/shared-styles.css",
-    "baseColor": "slate",
-    "cssVariables": true,
-    "prefix": ""
-  },
-  "iconLibrary": "lucide",
-  "aliases": {
-    "components": "@dpm-core/shared/components",
-    "utils": "@dpm-core/shared/utils",
-    "ui": "@dpm-core/shared/components/ui",
-    "lib": "@dpm-core/shared/",
-    "hooks": "@dpm-core/shared/hooks"
-  },
-  "registries": {
-    "@ncdai": "https://chanhdai.com/r/{name}.json"
-  }
+	"$schema": "https://ui.shadcn.com/schema.json",
+	"style": "new-york",
+	"rsc": true,
+	"tsx": true,
+	"tailwind": {
+		"config": "",
+		"css": "./src/shared-styles.css",
+		"baseColor": "slate",
+		"cssVariables": true,
+		"prefix": ""
+	},
+	"iconLibrary": "lucide",
+	"aliases": {
+		"components": "@dpm-core/shared/components",
+		"utils": "@dpm-core/shared/utils",
+		"ui": "@dpm-core/shared/components/ui",
+		"lib": "@dpm-core/shared/",
+		"hooks": "@dpm-core/shared/hooks"
+	},
+	"registries": {
+		"@ncdai": "https://chanhdai.com/r/{name}.json"
+	}
 }
