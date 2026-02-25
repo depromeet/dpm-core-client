@@ -1,7 +1,7 @@
 import { http } from '../http';
 import type { ApiResponse } from '../type';
 import type {
-	AfterParty,
+	AfterPartyDetail,
 	CreateAfterPartyRequest,
 	CreateAfterPartyResponse,
 	GetAfterPartiesResponse,
@@ -16,7 +16,7 @@ export const afterParty = {
 	},
 
 	getAfterPartyById: async (gatheringId: number) => {
-		const res = await http.get<AfterParty>(`v2/gatherings/${gatheringId}`);
+		const res = await http.get<AfterPartyDetail>(`v2/gatherings/${gatheringId}`);
 		return res;
 	},
 

@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 import type {
-	AfterParty,
+	AfterPartyDetail,
 	ApiResponse,
 	GetAfterPartiesResponse,
 	GetInviteTagsResponse,
@@ -13,7 +13,7 @@ export const getAfterPartiesQueryOptions = queryOptions<ApiResponse<GetAfterPart
 });
 
 export const getAfterPartyByIdQueryOptions = (gatheringId: number) =>
-	queryOptions<ApiResponse<AfterParty>>({
+	queryOptions<ApiResponse<AfterPartyDetail>>({
 		queryKey: ['after-party', gatheringId],
 		queryFn: () => afterParty.getAfterPartyById(gatheringId),
 	});

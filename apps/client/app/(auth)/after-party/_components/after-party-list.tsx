@@ -181,7 +181,7 @@ const AfterPartyItem = ({
 						)}
 					</div>
 				</div>
-				<Link href={`/after-party/${gatheringId}`} className="block space-y-[8px]">
+				<Link href={`/after-party/${gatheringId}/update`} className="block space-y-[8px]">
 					<p className="font-semibold text-body1 text-gray-800">{title}</p>
 					<p className="text-ellipsis font-medium text-body2 text-gray-600">{description}</p>
 				</Link>

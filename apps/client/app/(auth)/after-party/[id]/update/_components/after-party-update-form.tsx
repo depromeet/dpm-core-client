@@ -19,18 +19,22 @@ import {
 	GAPageTracker,
 	Input,
 	Label,
+	toast,
 } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
 import { updateAfterPartyOptions } from '@/remotes/mutations/after-party';
 import { getAfterPartyByIdQueryOptions } from '@/remotes/queries/after-party';
 
+import {
+	formatAfterPartyDateTimeForRequest,
+	parseAfterPartyDateTime,
+	toRequestFormat,
+} from '../../../_utils/datetime';
 import { DateTimePickerDrawer } from '../../../create/_components/datetime-picker-drawer';
-import { ReviewBottomSheet } from '../../../create/_components/review-bottom-sheet';
-import { TagSelect } from '../../../create/_components/tag-select';
 import { afterPartyFormatDate, afterPartyFormatTime } from '../../../create/_utils/timeFomat';
 
-/** 폼 스키마 정의 (create와 동일) */
+/** 폼 스키마 정의 (inviteScopes 제외 - 수정 불가) */
 const gatheringSchema = z
 	.object({
 		title: z
@@ -38,17 +42,6 @@ const gatheringSchema = z
 			.min(1, '회식 이름을 입력해주세요')
 			.max(20, '회식 이름은 20자 이내로 입력해주세요'),
 		description: z.string().max(500, '회식 설명은 500자 이내로 입력해주세요').optional(),
-		inviteScopes: z
-			.array(z.string().regex(/^\d+-\d+$/, '올바른 초대 범위 형식이 아닙니다'))
-			.min(1, '초대 범위를 1개 이상 선택해주세요')
-			.refine(
-				(arr) =>
-					arr.every((id) => {
-						const [cohortId, authorityId] = id.split('-').map(Number);
-						return cohortId > 0 && authorityId > 0;
-					}),
-				'선택한 초대 범위가 올바르지 않습니다',
-			),
 		scheduledAt: z
 			.date()
 			.optional()
@@ -85,13 +78,6 @@ const gatheringSchema = z
 	});
 
 type GatheringFormValues = z.infer<typeof gatheringSchema>;
-
-const INVITE_SCOPE_OPTIONS = [
-	{ id: '18th-staff', label: '18기 운영진' },
-	{ id: '18th-diper', label: '18기 디퍼' },
-	{ id: '17th-staff', label: '17기 운영진' },
-	{ id: '17th-diper', label: '17기 디퍼' },
-];
 
 const CalendarIcon = () => (
 	<svg
@@ -170,16 +156,20 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 		data: { data: detail },
 	} = useSuspenseQuery(getAfterPartyByIdQueryOptions(gatheringId));
 
-	const canEdit = detail.isOwner && !detail.isClosed;
+	// 소유자만 수정 폼 접근 가능 (실제 수정 가능 여부는 API에서 검증)
+	const canEdit = detail.isOwner;
+
+	// API 원본 문자열 보존 (타임존 변환 없이 그대로 전송하기 위함)
+	const originalScheduledAt = detail.scheduledAt;
+	const originalClosedAt = detail.closedAt;
 
 	const form = useForm<GatheringFormValues>({
 		resolver: zodResolver(gatheringSchema),
 		defaultValues: {
 			title: detail.title,
 			description: detail.description ?? '',
-			inviteScopes: [], // TODO: API에서 inviteTags 반환 시 매핑
-			scheduledAt: dayjs(detail.scheduledAt).toDate(),
-			closedAt: dayjs(detail.closedAt).toDate(),
+			scheduledAt: parseAfterPartyDateTime(detail.scheduledAt),
+			closedAt: parseAfterPartyDateTime(detail.closedAt),
 			allowEditAfterClose: false,
 		},
 	});
@@ -189,9 +179,8 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 		form.reset({
 			title: detail.title,
 			description: detail.description ?? '',
-			inviteScopes: [],
-			scheduledAt: dayjs(detail.scheduledAt).toDate(),
-			closedAt: dayjs(detail.closedAt).toDate(),
+			scheduledAt: parseAfterPartyDateTime(detail.scheduledAt),
+			closedAt: parseAfterPartyDateTime(detail.closedAt),
 			allowEditAfterClose: false,
 		});
 	}, [detail, form]);
@@ -199,9 +188,10 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 	const { mutate: updateAfterParty, isPending } = useMutation(
 		updateAfterPartyOptions({
 			onSuccess: () => {
+				toast.success('수정 완료했어요');
 				queryClient.invalidateQueries({ queryKey: ['after-parties'] });
 				queryClient.invalidateQueries({ queryKey: ['after-party', gatheringId] });
-				router.replace(`/after-party/${gatheringId}`);
+				router.replace('/after-party');
 			},
 			onError: (error) => {
 				console.error('Error updating after party:', error);
@@ -209,27 +199,52 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 		}),
 	);
 
-	// 수정 불가 시 상세로 리다이렉트
+	// 수정 불가 시 목록으로 리다이렉트
 	useEffect(() => {
 		if (!canEdit) {
-			router.replace(`/after-party/${gatheringId}`);
+			router.replace('/after-party');
 		}
-	}, [canEdit, gatheringId, router]);
+	}, [canEdit, router]);
 
 	const titleValue = form.watch('title');
 	const descriptionValue = form.watch('description') ?? '';
 	const scheduledAtValue = form.watch('scheduledAt');
 
 	const handleSubmit = (data: GatheringFormValues) => {
+		const inviteTags =
+			detail.inviteTags?.inviteTags?.map((t) => ({
+				cohortId: t.cohortId,
+				authorityId: t.authorityId,
+			})) ?? [];
+
+		// 변경 없을 때 원본 문자열을 요청 형식으로 변환 (Z 추가)
+		const originalScheduledAtTime = parseAfterPartyDateTime(originalScheduledAt).getTime();
+		const originalClosedAtTime = parseAfterPartyDateTime(originalClosedAt).getTime();
+		const scheduledAtUnchanged =
+			data.scheduledAt && data.scheduledAt.getTime() === originalScheduledAtTime;
+		const closedAtUnchanged = data.closedAt && data.closedAt.getTime() === originalClosedAtTime;
+
 		const payload = {
 			title: data.title,
 			description: data.description ?? '',
-			inviteTags: [],
-			scheduledAt: data.scheduledAt ? dayjs(data.scheduledAt).toISOString() : '',
-			closedAt: data.closedAt ? dayjs(data.closedAt).toISOString() : '',
-			allowEditAfterClose: data.allowEditAfterClose,
-			canEditAfterApproval: false,
+			scheduledAt:
+				scheduledAtUnchanged && originalScheduledAt
+					? toRequestFormat(originalScheduledAt)
+					: data.scheduledAt
+						? formatAfterPartyDateTimeForRequest(data.scheduledAt)
+						: '',
+			closedAt:
+				closedAtUnchanged && originalClosedAt
+					? toRequestFormat(originalClosedAt)
+					: data.closedAt
+						? formatAfterPartyDateTimeForRequest(data.closedAt)
+						: '',
+			isApproved: false,
+			authorMemberId: detail.authorMemberId,
+			canEditAfterApproval: data.allowEditAfterClose,
+			inviteTags,
 		};
+		console.log('[회식 수정] payload:', payload);
 		updateAfterParty({ gatheringId, params: payload });
 	};
 
@@ -240,11 +255,7 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 	return (
 		<AppLayout className="h-[100dvh] bg-white">
 			<GAPageTracker type="after-party-update" />
-			<AppHeader
-				title="회식 수정하기"
-				backHref={`/after-party/${gatheringId}`}
-				className="shrink-0"
-			/>
+			<AppHeader title="회식 수정하기" backHref="/after-party" className="shrink-0" />
 
 			<Form {...form}>
 				<form
@@ -303,25 +314,25 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 							)}
 						/>
 
-						<FormField
-							control={form.control}
-							name="inviteScopes"
-							render={({ field, fieldState }) => (
-								<FormItem>
-									<Label className="font-semibold text-[#4B5563] text-body2">회식 초대 범위</Label>
-									<FormControl>
-										<TagSelect
-											value={field.value}
-											onChange={field.onChange}
-											options={INVITE_SCOPE_OPTIONS}
-											placeholder="초대 범위를 선택해주세요"
-											className={fieldState.error ? '!border-red-400' : undefined}
-										/>
-									</FormControl>
-									<FormMessage className="font-medium text-caption1 text-red-500" />
-								</FormItem>
-							)}
-						/>
+						<div>
+							<Label className="font-semibold text-[#4B5563] text-body2">
+								회식 초대 범위 <span className="font-medium text-[#9CA3AF]">(수정 불가)</span>
+							</Label>
+							<div className="mt-2 flex min-h-[48px] flex-wrap items-center gap-2 rounded-lg border border-line-normal bg-[#F9FAFB] px-3 py-2">
+								{detail.inviteTags?.inviteTags && detail.inviteTags.inviteTags.length > 0 ? (
+									detail.inviteTags.inviteTags.map((t) => (
+										<span
+											key={`${t.cohortId}-${t.authorityId}`}
+											className="inline-flex rounded-md bg-gray-200 px-2 py-1 font-medium text-[#4B5563] text-caption1"
+										>
+											@ {t.tagName}
+										</span>
+									))
+								) : (
+									<span className="font-medium text-[#9CA3AF] text-body2">초대 범위 정보 없음</span>
+								)}
+							</div>
+						</div>
 
 						<FormField
 							control={form.control}
@@ -472,30 +483,17 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 				</form>
 			</Form>
 
-			<div className="before:-top-[24px] relative shrink-0 bg-white px-[16px] pt-[12px] pb-[calc(12px+env(safe-area-inset-bottom))] before:pointer-events-none before:absolute before:right-0 before:left-0 before:h-[24px] before:bg-gradient-to-t before:from-white before:to-transparent">
-				<ReviewBottomSheet
-					data={{
-						title: form.watch('title'),
-						description: form.watch('description'),
-						scheduledAt: form.watch('scheduledAt'),
-						closedAt: form.watch('closedAt'),
-						inviteScopes: form.watch('inviteScopes'),
-					}}
-					inviteScopeOptions={INVITE_SCOPE_OPTIONS}
-					onConfirm={() => form.handleSubmit(handleSubmit)()}
-					mode="update"
-					isPending={isPending}
+			<div className="relative shrink-0 bg-white px-[16px] pt-[12px] pb-[calc(12px+env(safe-area-inset-bottom))]">
+				<Button
+					type="button"
+					variant="secondary"
+					size="full"
+					className="h-[48px] rounded-lg bg-[#1F2937] text-white"
+					disabled={isPending}
+					onClick={() => form.handleSubmit(handleSubmit)()}
 				>
-					<Button
-						type="button"
-						variant="secondary"
-						size="full"
-						className="h-[48px] rounded-lg bg-[#1F2937] text-white"
-						disabled={isPending}
-					>
-						회식 수정하기
-					</Button>
-				</ReviewBottomSheet>
+					수정하기
+				</Button>
 			</div>
 		</AppLayout>
 	);
