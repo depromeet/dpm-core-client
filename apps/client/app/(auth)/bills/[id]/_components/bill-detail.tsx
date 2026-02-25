@@ -58,10 +58,12 @@ function BillDetailContainer({ billId }: { billId: number }) {
 	}
 }
 
-const BillDetail = ErrorBoundary.with({ fallback: <></> }, (props: { billId: number }) => (
-	<Suspense fallback={<LoadingBox />}>
-		<BillDetailContainer billId={props.billId} />
-	</Suspense>
-));
+const BillDetail = (props: { billId: number }) => (
+	<ErrorBoundary fallback={<></>}>
+		<Suspense fallback={<LoadingBox />}>
+			<BillDetailContainer billId={props.billId} />
+		</Suspense>
+	</ErrorBoundary>
+);
 
 export { BillDetail };

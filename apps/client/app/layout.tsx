@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import Script from 'next/script';
+import NextScript from 'next/script';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
 	AppShell,
@@ -34,8 +34,6 @@ export default function RootLayout({
 	return (
 		<html lang="ko">
 			<head>
-				<Script src={getGAScriptSrc()} />
-				<Script id="google-analytics">{getGAConfigScript()}</Script>
 				<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 				<link rel="shortcut icon" href="/favicon.ico" />
@@ -43,6 +41,9 @@ export default function RootLayout({
 				<link rel="manifest" href="/site.webmanifest" />
 			</head>
 			<body className={pretendard.variable} suppressHydrationWarning>
+				{/* @ts-ignore */}
+				<NextScript src={getGAScriptSrc()} />
+				<NextScript id="google-analytics">{getGAConfigScript()}</NextScript>
 				<QueryProvider>
 					<GAInitializer />
 					<AppShell>{children}</AppShell>

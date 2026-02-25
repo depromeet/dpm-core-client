@@ -144,7 +144,7 @@ const BillOpenDetail = ({ billDetail }: { billDetail: Bill }) => {
 						- 참석 여부는 모든 디퍼에게 공개됩니다.
 						<br />- 멤버 확정 후에는 수정이 불가능하니, 제출 전 한번 더 확인해 주세요.
 					</DrawerDescription>
-					<DrawerHeader className="text-left! gap-y-2! items-start px-5 pt-[30px]">
+					<DrawerHeader className="items-start gap-y-2! px-5 pt-[30px] text-left!">
 						<h3 className="font-semibold text-label-normal text-title2">제출 전 확인</h3>
 					</DrawerHeader>
 					<div className="mt-3 flex flex-col gap-y-2 px-5">
