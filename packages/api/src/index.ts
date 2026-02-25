@@ -5,7 +5,6 @@ export * from './bill';
 export * from './cohort';
 export * from './constants';
 export * from './env';
-export * from './gathering-v2';
 export * from './http';
 export * from './member';
 export * from './session';
