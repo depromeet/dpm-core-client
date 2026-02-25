@@ -3,10 +3,11 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import Link from 'next/link';
-import { Fragment } from 'react';
-import { ErrorBoundary, Suspense } from '@suspensive/react';
+import { Fragment, Suspense } from 'react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
+import type { AfterParty } from '@dpm-core/api';
 import { cn } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
@@ -207,10 +208,10 @@ const AfterPartyListContainer = () => {
 	const filteredList =
 		afterPartyStatus === 'ALL'
 			? gatherings
-			: gatherings.filter((item) => dayjs(item.closedAt).isAfter(dayjs()));
+			: gatherings.filter((item: AfterParty) => dayjs(item.closedAt).isAfter(dayjs()));
 
 	return (
-		<div className="[&_[data-virtuoso-scroller]]:scrollbar-hide h-full">
+		<div className="**:data-virtuoso-scroller:scrollbar-hide h-full">
 			<Virtuoso
 				style={{ height: '100%' }}
 				data={filteredList}
@@ -224,7 +225,7 @@ const AfterPartyListContainer = () => {
 
 const AfterPartyList = ErrorBoundary.with(
 	{
-		fallback: (props) => <ErrorBox onReset={() => props.reset()} />,
+		fallback: (props: { reset: () => void }) => <ErrorBox onReset={() => props.reset()} />,
 	},
 	() => (
 		<Suspense fallback={<LoadingBox />}>
