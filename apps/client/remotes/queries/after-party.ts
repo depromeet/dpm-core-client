@@ -6,3 +6,15 @@ export const getAfterPartiesQueryOptions = queryOptions<ApiResponse<GetAfterPart
 	queryKey: ['after-parties'],
 	queryFn: afterParty.getAfterParties,
 });
+
+export const getAfterPartyDetailQueryOptions = (gatheringId: number) =>
+	queryOptions({
+		queryKey: ['after-party', 'detail', gatheringId],
+		queryFn: () => afterParty.getDetail(gatheringId),
+	});
+
+export const getAfterPartyInvitedMembersQueryOptions = (gatheringId: number) =>
+	queryOptions({
+		queryKey: ['after-party', 'invited-members', gatheringId],
+		queryFn: () => afterParty.getInvitedMembers(gatheringId),
+	});
