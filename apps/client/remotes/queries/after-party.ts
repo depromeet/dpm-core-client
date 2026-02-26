@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/react-query';
+mport { queryOptions } from '@tanstack/react-query';
 import type {
 	AfterPartyDetail,
 	ApiResponse,
