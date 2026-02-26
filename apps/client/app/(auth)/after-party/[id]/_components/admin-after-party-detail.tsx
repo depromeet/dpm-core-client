@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Fragment, Suspense } from 'react';
-import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Button, Divider } from '@dpm-core/shared';
 
@@ -34,6 +34,7 @@ const AdminAfterPartyDetailContainer = (props: AdminAfterDetailProps) => {
 			/>
 			<Divider className="h-2.5" />
 			<AfterPartyRsvpOverview
+				gatheringId={afterParty.gatheringId}
 				attendanceCount={afterParty.attendanceCount}
 				isRsvpGoingCount={afterParty.isRsvpGoingCount}
 				inviteeCount={afterParty.inviteeCount}
