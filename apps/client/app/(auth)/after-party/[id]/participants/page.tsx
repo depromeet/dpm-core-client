@@ -2,7 +2,7 @@ import { AppLayout } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
 
-import { NonParticipantsNotification } from '../_components/non-participants-notification';
+import { NonParticipantsNotification } from '../_components/admin/non-participants-notification';
 import { AfterPartyParticipantsFilter } from './_components/after-party-participants-filter';
 import { AfterPartyParticipantsList } from './_components/after-party-participants-list';
 

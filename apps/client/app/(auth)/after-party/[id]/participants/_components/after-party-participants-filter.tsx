@@ -23,7 +23,10 @@ export const AfterPartyParticipantsFilter = () => {
 				type="single"
 				className="gap-2 border-none"
 				value={afterPartyParticipantsStatus}
-				onValueChange={handleChangeSAfterPartyParticipantsStatus}
+				onValueChange={(value) => {
+					if (!value) return;
+					handleChangeSAfterPartyParticipantsStatus(value);
+				}}
 			>
 				<ToggleGroupItem
 					className={cn(

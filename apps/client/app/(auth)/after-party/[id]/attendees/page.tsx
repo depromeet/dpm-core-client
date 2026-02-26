@@ -13,7 +13,7 @@ export default async function AfterPartyAttendeesPage({
 	const { id } = await params;
 
 	return (
-		<AppLayout>
+		<AppLayout className="h-dvh bg-background-normal">
 			<AppHeader title="참석자" className="mb-0" />
 			<section className="px-4 py-3">
 				<AfterPartyAttendeesFilter />
