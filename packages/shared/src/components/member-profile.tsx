@@ -1,26 +1,54 @@
-import type * as React from 'react';
-import { cn } from '../utils/cn';
+'use client';
 
-interface MemberProfileProps extends React.ComponentProps<'div'> {
+import type React from 'react';
+
+import { cn } from '../utils/cn';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+
+export interface MemberProfileProps extends React.HTMLAttributes<HTMLDivElement> {
 	name: string;
-	team: string;
-	role: string;
+	team?: string;
+	role?: string;
+	avatarSrc?: string;
+	avatarFallback?: string;
+	showHover?: boolean;
 }
 
-export const MemberProfile = ({ name, team, role, className, ...props }: MemberProfileProps) => {
+export const MemberProfile = ({
+	className,
+	name,
+	team,
+	role,
+	avatarSrc,
+	avatarFallback,
+	showHover = false,
+	...props
+}: MemberProfileProps) => {
 	return (
-		<div className={cn('flex items-center gap-4 py-3', className)} {...props}>
-			<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100">
-				{/* Placeholder for avatar icon or image */}
-				<div className="h-6 w-6 rounded-full bg-gray-200" />
-			</div>
+		<div
+			className={cn(
+				'flex items-center gap-3 rounded-lg bg-background-normal p-2',
+				showHover && 'hover:bg-gray-100/60',
+				className,
+			)}
+			{...props}
+		>
+			<Avatar className="size-10 shrink-0">
+				{avatarSrc && <AvatarImage src={avatarSrc} alt={name} />}
+				<AvatarFallback className="bg-primary-extralight text-primary-normal">
+					{avatarFallback || name.charAt(0)}
+				</AvatarFallback>
+			</Avatar>
+
 			<div className="flex flex-col gap-0.5">
-				<span className="font-semibold text-body1 text-label-normal">{name}</span>
-				<div className="flex items-center gap-1.5 text-caption1 text-label-assistive">
-					<span>{team}</span>
-					<span className="h-2 w-[1px] bg-gray-200" />
-					<span>{role}</span>
-				</div>
+				<p className="font-semibold text-body1 text-label-normal">{name}</p>
+				{(team || role) && (
+					<div className="flex items-center gap-1.5 text-caption1 text-label-assistive">
+						{team && <span>{team}</span>}
+						{team && role && <div className="h-4 w-px bg-gray-400" />}
+						{role && <span>{role}</span>}
+					</div>
+				)}
 			</div>
 		</div>
 	);

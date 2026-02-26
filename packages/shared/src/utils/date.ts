@@ -2,6 +2,9 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
+// date-fns locale for Calendar
+export { ko as koLocale } from 'date-fns/locale';
+
 import { ATTENDANCE_GAP_DURATION, ATTENDANCE_LATE_DURATION } from '../constants/attendance';
 
 dayjs.extend(relativeTime);

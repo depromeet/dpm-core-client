@@ -26,8 +26,8 @@ interface AfterPartyItemProps {
 	title: string;
 	/** 내가 생성한 회식 여부 */
 	isOwner: boolean;
-	/** 참석 여부 */
-	rsvpStatus: boolean;
+	/** 참석 여부 (null: 미응답) */
+	rsvpStatus: boolean | null;
 	/** 실제 참석 여부 */
 	isAttended: boolean;
 	/** 승인 여부 */
@@ -147,10 +147,11 @@ const AfterPartyItem = ({
 	rsvpStatus,
 }: AfterPartyItemProps) => {
 	const styles = {
-		base: 'bg-gray-0 p-[16px] font-semibold text-caption1 h-[149px] border-b border-b-line-subtle space-y-[8px]',
+		base: 'p-[16px] font-semibold text-caption1 h-[149px] border-b border-b-line-subtle space-y-[8px]',
+		default: 'bg-gray-0',
 		closed: 'bg-[#F6F8FA] opacity-70',
-		yellow: 'bg-[#FFFCF7]',
-		gray: 'bg-gray-50',
+		/** rsvpStatus가 null일 때 (미응답) */
+		unanswered: 'bg-[#FFFCF7]',
 	};
 
 	const daysLeft = getDaysUntilDeadline(closedAt);
@@ -158,9 +159,15 @@ const AfterPartyItem = ({
 	/** 날짜 포맷: "25년 8월 12일 (토)" */
 	const formattedDate = dayjs(scheduledAt).format('YY년 M월 D일 (ddd)');
 
+	const bgStyle = isClosed
+		? styles.closed
+		: rsvpStatus === null
+			? styles.unanswered
+			: styles.default;
+
 	return (
 		<div className="relative">
-			<div className={cn(styles.base, isClosed && styles.closed)}>
+			<div className={cn(styles.base, bgStyle)}>
 				<div className="relative flex items-center justify-between">
 					<div className="flex items-center justify-center space-x-[4px]">
 						{isClosed ? (
@@ -175,7 +182,7 @@ const AfterPartyItem = ({
 						)}
 					</div>
 				</div>
-				<Link href={`/after-party/${gatheringId}`} className="block space-y-[8px]">
+				<Link href={`/after-party/${gatheringId}/update`} className="block space-y-[8px]">
 					<p className="font-semibold text-body1 text-gray-800">{title}</p>
 					<p className="text-ellipsis font-medium text-body2 text-gray-600">{description}</p>
 				</Link>
@@ -189,32 +196,54 @@ const AfterPartyItem = ({
 					</span>
 				</div>
 			</div>
-			{/* opacity 영향을 받지 않는 별도 레이어 */}
-			<span className="absolute top-[16px] right-[16px] z-20 font-medium text-blue-400 text-caption1">
-				{rsvpStatus ? '참석' : '참석 예정'}
-			</span>
+			{/* opacity 영향을 받지 않는 별도 레이어 - rsvpStatus가 null이면 노출 안 함 */}
+			{rsvpStatus !== null && (
+				<span className="absolute top-[16px] right-[16px] z-20 font-medium text-blue-400 text-caption1">
+					{rsvpStatus ? '참석' : '불참 예정'}
+				</span>
+			)}
 		</div>
 	);
+};
+
+/** rsvpStatus=null 예시용 목 데이터 (개발 시 확인용) */
+const MOCK_UNANSWERED_ITEM = {
+	gatheringId: 0,
+	title: '[예시] 미응답 회식',
+	isOwner: false,
+	rsvpStatus: null as boolean | null,
+	isAttended: false,
+	isApproved: false,
+	isClosed: false,
+	description: 'rsvpStatus가 null일 때 배경색 #FFFCF7이 적용됩니다.',
+	scheduledAt: new Date().toISOString(),
+	closedAt: dayjs().add(3, 'day').toISOString(),
+	isRsvpGoingCount: 5,
+	isAttendedCount: 0,
+	inviteeCount: 10,
+	createdAt: new Date().toISOString(),
 };
 
 const AfterPartyListContainer = () => {
 	const { afterPartyStatus } = useAfterPartyListFilterSearchParams();
 	const {
-		data: {
-			data: { gatherings },
-		},
+		data: { data: gatherings },
 	} = useSuspenseQuery(getAfterPartiesQueryOptions);
 
 	const filteredList =
 		afterPartyStatus === 'ALL'
 			? gatherings
-			: gatherings.filter((item: AfterParty) => dayjs(item.closedAt).isAfter(dayjs()));
+			: gatherings.filter((item) => dayjs(item.closedAt).isAfter(dayjs()));
+
+	/** 개발 환경에서 rsvpStatus=null 예시를 목록 맨 위에 표시 */
+	const displayList =
+		process.env.NODE_ENV === 'development' ? [MOCK_UNANSWERED_ITEM, ...filteredList] : filteredList;
 
 	return (
-		<div className="**:data-virtuoso-scroller:scrollbar-hide h-full">
+		<div className="[&_[data-virtuoso-scroller]]:scrollbar-hide h-full">
 			<Virtuoso
 				style={{ height: '100%' }}
-				data={filteredList}
+				data={displayList}
 				itemContent={(_, item) => {
 					return <AfterPartyItem key={item.gatheringId} {...item} />;
 				}}
@@ -225,7 +254,7 @@ const AfterPartyListContainer = () => {
 
 const AfterPartyList = ErrorBoundary.with(
 	{
-		fallback: (props: { reset: () => void }) => <ErrorBox onReset={() => props.reset()} />,
+		fallback: (props) => <ErrorBox onReset={() => props.reset()} />,
 	},
 	() => (
 		<Suspense fallback={<LoadingBox />}>

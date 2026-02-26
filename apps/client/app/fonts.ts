@@ -7,47 +7,47 @@ export const pretendard = localFont({
 	variable: '--font-pretendard',
 	src: [
 		{
-			path: '../assets/fonts/pretendard/Pretendard-Thin.woff',
+			path: '../assets/fonts/pretendard/Pretendard-Thin.subset.woff2',
 			weight: '100',
 			style: 'normal',
 		},
 		{
-			path: '../assets/fonts/pretendard/Pretendard-ExtraLight.woff',
+			path: '../assets/fonts/pretendard/Pretendard-ExtraLight.subset.woff2',
 			weight: '200',
 			style: 'normal',
 		},
 		{
-			path: '../assets/fonts/pretendard/Pretendard-Light.woff',
+			path: '../assets/fonts/pretendard/Pretendard-Light.subset.woff2',
 			weight: '300',
 			style: 'normal',
 		},
 		{
-			path: '../assets/fonts/pretendard/Pretendard-Regular.woff',
+			path: '../assets/fonts/pretendard/Pretendard-Regular.subset.woff2',
 			weight: '400',
 			style: 'normal',
 		},
 		{
-			path: '../assets/fonts/pretendard/Pretendard-Medium.woff',
+			path: '../assets/fonts/pretendard/Pretendard-Medium.subset.woff2',
 			weight: '500',
 			style: 'normal',
 		},
 		{
-			path: '../assets/fonts/pretendard/Pretendard-SemiBold.woff',
+			path: '../assets/fonts/pretendard/Pretendard-SemiBold.subset.woff2',
 			weight: '600',
 			style: 'normal',
 		},
 		{
-			path: '../assets/fonts/pretendard/Pretendard-Bold.woff',
+			path: '../assets/fonts/pretendard/Pretendard-Bold.subset.woff2',
 			weight: '700',
 			style: 'normal',
 		},
 		{
-			path: '../assets/fonts/pretendard/Pretendard-ExtraBold.woff',
+			path: '../assets/fonts/pretendard/Pretendard-ExtraBold.subset.woff2',
 			weight: '800',
 			style: 'normal',
 		},
 		{
-			path: '../assets/fonts/pretendard/Pretendard-Black.woff',
+			path: '../assets/fonts/pretendard/Pretendard-Black.subset.woff2',
 			weight: '900',
 			style: 'normal',
 		},
