@@ -22,3 +22,9 @@ export const getInviteTagsQueryOptions = queryOptions<ApiResponse<GetInviteTagsR
 	queryKey: ['after-party', 'invite-tags'],
 	queryFn: afterParty.getInviteTags,
 });
+
+export const getAfterPartyInvitedMembersQueryOptions = (gatheringId: number) =>
+	queryOptions({
+		queryKey: ['after-party', 'invited-members', gatheringId],
+		queryFn: () => afterParty.getInvitedMembers(gatheringId),
+	});
