@@ -1,5 +1,5 @@
 import { http } from '../http';
-import type { Bill, GatheringJoin } from './types';
+import type { Bill, BillAfterPartyJoin } from './types';
 
 interface GetBillsResponse {
 	bills: Bill[];
@@ -18,7 +18,7 @@ export const bill = {
 		return res;
 	},
 
-	patchBillGatheringJoins: async (id: number, data: GatheringJoin[]) => {
+	patchBillAfterPartyJoins: async (id: number, data: BillAfterPartyJoin[]) => {
 		const res = await http.patch(`v1/bills/${id}/join`, { json: { gatheringJoins: data } });
 		return res;
 	},

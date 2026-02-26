@@ -5,6 +5,7 @@ export * from './components/create-context';
 export * from './components/filter-chip';
 export * from './components/google-analytics';
 export * from './components/icons';
+export * from './components/member-profile';
 export * from './components/ui/avatar';
 export * from './components/ui/button';
 export * from './components/ui/calendar';

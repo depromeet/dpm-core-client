@@ -2,11 +2,11 @@
 
 import { Button, CircleCheck } from '@dpm-core/shared';
 
-interface StaffDinnerCompleteProps {
+interface AfterPartySurveyCompleteProps {
 	onGoToView?: () => void;
 }
 
-export const StaffDinnerComplete = ({ onGoToView }: StaffDinnerCompleteProps) => {
+export const AfterPartySurveyComplete = ({ onGoToView }: AfterPartySurveyCompleteProps) => {
 	return (
 		<div className="flex min-h-screen flex-col">
 			<div className="flex flex-1 flex-col items-center justify-center gap-8">

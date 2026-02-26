@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
+import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Button } from '@dpm-core/shared';
@@ -177,7 +178,9 @@ const AttendanceSessionContainer = () => {
 
 export const AttendanceSession = () => {
 	return (
-		<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
+		<ErrorBoundary
+			fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
+		>
 			<Suspense>
 				<AttendanceSessionContainer />
 			</Suspense>
