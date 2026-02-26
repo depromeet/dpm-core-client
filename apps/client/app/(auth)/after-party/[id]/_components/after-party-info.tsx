@@ -26,14 +26,14 @@ export interface InviteTag {
 }
 
 export const AfterPartyInfo = (props: AfterPartyInfoProps) => {
-	const { title, description, scheduledAt, closedAt, inviteTags } = props;
+	const { title, description, scheduledAt, closedAt, inviteTags, gatheringId } = props;
 	return (
 		<section className="p-4">
 			<div className="flex flex-col gap-5">
 				<div className="flex items-center justify-between">
 					<h2 className="font-bold text-headline2 text-label-normal">{title}</h2>
 					<Button size="md" variant="text" className="h-10 px-4" asChild>
-						<Link href="#">수정하기</Link>
+						<Link href={`/after-party/${gatheringId}/update`}>수정하기</Link>
 					</Button>
 				</div>
 

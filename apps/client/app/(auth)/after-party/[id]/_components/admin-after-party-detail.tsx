@@ -7,7 +7,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { Button, Divider } from '@dpm-core/shared';
 
 import { LoadingBox } from '@/components/loading-box';
-import { getAfterPartyDetailQueryOptions } from '@/remotes/queries/after-party';
+import { getAfterPartyByIdQueryOptions } from '@/remotes/queries/after-party';
 
 import { AfterPartyInfo } from './after-party-info';
 import { AfterPartyRsvp } from './after-party-rsvp';
@@ -21,7 +21,7 @@ const AdminAfterPartyDetailContainer = (props: AdminAfterDetailProps) => {
 	const { afterPartyId } = props;
 	const {
 		data: { data: afterParty },
-	} = useSuspenseQuery(getAfterPartyDetailQueryOptions(afterPartyId));
+	} = useSuspenseQuery(getAfterPartyByIdQueryOptions(afterPartyId));
 
 	return (
 		<Fragment>

@@ -18,7 +18,11 @@ import {
 } from '@dpm-core/shared';
 
 import { submitAttendanceStatusMutationOptions } from '@/remotes/mutations/after-party';
-import { getAfterPartyDetailQueryOptions } from '@/remotes/queries/after-party';
+import {
+	getAfterPartiesQueryOptions,
+	getAfterPartyByIdQueryOptions,
+	getAfterPartyInvitedMembersQueryOptions,
+} from '@/remotes/queries/after-party';
 
 interface AfterPartyRsvpProps {
 	title: string;
@@ -51,7 +55,9 @@ export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
 			{ isRsvpGoing },
 			{
 				onSuccess: () => {
-					queryClient.invalidateQueries(getAfterPartyDetailQueryOptions(gatheringId));
+					queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(gatheringId));
+					queryClient.invalidateQueries(getAfterPartiesQueryOptions);
+					queryClient.invalidateQueries(getAfterPartyInvitedMembersQueryOptions(gatheringId));
 					toast.success('저장했어요');
 				},
 				onError: () => {
@@ -68,7 +74,9 @@ export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
 			{ isRsvpGoing },
 			{
 				onSuccess: () => {
-					queryClient.invalidateQueries(getAfterPartyDetailQueryOptions(gatheringId));
+					queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(gatheringId));
+					queryClient.invalidateQueries(getAfterPartiesQueryOptions);
+					queryClient.invalidateQueries(getAfterPartyInvitedMembersQueryOptions(gatheringId));
 					toast.success('수정 완료했어요');
 				},
 				onError: () => {
