@@ -1,8 +1,8 @@
 'use client';
 
 import { Suspense, useEffect, useMemo, useState } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Button } from '@dpm-core/shared';

@@ -13,6 +13,7 @@ export interface Member {
 export type NoticeTag = 'default' | 'assignment' | 'individual' | 'team' | 'etc';
 
 export interface AssignmentDetailProps {
+	announcementId: number;
 	title: string;
 	date: string;
 	readCount: number;

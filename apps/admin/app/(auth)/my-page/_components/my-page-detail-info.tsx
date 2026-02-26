@@ -1,8 +1,8 @@
 'use client';
 
 import { Suspense } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useIsMutating, useSuspenseQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
 import { ChevronRight, fadeInOutVariatns } from '@dpm-core/shared';

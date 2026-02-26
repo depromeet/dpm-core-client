@@ -13,8 +13,7 @@ function toISOAt(date: Date, timeHHMM: string): string {
 
 /** 폼 데이터를 공지 등록 API body로 변환 */
 export function buildAnnouncementPayload(data: NoticeSchema): CreateAnnouncementRequest {
-	const announcementType =
-		data.category === 'assignment' ? 'ASSIGNMENT' : 'GENERAL';
+	const announcementType = data.category === 'assignment' ? 'ASSIGNMENT' : 'GENERAL';
 
 	const payload: CreateAnnouncementRequest = {
 		announcementType,
@@ -25,27 +24,20 @@ export function buildAnnouncementPayload(data: NoticeSchema): CreateAnnouncement
 	};
 
 	if (data.category === 'assignment') {
-		payload.submitType =
-			data.assignmentType === 'team' ? 'TEAM' : 'INDIVIDUAL';
+		payload.submitType = data.assignmentType === 'team' ? 'TEAM' : 'INDIVIDUAL';
 		if (
 			data.submissionStartDate != null &&
 			data.submissionStartTime != null &&
 			data.submissionStartTime.length === 4
 		) {
-			payload.startAt = toISOAt(
-				data.submissionStartDate,
-				data.submissionStartTime,
-			);
+			payload.startAt = toISOAt(data.submissionStartDate, data.submissionStartTime);
 		}
 		if (
 			data.submissionEndDate != null &&
 			data.submissionEndTime != null &&
 			data.submissionEndTime.length === 4
 		) {
-			payload.dueAt = toISOAt(
-				data.submissionEndDate,
-				data.submissionEndTime,
-			);
+			payload.dueAt = toISOAt(data.submissionEndDate, data.submissionEndTime);
 		}
 	}
 
