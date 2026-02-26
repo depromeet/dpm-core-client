@@ -13,7 +13,7 @@ interface AfterPartyRsvpOverviewProps {
 }
 
 export const AfterPartyRsvpOverview = (props: AfterPartyRsvpOverviewProps) => {
-	const { attendanceCount, isRsvpGoingCount, inviteeCount, gatheringId } = props;
+	const { isRsvpGoingCount, inviteeCount, gatheringId } = props;
 
 	const router = useRouter();
 	const handleGoToParticipants = () => {
@@ -29,7 +29,7 @@ export const AfterPartyRsvpOverview = (props: AfterPartyRsvpOverviewProps) => {
 				<div className="flex flex-col items-center gap-1">
 					<p className="font-semibold text-body2 text-label-assistive">회식 참여 인원</p>
 					<strong className="font-bold text-headline1 text-label-strong">
-						{attendanceCount}명
+						{isRsvpGoingCount}명
 					</strong>
 				</div>
 				<Button size="md" variant="assistive" className="w-full" onClick={handleGoToAttendees}>
@@ -42,7 +42,7 @@ export const AfterPartyRsvpOverview = (props: AfterPartyRsvpOverviewProps) => {
 					<Progress value={Math.round((isRsvpGoingCount / inviteeCount) * 100)} className="h-2.5" />
 					<p className="font-semibold text-caption1">
 						<strong className="text-label-subtle">{isRsvpGoingCount}</strong>
-						<span className="text-label-assistive">/{inviteeCount}명 참여</span>
+						<span className="text-label-assistive">/{inviteeCount}명 제출</span>
 					</p>
 				</div>
 				<Button size="md" variant="assistive" className="w-full" onClick={handleGoToParticipants}>

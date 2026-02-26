@@ -29,7 +29,7 @@ export const AfterPartyInfo = ({ afterPartyDetail }: AfterPartyInfoProps) => {
 						{afterPartyDetail.inviteTags.inviteTags.map((tag) => (
 							<div
 								key={tag.authorityId}
-								className="rounded-sm bg-gray-100 px-[5px] py-[3px] font-semibold text-caption1 text-gray-500"
+								className="rounded-sm bg-gray-100 px-1.25 py-0.75 font-semibold text-caption1 text-gray-500"
 							>
 								@<span className="ml-0.5">{tag.tagName}</span>
 							</div>

@@ -1,6 +1,6 @@
 'use client';
 
-import type { AttendanceStatus } from '../_types/after-party-survey';
+import type { AttendanceStatus } from '../../_types/after-party-survey';
 import { AttendanceSelector } from './attendance-selector';
 
 interface AfterPartyAttendanceProps {

@@ -1,30 +1,35 @@
 'use client';
 
+import { redirect, useParams } from 'next/navigation';
 import { useState } from 'react';
-import { redirect, useSearchParams } from 'next/navigation';
-import { useSuspenseQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 
-import { getAfterPartyDetailQueryOptions } from '@/remotes/queries/after-party';
+import { getAfterPartyByIdQueryOptions } from '@/remotes/queries/after-party';
 
-import { AfterPartyAttendance } from './_components/after-party-attendance';
-import { AfterPartySurveyComplete } from './_components/after-party-survey-complete';
-import { AfterPartyInfo } from './_components/after-party-info';
-import { AfterPartySubmitButton } from './_components/after-party-submit-button';
-import { AfterPartySurveyHeader } from './_components/after-party-survey-header';
-import { AfterPartySurveyView } from './_components/after-party-survey-view';
-import type { AttendanceStatus, PageState } from './_types/after-party-survey';
-import { fromAttendanceResponse } from './_types/after-party-survey';
+import {
+	type AttendanceStatus,
+	fromAttendanceResponse,
+	type PageState,
+} from '../../_types/after-party-survey';
+import { AfterPartyAttendance } from './after-party-attendance';
+import { AfterPartyInfo } from './after-party-info';
+import { AfterPartySubmitButton } from './after-party-submit-button';
+import { AfterPartySurveyComplete } from './after-party-survey-complete';
+import { AfterPartySurveyHeader } from './after-party-survey-header';
+import { AfterPartySurveyView } from './after-party-survey-view';
 
-export default function Page() {
-	const searchParams = useSearchParams();
-	const gatheringId = Number(searchParams.get('gatheringId'));
+export function DeeperAfterPartyDetail() {
+	const params = useParams<{ id: string }>();
+	const { id: gatheringId } = params;
 	const queryClient = useQueryClient();
 
 	if (!gatheringId) {
 		redirect('/');
 	}
 
-	const { data: afterPartyDetail } = useSuspenseQuery(getAfterPartyDetailQueryOptions(gatheringId));
+	const { data: afterPartyDetail } = useSuspenseQuery(
+		getAfterPartyByIdQueryOptions(Number(gatheringId)),
+	);
 	const detail = afterPartyDetail.data;
 
 	const isClosed = new Date(detail.closedAt) < new Date();
@@ -35,7 +40,7 @@ export default function Page() {
 	const [pageState, setPageState] = useState<PageState>(initialPageState);
 
 	const handleSubmitSuccess = () => {
-		queryClient.invalidateQueries(getAfterPartyDetailQueryOptions(gatheringId));
+		queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(Number(gatheringId)));
 		setPageState('complete');
 	};
 
@@ -50,7 +55,7 @@ export default function Page() {
 				attendance={attendance}
 				onAttendanceChange={setAttendance}
 				isClosed={isClosed}
-				gatheringId={gatheringId}
+				gatheringId={Number(gatheringId)}
 			/>
 		);
 	}
@@ -59,12 +64,12 @@ export default function Page() {
 		<div className="flex min-h-screen flex-col">
 			<AfterPartySurveyHeader />
 			<AfterPartyInfo afterPartyDetail={detail} />
-			<div className="h-[8px] bg-gray-100" />
+			<div className="h-2 bg-gray-100" />
 			<AfterPartyAttendance attendance={attendance} onAttendanceChange={setAttendance} />
 			<AfterPartySubmitButton
 				attendance={attendance}
 				afterPartyTitle={detail.title}
-				gatheringId={gatheringId}
+				gatheringId={Number(gatheringId)}
 				onSubmitSuccess={handleSubmitSuccess}
 			/>
 		</div>

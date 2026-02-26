@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { Fragment, Suspense } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -13,12 +14,9 @@ import { AfterPartyInfo } from './after-party-info';
 import { AfterPartyRsvp } from './after-party-rsvp';
 import { AfterPartyRsvpOverview } from './after-party-rsvp-overview';
 
-interface AdminAfterDetailProps {
-	afterPartyId: number;
-}
-
-const AdminAfterPartyDetailContainer = (props: AdminAfterDetailProps) => {
-	const { afterPartyId } = props;
+const AdminAfterPartyDetailContainer = () => {
+	const params = useParams<{ id: string }>();
+	const afterPartyId = Number(params.id);
 	const {
 		data: { data: afterParty },
 	} = useSuspenseQuery(getAfterPartyByIdQueryOptions(afterPartyId));
@@ -43,11 +41,11 @@ const AdminAfterPartyDetailContainer = (props: AdminAfterDetailProps) => {
 	);
 };
 
-export const AdminAfterPartyDetail = (props: AdminAfterDetailProps) => {
+export const AdminAfterPartyDetail = () => {
 	return (
 		<ErrorBoundary fallback={<AdminAfterPartyErrorFallback />}>
 			<Suspense fallback={<LoadingBox />}>
-				<AdminAfterPartyDetailContainer {...props} />
+				<AdminAfterPartyDetailContainer />
 			</Suspense>
 		</ErrorBoundary>
 	);

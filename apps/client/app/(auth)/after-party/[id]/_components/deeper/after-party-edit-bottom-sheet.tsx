@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -13,18 +14,16 @@ import {
 	DrawerTrigger,
 	useAppShell,
 } from '@dpm-core/shared';
-import Image from 'next/image';
 
 import { submitAttendanceStatusMutationOptions } from '@/remotes/mutations/after-party';
 import {
-	getAfterPartyDetailQueryOptions,
+	getAfterPartyByIdQueryOptions,
 	getAfterPartyInvitedMembersQueryOptions,
 } from '@/remotes/queries/after-party';
 
-import type { AttendanceStatus } from '../_types/after-party-survey';
-import { toAttendanceResponse } from '../_types/after-party-survey';
-import FaceDissapointed from '../_assets/face-dissapointed.png';
-import FaceGlasses from '../_assets/face-glasses.png';
+import FaceDissapointed from '../../_assets/face-dissapointed.png';
+import FaceGlasses from '../../_assets/face-glasses.png';
+import { type AttendanceStatus, toAttendanceResponse } from '../../_types/after-party-survey';
 import { AttendanceSelector } from './attendance-selector';
 
 interface AfterPartyEditBottomSheetProps {
@@ -63,7 +62,7 @@ export const AfterPartyEditBottomSheet = ({
 			{ isRsvpGoing: toAttendanceResponse(selectedAttendance) },
 			{
 				onSuccess: () => {
-					queryClient.invalidateQueries(getAfterPartyDetailQueryOptions(gatheringId));
+					queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(gatheringId));
 					queryClient.invalidateQueries(getAfterPartyInvitedMembersQueryOptions(gatheringId));
 					setIsOpen(false);
 					onEditSuccess(selectedAttendance);

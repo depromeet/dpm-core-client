@@ -5,7 +5,7 @@ import { Loader2Icon } from 'lucide-react';
 import type { AfterPartyDetail } from '@dpm-core/api';
 import { CircleCheck, cn, toast } from '@dpm-core/shared';
 
-import type { AttendanceStatus } from '../_types/after-party-survey';
+import type { AttendanceStatus } from '../../_types/after-party-survey';
 import { AfterPartyEditBottomSheet } from './after-party-edit-bottom-sheet';
 import { AfterPartyInfo } from './after-party-info';
 import { AfterPartySurveyHeader } from './after-party-survey-header';
@@ -39,7 +39,7 @@ export const AfterPartySurveyView = ({
 
 			<AfterPartyInfo afterPartyDetail={afterPartyDetail} />
 
-			<div className="h-[8px] bg-gray-100" />
+			<div className="h-2 bg-gray-100" />
 
 			<section className="px-4 py-4">
 				<div className="flex items-center justify-between">
@@ -85,7 +85,7 @@ export const AfterPartySurveyView = ({
 				</div>
 			</section>
 
-			<div className="h-[8px] bg-gray-100" />
+			<div className="h-2 bg-gray-100" />
 
 			<Suspense
 				fallback={

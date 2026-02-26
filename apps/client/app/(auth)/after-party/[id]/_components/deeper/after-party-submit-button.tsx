@@ -16,8 +16,7 @@ import {
 
 import { submitAttendanceStatusMutationOptions } from '@/remotes/mutations/after-party';
 
-import type { AttendanceStatus } from '../_types/after-party-survey';
-import { toAttendanceResponse } from '../_types/after-party-survey';
+import { type AttendanceStatus, toAttendanceResponse } from '../../_types/after-party-survey';
 
 interface AfterPartySubmitButtonProps {
 	attendance: AttendanceStatus;
@@ -77,7 +76,7 @@ export const AfterPartySubmitButton = ({
 						<h3 className="font-semibold text-body1 text-label-normal">{afterPartyTitle}</h3>
 
 						<div className="flex items-center gap-4 rounded-lg border border-line-normal bg-background-subtle px-4 py-3">
-							<span className="block w-[70px] font-semibold text-body2 text-label-assistive">
+							<span className="block w-17.5 font-semibold text-body2 text-label-assistive">
 								회식
 							</span>
 							<div className="flex items-center gap-1">

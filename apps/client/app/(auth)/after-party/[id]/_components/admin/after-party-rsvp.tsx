@@ -215,13 +215,13 @@ export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
 						</DrawerContent>
 					</Drawer>
 				)}
-				{!isNotSubmitted && rsvpStatus === '참석' && (
+				{!isNotSubmitted && rsvpStatusProp && (
 					<div className="mt-3 flex items-center gap-0.5 rounded-lg bg-background-subtle px-5 py-3">
 						<CheckBlue />
 						<span className="font-semibold text-body2 text-label-subtle">참석</span>
 					</div>
 				)}
-				{!isNotSubmitted && rsvpStatus === '불참' && (
+				{!isNotSubmitted && !rsvpStatusProp && (
 					<div className="mt-3 flex items-center gap-x-0.5 rounded-lg bg-background-subtle px-5 py-3">
 						<XRed />
 						<p className="font-semibold text-body2 text-label-subtle">불참</p>
