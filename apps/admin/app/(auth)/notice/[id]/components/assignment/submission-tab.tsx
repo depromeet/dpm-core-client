@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
 	AssignmentSubmitStatus,
 	FilterDropdown,
@@ -20,6 +21,9 @@ import {
 	toast,
 } from '@dpm-core/shared';
 
+import { patchAssignmentStatusMutationOptions } from '@/remotes/mutations/announcement';
+import { getAnnouncementDetailQuery } from '@/remotes/queries/announcement';
+
 interface Member {
 	id: string;
 	name: string;
@@ -29,10 +33,23 @@ interface Member {
 }
 
 interface SubmissionStatusTabProps {
+	announcementId: number;
 	members: Member[];
 }
 
-export const SubmissionStatusTab = ({ members }: SubmissionStatusTabProps) => {
+export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatusTabProps) => {
+	const queryClient = useQueryClient();
+	const { mutate: patchAssignmentStatus } = useMutation(
+		patchAssignmentStatusMutationOptions(announcementId, {
+			onSuccess: () => {
+				queryClient.invalidateQueries(getAnnouncementDetailQuery(announcementId));
+			},
+			onError: () => {
+				toast.error('제출 상태 변경에 실패했어요.');
+			},
+		}),
+	);
+
 	const [activeTeamTab, setActiveTeamTab] = useState('all');
 	const [searchQuery, setSearchQuery] = useState('');
 	const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set());
@@ -101,14 +118,10 @@ export const SubmissionStatusTab = ({ members }: SubmissionStatusTabProps) => {
 	};
 
 	const handleStatusModalSave = () => {
-		// TODO: 제출 상태 변경 API 호출
-		const selectedMemberIds = Array.from(selectedMembers);
-		console.log('제출 상태 변경:', {
-			memberIds: selectedMemberIds,
-			status: selectedStatus,
+		patchAssignmentStatus({
+			submitStatus: selectedStatus.toUpperCase(),
+			memberIds: Array.from(selectedMembers).map(Number),
 		});
-
-		toast.light('제출 상태가 변경되었어요.');
 		setStatusModalOpen(false);
 	};
 

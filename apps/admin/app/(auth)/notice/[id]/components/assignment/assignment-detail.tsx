@@ -8,6 +8,7 @@ import { AssignmentDetailTab } from './detail-tab';
 import { SubmissionStatusTab } from './submission-tab';
 
 export const AssignmentDetail = ({
+	announcementId,
 	title,
 	date,
 	readCount,
@@ -122,7 +123,7 @@ export const AssignmentDetail = ({
 					onSendReminder={handleSendReminder}
 				/>
 			) : (
-				<SubmissionStatusTab members={members} />
+				<SubmissionStatusTab announcementId={announcementId} members={members} />
 			)}
 		</div>
 	);

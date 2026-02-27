@@ -1,9 +1,9 @@
 'use client';
 
-import { Suspense, use } from 'react';
 import { useRouter } from 'next/navigation';
+import { Suspense, use } from 'react';
 import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
-import { useSuspenseQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import type { Announcement, ApiResponse } from '@dpm-core/api';
 import { type Profile, SidebarInset, toast } from '@dpm-core/shared';
 
@@ -11,7 +11,10 @@ import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { NoticeDetailHeader } from '@/components/notice/notice-detail-header';
 import { formatISOStringToDate } from '@/lib/date';
-import { getAnnouncementDetailQuery, getAnnouncementListQuery } from '@/remotes/queries/announcement';
+import {
+	getAnnouncementDetailQuery,
+	getAnnouncementListQuery,
+} from '@/remotes/queries/announcement';
 
 import { AssignmentDetail } from './components/assignment/assignment-detail';
 import { NoticeContent } from './components/common/notice-content';
@@ -76,6 +79,7 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 
 			{isAssignment ? (
 				<AssignmentDetail
+					announcementId={announcementId}
 					title={detail.title}
 					date={formattedDate}
 					readCount={detail.markAsReadCount}
