@@ -35,10 +35,12 @@ function InputOTPGroup({ className, ...props }: React.ComponentProps<'div'>) {
 
 function InputOTPSlot({
 	index,
+	placeholderChar,
 	className,
 	...props
 }: React.ComponentProps<'div'> & {
 	index: number;
+	placeholderChar?: string;
 }) {
 	const inputOTPContext = React.useContext(OTPInputContext);
 	const { char, hasFakeCaret, isActive } = inputOTPContext?.slots[index] ?? {};
@@ -53,7 +55,7 @@ function InputOTPSlot({
 			)}
 			{...props}
 		>
-			{char}
+			{char ?? placeholderChar}
 			{(isActive || hasFakeCaret) && (
 				<div
 					className={cn(
