@@ -16,3 +16,15 @@ export interface AnnouncementDetail {
 	createdAt: string;
 	markAsReadCount: number;
 }
+
+export interface ReadMember {
+	memberId: number;
+	name: string;
+	teamId: number;
+	part: string;
+}
+
+export interface ReadMembersData {
+	readMembers: ReadMember[];
+	unreadMembers: ReadMember[];
+}

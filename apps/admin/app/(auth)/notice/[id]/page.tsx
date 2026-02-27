@@ -99,8 +99,7 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 					</div>
 
 					<ReadStatusSidebar
-						unreadMembers={[]}
-						readMembers={[]}
+						announcementId={announcementId}
 						onSendReminder={handleRemindSend}
 					/>
 				</div>

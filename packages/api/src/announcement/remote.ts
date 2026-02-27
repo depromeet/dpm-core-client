@@ -1,5 +1,5 @@
 import { http } from '../http';
-import type { Announcement, AnnouncementDetail } from './types';
+import type { Announcement, AnnouncementDetail, ReadMembersData } from './types';
 
 type AnnouncementListResponse = {
 	announcementCount: number;
@@ -24,6 +24,16 @@ export const announcement = {
 	 */
 	getDetail: async (announcementId: number) => {
 		return http.get<AnnouncementDetail>(`v1/announcements/${announcementId}`);
+	},
+
+	/**
+	 * 멤버들 공지/과제 읽음 여부 조회
+	 * 멤버 별로 공지/과제 읽음 여부를 조회합니다.
+	 * @param announcementId 공지/과제 ID
+	 * @returns 읽은/안 읽은 멤버 목록
+	 */
+	getReadMembers: async (announcementId: number) => {
+		return http.get<ReadMembersData>(`v1/announcements/${announcementId}/mark-as-read/members`);
 	},
 
 	/**

@@ -11,3 +11,9 @@ export const getAnnouncementDetailQuery = (announcementId: number) =>
 		queryKey: ['announcement-detail', announcementId],
 		queryFn: () => announcement.getDetail(announcementId),
 	});
+
+export const getAnnouncementReadMembersQuery = (announcementId: number) =>
+	queryOptions({
+		queryKey: ['announcement-read-members', announcementId],
+		queryFn: () => announcement.getReadMembers(announcementId),
+	});
