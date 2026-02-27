@@ -12,7 +12,10 @@ export const auth = {
 		setCookie(res.data.token, res.data.expirationTime);
 		return res;
 	},
-
+	login: async (params: { email: string; password: string }) => {
+		const res = await http.post('login/email', { json: params });
+		return res;
+	},
 	logout: async () => {
 		const res = await http.post('logout');
 		return res;

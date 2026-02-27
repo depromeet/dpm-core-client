@@ -3,7 +3,7 @@ import { BASE_URL, COOKIE_KEYS } from '@dpm-core/api';
 
 export async function POST(request: NextRequest) {
 	try {
-		const formData = await request.formData();
+		const formData = (await request.formData()) as unknown as globalThis.FormData;
 		const code = formData.get('code')?.toString();
 		const appleError = formData.get('error')?.toString();
 

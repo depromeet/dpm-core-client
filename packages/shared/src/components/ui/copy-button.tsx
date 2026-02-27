@@ -19,7 +19,7 @@ async function copyToClipboardWithMeta(value: string) {
 
 function CopyButton({ value, className, src, variant = 'none', ...props }: CopyButtonProps) {
 	const [hasCopied, setHasCopied] = React.useState(false);
-	const timeoutIdRef = React.useRef<NodeJS.Timeout | null>(null);
+	const timeoutIdRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const handleDebounceCopiedState = () => {
 		if (timeoutIdRef.current) {

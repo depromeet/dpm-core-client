@@ -50,6 +50,9 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Type Check
+        run: pnpm check-types
+
       - name: Pull Vercel Environment
         run: pnpm dlx vercel@latest pull --yes --environment=${{ inputs.stage }} --token=$VERCEL_TOKEN
 

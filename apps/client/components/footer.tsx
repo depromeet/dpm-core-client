@@ -9,7 +9,7 @@ const Footer = () => {
 			<TextLogo className="text-gray-0" />
 			<div className="my-[18px] flex items-center gap-x-2">
 				<a
-					href="https://depromeet.com/privacy"
+					href="https://depromeet.notion.site/24645b4338b380a59fd3d82fad44c5fd"
 					target="_blank"
 					className="font-semibold text-caption1 text-gray-400 underline"
 					rel="noopener"
@@ -17,7 +17,7 @@ const Footer = () => {
 					개인정보 처리방침
 				</a>
 				<a
-					href="https://depromeet.com/terms"
+					href="https://depromeet.notion.site/24645b4338b38010b874e707c7d94e3e"
 					target="_blank"
 					className="font-semibold text-caption1 text-gray-400 underline"
 					rel="noopener"
