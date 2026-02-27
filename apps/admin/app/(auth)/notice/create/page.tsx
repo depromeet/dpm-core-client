@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { CalendarIcon } from 'lucide-react';
@@ -25,6 +24,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 	Switch,
+	TempSaveModal,
 	ToggleGroup,
 	ToggleGroupItem,
 } from '@dpm-core/shared';
@@ -37,81 +37,82 @@ import { formatDateWithDay } from '@/lib/date';
 import { TiptapEditorContainer } from './_components/TiptapEditorContainer';
 
 const CATEGORY_OPTIONS = [
-	{ value: 'required', label: '필수' },
-	{ value: 'assignment', label: '과제' },
-	{ value: 'other', label: '기타' },
+	{ value: 'required', label: '필수 공지' },
+	{ value: 'assignment', label: '과제 공지' },
+	{ value: 'other', label: '기타 공지' },
+] as const;
+
+const ASSIGNMENT_TYPE_OPTIONS = [
+	{ value: 'team', label: '팀 과제' },
+	{ value: 'individual', label: '개인 과제' },
 ] as const;
 
 export default function CreateNoticePage() {
-	const router = useRouter();
-	const { form, handleSubmit, handleTemporarySave } = useNoticeForm();
+	const { form, handleSubmit, handleTemporarySave, isSubmitPending } = useNoticeForm();
 	const [scheduledDateOpen, setScheduledDateOpen] = useState(false);
+	const [submissionStartDateOpen, setSubmissionStartDateOpen] = useState(false);
+	const [submissionEndDateOpen, setSubmissionEndDateOpen] = useState(false);
+	const [tempSaveModalOpen, setTempSaveModalOpen] = useState(false);
 
 	// form 값 감시
+	const category = form.watch('category');
 	const title = form.watch('title');
 	const content = form.watch('content');
 	const isScheduled = form.watch('isScheduled');
 	const sendNotification = form.watch('sendNotification');
+	const isAssignment = category === 'assignment';
 
 	// 입력 내용이 하나라도 있으면 페이지 이탈 방지 활성화
-	// category는 기본값 'required'이므로 무시
+	const submissionLink = form.watch('submissionLink');
 	const hasChanges =
-		title.trim() !== '' || content.trim() !== '' || isScheduled || sendNotification;
+		title.trim() !== '' ||
+		content.trim() !== '' ||
+		isScheduled ||
+		sendNotification ||
+		(isAssignment && !!submissionLink?.trim());
 
 	usePreventPageExit(hasChanges);
 
 	return (
 		<AppLayout className="bg-background-normal">
 			{/* 상단 헤더 */}
-			<header className="sticky top-0 z-10 border-line-normal border-b bg-background-normal">
+			<header className="sticky top-0 z-20 border-line-normal border-b bg-background-normal">
 				<div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4 py-3 md:px-10 md:py-4">
-					<Link
-						href="/notice"
-						className="flex items-center gap-2"
-						onClick={(e) => {
-							if (hasChanges) {
-								if (!window.confirm('작성 중인 내용이 있습니다. 정말 나가시겠습니까?')) {
-									e.preventDefault();
-								}
-							}
-						}}
-					>
+					<Link href="/notice" className="flex items-center gap-2">
 						<ChevronLeft className="text-icon-noraml" />
 					</Link>
 					<div className="flex items-center gap-4">
-						<Button
-							variant="assistive"
-							className="h-12"
-							onClick={() => {
-								const formData = form.getValues();
-								const params = new URLSearchParams({
-									category: formData.category,
-									title: formData.title,
-									content: formData.content,
-									isScheduled: String(formData.isScheduled),
-									sendNotification: String(formData.sendNotification),
-								});
-								if (formData.isScheduled && formData.scheduledDate != null) {
-									params.set('scheduledDate', formData.scheduledDate.toISOString());
-									params.set('scheduledTime', formData.scheduledTime ?? '0000');
-								}
-								router.push(`/notice/create/preview?${params.toString()}`);
-							}}
-						>
-							미리보기
-						</Button>
-						<Button variant="assistive" className="h-12" onClick={handleTemporarySave}>
+						{/* TODO: 미리보기 버튼 */}
+						<Button variant="assistive" className="h-12" onClick={() => setTempSaveModalOpen(true)}>
 							임시저장
 						</Button>
-						<Button variant="secondary" className="h-12" onClick={form.handleSubmit(handleSubmit)}>
+						<Button
+							variant="secondary"
+							className="h-12"
+							disabled={isSubmitPending}
+							onClick={form.handleSubmit(handleSubmit)}
+						>
 							등록하기
 						</Button>
 					</div>
 				</div>
 			</header>
 
+			<TempSaveModal
+				open={tempSaveModalOpen}
+				onOpenChange={setTempSaveModalOpen}
+				onCancel={() => setTempSaveModalOpen(false)}
+				onSave={() => handleTemporarySave()}
+			/>
+
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(handleSubmit)}>
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						if (isSubmitPending) return;
+						form.handleSubmit(handleSubmit)(e);
+					}}
+				>
 					<Section className="mx-auto w-full max-w-[800px] py-8">
 						<div className="flex flex-col gap-8">
 							{/* 카테고리 */}
@@ -134,7 +135,7 @@ export default function CreateNoticePage() {
 													<ToggleGroupItem
 														key={value}
 														value={value}
-														className="rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
+														className="w-fit flex-none cursor-pointer rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
 													>
 														{label}
 													</ToggleGroupItem>
@@ -145,6 +146,39 @@ export default function CreateNoticePage() {
 									</FormItem>
 								)}
 							/>
+
+							{isAssignment && (
+								<FormField
+									control={form.control}
+									name="assignmentType"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel className="text-body1">과제 유형</FormLabel>
+											<FormControl>
+												<ToggleGroup
+													type="single"
+													value={field.value ?? 'team'}
+													onValueChange={(value: string) => {
+														if (value) field.onChange(value);
+													}}
+													className="flex gap-2"
+												>
+													{ASSIGNMENT_TYPE_OPTIONS.map(({ value, label }) => (
+														<ToggleGroupItem
+															key={value}
+															value={value}
+															className="w-fit flex-none cursor-pointer rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
+														>
+															{label}
+														</ToggleGroupItem>
+													))}
+												</ToggleGroup>
+											</FormControl>
+											<FormMessage className="text-red-400" />
+										</FormItem>
+									)}
+								/>
+							)}
 
 							{/* 공지 제목 */}
 							<FormField
@@ -179,6 +213,294 @@ export default function CreateNoticePage() {
 									</FormItem>
 								)}
 							/>
+
+							{isAssignment && (
+								<FormField
+									control={form.control}
+									name="submissionLink"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel className="text-body1">
+												과제 제출 링크 <span className="text-label-assistive">(선택)</span>
+											</FormLabel>
+											<FormControl>
+												<Input
+													placeholder="ex. https://core.depromeet.com"
+													variant="line"
+													type="url"
+													{...field}
+												/>
+											</FormControl>
+											<FormMessage className="text-red-400" />
+										</FormItem>
+									)}
+								/>
+							)}
+
+							{isAssignment && (
+								<div className="flex flex-col gap-2">
+									<span className="font-semibold text-body1 text-label-subtle">제출 기한</span>
+									{/* 제출 시작 (부터) */}
+									<div className="flex items-start gap-2">
+										<FormField
+											control={form.control}
+											name="submissionStartDate"
+											render={({ field }) => {
+												const submissionDeadlineError = form.formState.errors.submissionStartDate;
+												return (
+													<FormItem className="flex-1">
+														<FormLabel className="sr-only">제출 시작 날짜</FormLabel>
+														<Popover
+															open={submissionStartDateOpen}
+															onOpenChange={setSubmissionStartDateOpen}
+														>
+															<PopoverTrigger asChild>
+																<FormControl>
+																	<Button
+																		variant="none"
+																		type="button"
+																		className={cn(
+																			'h-12 w-full justify-between border bg-background-normal p-4 font-medium text-body2 aria-invalid:border-red-400',
+																			submissionDeadlineError
+																				? 'border-red-400'
+																				: 'border-line-normal',
+																		)}
+																	>
+																		{field.value ? (
+																			formatDateWithDay(field.value)
+																		) : (
+																			<span className="text-label-assistive">
+																				{formatDateWithDay(new Date())}
+																			</span>
+																		)}
+																		<CalendarIcon size={20} className="text-icon-noraml" />
+																	</Button>
+																</FormControl>
+															</PopoverTrigger>
+															<PopoverContent
+																className="w-auto overflow-hidden border-line-subtle bg-background-normal p-0 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
+																align="start"
+															>
+																<Calendar
+																	className="px-5 py-3.5"
+																	mode="single"
+																	formatters={{
+																		formatCaption: (date) =>
+																			date.toLocaleDateString('ko-KR', { month: 'long' }),
+																	}}
+																	selected={field.value}
+																	onSelect={(date) => {
+																		field.onChange(date);
+																		setSubmissionStartDateOpen(false);
+																	}}
+																	disabled={(date) => {
+																		const today = new Date();
+																		today.setHours(0, 0, 0, 0);
+																		const d = new Date(date);
+																		d.setHours(0, 0, 0, 0);
+																		return d < today;
+																	}}
+																/>
+															</PopoverContent>
+														</Popover>
+													</FormItem>
+												);
+											}}
+										/>
+										<FormField
+											control={form.control}
+											name="submissionStartTime"
+											render={({ field }) => {
+												const submissionDeadlineError = form.formState.errors.submissionStartDate;
+												return (
+													<FormItem className="flex-1">
+														<FormLabel className="sr-only">제출 시작 시간</FormLabel>
+														<FormControl>
+															<InputOTP
+																pattern={REGEXP_ONLY_DIGITS}
+																containerClassName={cn(
+																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400',
+																	field.value
+																		? '[&_[data-slot=input-otp-slot]]:text-label-normal'
+																		: '[&_[data-slot=input-otp-slot]]:text-label-assistive',
+																	submissionDeadlineError ? 'border-red-400' : 'border-line-normal',
+																)}
+																maxLength={4}
+																placeholder="0000"
+																onKeyDown={(e) => {
+																	if (e.key === 'Tab' && !e.shiftKey) {
+																		e.preventDefault();
+																		form.setFocus('submissionEndTime');
+																	}
+																}}
+																{...field}
+															>
+																<InputOTPGroup className="gap-0">
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2"
+																		index={0}
+																		placeholderChar="0"
+																	/>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2"
+																		index={1}
+																		placeholderChar="0"
+																	/>
+																	<p className="mx-2 font-medium text-body2 text-label-assistive">
+																		시
+																	</p>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2"
+																		index={2}
+																		placeholderChar="0"
+																	/>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2"
+																		index={3}
+																		placeholderChar="0"
+																	/>
+																	<p className="ml-2 font-medium text-body2 text-label-assistive">
+																		분 부터
+																	</p>
+																</InputOTPGroup>
+															</InputOTP>
+														</FormControl>
+													</FormItem>
+												);
+											}}
+										/>
+									</div>
+									{/* 제출 마감 (까지) - 에러 문구는 이 행(submissionEndTime) 하단에 표시 */}
+									<div className="flex items-start gap-2">
+										<FormField
+											control={form.control}
+											name="submissionEndDate"
+											render={({ field }) => {
+												const submissionDeadlineError = form.formState.errors.submissionStartDate;
+												return (
+													<FormItem className="flex-1">
+														<FormLabel className="sr-only">제출 마감 날짜</FormLabel>
+														<Popover
+															open={submissionEndDateOpen}
+															onOpenChange={setSubmissionEndDateOpen}
+														>
+															<PopoverTrigger asChild>
+																<FormControl>
+																	<Button
+																		variant="none"
+																		type="button"
+																		className={cn(
+																			'h-12 w-full justify-between border bg-background-normal p-4 font-medium text-body2 aria-invalid:border-red-400',
+																			submissionDeadlineError
+																				? 'border-red-400'
+																				: 'border-line-normal',
+																		)}
+																	>
+																		{field.value ? (
+																			formatDateWithDay(field.value)
+																		) : (
+																			<span className="text-label-assistive">
+																				{formatDateWithDay(new Date())}
+																			</span>
+																		)}
+																		<CalendarIcon size={20} className="text-icon-noraml" />
+																	</Button>
+																</FormControl>
+															</PopoverTrigger>
+															<PopoverContent
+																className="w-auto overflow-hidden border-line-subtle bg-background-normal p-0 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
+																align="start"
+															>
+																<Calendar
+																	className="px-5 py-3.5"
+																	mode="single"
+																	formatters={{
+																		formatCaption: (date) =>
+																			date.toLocaleDateString('ko-KR', { month: 'long' }),
+																	}}
+																	selected={field.value}
+																	onSelect={(date) => {
+																		field.onChange(date);
+																		setSubmissionEndDateOpen(false);
+																	}}
+																	disabled={(date) => {
+																		const today = new Date();
+																		today.setHours(0, 0, 0, 0);
+																		const d = new Date(date);
+																		d.setHours(0, 0, 0, 0);
+																		return d < today;
+																	}}
+																/>
+															</PopoverContent>
+														</Popover>
+														{form.formState.errors.submissionStartDate && (
+															<p className="font-medium text-caption1 text-red-400" role="alert">
+																{form.formState.errors.submissionStartDate.message}
+															</p>
+														)}
+													</FormItem>
+												);
+											}}
+										/>
+										<FormField
+											control={form.control}
+											name="submissionEndTime"
+											render={({ field }) => {
+												const submissionDeadlineError = form.formState.errors.submissionStartDate;
+												return (
+													<FormItem className="flex-1">
+														<FormLabel className="sr-only">제출 마감 시간</FormLabel>
+														<FormControl>
+															<InputOTP
+																pattern={REGEXP_ONLY_DIGITS}
+																containerClassName={cn(
+																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400',
+																	field.value
+																		? '[&_[data-slot=input-otp-slot]]:text-label-normal'
+																		: '[&_[data-slot=input-otp-slot]]:text-label-assistive',
+																	submissionDeadlineError ? 'border-red-400' : 'border-line-normal',
+																)}
+																maxLength={4}
+																placeholder="2359"
+																{...field}
+															>
+																<InputOTPGroup className="gap-0">
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2"
+																		index={0}
+																		placeholderChar="2"
+																	/>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2"
+																		index={1}
+																		placeholderChar="3"
+																	/>
+																	<p className="mx-2 font-medium text-body2 text-label-assistive">
+																		시
+																	</p>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2"
+																		index={2}
+																		placeholderChar="5"
+																	/>
+																	<InputOTPSlot
+																		className="size-2.5 bg-inherit font-medium text-body2"
+																		index={3}
+																		placeholderChar="9"
+																	/>
+																	<p className="ml-2 font-medium text-body2 text-label-assistive">
+																		분 까지
+																	</p>
+																</InputOTPGroup>
+															</InputOTP>
+														</FormControl>
+													</FormItem>
+												);
+											}}
+										/>
+									</div>
+								</div>
+							)}
 
 							{/* 공지 예약하기 */}
 							<div className="flex flex-col gap-2">
@@ -267,7 +589,10 @@ export default function CreateNoticePage() {
 															<InputOTP
 																pattern={REGEXP_ONLY_DIGITS}
 																containerClassName={cn(
-																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400 [&_[data-slot=input-otp-slot]]:text-label-assistive [&_[data-slot=input-otp-slot]:not(:empty)]:text-label-normal',
+																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400',
+																	field.value
+																		? '[&_[data-slot=input-otp-slot]]:text-label-normal'
+																		: '[&_[data-slot=input-otp-slot]]:text-label-assistive',
 																	scheduleError ? 'border-red-400' : 'border-line-normal',
 																)}
 																maxLength={4}
@@ -276,23 +601,27 @@ export default function CreateNoticePage() {
 															>
 																<InputOTPGroup className="gap-0">
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={0}
+																		placeholderChar="0"
 																	/>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={1}
+																		placeholderChar="0"
 																	/>
 																	<p className="mx-2.5 font-medium text-body2 text-label-assistive">
 																		시
 																	</p>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={2}
+																		placeholderChar="0"
 																	/>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+																		className="size-2.5 bg-inherit font-medium text-body2"
 																		index={3}
+																		placeholderChar="0"
 																	/>
 																	<p className="ml-2.5 font-medium text-body2 text-label-assistive">
 																		분
