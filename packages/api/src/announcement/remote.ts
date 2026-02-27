@@ -1,5 +1,5 @@
 import { http } from '../http';
-import type { Announcement } from './types';
+import type { Announcement, AnnouncementDetail } from './types';
 
 type AnnouncementListResponse = {
 	announcementCount: number;
@@ -14,5 +14,15 @@ export const announcement = {
 	 */
 	getList: async () => {
 		return http.get<AnnouncementListResponse>('v1/announcements');
+	},
+
+	/**
+	 * 공지/과제 상세 조회
+	 * 공지/과제 상세 내용을 조회합니다.
+	 * @param announcementId 공지/과제 ID
+	 * @returns 공지/과제 상세
+	 */
+	getDetail: async (announcementId: number) => {
+		return http.get<AnnouncementDetail>(`v1/announcements/${announcementId}`);
 	},
 };

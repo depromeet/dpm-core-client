@@ -9,3 +9,10 @@ export interface Announcement {
 	createdAt: string;
 	readMemberCount: number;
 }
+
+export interface AnnouncementDetail {
+	title: string;
+	content: string;
+	createdAt: string;
+	markAsReadCount: number;
+}

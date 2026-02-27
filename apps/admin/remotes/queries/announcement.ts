@@ -5,3 +5,9 @@ export const getAnnouncementListQuery = queryOptions({
 	queryKey: ['announcement-list'],
 	queryFn: announcement.getList,
 });
+
+export const getAnnouncementDetailQuery = (announcementId: number) =>
+	queryOptions({
+		queryKey: ['announcement-detail', announcementId],
+		queryFn: () => announcement.getDetail(announcementId),
+	});
