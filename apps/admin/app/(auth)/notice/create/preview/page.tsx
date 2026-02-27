@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { AppLayout, Button, ChevronLeft } from '@dpm-core/shared';
 
 import { Section } from '@/components/section';
+import { formatDateWithDay } from '@/lib/date';
 
 export default function NoticePreviewPage() {
 	const searchParams = useSearchParams();
@@ -14,7 +15,14 @@ export default function NoticePreviewPage() {
 	const title = searchParams.get('title') || '';
 	const content = searchParams.get('content') || '';
 	const isScheduled = searchParams.get('isScheduled') === 'true';
+	const scheduledDate = searchParams.get('scheduledDate') ?? null;
+	const scheduledTime = searchParams.get('scheduledTime') ?? '0000';
 	const sendNotification = searchParams.get('sendNotification') === 'true';
+
+	const scheduledAtLabel =
+		scheduledDate && scheduledTime
+			? `${formatDateWithDay(scheduledDate)} ${scheduledTime.slice(0, 2)}시 ${scheduledTime.slice(2)}분 부터`
+			: null;
 
 	return (
 		<AppLayout className="bg-background-normal">
@@ -74,11 +82,16 @@ export default function NoticePreviewPage() {
 					</div>
 
 					{/* 공지 예약하기 */}
-					<div className="flex items-center justify-between">
-						<span className="font-semibold text-body1 text-label-subtle">공지 예약하기</span>
-						<span className="font-medium text-body2 text-label-normal">
-							{isScheduled ? '예약됨' : '예약 안 함'}
-						</span>
+					<div className="flex flex-col gap-2">
+						<div className="flex items-center justify-between">
+							<span className="font-semibold text-body1 text-label-subtle">공지 예약하기</span>
+							<span className="font-medium text-body2 text-label-normal">
+								{isScheduled ? '예약됨' : '예약 안 함'}
+							</span>
+						</div>
+						{isScheduled && scheduledAtLabel && (
+							<p className="font-medium text-body2 text-label-normal">{scheduledAtLabel}</p>
+						)}
 					</div>
 
 					{/* 등록알림 보내기 */}
