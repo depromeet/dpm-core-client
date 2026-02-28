@@ -10,12 +10,15 @@
 		"cssVariables": true,
 		"prefix": ""
 	},
+	"iconLibrary": "lucide",
 	"aliases": {
 		"components": "@dpm-core/shared/components",
-		"ui": "@dpm-core/shared/components/ui",
 		"utils": "@dpm-core/shared/utils",
-		"hooks": "@dpm-core/shared/hooks",
-		"lib": "@dpm-core/shared/"
+		"ui": "@dpm-core/shared/components/ui",
+		"lib": "@dpm-core/shared/",
+		"hooks": "@dpm-core/shared/hooks"
 	},
-	"iconLibrary": "lucide"
+	"registries": {
+		"@ncdai": "https://chanhdai.com/r/{name}.json"
+	}
 }

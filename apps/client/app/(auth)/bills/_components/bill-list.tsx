@@ -2,6 +2,7 @@
 
 import { Suspense } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
+import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createPortal } from 'react-dom';
 import { Button, useAppShell } from '@dpm-core/shared';
@@ -60,7 +61,7 @@ const BillListContainer = () => {
 
 const BillLsit = ErrorBoundary.with(
 	{
-		fallback: (props) => <ErrorBox onReset={() => props.reset()} />,
+		fallback: ({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />,
 	},
 	() => (
 		<Suspense fallback={<LoadingBox />}>

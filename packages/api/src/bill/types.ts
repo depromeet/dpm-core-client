@@ -4,7 +4,7 @@ export interface InviteAuthority {
 	authorityMemberCount: number;
 }
 
-export interface Gathering {
+export interface BillAfterParty {
 	gatheringId: number;
 	title: string;
 	description: string;
@@ -37,10 +37,10 @@ export interface Bill {
 	invitationConfirmedCount: number;
 	invitationCheckedMemberCount: number;
 	inviteAuthorities: InviteAuthority[];
-	gatherings: Gathering[];
+	gatherings: BillAfterParty[];
 }
 
-export interface GatheringJoin {
+export interface BillAfterPartyJoin {
 	gatheringId: number;
 	isJoined: boolean;
 }

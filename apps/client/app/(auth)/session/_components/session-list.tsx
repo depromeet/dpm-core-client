@@ -2,6 +2,7 @@
 
 import { Suspense } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
+import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
 import type { Session } from '@dpm-core/api';
@@ -52,7 +53,7 @@ function SessionItem({ session }: { session: Session }) {
 
 const SessionList = ErrorBoundary.with(
 	{
-		fallback: (props) => <ErrorBox onReset={() => props.reset()} />,
+		fallback: ({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />,
 	},
 	() => (
 		<Suspense fallback={<LoadingBox />}>

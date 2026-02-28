@@ -1,3 +1,4 @@
+export * from './after-party';
 export * from './announcement';
 export * from './attendance';
 export * from './auth';

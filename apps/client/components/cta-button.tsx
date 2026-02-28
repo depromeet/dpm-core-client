@@ -30,7 +30,7 @@ const CtaButton = ({ text, isLoading, onKeyboardStateChange, ...props }: CtaButt
 				maxWidth: ref.current.clientWidth,
 			}}
 			className={cn('rounded-none', props.className)}
-			onClick={(event) => {
+			onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
 				if (isLoading) {
 					event.preventDefault();
 					return;
