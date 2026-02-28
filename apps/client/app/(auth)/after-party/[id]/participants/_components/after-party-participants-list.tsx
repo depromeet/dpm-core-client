@@ -27,7 +27,10 @@ export const AfterPartyParticipantsList = (props: AfterPartyParticipantsListProp
 
 	const filteredList = afterPartyParticipants.filter((member) => {
 		const matchStatus =
-			afterPartyParticipantsStatus === 'NO' ? !member.isRsvpGoing : member.isRsvpGoing;
+			// isRsvpGoing가 null인 경우 미제출, 아닌 경우 제출, isRsvpGoing가 true인 경우 참석, false인 경우 불참
+			afterPartyParticipantsStatus === 'NO'
+				? member.isRsvpGoing === null
+				: member.isRsvpGoing !== null;
 		const matchTeam = afterPartyParticipantsIsMyTeam ? member.team === user?.teamNumber : true;
 		return matchStatus && matchTeam;
 	});
