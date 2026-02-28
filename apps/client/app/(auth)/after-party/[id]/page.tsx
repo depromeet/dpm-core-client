@@ -11,7 +11,7 @@ import { DeeperAfterPartyDetail } from './_components/deeper/deeper-after-party-
 export default function AfterPartyDetailPage() {
 	const { user } = useAuth();
 
-	return !user?.isAdmin ? (
+	return user?.isAdmin ? (
 		<AppLayout className="bg-background-normal">
 			<AppHeader title="회식 상세" className="mb-0" />
 			<AdminAfterPartyDetail />
