@@ -23,6 +23,7 @@ import {
 } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
+import { useAuth } from '@/providers/auth-provider';
 import { updateAfterPartyOptions } from '@/remotes/mutations/after-party';
 import { getAfterPartyByIdQueryOptions } from '@/remotes/queries/after-party';
 
@@ -150,14 +151,15 @@ interface AfterPartyUpdateFormProps {
 }
 
 const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
+	const { user } = useAuth();
 	const router = useRouter();
 	const queryClient = useQueryClient();
 	const {
 		data: { data: detail },
 	} = useSuspenseQuery(getAfterPartyByIdQueryOptions(gatheringId));
 
-	// 소유자만 수정 폼 접근 가능 (실제 수정 가능 여부는 API에서 검증)
-	const canEdit = detail.isOwner;
+	// 어드민만 수정 폼 접근 가능 (실제 수정 가능 여부는 API에서 검증)
+	const canEdit = user?.isAdmin;
 
 	// API 원본 문자열 보존 (타임존 변환 없이 그대로 전송하기 위함)
 	const originalScheduledAt = detail.scheduledAt;
