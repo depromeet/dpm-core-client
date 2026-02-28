@@ -19,6 +19,9 @@
 				"noUnusedFunctionParameters": "warn",
 				"useUniqueElementIds": "off"
 			},
+			"security": {
+				"noDangerouslySetInnerHtml": "off"
+			},
 			"nursery": {
 				"noImportCycles": "error",
 				"useSortedClasses": {

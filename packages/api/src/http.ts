@@ -11,10 +11,9 @@ export const BASE_URL = getApiBaseUrl();
 
 class Http {
 	private instance: KyInstance;
-	private apiUrl: URL = new URL(BASE_URL ?? '');
 	constructor() {
 		const instance = ky.extend({
-			prefixUrl: this.apiUrl.toString(),
+			prefixUrl: BASE_URL,
 			credentials: 'include',
 			retry: 0,
 			timeout: 10000,
@@ -38,8 +37,8 @@ class Http {
 						return response;
 					},
 					createRefreshPlugin({
-						whitelist: ['/v1/reissue'],
-						refreshUrl: `${this.apiUrl.toString()}/v1/reissue`,
+						whitelist: ['/v1/reissue', '/login/email'],
+						refreshUrl: `${BASE_URL}/v1/reissue`,
 					}),
 				],
 				beforeError: [

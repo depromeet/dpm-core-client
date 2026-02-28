@@ -14,3 +14,30 @@
 		@apply bg-background-strong;
 	}
 }
+
+/* Tiptap Editor 링크 hover 스타일 (기본 스타일은 inline CSS로 처리) */
+.ProseMirror a:hover,
+.ProseMirror .link:hover {
+	color: var(--color-primary-strong);
+}
+
+/* Tiptap Editor 리스트 스타일 */
+/* Unordered List는 list-style-type: revert로 브라우저 기본값 사용 (disc → circle → square 자동 처리) */
+/* Ordered List는 브라우저가 자동으로 변경하지 않으므로 CSS 선택자로 처리 */
+
+/* Ordered List - 첫 번째 레벨: 1, 2, 3... */
+.ProseMirror > ol {
+	list-style-type: decimal !important;
+}
+
+/* Ordered List - 두 번째 레벨: a, b, c... */
+.ProseMirror ol ol,
+.ProseMirror ul ol {
+	list-style-type: lower-alpha !important;
+}
+
+/* Ordered List - 세 번째 레벨: i, ii, iii... */
+.ProseMirror ol ol ol,
+.ProseMirror ul ol ol {
+	list-style-type: lower-roman !important;
+}
