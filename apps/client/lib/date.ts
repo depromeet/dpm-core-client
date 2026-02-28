@@ -35,3 +35,10 @@ export const formatISOStringToCompactDateString = (isoString: string) => {
 export const formatISOStringHHMM = (isoString: string) => {
 	return dayjs(isoString).format('HH:mm');
 };
+
+export const formatISOStringToDate = (isoString: string) => {
+	if (!isoString) {
+		return '-';
+	}
+	return dayjs(isoString).format('YYYY년 MM월 DD일 (ddd)');
+};

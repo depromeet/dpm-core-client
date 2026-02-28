@@ -2,6 +2,7 @@
 
 import { Suspense, useMemo } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
+import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { ErrorBox } from '@/components/error-box';
@@ -82,7 +83,9 @@ const AttendanceMemberContainer = () => {
 
 export const AttendanceMember = () => {
 	return (
-		<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
+		<ErrorBoundary
+			fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
+		>
 			<Suspense>
 				<AttendanceMemberContainer />
 			</Suspense>

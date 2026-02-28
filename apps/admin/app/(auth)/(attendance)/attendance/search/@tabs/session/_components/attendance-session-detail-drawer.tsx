@@ -2,6 +2,7 @@
 
 import { Suspense } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
+import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Sheet, SheetContent } from '@dpm-core/shared';
 
@@ -80,7 +81,9 @@ export const AttendanceSessionDetailDrawer = ({
 		<Sheet open={open} onOpenChange={onOpenChange}>
 			<SheetContent side="right" className="w-full gap-0 border-none p-0 sm:max-w-[600px]">
 				<AttendanceDetailHeader title="출석 상세" />
-				<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
+				<ErrorBoundary
+					fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
+				>
 					<Suspense fallback={<LoadingBox />}>
 						<_AttendanceSessionDetailContent memberId={memberId} sessionId={sessionId} />
 					</Suspense>

@@ -29,7 +29,7 @@ export default function RootLayout({
 	return (
 		<html lang="ko">
 			<head>
-				<Script src={getGAScriptSrc()} />
+				<Script {...({ src: getGAScriptSrc() } as any)} />
 				<Script id="google-analytics">{getGAConfigScript()}</Script>
 				<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />

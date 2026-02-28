@@ -23,7 +23,7 @@ const AppHeader = ({
 	const leftIcon = leftIconProp ?? (
 		<Link
 			href={backHref ?? '#'}
-			onClick={(event) => {
+			onClick={(event: React.MouseEvent<HTMLAnchorElement>) => {
 				if (backHref) return;
 				event.preventDefault();
 				router.back();
