@@ -4,10 +4,9 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import Link from 'next/link';
 import { Fragment, Suspense } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
+import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
-import type { AfterParty } from '@dpm-core/api';
 import { cn } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
@@ -182,7 +181,7 @@ const AfterPartyItem = ({
 						)}
 					</div>
 				</div>
-				<Link href={`/after-party/${gatheringId}/update`} className="block space-y-[8px]">
+				<Link href={`/after-party/${gatheringId}`} className="block space-y-[8px]">
 					<p className="font-semibold text-body1 text-gray-800">{title}</p>
 					<p className="text-ellipsis font-medium text-body2 text-gray-600">{description}</p>
 				</Link>
@@ -254,7 +253,7 @@ const AfterPartyListContainer = () => {
 
 const AfterPartyList = ErrorBoundary.with(
 	{
-		fallback: (props) => <ErrorBox onReset={() => props.reset()} />,
+		fallback: (props: ErrorBoundaryFallbackProps) => <ErrorBox onReset={() => props.reset()} />,
 	},
 	() => (
 		<Suspense fallback={<LoadingBox />}>
