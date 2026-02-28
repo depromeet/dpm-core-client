@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Fragment, Suspense } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
+import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import type { ApiResponse, AttendanceReponse } from '@dpm-core/api';
 import { Button } from '@dpm-core/shared';
@@ -59,7 +60,9 @@ const AttendanceMeContainer = () => {
 
 export const AttendanceMe = () => {
 	return (
-		<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
+		<ErrorBoundary
+			fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
+		>
 			<Suspense fallback={<LoadingBox />}>
 				<AttendanceMeContainer />
 			</Suspense>

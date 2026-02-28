@@ -3,10 +3,11 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import Link from 'next/link';
-import { Fragment } from 'react';
-import { ErrorBoundary, Suspense } from '@suspensive/react';
+import { Fragment, Suspense } from 'react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
+import type { AfterParty } from '@dpm-core/api';
 import { cn } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';

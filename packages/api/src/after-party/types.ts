@@ -1,3 +1,5 @@
+import type { Part } from '../member';
+
 /**
  * 회식 API datetime 형식
  * - 응답: UTC 기준 "YYYY-MM-DDTHH:mm:ss.SSS" (Z 접미사 없음)
@@ -51,7 +53,7 @@ export interface AfterPartyDetail {
 	authorMemberId: number;
 	createdAt: string;
 	isClosed: boolean;
-	inviteTags?: {
+	inviteTags: {
 		inviteTags: InviteTagItem[];
 	};
 }
@@ -92,4 +94,22 @@ export interface UpdateAfterPartyRequest {
 
 export interface GetInviteTagsResponse {
 	inviteTags: InviteTagItem[];
+}
+
+/**
+ * 회식 참여 여부 제출 요청
+ */
+export interface SubmitAttendanceStatusRequest {
+	isRsvpGoing: boolean;
+}
+
+/**
+ * 회식 초대자 목록 멤버
+ */
+export interface AfterPartyInvitedMember {
+	memberId: number;
+	name: string;
+	part: Part;
+	team: number;
+	isRsvpGoing: boolean;
 }

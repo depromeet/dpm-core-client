@@ -2,6 +2,7 @@
 
 import { Suspense } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
+import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
@@ -67,7 +68,9 @@ const AttendanceSessionDetailContainer = ({ sessionId }: AttendanceSessionDetail
 
 export const AttendanceSessionDetail = ({ sessionId }: AttendanceSessionDetailContainerProps) => {
 	return (
-		<ErrorBoundary fallback={(props) => <ErrorBox onReset={() => props.reset()} />}>
+		<ErrorBoundary
+			fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
+		>
 			<Suspense fallback={<LoadingBox />}>
 				<AttendanceSessionDetailContainer sessionId={Number(sessionId)} />
 			</Suspense>
