@@ -1,5 +1,11 @@
-import { Stack } from 'expo-router';
+import { SplashScreen, Stack } from 'expo-router';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-	return <Stack />;
+	return (
+		<Stack screenOptions={{ headerShown: false }}>
+			<Stack.Screen name="index" />
+		</Stack>
+	);
 }

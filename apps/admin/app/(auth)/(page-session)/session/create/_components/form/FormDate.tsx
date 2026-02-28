@@ -21,7 +21,7 @@ import {
 	PopoverTrigger,
 } from '@dpm-core/shared';
 
-import { formatFullDate } from '@/lib/date';
+import { formatDateWithDay } from '@/lib/date';
 
 export const FormDate = () => {
 	const [open, setOpen] = useState(false);
@@ -44,7 +44,7 @@ export const FormDate = () => {
 										id="date"
 										className="h-12 justify-between border border-line-normal bg-background-normal p-4 font-medium text-body2"
 									>
-										{formatFullDate(field.value) || '날짜를 선택해주세요'}
+										{formatDateWithDay(field.value) || '날짜를 선택해주세요'}
 										<CalendarIcon size={20} className="text-icon-noraml" />
 									</Button>
 								</PopoverTrigger>

@@ -40,8 +40,18 @@ export const formatFullDate = (isoString: string) => {
 	if (!isoString) {
 		return '-';
 	}
-
 	return dayjs(isoString).format('YYYY년 MM월 DD일 (ddd)');
+};
+
+/**
+ * Date 객체 또는 ISO 문자열을 "YYYY년 MM월 DD일 (ddd)" 형식으로 포맷한다.
+ * null/undefined면 '-'를 반환한다.
+ */
+export const formatDateWithDay = (value: string | Date | null | undefined) => {
+	if (value == null) {
+		return '-';
+	}
+	return dayjs(value).format('YYYY년 MM월 DD일 (ddd)');
 };
 
 export const formatISOStringToDate = (isoString: string) => {
