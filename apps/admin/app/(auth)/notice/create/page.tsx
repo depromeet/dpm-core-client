@@ -24,7 +24,6 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 	Switch,
-	TempSaveModal,
 	ToggleGroup,
 	ToggleGroupItem,
 } from '@dpm-core/shared';
@@ -48,11 +47,11 @@ const ASSIGNMENT_TYPE_OPTIONS = [
 ] as const;
 
 export default function CreateNoticePage() {
-	const { form, handleSubmit, handleTemporarySave, isSubmitPending } = useNoticeForm();
+	// TODO: 임시저장 기능 추가 필요 - handleTemporarySave, tempSaveModalOpen 복원 필요
+	const { form, handleSubmit, isSubmitPending } = useNoticeForm();
 	const [scheduledDateOpen, setScheduledDateOpen] = useState(false);
 	const [submissionStartDateOpen, setSubmissionStartDateOpen] = useState(false);
 	const [submissionEndDateOpen, setSubmissionEndDateOpen] = useState(false);
-	const [tempSaveModalOpen, setTempSaveModalOpen] = useState(false);
 
 	// form 값 감시
 	const category = form.watch('category');
@@ -83,9 +82,10 @@ export default function CreateNoticePage() {
 					</Link>
 					<div className="flex items-center gap-4">
 						{/* TODO: 미리보기 버튼 */}
-						<Button variant="assistive" className="h-12" onClick={() => setTempSaveModalOpen(true)}>
+						{/* TODO: 임시저장 기능 추가 필요 */}
+						{/* <Button variant="assistive" className="h-12" onClick={() => setTempSaveModalOpen(true)}>
 							임시저장
-						</Button>
+						</Button> */}
 						<Button
 							variant="secondary"
 							className="h-12"
@@ -98,12 +98,13 @@ export default function CreateNoticePage() {
 				</div>
 			</header>
 
-			<TempSaveModal
+			{/* TODO: 임시저장 기능 추가 필요 */}
+			{/* <TempSaveModal
 				open={tempSaveModalOpen}
 				onOpenChange={setTempSaveModalOpen}
 				onCancel={() => setTempSaveModalOpen(false)}
 				onSave={() => handleTemporarySave()}
-			/>
+			/> */}
 
 			<Form {...form}>
 				<form
