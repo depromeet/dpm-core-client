@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button, Plus, SidebarInset, TeamTabBar } from '@dpm-core/shared';
 
@@ -17,6 +18,7 @@ interface Notice {
 }
 
 const NoticePage = () => {
+	const router = useRouter();
 	const [selectedType, setSelectedType] = useState<NoticeType>('all');
 
 	// 목업 데이터
@@ -72,10 +74,7 @@ const NoticePage = () => {
 		return true;
 	});
 
-	const handleNoticeClick = (noticeId: string) => {
-		console.log('공지 클릭:', noticeId);
-		// TODO: 공지 상세 페이지로 이동
-	};
+	const handleNoticeClick = (noticeId: string) => router.push(`/notice/${noticeId}`);
 
 	const handleCreateNotice = () => {
 		console.log('공지 등록 클릭');

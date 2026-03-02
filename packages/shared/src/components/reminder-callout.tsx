@@ -1,9 +1,9 @@
 'use client';
 
 import type React from 'react';
-import { Bell } from 'lucide-react';
 
 import { cn } from '../utils/cn';
+import { Notification } from './icons';
 
 export interface ReminderCalloutProps extends React.HTMLAttributes<HTMLDivElement> {
 	title?: string;
@@ -22,7 +22,7 @@ export const ReminderCallout = ({
 			{...props}
 		>
 			<div className="flex items-center gap-2">
-				<Bell className="size-5 text-label-normal" />
+				<Notification className="size-5 text-icon-strong" />
 				<h4 className="font-medium text-body1 text-label-strong">{title}</h4>
 			</div>
 			<div className="flex items-center pl-7">
