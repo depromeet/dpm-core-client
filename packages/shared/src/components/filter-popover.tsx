@@ -42,13 +42,13 @@ export const FilterPopover = ({
 	return (
 		<div
 			className={cn(
-				'flex w-80 flex-col overflow-hidden rounded-xl bg-background-normal shadow-elevation-2',
+				'flex w-80 flex-col overflow-hidden rounded-xl bg-background-normal shadow-[0px_-4px_21.1px_0px_rgba(0,0,0,0.12)]',
 				className,
 			)}
 			{...props}
 		>
 			{/* Header */}
-			<div className="flex items-center gap-2 px-4 pt-8 pb-4">
+			<div className="flex items-center gap-2 px-4 pt-4 pb-4">
 				<h3 className="flex-1 font-semibold text-label-normal text-title2">{title}</h3>
 				<IconButton variant="ghost" size="sm" onClick={onClose}>
 					<X className="size-4" />
@@ -56,7 +56,7 @@ export const FilterPopover = ({
 			</div>
 
 			{/* Body */}
-			<div className="flex flex-col gap-6 px-8 py-6">
+			<div className="flex flex-col gap-4 px-4 pb-4">
 				{sections.map(({ label, options }) => (
 					<ChipGroup key={label} label={label}>
 						{options.map((option) => {
@@ -97,9 +97,9 @@ export const FilterPopover = ({
 			</div>
 
 			{/* Footer */}
-			<div className="flex gap-2 bg-background-normal px-8 pt-6 pb-8">
+			<div className="flex gap-2 bg-background-normal px-4 py-3">
 				<IconButton variant="default" size="md" onClick={onReset}>
-					<RotateCcw className="size-4" />
+					<RotateCcw className="size-5" />
 				</IconButton>
 				<Button variant="secondary" size="md" className="flex-1" onClick={onApply}>
 					적용하기
