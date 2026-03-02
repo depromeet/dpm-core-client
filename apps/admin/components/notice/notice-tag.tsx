@@ -23,7 +23,7 @@ const noticeTagVariants = cva(
 );
 
 const labelMap: Record<string, string> = {
-	default: '일반 공지',
+	default: '필수 공지',
 	assignment: '과제 공지',
 	individual: '개인 과제',
 	team: '팀 과제',
