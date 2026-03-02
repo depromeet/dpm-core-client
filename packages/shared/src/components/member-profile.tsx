@@ -28,7 +28,7 @@ export const MemberProfile = ({
 		<div
 			className={cn(
 				'flex items-center gap-3 rounded-lg bg-background-normal p-2',
-				showHover && 'hover:bg-gray-100/60',
+				showHover && 'hover:bg-background-hover',
 				className,
 			)}
 			{...props}
@@ -40,12 +40,12 @@ export const MemberProfile = ({
 				</AvatarFallback>
 			</Avatar>
 
-			<div className="flex flex-col gap-0.5">
-				<p className="font-semibold text-body1 text-label-normal">{name}</p>
+			<div className="flex flex-col gap-0.75">
+				<p className="font-semibold text-caption1 text-label-normal">{name}</p>
 				{(team || role) && (
-					<div className="flex items-center gap-1.5 text-caption1 text-label-assistive">
+					<div className="flex items-center gap-1.5 text-body2 text-label-assistive">
 						{team && <span>{team}</span>}
-						{team && role && <div className="h-4 w-px bg-gray-400" />}
+						{team && role && <div className="h-4 w-px bg-gray-500" />}
 						{role && <span>{role}</span>}
 					</div>
 				)}
