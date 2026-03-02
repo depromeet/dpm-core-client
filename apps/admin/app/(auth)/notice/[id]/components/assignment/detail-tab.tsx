@@ -4,33 +4,23 @@ import type { NoticeTag } from '../../types';
 import { NoticeContent } from '../common/notice-content';
 import { ReadStatusSidebar } from '../common/read-status-sidebar';
 
-interface Member {
-	id: string;
-	name: string;
-	team: string;
-	role: string;
-	submitStatus?: string;
-}
-
 interface AssignmentDetailTabProps {
+	announcementId: number;
 	title: string;
 	date: string;
 	readCount: number;
 	content: string;
 	tags: NoticeTag[];
-	unreadMembers: Member[];
-	readMembers: Member[];
 	onSendReminder?: () => void;
 }
 
 export const AssignmentDetailTab = ({
+	announcementId,
 	title,
 	date,
 	readCount,
 	content,
 	tags,
-	unreadMembers,
-	readMembers,
 	onSendReminder,
 }: AssignmentDetailTabProps) => {
 	return (
@@ -47,11 +37,7 @@ export const AssignmentDetailTab = ({
 			</div>
 
 			{/* 우측: 조회 현황 */}
-			<ReadStatusSidebar
-				unreadMembers={unreadMembers}
-				readMembers={readMembers}
-				onSendReminder={onSendReminder}
-			/>
+			<ReadStatusSidebar announcementId={announcementId} onSendReminder={onSendReminder} />
 		</div>
 	);
 };

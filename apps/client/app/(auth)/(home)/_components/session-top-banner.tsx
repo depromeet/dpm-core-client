@@ -3,8 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
 import { session } from '@dpm-core/api';

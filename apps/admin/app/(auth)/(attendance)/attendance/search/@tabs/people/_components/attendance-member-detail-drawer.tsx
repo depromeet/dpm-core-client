@@ -1,8 +1,8 @@
 'use client';
 
 import { Suspense, useState } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import type { AttendanceSession } from '@dpm-core/api';
 import {

@@ -8,6 +8,7 @@ import { AssignmentDetailTab } from './detail-tab';
 import { SubmissionStatusTab } from './submission-tab';
 
 export const AssignmentDetail = ({
+	announcementId,
 	title,
 	date,
 	readCount,
@@ -48,49 +49,8 @@ export const AssignmentDetail = ({
 		},
 	];
 
-	// 읽은 디퍼 / 안 읽은 디퍼 목업 데이터
-	const unreadMembers: Member[] = [
-		{
-			id: 'u1',
-			name: '{안 읽은 디퍼} 이름',
-			team: '{N}팀',
-			role: '{디퍼} 직무',
-			submitStatus: 'not-submitted',
-		},
-		{
-			id: 'u2',
-			name: '{안 읽은 디퍼} 이름',
-			team: '{N}팀',
-			role: '{디퍼} 직무',
-			submitStatus: 'not-submitted',
-		},
-	];
-
-	const readMembers: Member[] = [
-		{
-			id: 'r1',
-			name: '{읽은 디퍼} 이름',
-			team: '{N}팀',
-			role: '{디퍼} 직무',
-			submitStatus: 'completed',
-		},
-		{
-			id: 'r2',
-			name: '{읽은 디퍼} 이름',
-			team: '{N}팀',
-			role: '{디퍼} 직무',
-			submitStatus: 'pending',
-		},
-		{
-			id: 'r3',
-			name: '{읽은 디퍼} 이름',
-			team: '{N}팀',
-			role: '{디퍼} 직무',
-			submitStatus: 'late',
-		},
-	];
-
 	const handleSendReminder = () => {
+		// TODO: 리마인드 API 연동 필요
 		console.log('리마인드 전송');
 	};
 
@@ -112,17 +72,16 @@ export const AssignmentDetail = ({
 			{/* 탭 내용 */}
 			{activeMainTab === 'detail' ? (
 				<AssignmentDetailTab
+					announcementId={announcementId}
 					title={title}
 					date={date}
 					readCount={readCount}
 					content={content}
 					tags={tags}
-					unreadMembers={unreadMembers}
-					readMembers={readMembers}
 					onSendReminder={handleSendReminder}
 				/>
 			) : (
-				<SubmissionStatusTab members={members} />
+				<SubmissionStatusTab announcementId={announcementId} members={members} />
 			)}
 		</div>
 	);

@@ -1,8 +1,8 @@
 'use client';
 
 import { Suspense } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
