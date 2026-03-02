@@ -16,6 +16,7 @@ export { Clock } from './clock';
 export { CopyIcon } from './copy';
 export { DpmText } from './dpm-text';
 export { KakaoLogo } from './kakao-logo';
+export { Plus } from './plus';
 export { TextLogo } from './text-logo';
 export { UserAvatar } from './user-avatar';
 export { XCircle } from './x-circle';
