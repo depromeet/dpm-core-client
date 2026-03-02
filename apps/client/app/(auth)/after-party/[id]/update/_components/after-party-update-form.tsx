@@ -147,16 +147,16 @@ const ClockIcon = () => (
 );
 
 interface AfterPartyUpdateFormProps {
-	gatheringId: number;
+	afterPartyId: number;
 }
 
-const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
+const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 	const { user } = useAuth();
 	const router = useRouter();
 	const queryClient = useQueryClient();
 	const {
 		data: { data: detail },
-	} = useSuspenseQuery(getAfterPartyByIdQueryOptions(gatheringId));
+	} = useSuspenseQuery(getAfterPartyByIdQueryOptions(afterPartyId));
 
 	// 어드민만 수정 폼 접근 가능 (실제 수정 가능 여부는 API에서 검증)
 	const canEdit = user?.isAdmin;
@@ -194,7 +194,7 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 			onSuccess: () => {
 				toast.success('수정 완료했어요');
 				queryClient.invalidateQueries({ queryKey: ['after-parties'] });
-				queryClient.invalidateQueries({ queryKey: ['after-party', gatheringId] });
+				queryClient.invalidateQueries({ queryKey: ['after-party', afterPartyId] });
 				router.replace('/after-party');
 			},
 			onError: (error) => {
@@ -249,7 +249,7 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 			inviteTags,
 		};
 		console.log('[회식 수정] payload:', payload);
-		updateAfterParty({ gatheringId, params: payload });
+		updateAfterParty({ afterPartyId, params: payload });
 	};
 
 	if (!canEdit) {

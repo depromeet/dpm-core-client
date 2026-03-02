@@ -9,18 +9,18 @@ interface AfterPartyRsvpOverviewProps {
 	attendanceCount: number;
 	isRsvpGoingCount: number;
 	inviteeCount: number;
-	gatheringId: number;
+	afterPartyId: number;
 }
 
 export const AfterPartyRsvpOverview = (props: AfterPartyRsvpOverviewProps) => {
-	const { isRsvpGoingCount, inviteeCount, gatheringId } = props;
+	const { isRsvpGoingCount, inviteeCount, afterPartyId } = props;
 
 	const router = useRouter();
 	const handleGoToParticipants = () => {
-		router.push(`/after-party/${gatheringId}/participants`);
+		router.push(`/after-party/${afterPartyId}/participants`);
 	};
 	const handleGoToAttendees = () => {
-		router.push(`/after-party/${gatheringId}/attendees`);
+		router.push(`/after-party/${afterPartyId}/attendees`);
 	};
 
 	return (

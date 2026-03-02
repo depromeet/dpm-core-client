@@ -12,10 +12,10 @@ export const getAfterPartiesQueryOptions = queryOptions<ApiResponse<GetAfterPart
 	queryFn: afterParty.getAfterParties,
 });
 
-export const getAfterPartyByIdQueryOptions = (gatheringId: number) =>
+export const getAfterPartyByIdQueryOptions = (afterPartyId: number) =>
 	queryOptions<ApiResponse<AfterPartyDetail>>({
-		queryKey: ['after-party', gatheringId],
-		queryFn: () => afterParty.getAfterPartyById(gatheringId),
+		queryKey: ['after-party', afterPartyId],
+		queryFn: () => afterParty.getAfterPartyById(afterPartyId),
 	});
 
 export const getInviteTagsQueryOptions = queryOptions<ApiResponse<GetInviteTagsResponse>>({
@@ -23,8 +23,8 @@ export const getInviteTagsQueryOptions = queryOptions<ApiResponse<GetInviteTagsR
 	queryFn: afterParty.getInviteTags,
 });
 
-export const getAfterPartyInvitedMembersQueryOptions = (gatheringId: number) =>
+export const getAfterPartyInvitedMembersQueryOptions = (afterPartyId: number) =>
 	queryOptions({
-		queryKey: ['after-party', 'invited-members', gatheringId],
-		queryFn: () => afterParty.getInvitedMembers(gatheringId),
+		queryKey: ['after-party', 'invited-members', afterPartyId],
+		queryFn: () => afterParty.getInvitedMembers(afterPartyId),
 	});

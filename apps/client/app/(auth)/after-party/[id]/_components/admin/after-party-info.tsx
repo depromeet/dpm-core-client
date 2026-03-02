@@ -4,7 +4,7 @@ import { Button } from '@dpm-core/shared';
 import { formatISOStringToDate } from '@/lib/date';
 
 export interface AfterPartyInfoProps {
-	gatheringId: number;
+	afterPartyId: number;
 	title: string;
 	isOwner: boolean;
 	rsvpStatus: boolean | null;
@@ -26,7 +26,7 @@ export interface InviteTag {
 }
 
 export const AfterPartyInfo = (props: AfterPartyInfoProps) => {
-	const { title, description, scheduledAt, closedAt, inviteTags, gatheringId } = props;
+	const { title, description, scheduledAt, closedAt, inviteTags, afterPartyId } = props;
 
 	return (
 		<section className="p-4">
@@ -34,7 +34,7 @@ export const AfterPartyInfo = (props: AfterPartyInfoProps) => {
 				<div className="flex items-center justify-between">
 					<h2 className="font-bold text-headline2 text-label-normal">{title}</h2>
 					<Button size="md" variant="text" className="h-10 px-4" asChild>
-						<Link href={`/after-party/${gatheringId}/update`}>수정하기</Link>
+						<Link href={`/after-party/${afterPartyId}/update`}>수정하기</Link>
 					</Button>
 				</div>
 

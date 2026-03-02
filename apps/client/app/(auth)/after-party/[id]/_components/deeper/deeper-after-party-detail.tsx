@@ -20,15 +20,15 @@ import { AfterPartySurveyView } from './after-party-survey-view';
 
 export function DeeperAfterPartyDetail() {
 	const params = useParams<{ id: string }>();
-	const { id: gatheringId } = params;
+	const { id: afterPartyId } = params;
 	const queryClient = useQueryClient();
 
-	if (!gatheringId) {
+	if (!afterPartyId) {
 		redirect('/');
 	}
 
 	const { data: afterPartyDetail } = useSuspenseQuery(
-		getAfterPartyByIdQueryOptions(Number(gatheringId)),
+		getAfterPartyByIdQueryOptions(Number(afterPartyId)),
 	);
 	const detail = afterPartyDetail.data;
 
@@ -40,7 +40,7 @@ export function DeeperAfterPartyDetail() {
 	const [pageState, setPageState] = useState<PageState>(initialPageState);
 
 	const handleSubmitSuccess = () => {
-		queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(Number(gatheringId)));
+		queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(Number(afterPartyId)));
 		setPageState('complete');
 	};
 
@@ -55,7 +55,7 @@ export function DeeperAfterPartyDetail() {
 				attendance={attendance}
 				onAttendanceChange={setAttendance}
 				isClosed={isClosed}
-				gatheringId={Number(gatheringId)}
+				afterPartyId={Number(afterPartyId)}
 			/>
 		);
 	}
@@ -69,7 +69,7 @@ export function DeeperAfterPartyDetail() {
 			<AfterPartySubmitButton
 				attendance={attendance}
 				afterPartyTitle={detail.title}
-				gatheringId={Number(gatheringId)}
+				afterPartyId={Number(afterPartyId)}
 				onSubmitSuccess={handleSubmitSuccess}
 			/>
 		</div>

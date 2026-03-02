@@ -8,7 +8,7 @@ const AfterPartyUpdatePage = async ({ params }: { params: Promise<{ id: string }
 	const { id } = await params;
 	return (
 		<Suspense fallback={<LoadingBox />}>
-			<AfterPartyUpdateForm gatheringId={Number(id)} />
+			<AfterPartyUpdateForm afterPartyId={Number(id)} />
 		</Suspense>
 	);
 };
