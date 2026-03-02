@@ -13,42 +13,42 @@ import type {
 
 export const afterParty = {
 	getAfterParties: async () => {
-		const res = await http.get<GetAfterPartiesResponse>('v2/gatherings');
+		const res = await http.get<GetAfterPartiesResponse>('v2/after-party');
 		return res;
 	},
 
-	getAfterPartyById: async (gatheringId: number) => {
-		const res = await http.get<AfterPartyDetail>(`v2/gatherings/${gatheringId}`);
+	getAfterPartyById: async (afterPartyId: number) => {
+		const res = await http.get<AfterPartyDetail>(`v2/after-party/${afterPartyId}`);
 		return res;
 	},
 
 	getInviteTags: async () => {
-		const res = await http.get<GetInviteTagsResponse>('v2/gatherings/invite-tags');
+		const res = await http.get<GetInviteTagsResponse>('v2/after-party/invite-tags');
 		return res;
 	},
 
 	createAfterParty: async (params: CreateAfterPartyRequest) => {
-		const res = await http.post<CreateAfterPartyResponse>('v2/gatherings', { json: params });
+		const res = await http.post<CreateAfterPartyResponse>('v2/after-party', { json: params });
 		return res;
 	},
 
-	updateAfterParty: async (gatheringId: number, params: UpdateAfterPartyRequest) => {
-		const text = await http.patch<CreateAfterPartyResponse>(`v2/gatherings/${gatheringId}`, {
+	updateAfterParty: async (afterPartyId: number, params: UpdateAfterPartyRequest) => {
+		const text = await http.patch<CreateAfterPartyResponse>(`v2/after-party/${afterPartyId}`, {
 			json: params,
 		});
 		if (!text || String(text).trim() === '') {
 			return {
-				data: { gatheringId: String(gatheringId) },
+				data: { afterPartyId: String(afterPartyId) },
 			} as ApiResponse<CreateAfterPartyResponse>;
 		}
 		return JSON.parse(String(text)) as ApiResponse<CreateAfterPartyResponse>;
 	},
 	/** 회식 참여 여부 제출
-	 * @param gatheringId 회식 ID
+	 * @param afterPartyId 회식 ID
 	 * @param data 참여 여부 (isRsvpGoing: true=참석, false=불참)
 	 */
-	submitAttendanceStatus: async (gatheringId: number, data: SubmitAttendanceStatusRequest) => {
-		const res = await http.post(`v2/gatherings/${gatheringId}/rsvp-status`, {
+	submitAttendanceStatus: async (afterPartyId: number, data: SubmitAttendanceStatusRequest) => {
+		const res = await http.post(`v2/after-party/${afterPartyId}/rsvp-status`, {
 			json: data,
 		});
 		return res;
@@ -56,11 +56,11 @@ export const afterParty = {
 
 	/**
 	 * 회식 초대자 목록 조회
-	 * @param gatheringId 회식 ID
+	 * @param afterPartyId 회식 ID
 	 */
-	getInvitedMembers: async (gatheringId: number) => {
+	getInvitedMembers: async (afterPartyId: number) => {
 		const res = await http.get<AfterPartyInvitedMember[]>(
-			`v2/gatherings/${gatheringId}/rsvp-members`,
+			`v2/after-party/${afterPartyId}/rsvp-members`,
 		);
 		return res;
 	},

@@ -26,14 +26,14 @@ export const createAfterPartyOptions = (options: CreateAfterPartyOptions) =>
 type UpdateAfterPartyOptions = MutationOptions<
 	ApiResponse<CreateAfterPartyResponse>,
 	HTTPError<ApiErrorReponse>,
-	{ gatheringId: number; params: UpdateAfterPartyRequest },
+	{ afterPartyId: number; params: UpdateAfterPartyRequest },
 	unknown
 >;
 
 export const updateAfterPartyOptions = (options: UpdateAfterPartyOptions) =>
 	mutationOptions({
 		mutationKey: ['update-after-party'],
-		mutationFn: ({ gatheringId, params }) => afterParty.updateAfterParty(gatheringId, params),
+		mutationFn: ({ afterPartyId, params }) => afterParty.updateAfterParty(afterPartyId, params),
 		...options,
 	});
 
@@ -54,12 +54,12 @@ type SubmitAttendanceStatusOptions = MutationOptions<
  * 회식 참여 여부 제출 mutation
  */
 export const submitAttendanceStatusMutationOptions = (
-	gatheringId: number,
+	afterPartyId: number,
 	options?: SubmitAttendanceStatusOptions,
 ) =>
 	mutationOptions({
-		mutationKey: [MUTATE_KEY, 'attendance-status', gatheringId],
+		mutationKey: [MUTATE_KEY, 'attendance-status', afterPartyId],
 		mutationFn: (params: SubmitAttendanceStatusParams) =>
-			afterParty.submitAttendanceStatus(gatheringId, params),
+			afterParty.submitAttendanceStatus(afterPartyId, params),
 		...options,
 	});
