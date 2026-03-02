@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
 	AssignmentSubmitStatus,
 	FilterDropdown,
@@ -20,6 +21,9 @@ import {
 	toast,
 } from '@dpm-core/shared';
 
+import { patchAssignmentStatusMutationOptions } from '@/remotes/mutations/announcement';
+import { getAnnouncementDetailQuery } from '@/remotes/queries/announcement';
+
 interface Member {
 	id: string;
 	name: string;
@@ -29,10 +33,24 @@ interface Member {
 }
 
 interface SubmissionStatusTabProps {
+	announcementId: number;
 	members: Member[];
 }
 
-export const SubmissionStatusTab = ({ members }: SubmissionStatusTabProps) => {
+export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatusTabProps) => {
+	const queryClient = useQueryClient();
+	const { mutate: patchAssignmentStatus } = useMutation(
+		patchAssignmentStatusMutationOptions(announcementId, {
+			onSuccess: () => {
+				queryClient.invalidateQueries(getAnnouncementDetailQuery(announcementId));
+				toast.success('제출 상태가 변경되었어요.');
+			},
+			onError: () => {
+				toast.error('제출 상태 변경에 실패했어요.');
+			},
+		}),
+	);
+
 	const [activeTeamTab, setActiveTeamTab] = useState('all');
 	const [searchQuery, setSearchQuery] = useState('');
 	const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set());
@@ -67,9 +85,8 @@ export const SubmissionStatusTab = ({ members }: SubmissionStatusTabProps) => {
 
 		return result;
 	}, [members, activeTeamTab, searchQuery]);
-
 	const handleSelectAll = (checked: boolean) => {
-		if (checked) setSelectedMembers(new Set(members.map(({ id }) => id)));
+		if (checked) setSelectedMembers(new Set(filteredMembers.map(({ id }) => id)));
 		else setSelectedMembers(new Set());
 	};
 
@@ -117,21 +134,15 @@ export const SubmissionStatusTab = ({ members }: SubmissionStatusTabProps) => {
 	const handleSubmissionRequest = () => {
 		// TODO: 제출 요청 API 호출
 
-		const selectedMemberIds = Array.from(selectedMembers);
-		console.log('제출 요청 대상 멤버 ID:', selectedMemberIds);
-
-		toast.light('제출 요청이 전송되었어요.');
+		// API 구현 전까지 임시 처리
+		toast.light('제출 요청 기능이 준비 중이에요.');
 	};
 
 	const handleStatusModalSave = () => {
-		// TODO: 제출 상태 변경 API 호출
-		const selectedMemberIds = Array.from(selectedMembers);
-		console.log('제출 상태 변경:', {
-			memberIds: selectedMemberIds,
-			status: selectedStatus,
+		patchAssignmentStatus({
+			submitStatus: selectedStatus.toUpperCase(),
+			memberIds: Array.from(selectedMembers).map(Number),
 		});
-
-		toast.light('제출 상태가 변경되었어요.');
 		setStatusModalOpen(false);
 	};
 
@@ -257,49 +268,44 @@ export const SubmissionStatusTab = ({ members }: SubmissionStatusTabProps) => {
 						</tr>
 					</thead>
 					<tbody>
-						{members.map((member) => {
-							const { id, name, team, role, submitStatus } = member;
-							return (
-								<tr key={id} className="h-17.5 border-line-subtle border-b bg-background-normal">
-									<td className="px-3">
-										<TableCheckbox
-											checked={selectedMembers.has(id)}
-											onCheckedChange={(checked) => handleSelectMember(id, checked as boolean)}
-										/>
-									</td>
-									<td className="px-3">
-										<div className="flex items-center gap-2.5">
-											<div className="size-10 shrink-0 rounded-full bg-gray-200" />
-											<div className="flex flex-col gap-0.75">
-												<p className="font-semibold text-body1 text-label-normal">{name}</p>
-												<div className="flex items-center gap-1.5 text-body2 text-label-assistive">
-													<span>{team}</span>
-													<div className="h-4 w-px bg-gray-400" />
-													<span>{role}</span>
-												</div>
+						{filteredMembers.map(({ id, name, team, role, submitStatus }) => (
+							<tr key={id} className="h-17.5 border-line-subtle border-b bg-background-normal">
+								<td className="px-3">
+									<TableCheckbox
+										checked={selectedMembers.has(id)}
+										onCheckedChange={(checked) => handleSelectMember(id, checked as boolean)}
+									/>
+								</td>
+								<td className="px-3">
+									<div className="flex items-center gap-2.5">
+										<div className="size-10 shrink-0 rounded-full bg-gray-200" />
+										<div className="flex flex-col gap-0.75">
+											<p className="font-semibold text-body1 text-label-normal">{name}</p>
+											<div className="flex items-center gap-1.5 text-body2 text-label-assistive">
+												<span>{team}</span>
+												<div className="h-4 w-px bg-gray-400" />
+												<span>{role}</span>
 											</div>
 										</div>
-									</td>
-									<td className="px-3">
-										<AssignmentSubmitStatus status={submitStatus} />
-									</td>
-									<td className="px-3">
-										<Input
-											variant="line"
-											placeholder="예) 100"
-											className="h-10 w-full"
-											value={scores[id] || ''}
-											onChange={(e) => handleScoreChange(id, e.target.value)}
-										/>
-									</td>
-								</tr>
-							);
-						})}
+									</div>
+								</td>
+								<td className="px-3">
+									<AssignmentSubmitStatus status={submitStatus} />
+								</td>
+								<td className="px-3">
+									<Input
+										variant="line"
+										placeholder="예) 100"
+										className="h-10 w-full"
+										value={scores[id] || ''}
+										onChange={(e) => handleScoreChange(id, e.target.value)}
+									/>
+								</td>
+							</tr>
+						))}
 					</tbody>
 				</table>
 			</div>
-
-			{/* 제출 상태 변경 모달 */}
 			<SubmissionStatusModal
 				open={statusModalOpen}
 				onOpenChange={setStatusModalOpen}

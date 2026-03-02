@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { Suspense, useEffect, useMemo } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Aesterisk, Button, ChevronRight, gaTrackHomeEnter } from '@dpm-core/shared';
 
