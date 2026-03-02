@@ -21,20 +21,20 @@ import { type AttendanceStatus, toAttendanceResponse } from '../../_types/after-
 interface AfterPartySubmitButtonProps {
 	attendance: AttendanceStatus;
 	afterPartyTitle: string;
-	gatheringId: number;
+	afterPartyId: number;
 	onSubmitSuccess: () => void;
 }
 
 export const AfterPartySubmitButton = ({
 	attendance,
 	afterPartyTitle,
-	gatheringId,
+	afterPartyId,
 	onSubmitSuccess,
 }: AfterPartySubmitButtonProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const { ref } = useAppShell();
 
-	const { mutate, isPending } = useMutation(submitAttendanceStatusMutationOptions(gatheringId));
+	const { mutate, isPending } = useMutation(submitAttendanceStatusMutationOptions(afterPartyId));
 
 	const handleSubmit = () => {
 		if (attendance === null) return;

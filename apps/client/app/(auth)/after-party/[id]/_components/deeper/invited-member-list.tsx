@@ -26,16 +26,16 @@ const PART_LABEL: Record<string, string> = {
 };
 
 interface InvitedMemberListProps {
-	gatheringId: number;
+	afterPartyId: number;
 	isClosed: boolean;
 }
 
-export const InvitedMemberList = ({ gatheringId, isClosed }: InvitedMemberListProps) => {
+export const InvitedMemberList = ({ afterPartyId, isClosed }: InvitedMemberListProps) => {
 	const { user } = useAuth();
 	const [myTeamOnly, setMyTeamOnly] = useState(false);
 
 	const { data: invitedMembersData } = useSuspenseQuery(
-		getAfterPartyInvitedMembersQueryOptions(gatheringId),
+		getAfterPartyInvitedMembersQueryOptions(afterPartyId),
 	);
 	const members = invitedMembersData.data;
 

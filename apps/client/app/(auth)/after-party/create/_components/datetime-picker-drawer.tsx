@@ -291,7 +291,10 @@ export const DateTimePickerDrawer = ({
 								>
 									<ChevronUp className="h-5 w-5 text-[#1F2937]" />
 								</button>
-								<div className="relative flex h-[138px] w-full touch-none items-center justify-center overflow-hidden rounded-xl bg-[#F6F7F9]">
+								<div
+									className="relative flex h-[138px] w-full touch-none items-center justify-center overflow-hidden rounded-xl bg-[#F6F7F9]"
+									data-vaul-no-drag
+								>
 									<WheelPickerWrapper className="[&_[data-rwp]]:!h-[138px] h-[138px] w-full rounded-xl border-none bg-transparent px-0 shadow-none">
 										<WheelPicker
 											options={PERIOD_OPTIONS}
@@ -329,7 +332,10 @@ export const DateTimePickerDrawer = ({
 								>
 									<ChevronUp className="h-5 w-5 text-[#1F2937]" />
 								</button>
-								<div className="relative flex h-[138px] w-full touch-none items-center justify-center overflow-hidden rounded-xl bg-[#F6F7F9]">
+								<div
+									className="relative flex h-[138px] w-full touch-none items-center justify-center overflow-hidden rounded-xl bg-[#F6F7F9]"
+									data-vaul-no-drag
+								>
 									<WheelPickerWrapper className="[&_[data-rwp]]:!h-[138px] h-[138px] w-full rounded-xl border-none bg-transparent px-0 shadow-none">
 										<WheelPicker
 											options={HOUR_OPTIONS}

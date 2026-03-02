@@ -27,15 +27,15 @@ import {
 interface AfterPartyRsvpProps {
 	title: string;
 	rsvpStatus: boolean | null;
-	gatheringId: number;
+	afterPartyId: number;
 }
 
 export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
-	const { title, rsvpStatus: rsvpStatusProp, gatheringId } = props;
+	const { title, rsvpStatus: rsvpStatusProp, afterPartyId } = props;
 
 	const queryClient = useQueryClient();
 	const { mutate: submitRsvpStatus, isPending: isSubmitRsvpStatusPending } = useMutation(
-		submitAttendanceStatusMutationOptions(gatheringId),
+		submitAttendanceStatusMutationOptions(afterPartyId),
 	);
 
 	const [rsvpStatus, setRsvpStatus] = useState(() =>
@@ -55,9 +55,9 @@ export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
 			{ isRsvpGoing },
 			{
 				onSuccess: () => {
-					queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(gatheringId));
+					queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(afterPartyId));
 					queryClient.invalidateQueries(getAfterPartiesQueryOptions);
-					queryClient.invalidateQueries(getAfterPartyInvitedMembersQueryOptions(gatheringId));
+					queryClient.invalidateQueries(getAfterPartyInvitedMembersQueryOptions(afterPartyId));
 					toast.success('저장했어요');
 				},
 				onError: () => {
@@ -74,9 +74,9 @@ export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
 			{ isRsvpGoing },
 			{
 				onSuccess: () => {
-					queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(gatheringId));
+					queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(afterPartyId));
 					queryClient.invalidateQueries(getAfterPartiesQueryOptions);
-					queryClient.invalidateQueries(getAfterPartyInvitedMembersQueryOptions(gatheringId));
+					queryClient.invalidateQueries(getAfterPartyInvitedMembersQueryOptions(afterPartyId));
 					toast.success('수정 완료했어요');
 				},
 				onError: () => {

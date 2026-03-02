@@ -16,7 +16,7 @@ interface AfterPartySurveyViewProps {
 	attendance: AttendanceStatus;
 	onAttendanceChange: (status: AttendanceStatus) => void;
 	isClosed: boolean;
-	gatheringId: number;
+	afterPartyId: number;
 }
 
 export const AfterPartySurveyView = ({
@@ -24,7 +24,7 @@ export const AfterPartySurveyView = ({
 	attendance,
 	onAttendanceChange,
 	isClosed,
-	gatheringId,
+	afterPartyId,
 }: AfterPartySurveyViewProps) => {
 	const attendanceLabel = attendance === 'attending' ? '참석' : '불참';
 
@@ -48,7 +48,7 @@ export const AfterPartySurveyView = ({
 						attendance={attendance}
 						onEditSuccess={handleEditSuccess}
 						isClosed={isClosed}
-						gatheringId={gatheringId}
+						afterPartyId={afterPartyId}
 					>
 						<button type="button" className="font-medium text-body2 text-label-assistive">
 							수정하기
@@ -94,7 +94,7 @@ export const AfterPartySurveyView = ({
 					</div>
 				}
 			>
-				<InvitedMemberList gatheringId={gatheringId} isClosed={isClosed} />
+				<InvitedMemberList afterPartyId={afterPartyId} isClosed={isClosed} />
 			</Suspense>
 		</div>
 	);

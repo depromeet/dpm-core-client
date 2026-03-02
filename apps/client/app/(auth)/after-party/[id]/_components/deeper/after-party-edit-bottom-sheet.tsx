@@ -31,7 +31,7 @@ interface AfterPartyEditBottomSheetProps {
 	onEditSuccess: (newAttendance: AttendanceStatus) => void;
 	children: React.ReactNode;
 	isClosed?: boolean;
-	gatheringId: number;
+	afterPartyId: number;
 }
 
 export const AfterPartyEditBottomSheet = ({
@@ -39,14 +39,14 @@ export const AfterPartyEditBottomSheet = ({
 	onEditSuccess,
 	children,
 	isClosed = false,
-	gatheringId,
+	afterPartyId,
 }: AfterPartyEditBottomSheetProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [selectedAttendance, setSelectedAttendance] = useState<AttendanceStatus>(attendance);
 	const { ref } = useAppShell();
 	const queryClient = useQueryClient();
 
-	const { mutate, isPending } = useMutation(submitAttendanceStatusMutationOptions(gatheringId));
+	const { mutate, isPending } = useMutation(submitAttendanceStatusMutationOptions(afterPartyId));
 
 	const handleOpenChange = (open: boolean) => {
 		setIsOpen(open);
@@ -62,8 +62,8 @@ export const AfterPartyEditBottomSheet = ({
 			{ isRsvpGoing: toAttendanceResponse(selectedAttendance) },
 			{
 				onSuccess: () => {
-					queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(gatheringId));
-					queryClient.invalidateQueries(getAfterPartyInvitedMembersQueryOptions(gatheringId));
+					queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(afterPartyId));
+					queryClient.invalidateQueries(getAfterPartyInvitedMembersQueryOptions(afterPartyId));
 					setIsOpen(false);
 					onEditSuccess(selectedAttendance);
 				},
