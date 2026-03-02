@@ -13,7 +13,7 @@ import type {
 
 export const afterParty = {
 	getAfterParties: async () => {
-		const res = await http.get<GetAfterPartiesResponse>('v2/after-party');
+		const res = await http.get<GetAfterPartiesResponse>('v2/after-parties');
 		return res;
 	},
 
