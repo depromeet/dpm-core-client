@@ -53,6 +53,8 @@ export interface AfterPartyDetail {
 	authorMemberId: number;
 	createdAt: string;
 	isClosed: boolean;
+	/** false일 때 수정 페이지에서 폼 비활성화 */
+	canEditAfterApproval?: boolean;
 	inviteTags: {
 		inviteTags: InviteTagItem[];
 	};
@@ -69,7 +71,6 @@ export interface CreateAfterPartyRequest {
 	}[];
 	scheduledAt: string;
 	closedAt: string;
-	allowEditAfterClose: boolean;
 	canEditAfterApproval: boolean;
 }
 
