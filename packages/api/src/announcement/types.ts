@@ -30,6 +30,9 @@ export interface AnnouncementDetail {
 	markAsReadCount: number;
 	announcementType: AnnouncementType;
 	assignmentType: AssignmentType;
+	dueAt?: string;
+	submitLink?: string;
+	isRead: boolean;
 }
 
 export interface ReadMember {

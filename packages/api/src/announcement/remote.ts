@@ -51,6 +51,14 @@ export const announcement = {
 	},
 
 	/**
+	 * 공지/과제 읽음 처리
+	 * @param announcementId 공지/과제 ID
+	 */
+	markAsRead: async (announcementId: number) => {
+		return http.post(`v1/announcements/${announcementId}/mark-as-read`);
+	},
+
+	/**
 	 * 과제 제출 상태 변경
 	 * 과제 제출 상태를 변경합니다.
 	 * @param announcementId 공지/과제 ID
