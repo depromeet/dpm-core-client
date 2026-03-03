@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import { AppLayout, Button, ChevronLeft } from '@dpm-core/shared';
 
+import { BottomTabBar } from '@/components/bottom-tab-bar';
 import { NavigationBar } from '@/components/navigation-bar';
 
 import { AttendanceMe } from '../_components/attendance-me';
 
 export default function AttendanceMePage() {
 	return (
-		<AppLayout className="bg-gray-0">
+		<AppLayout className="h-dvh bg-background-normal">
 			<NavigationBar>
 				<Link href="/">
 					<ChevronLeft />
@@ -25,6 +26,7 @@ export default function AttendanceMePage() {
 				</Button>
 			</NavigationBar>
 			<AttendanceMe />
+			<BottomTabBar />
 		</AppLayout>
 	);
 }

@@ -1,12 +1,10 @@
 'use client';
 
-import Link from 'next/link';
 import { Fragment, Suspense } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import type { ApiResponse, AttendanceReponse } from '@dpm-core/api';
-import { Button } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
@@ -18,10 +16,9 @@ import { AttendanceMeInfo } from './attendance-situation-info';
 const AttendanceMeContainer = () => {
 	const { data: response } = useSuspenseQuery(getAttendanceMeOptions());
 
-	// FIXME: 출석 이력이 없는 경우 처리
 	if (response.isError) {
 		return (
-			<div className="relative flex h-dvh w-full flex-col items-center justify-center">
+			<div className="relative flex flex-1 flex-col items-center justify-center">
 				<svg
 					width="33"
 					height="32"
@@ -37,14 +34,9 @@ const AttendanceMeContainer = () => {
 						fill="#E5E7EB"
 					/>
 				</svg>
-
 				<h1 className="mt-8 mb-4 text-center font-bold text-label-strong text-title1">
 					세션 준비 중
 				</h1>
-				<p className="text-center font-medium text-body2 text-label-assistive"></p>
-				<Button className="fixed bottom-0 max-w-lg" variant="secondary" size="full" asChild>
-					<Link href="/">홈으로</Link>
-				</Button>
 			</div>
 		);
 	}

@@ -180,7 +180,7 @@ const TAB_LIST = [
 export const BottomTabBar = () => {
 	const pathName = usePathname();
 	return (
-		<nav className="right-0 bottom-0 left-0 z-10 border-line-subtle border-t bg-background-normal">
+		<nav className="relative z-10 border-line-subtle border-t bg-background-normal">
 			<ul className="flex h-19 items-center justify-between">
 				{TAB_LIST.map((tab) => {
 					const isActive = pathName === tab.href;
