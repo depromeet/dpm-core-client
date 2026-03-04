@@ -49,7 +49,6 @@ export const InvitedMemberList = ({
     return list;
   };
 
-  const allMembers = applyTeamFilter(members);
   const attendingMembers = applyTeamFilter(
     members.filter((m: AfterPartyInvitedMember) => m.rsvpStatus === true),
   );
@@ -59,18 +58,18 @@ export const InvitedMemberList = ({
 
   return (
     <section className="flex flex-1 flex-col px-4 py-3">
-      <Tabs defaultValue={isClosed ? "all" : "attending"}>
+      <Tabs defaultValue="attending">
         <div className="flex items-center justify-between py-3">
           {isClosed ? (
             <TabsList className="h-auto w-auto gap-2">
               <TabsTrigger
-                value="all"
+                value="attending"
                 className="h-8 rounded-md bg-gray-100 px-4 font-medium text-black text-sm data-[state=active]:border-gray-800 data-[state=active]:bg-gray-800 data-[state=active]:text-white"
               >
                 참석
               </TabsTrigger>
               <TabsTrigger
-                value="attending"
+                value="not-attending"
                 className="h-8 rounded-md bg-gray-100 px-4 font-medium text-black text-sm data-[state=active]:border-gray-800 data-[state=active]:bg-gray-800 data-[state=active]:text-white"
               >
                 불참
@@ -97,7 +96,9 @@ export const InvitedMemberList = ({
               className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
               id="my-team-only"
               checked={myTeamOnly}
-              onCheckedChange={(checked) => setMyTeamOnly(checked === true)}
+              onCheckedChange={(checked: boolean | "indeterminate") =>
+                setMyTeamOnly(checked === true)
+              }
             />
             <Label
               htmlFor="my-team-only"
@@ -110,11 +111,11 @@ export const InvitedMemberList = ({
 
         {isClosed ? (
           <>
-            <TabsContent value="all">
-              <MemberListContent members={allMembers} />
-            </TabsContent>
             <TabsContent value="attending">
               <MemberListContent members={attendingMembers} />
+            </TabsContent>
+            <TabsContent value="not-attending">
+              <MemberListContent members={notAttendingMembers} />
             </TabsContent>
           </>
         ) : (
