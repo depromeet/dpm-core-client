@@ -1,23 +1,6 @@
 import Link from 'next/link';
-import { Button } from '@dpm-core/shared';
-
-import { formatISOStringToDate } from '@/lib/date';
-
-export interface AfterPartyInfoProps {
-	afterPartyId: number;
-	title: string;
-	isOwner: boolean;
-	rsvpStatus: boolean | null;
-	isAttended: boolean | null;
-	description: string;
-	scheduledAt: string;
-	isRsvpGoingCount: number;
-	inviteeCount: number;
-	attendanceCount: number;
-	createdAt: string;
-	closedAt: string;
-	inviteTags: { inviteTags: InviteTag[] };
-}
+import type { AfterPartyDetail } from '@dpm-core/api';
+import { Button, formatKoreanDate, formatKoreanDateWithTime } from '@dpm-core/shared';
 
 export interface InviteTag {
 	cohortId: number;
@@ -25,7 +8,7 @@ export interface InviteTag {
 	tagName: string;
 }
 
-export const AfterPartyInfo = (props: AfterPartyInfoProps) => {
+export const AfterPartyInfo = (props: AfterPartyDetail) => {
 	const { title, description, scheduledAt, closedAt, inviteTags, afterPartyId } = props;
 
 	return (
@@ -42,11 +25,11 @@ export const AfterPartyInfo = (props: AfterPartyInfoProps) => {
 				<div className="flex flex-col gap-3">
 					<div className="flex items-center gap-4 text-body2">
 						<p className="w-17.5 shrink-0 font-semibold text-label-assistive">회식 날짜</p>
-						<p className="font-medium text-label-subtle">{formatISOStringToDate(scheduledAt)}</p>
+						<p className="font-medium text-label-subtle">{formatKoreanDate(scheduledAt)}</p>
 					</div>
 					<div className="flex items-center gap-4 text-body2">
 						<p className="w-17.5 shrink-0 font-semibold text-label-assistive">조사 기한</p>
-						<p className="font-medium text-label-subtle">{formatISOStringToDate(closedAt)}</p>
+						<p className="font-medium text-label-subtle">{formatKoreanDateWithTime(closedAt)}</p>
 					</div>
 					<div className="flex items-center gap-4 text-body2">
 						<p className="w-17.5 shrink-0 font-semibold text-label-assistive">초대 범위</p>

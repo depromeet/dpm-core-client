@@ -48,10 +48,10 @@ export const InvitedMemberList = ({ afterPartyId, isClosed }: InvitedMemberListP
 
 	const allMembers = applyTeamFilter(members);
 	const attendingMembers = applyTeamFilter(
-		members.filter((m: AfterPartyInvitedMember) => m.isRsvpGoing === true),
+		members.filter((m: AfterPartyInvitedMember) => m.rsvpStatus === true),
 	);
 	const notAttendingMembers = applyTeamFilter(
-		members.filter((m: AfterPartyInvitedMember) => m.isRsvpGoing === false),
+		members.filter((m: AfterPartyInvitedMember) => m.rsvpStatus === false),
 	);
 
 	return (
@@ -91,13 +91,14 @@ export const InvitedMemberList = ({ afterPartyId, isClosed }: InvitedMemberListP
 					)}
 					<div className="flex items-center gap-1.5">
 						<Checkbox
+							className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 							id="my-team-only"
 							checked={myTeamOnly}
 							onCheckedChange={(checked) => setMyTeamOnly(checked === true)}
 						/>
 						<Label
 							htmlFor="my-team-only"
-							className="cursor-pointer text-caption1 text-label-assistive"
+							className="cursor-pointer font-medium text-body2 text-label-assistive"
 						>
 							내 팀만 보기
 						</Label>
