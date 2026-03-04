@@ -3,8 +3,10 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
 import type { Part } from '@dpm-core/api';
+import { Aesterisk } from '@dpm-core/shared';
 
 import { Profile } from '@/components/attendance/profile';
+import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
 import { useAuth } from '@/providers/auth-provider';
 import { getAfterPartyInvitedMembersQueryOptions } from '@/remotes/queries/after-party';
 
@@ -26,11 +28,25 @@ export const AfterPartyAttendeesList = (props: AfterPartyAttendeesListProps) => 
 	} = useSuspenseQuery(getAfterPartyInvitedMembersQueryOptions(afterPartyId));
 
 	const filteredList = afterPartyAttendees.filter((member) => {
-		const matchStatus =
-			afterPartyAttendeesStatus === 'NO' ? !member.isRsvpGoing : member.isRsvpGoing;
-		const matchTeam = afterPartyAttendeesIsMyTeam ? member.team === user?.teamNumber : true;
+		const { rsvpStatus, team } = member;
+
+		if (rsvpStatus == null) return false;
+		const matchStatus = rsvpStatus === (afterPartyAttendeesStatus === 'YES');
+		const matchTeam = !afterPartyAttendeesIsMyTeam || team === user?.teamNumber;
+
 		return matchStatus && matchTeam;
 	});
+
+	if (filteredList.length === 0) {
+		return (
+			<Empty className="h-full min-h-41.5">
+				<EmptyHeader>
+					<Aesterisk />
+					<EmptyTitle>해당하는 멤버가 없어요</EmptyTitle>
+				</EmptyHeader>
+			</Empty>
+		);
+	}
 
 	return (
 		<ul className="h-full py-3">
@@ -48,7 +64,7 @@ interface AfterPartyAttendeesItemProps {
 	name: string;
 	part: Part;
 	team: number;
-	isRsvpGoing: boolean;
+	rsvpStatus: boolean | null;
 }
 
 const AfterPartyAttendeesItem = (props: AfterPartyAttendeesItemProps) => {
