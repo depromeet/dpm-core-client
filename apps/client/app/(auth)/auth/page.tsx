@@ -28,9 +28,9 @@ export default function SignupPage() {
 						y2="43"
 						gradientUnits="userSpaceOnUse"
 					>
-						<stop stop-color="#1F2937" />
-						<stop offset="0.754971" stop-color="#3E4CB8" />
-						<stop offset="1" stop-color="#5769F1" />
+						<stop stopColor="#1F2937" />
+						<stop offset="0.754971" stopColor="#3E4CB8" />
+						<stop offset="1" stopColor="#5769F1" />
 					</linearGradient>
 					<linearGradient
 						id="paint1_linear_20292_54255"
@@ -40,9 +40,9 @@ export default function SignupPage() {
 						y2="43"
 						gradientUnits="userSpaceOnUse"
 					>
-						<stop stop-color="#1F2937" />
-						<stop offset="0.754971" stop-color="#3E4CB8" />
-						<stop offset="1" stop-color="#5769F1" />
+						<stop stopColor="#1F2937" />
+						<stop offset="0.754971" stopColor="#3E4CB8" />
+						<stop offset="1" stopColor="#5769F1" />
 					</linearGradient>
 				</defs>
 			</svg>

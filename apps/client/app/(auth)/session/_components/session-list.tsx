@@ -22,7 +22,7 @@ const SessionListContainer = () => {
 		<Virtuoso
 			data={sessionResponse.sessions}
 			itemContent={(_, session) => <SessionItem key={session.id} session={session} />}
-			className="flex-1"
+			className="scrollbar-hide flex-1"
 		/>
 	);
 };
