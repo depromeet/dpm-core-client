@@ -12,6 +12,7 @@ import {
 	DrawerTitle,
 	DrawerTrigger,
 	useAppShell,
+	XRed,
 } from '@dpm-core/shared';
 
 import { submitAttendanceStatusMutationOptions } from '@/remotes/mutations/after-party';
@@ -73,14 +74,14 @@ export const AfterPartySubmitButton = ({
 					</DrawerHeader>
 
 					<div className="flex flex-col gap-4 px-6 py-4">
-						<h3 className="font-semibold text-body1 text-label-normal">{afterPartyTitle}</h3>
+						<h3 className="font-semibold text-body1 text-label-subtle">{afterPartyTitle}</h3>
 
-						<div className="flex items-center gap-4 rounded-lg border border-line-normal bg-background-subtle px-4 py-3">
+						<div className="flex items-center gap-4 rounded-lg bg-background-subtle px-4 py-3">
 							<span className="block w-17.5 font-semibold text-body2 text-label-assistive">
 								회식
 							</span>
 							<div className="flex items-center gap-1">
-								<CircleCheck size={16} />
+								{attendanceLabel === '참석' ? <CircleCheck /> : <XRed />}
 								<span className="flex items-center gap-1 font-medium text-body2 text-label-subtle">
 									{attendanceLabel}
 								</span>

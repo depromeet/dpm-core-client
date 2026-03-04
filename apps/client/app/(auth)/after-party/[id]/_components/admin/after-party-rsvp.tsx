@@ -176,7 +176,7 @@ export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
 						</DrawerTrigger>
 						<DrawerContent className="mx-auto max-w-lg">
 							<DrawerHeader className="mb-3 px-5 pt-5">
-								<DrawerTitle>참석 여부 제출전 확인</DrawerTitle>
+								<DrawerTitle>참석 여부 제출 전 확인</DrawerTitle>
 							</DrawerHeader>
 							<section className="px-5 pb-3">
 								<p className="mb-2 font-semibold text-body1 text-label-subtle">{title}</p>

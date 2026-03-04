@@ -18,22 +18,22 @@ export const afterParty = {
 	},
 
 	getAfterPartyById: async (afterPartyId: number) => {
-		const res = await http.get<AfterPartyDetail>(`v2/after-party/${afterPartyId}`);
+		const res = await http.get<AfterPartyDetail>(`v2/after-parties/${afterPartyId}`);
 		return res;
 	},
 
 	getInviteTags: async () => {
-		const res = await http.get<GetInviteTagsResponse>('v2/after-party/invite-tags');
+		const res = await http.get<GetInviteTagsResponse>('v2/after-parties/invite-tags');
 		return res;
 	},
 
 	createAfterParty: async (params: CreateAfterPartyRequest) => {
-		const res = await http.post<CreateAfterPartyResponse>('v2/after-party', { json: params });
+		const res = await http.post<CreateAfterPartyResponse>('v2/after-parties', { json: params });
 		return res;
 	},
 
 	updateAfterParty: async (afterPartyId: number, params: UpdateAfterPartyRequest) => {
-		const text = await http.patch<CreateAfterPartyResponse>(`v2/after-party/${afterPartyId}`, {
+		const text = await http.patch<CreateAfterPartyResponse>(`v2/after-parties/${afterPartyId}`, {
 			json: params,
 		});
 		if (!text || String(text).trim() === '') {
@@ -48,7 +48,7 @@ export const afterParty = {
 	 * @param data 참여 여부 (isRsvpGoing: true=참석, false=불참)
 	 */
 	submitAttendanceStatus: async (afterPartyId: number, data: SubmitAttendanceStatusRequest) => {
-		const res = await http.post(`v2/after-party/${afterPartyId}/rsvp-status`, {
+		const res = await http.post(`v2/after-parties/${afterPartyId}/rsvp-status`, {
 			json: data,
 		});
 		return res;
@@ -60,7 +60,7 @@ export const afterParty = {
 	 */
 	getInvitedMembers: async (afterPartyId: number) => {
 		const res = await http.get<AfterPartyInvitedMember[]>(
-			`v2/after-party/${afterPartyId}/rsvp-members`,
+			`v2/after-parties/${afterPartyId}/rsvp-members`,
 		);
 		return res;
 	},

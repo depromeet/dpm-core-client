@@ -47,7 +47,9 @@ export interface AfterPartyDetail {
 	description: string;
 	scheduledAt: string;
 	closedAt: string;
-	isRsvpGoingCount: number;
+	notRsvpGoingCount: number;
+	rsvpGoingCount: number;
+	submitRsvpCount: number;
 	attendanceCount: number;
 	inviteeCount: number;
 	authorMemberId: number;
@@ -112,5 +114,5 @@ export interface AfterPartyInvitedMember {
 	name: string;
 	part: Part;
 	team: number;
-	isRsvpGoing: boolean;
+	rsvpStatus: boolean | null;
 }

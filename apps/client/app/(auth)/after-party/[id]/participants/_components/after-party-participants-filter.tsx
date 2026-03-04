@@ -63,7 +63,7 @@ export const AfterPartyParticipantsFilter = () => {
 					/>
 					<Label
 						htmlFor="isMyTeam"
-						className="cursor-pointer font-normal text-body2 text-label-assistive"
+						className="cursor-pointer font-medium text-body2 text-label-assistive"
 					>
 						내 팀만 보기
 					</Label>

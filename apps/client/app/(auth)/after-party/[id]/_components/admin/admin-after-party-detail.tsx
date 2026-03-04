@@ -21,21 +21,20 @@ const AdminAfterPartyDetailContainer = () => {
 		data: { data: afterParty },
 	} = useSuspenseQuery(getAfterPartyByIdQueryOptions(afterPartyId));
 
-	const { afterPartyId: _afterPartyId, ...afterPartyInfoProps } = afterParty;
 	return (
 		<Fragment>
-			<AfterPartyInfo {...afterPartyInfoProps} afterPartyId={afterPartyId} />
+			<AfterPartyInfo {...afterParty} afterPartyId={afterPartyId} />
 			<Divider className="h-2.5" />
 			<AfterPartyRsvp
 				title={afterParty.title}
 				rsvpStatus={afterParty.rsvpStatus}
-				afterPartyId={_afterPartyId}
+				afterPartyId={afterPartyId}
 			/>
 			<Divider className="h-2.5" />
 			<AfterPartyRsvpOverview
-				afterPartyId={_afterPartyId}
-				attendanceCount={afterParty.attendanceCount}
-				isRsvpGoingCount={afterParty.isRsvpGoingCount}
+				afterPartyId={afterPartyId}
+				submitRsvpCount={afterParty.submitRsvpCount}
+				rsvpGoingCount={afterParty.rsvpGoingCount}
 				inviteeCount={afterParty.inviteeCount}
 			/>
 		</Fragment>
