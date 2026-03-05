@@ -16,6 +16,9 @@ export interface CreateAnnouncementRequest {
 	shouldSendNotification: boolean;
 }
 
+/** 공지 수정 API 요청 body (PATCH /v1/announcements/:id) */
+export type UpdateAnnouncementRequest = CreateAnnouncementRequest;
+
 export type AnnouncementType = 'NOTICE' | 'ASSIGNMENT';
 export type AssignmentType = 'INDIVIDUAL' | 'TEAM' | null;
 
@@ -35,6 +38,11 @@ export interface AnnouncementDetail {
 	markAsReadCount: number;
 	announcementType: AnnouncementType;
 	assignmentType: AssignmentType;
+	submitLink?: string;
+	startAt?: string;
+	dueAt?: string;
+	scheduledAt?: string;
+	shouldSendNotification?: boolean;
 }
 
 export interface ReadMember {
