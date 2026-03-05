@@ -4,7 +4,7 @@ export const AfterPartyAddButton = () => {
 	return (
 		<Link
 			href="/after-party/create?new=1"
-			className="absolute right-5 bottom-24 flex h-12 items-center justify-center space-x-1.5 rounded-[38px] bg-gray-800 px-2.5"
+			className="absolute right-5 bottom-24 z-30 flex h-12 items-center justify-center space-x-1.5 rounded-[38px] bg-gray-800 px-2.5"
 		>
 			<AddIcon />
 			<span className="font-semibold text-body1 text-gray-0">추가</span>
