@@ -4,6 +4,7 @@ import type {
 	AnnouncementDetail,
 	CreateAnnouncementRequest,
 	ReadMembersData,
+	UpdateAnnouncementRequest,
 } from './types';
 
 type AnnouncementListResponse = {
@@ -19,6 +20,23 @@ export const announcement = {
 	create: async (body: CreateAnnouncementRequest) => {
 		const res = await http.post('v1/announcements', { json: body });
 		return res;
+	},
+
+	/**
+	 * 공지/과제 수정
+	 * @param announcementId 공지/과제 ID
+	 * @param body 공지 수정 요청 body
+	 */
+	update: async (announcementId: number, body: UpdateAnnouncementRequest) => {
+		return http.patch(`v1/announcements/${announcementId}`, { json: body });
+	},
+
+	/**
+	 * 공지/과제 삭제
+	 * @param announcementId 공지/과제 ID
+	 */
+	delete: async (announcementId: number) => {
+		return http.delete(`v1/announcements/${announcementId}`);
 	},
 
 	/**
