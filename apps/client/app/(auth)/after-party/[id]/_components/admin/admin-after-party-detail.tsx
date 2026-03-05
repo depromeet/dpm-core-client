@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { Fragment, Suspense } from 'react';
+import { Suspense } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Button, Divider } from '@dpm-core/shared';
@@ -22,7 +22,7 @@ const AdminAfterPartyDetailContainer = () => {
 	} = useSuspenseQuery(getAfterPartyByIdQueryOptions(afterPartyId));
 
 	return (
-		<Fragment>
+		<main className="scrollbar-hide flex-1 overflow-auto">
 			<AfterPartyInfo {...afterParty} afterPartyId={afterPartyId} />
 			<Divider className="h-2.5" />
 			<AfterPartyRsvp
@@ -37,7 +37,7 @@ const AdminAfterPartyDetailContainer = () => {
 				rsvpGoingCount={afterParty.rsvpGoingCount}
 				inviteeCount={afterParty.inviteeCount}
 			/>
-		</Fragment>
+		</main>
 	);
 };
 

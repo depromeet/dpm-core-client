@@ -12,7 +12,7 @@ export default function AfterPartyDetailPage() {
 	const { user } = useAuth();
 
 	return user?.isAdmin ? (
-		<AppLayout className="bg-background-normal">
+		<AppLayout className="h-dvh bg-background-normal">
 			<AppHeader title="회식 상세" className="mb-0" />
 			<AdminAfterPartyDetail />
 		</AppLayout>
