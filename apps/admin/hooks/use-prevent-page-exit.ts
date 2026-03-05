@@ -23,6 +23,7 @@ export const usePreventPageExit = (enabled: boolean) => {
 		const handlePopState = () => {
 			if (window.confirm('작성 중인 내용이 있습니다. 정말 나가시겠습니까?')) {
 				// 사용자가 확인하면 뒤로가기 허용
+				window.history.back();
 				return;
 			}
 			// 사용자가 취소하면 뒤로가기 방지
