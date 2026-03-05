@@ -59,7 +59,7 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 			onSuccess: () => {
 				toast.success('공지가 삭제되었습니다.');
 				queryClient.invalidateQueries({ queryKey: ['announcement-list'] });
-				router.replace('/notice');
+				router.replace('/announcement');
 			},
 			onError: () => {
 				toast.error('공지 삭제에 실패하였습니다.');
@@ -72,10 +72,10 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 	const formattedDate = formatISOStringToDate(detail.createdAt);
 	const readProfiles: Profile[] = [];
 
-	const handleBack = () => router.push('/notice');
+	const handleBack = () => router.push('/announcement');
 
 	const handleEdit = () => {
-		router.push(`/notice/${announcementId}/edit`);
+		router.push(`/announcement/${announcementId}/edit`);
 	};
 
 	const handleDelete = () => {

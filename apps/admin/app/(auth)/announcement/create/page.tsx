@@ -13,7 +13,7 @@ export default function CreateNoticePage() {
 			form={form}
 			onSubmit={handleSubmit}
 			isSubmitPending={isSubmitPending}
-			backHref="/notice"
+			backHref="/announcement"
 		/>
 	);
 }

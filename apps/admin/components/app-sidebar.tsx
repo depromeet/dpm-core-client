@@ -58,7 +58,7 @@ const SIDEBAR_ITEMS = [
 	},
 	{
 		title: '공지',
-		href: '/notice',
+		href: '/announcement',
 		icon: IconHome, // [TODO]: 아이콘 준비되면 교체 필요
 	},
 	{
