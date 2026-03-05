@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { Button, Progress } from '@dpm-core/shared';
 
-import { NonParticipantsNotification } from './non-participants-notification';
+// import { NonParticipantsNotification } from './non-participants-notification';
 
 interface AfterPartyRsvpOverviewProps {
 	submitRsvpCount: number;
@@ -24,7 +24,7 @@ export const AfterPartyRsvpOverview = (props: AfterPartyRsvpOverviewProps) => {
 	};
 
 	return (
-		<section className="mb-20 px-4 py-5">
+		<section className="px-4 py-5">
 			<div className="mb-5 flex flex-col items-center gap-3 rounded-xl border border-line-normal p-5">
 				<div className="flex flex-col items-center gap-1">
 					<p className="font-semibold text-body2 text-label-assistive">회식 참여 인원</p>
@@ -46,7 +46,8 @@ export const AfterPartyRsvpOverview = (props: AfterPartyRsvpOverviewProps) => {
 				<Button size="md" variant="assistive" className="w-full" onClick={handleGoToParticipants}>
 					제출자 현황 보기
 				</Button>
-				<NonParticipantsNotification size="md" />
+				{/* TODO: 푸시 알람 구현 후 추가 예정 */}
+				{/* <NonParticipantsNotification size="md" /> */}
 			</div>
 		</section>
 	);
