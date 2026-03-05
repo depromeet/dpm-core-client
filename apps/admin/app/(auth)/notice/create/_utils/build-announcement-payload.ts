@@ -19,26 +19,31 @@ export function buildAnnouncementPayload(data: NoticeSchema): CreateAnnouncement
 		announcementType,
 		title: data.title,
 		content: data.content,
-		submitLink: data.submissionLink ?? '',
 		shouldSendNotification: data.sendNotification,
 	};
 
 	if (data.category === 'assignment') {
-		payload.submitType = data.assignmentType === 'team' ? 'TEAM' : 'INDIVIDUAL';
+		const assignment: CreateAnnouncementRequest['assignment'] = {
+			submitType: data.assignmentType === 'team' ? 'TEAM' : 'INDIVIDUAL',
+			submitLink: data.submissionLink ?? '',
+		};
+
 		if (
 			data.submissionStartDate != null &&
 			data.submissionStartTime != null &&
 			data.submissionStartTime.length === 4
 		) {
-			payload.startAt = toISOAt(data.submissionStartDate, data.submissionStartTime);
+			assignment.startAt = toISOAt(data.submissionStartDate, data.submissionStartTime);
 		}
 		if (
 			data.submissionEndDate != null &&
 			data.submissionEndTime != null &&
 			data.submissionEndTime.length === 4
 		) {
-			payload.dueAt = toISOAt(data.submissionEndDate, data.submissionEndTime);
+			assignment.dueAt = toISOAt(data.submissionEndDate, data.submissionEndTime);
 		}
+
+		payload.assignment = assignment;
 	}
 
 	if (

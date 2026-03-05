@@ -1,12 +1,17 @@
-/** 공지 등록 API 요청 body (POST /v1/announcements) */
-export interface CreateAnnouncementRequest {
-	announcementType: 'GENERAL' | 'ASSIGNMENT';
-	submitType?: 'INDIVIDUAL' | 'TEAM';
-	title: string;
-	content: string;
+/** 과제 관련 필드 (assignment depth) */
+export interface CreateAnnouncementAssignment {
+	submitType: 'INDIVIDUAL' | 'TEAM';
 	submitLink?: string;
 	startAt?: string; // date-time ISO
 	dueAt?: string; // date-time ISO
+}
+
+/** 공지 등록 API 요청 body (POST /v1/announcements) */
+export interface CreateAnnouncementRequest {
+	announcementType: 'GENERAL' | 'ASSIGNMENT';
+	title: string;
+	content: string;
+	assignment?: CreateAnnouncementAssignment;
 	scheduledAt?: string; // date-time ISO
 	shouldSendNotification: boolean;
 }
