@@ -67,7 +67,7 @@ const NoticeListContainer = ({ selectedType, onTabChange }: NoticeListContainerP
 				<Button
 					size="lg"
 					className="h-12 gap-1.5 rounded-lg bg-background-inverse px-5 py-3"
-					onClick={() => console.log('공지 등록 클릭')}
+					onClick={() => router.push('/notice/create')}
 				>
 					<Plus className="size-5 text-icon-normal" />
 					공지 등록
