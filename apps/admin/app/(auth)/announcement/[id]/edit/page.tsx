@@ -8,7 +8,7 @@ import { SidebarInset } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
-import type { NoticeSchema } from '@/app/(auth)/notice/create/_schemas/notice-schema';
+import type { NoticeSchema } from '@/app/(auth)/announcement/create/_schemas/notice-schema';
 import { useNoticeForm } from '@/hooks/use-notice-form';
 import { getAnnouncementDetailQuery } from '@/remotes/queries/announcement';
 
@@ -86,7 +86,7 @@ const EditNoticeContent = ({ announcementId }: EditNoticeContentProps) => {
 			form={form}
 			onSubmit={handleSubmit}
 			isSubmitPending={isSubmitPending}
-			backHref={`/notice/${announcementId}`}
+			backHref={`/announcement/${announcementId}`}
 		/>
 	);
 };

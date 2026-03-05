@@ -30,7 +30,7 @@ import {
 } from '@dpm-core/shared';
 
 import { Section } from '@/components/section';
-import type { NoticeSchema } from '@/app/(auth)/notice/create/_schemas/notice-schema';
+import type { NoticeSchema } from '@/app/(auth)/announcement/create/_schemas/notice-schema';
 import { usePreventPageExit } from '@/hooks/use-prevent-page-exit';
 import { formatDateWithDay } from '@/lib/date';
 

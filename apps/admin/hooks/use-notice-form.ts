@@ -6,8 +6,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast } from '@dpm-core/shared';
 
-import { type NoticeSchema, noticeSchema } from '@/app/(auth)/notice/create/_schemas/notice-schema';
-import { buildAnnouncementPayload } from '@/app/(auth)/notice/create/_utils/build-announcement-payload';
+import { type NoticeSchema, noticeSchema } from '@/app/(auth)/announcement/create/_schemas/notice-schema';
+import { buildAnnouncementPayload } from '@/app/(auth)/announcement/create/_utils/build-announcement-payload';
 import {
 	createAnnouncementMutationOptions,
 	updateAnnouncementMutationOptions,
@@ -29,7 +29,7 @@ export const useNoticeForm = (options: UseNoticeFormOptions = {}) => {
 			onSuccess: () => {
 				toast.success('공지를 등록하였습니다.');
 				queryClient.invalidateQueries({ queryKey: ['announcement-list'] });
-				router.replace('/notice');
+				router.replace('/announcement');
 			},
 			onError: () => {
 				toast.error('공지 등록에 실패하였습니다.');
@@ -47,7 +47,7 @@ export const useNoticeForm = (options: UseNoticeFormOptions = {}) => {
 						queryKey: ['announcement-detail', announcementId],
 					});
 				}
-				router.replace('/notice');
+				router.replace('/announcement');
 			},
 			onError: () => {
 				toast.error('공지 수정에 실패하였습니다.');
