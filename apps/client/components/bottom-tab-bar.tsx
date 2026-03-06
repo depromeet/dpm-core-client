@@ -109,7 +109,7 @@ const TAB_LIST = [
 		icon: <SessionIcon />,
 	},
 	{
-		href: '/notice',
+		href: '/announcement',
 		name: '공지',
 		icon: <AnnounceMentIcon />,
 	},
