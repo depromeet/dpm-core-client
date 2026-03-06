@@ -42,3 +42,17 @@ export const formatISOStringToDate = (isoString: string) => {
 	}
 	return dayjs(isoString).format('YYYY년 MM월 DD일 (ddd)');
 };
+
+export const formatISOStringToDotDate = (isoString: string) => {
+	if (!isoString) {
+		return '-';
+	}
+	return dayjs(isoString).format('YYYY.MM.DD');
+};
+
+export const formatISOStringToKoreanDate = (isoString: string) => {
+	if (!isoString) {
+		return '-';
+	}
+	return dayjs(isoString).format('YYYY년 MM월 DD일 까지');
+};

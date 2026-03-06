@@ -38,11 +38,9 @@ export interface AnnouncementDetail {
 	markAsReadCount: number;
 	announcementType: AnnouncementType;
 	assignmentType: AssignmentType;
-	submitLink?: string;
-	startAt?: string;
 	dueAt?: string;
-	scheduledAt?: string;
-	shouldSendNotification?: boolean;
+	submitLink?: string;
+	isRead: boolean;
 }
 
 export interface ReadMember {
