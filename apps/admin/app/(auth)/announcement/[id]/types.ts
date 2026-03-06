@@ -4,9 +4,11 @@ export interface Member {
 	id: string;
 	name: string;
 	team: string;
+	teamId: number;
 	role: string;
 	avatarSrc?: string;
 	submitStatus: SubmitStatus;
+	isRead: boolean;
 	score?: number;
 }
 

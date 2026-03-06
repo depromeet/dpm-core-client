@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import {
 	AssignmentSubmitStatus,
 	FilterDropdown,
@@ -14,7 +14,6 @@ import {
 	SearchInputOutlined,
 	type SubmissionStatus,
 	SubmissionStatusModal,
-	type SubmitStatus,
 	TableCheckbox,
 	TeamTabBar,
 	ToggleButton,
@@ -23,14 +22,9 @@ import {
 
 import { patchAssignmentStatusMutationOptions } from '@/remotes/mutations/announcement';
 import { getAnnouncementDetailQuery } from '@/remotes/queries/announcement';
+import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
-interface Member {
-	id: string;
-	name: string;
-	team: string;
-	role: string;
-	submitStatus: SubmitStatus;
-}
+import type { Member } from '../../types';
 
 interface SubmissionStatusTabProps {
 	announcementId: number;
@@ -51,7 +45,12 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 		}),
 	);
 
+	const {
+		data: { data: myInfo },
+	} = useSuspenseQuery(getMyMemberInfoQuery);
+
 	const [activeTeamTab, setActiveTeamTab] = useState('all');
+	const [showMyTeamOnly, setShowMyTeamOnly] = useState(false);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set());
 
@@ -66,13 +65,27 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 
 	const [scores, setScores] = useState<Record<string, string>>({});
 
+	// 멤버 데이터에서 팀 목록 동적 추출
+	const teamTabs = useMemo(() => {
+		const teamIds = [...new Set(members.map((m) => m.teamId))].sort((a, b) => a - b);
+		return [
+			{ id: 'all', label: '전체' },
+			...teamIds.map((id) => ({ id: String(id), label: `${id}팀` })),
+		];
+	}, [members]);
+
 	// 필터링된 멤버 목록
 	const filteredMembers = useMemo(() => {
 		let result = members;
 
-		// 팀 필터
+		// 내 팀만 보기
+		if (showMyTeamOnly) {
+			result = result.filter((m) => m.teamId === myInfo.teamNumber);
+		}
+
+		// 팀 탭 필터
 		if (activeTeamTab !== 'all') {
-			result = result.filter((m) => m.team === activeTeamTab);
+			result = result.filter((m) => String(m.teamId) === activeTeamTab);
 		}
 
 		// 검색 필터
@@ -80,11 +93,26 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 			result = result.filter((m) => m.name.toLowerCase().includes(searchQuery.toLowerCase()));
 		}
 
-		// 추가 필터 적용 (filters 상태 기반)
-		// TODO: filters 상태에 따른 필터링 로직 추가
+		// 조회별 필터
+		const viewFilter = (filters.조회별 || [])[0];
+		if (viewFilter) {
+			result = result.filter((m) => (viewFilter === 'read' ? m.isRead : !m.isRead));
+		}
+
+		// 제출별 필터
+		const submitFilter = (filters.제출별 || [])[0];
+		if (submitFilter) {
+			result = result.filter((m) =>
+				submitFilter === 'submitted'
+					? m.submitStatus !== 'not-submitted'
+					: m.submitStatus === 'not-submitted',
+			);
+		}
+
+		// 링크별 필터 - 멤버별 제출 링크 데이터 필요 (백엔드 API 구현 후 적용 예정)
 
 		return result;
-	}, [members, activeTeamTab, searchQuery]);
+	}, [members, showMyTeamOnly, myInfo.teamNumber, activeTeamTab, searchQuery, filters]);
 	const handleSelectAll = (checked: boolean) => {
 		if (checked) setSelectedMembers(new Set(filteredMembers.map(({ id }) => id)));
 		else setSelectedMembers(new Set());
@@ -164,7 +192,12 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 				/>
 
 				<div className="flex items-center gap-2">
-					<ToggleButton label="내 팀만 보기" />
+					<ToggleButton
+						label="내 팀만 보기"
+						id="my-team-only"
+						checked={showMyTeamOnly}
+						onCheckedChange={(checked) => setShowMyTeamOnly(checked as boolean)}
+					/>
 					<Popover open={filterOpen} onOpenChange={handleFilterOpen}>
 						<div className="flex items-center gap-2">
 							<PopoverTrigger asChild>
@@ -222,12 +255,7 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 
 			{/* 팀 탭 */}
 			<TeamTabBar
-				tabs={[
-					{ id: 'all', label: '전체' },
-					{ id: 'team1', label: '1팀' },
-					{ id: 'team2', label: '2팀' },
-					{ id: 'team3', label: '3팀' },
-				]}
+				tabs={teamTabs}
 				activeTabId={activeTeamTab}
 				onTabChange={setActiveTeamTab}
 				className="border-b-0"
