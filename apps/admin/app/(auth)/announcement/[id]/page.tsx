@@ -1,16 +1,29 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Suspense, use } from 'react';
+import { Suspense, use, useState } from 'react';
 import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import type { AnnouncementDetail } from '@dpm-core/api';
-import { type Profile, SidebarInset, toast } from '@dpm-core/shared';
+import {
+	Button,
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	type Profile,
+	SidebarInset,
+	toast,
+} from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { NoticeDetailHeader } from '@/components/notice/notice-detail-header';
 import { formatISOStringToDate } from '@/lib/date';
+import { deleteAnnouncementMutationOptions } from '@/remotes/mutations/announcement';
 import { getAnnouncementDetailQuery } from '@/remotes/queries/announcement';
 
 import { AssignmentDetail } from './components/assignment/assignment-detail';
@@ -35,20 +48,43 @@ interface NoticeDetailContentProps {
 
 const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 	const router = useRouter();
+	const queryClient = useQueryClient();
+	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 	const {
 		data: { data: detail },
 	} = useSuspenseQuery(getAnnouncementDetailQuery(announcementId));
+
+	const { mutate: deleteAnnouncement } = useMutation(
+		deleteAnnouncementMutationOptions(announcementId, {
+			onSuccess: () => {
+				toast.success('공지가 삭제되었습니다.');
+				queryClient.invalidateQueries({ queryKey: ['announcement-list'] });
+				router.replace('/announcement');
+			},
+			onError: () => {
+				toast.error('공지 삭제에 실패하였습니다.');
+			},
+		}),
+	);
 
 	const isAssignment = detail.announcementType === 'ASSIGNMENT';
 	const tags = getTagsFromAnnouncement(detail);
 	const formattedDate = formatISOStringToDate(detail.createdAt);
 	const readProfiles: Profile[] = [];
 
-	const handleBack = () => router.push('/notice');
+	const handleBack = () => router.push('/announcement');
 
 	const handleEdit = () => {
-		console.log('수정하기 클릭');
-		// TODO: 공지 수정 페이지로 이동
+		router.push(`/announcement/${announcementId}/edit`);
+	};
+
+	const handleDelete = () => {
+		setDeleteModalOpen(true);
+	};
+
+	const handleConfirmDelete = () => {
+		setDeleteModalOpen(false);
+		deleteAnnouncement();
 	};
 
 	const handleRemindSend = () => {
@@ -64,7 +100,33 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 				readCount={detail.markAsReadCount}
 				onBack={handleBack}
 				onEdit={handleEdit}
+				onDelete={handleDelete}
 			/>
+
+			<Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+				<DialogContent className="gap-8 sm:max-w-[640px]" showCloseButton={false}>
+					<DialogHeader className="gap-6 text-left">
+						<DialogTitle className="text-[22px]">공지 삭제</DialogTitle>
+						<DialogDescription>
+							해당 공지를 삭제할까요? 삭제한 공지는 다시 복구할 수 없어요.
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<DialogClose asChild>
+							<Button variant="assistive" size="lg" className="flex-1">
+								취소
+							</Button>
+						</DialogClose>
+						<Button
+							size="lg"
+							className="flex-1 bg-red-500 text-white hover:bg-red-600"
+							onClick={handleConfirmDelete}
+						>
+							삭제하기
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 
 			{isAssignment ? (
 				<AssignmentDetail

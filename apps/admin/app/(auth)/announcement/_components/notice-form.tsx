@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import type { UseFormReturn } from 'react-hook-form';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { CalendarIcon } from 'lucide-react';
 import {
@@ -29,11 +30,11 @@ import {
 } from '@dpm-core/shared';
 
 import { Section } from '@/components/section';
-import { useNoticeForm } from '@/hooks/use-notice-form';
+import type { NoticeSchema } from '@/app/(auth)/announcement/create/_schemas/notice-schema';
 import { usePreventPageExit } from '@/hooks/use-prevent-page-exit';
 import { formatDateWithDay } from '@/lib/date';
 
-import { TiptapEditorContainer } from './_components/TiptapEditorContainer';
+import { TiptapEditorContainer } from '../create/_components/TiptapEditorContainer';
 
 const CATEGORY_OPTIONS = [
 	{ value: 'required', label: '필수 공지' },
@@ -46,14 +47,19 @@ const ASSIGNMENT_TYPE_OPTIONS = [
 	{ value: 'individual', label: '개인 과제' },
 ] as const;
 
-export default function CreateNoticePage() {
-	// TODO: 임시저장 기능 추가 필요 - handleTemporarySave, tempSaveModalOpen 복원 필요
-	const { form, handleSubmit, isSubmitPending } = useNoticeForm();
+interface NoticeFormProps {
+	mode: 'create' | 'edit';
+	form: UseFormReturn<NoticeSchema>;
+	onSubmit: (data: NoticeSchema) => void;
+	isSubmitPending: boolean;
+	backHref: string;
+}
+
+export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending, backHref }: NoticeFormProps) => {
 	const [scheduledDateOpen, setScheduledDateOpen] = useState(false);
 	const [submissionStartDateOpen, setSubmissionStartDateOpen] = useState(false);
 	const [submissionEndDateOpen, setSubmissionEndDateOpen] = useState(false);
 
-	// form 값 감시
 	const category = form.watch('category');
 	const title = form.watch('title');
 	const content = form.watch('content');
@@ -61,7 +67,6 @@ export default function CreateNoticePage() {
 	const sendNotification = form.watch('sendNotification');
 	const isAssignment = category === 'assignment';
 
-	// 입력 내용이 하나라도 있으면 페이지 이탈 방지 활성화
 	const submissionLink = form.watch('submissionLink');
 	const hasChanges =
 		title.trim() !== '' ||
@@ -72,46 +77,35 @@ export default function CreateNoticePage() {
 
 	usePreventPageExit(hasChanges);
 
+	const submitLabel = mode === 'create' ? '등록하기' : '수정하기';
+
 	return (
 		<AppLayout className="bg-background-normal">
 			{/* 상단 헤더 */}
 			<header className="sticky top-0 z-20 border-line-normal border-b bg-background-normal">
 				<div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4 py-3 md:px-10 md:py-4">
-					<Link href="/notice" className="flex items-center gap-2">
+					<Link href={backHref} className="flex items-center gap-2">
 						<ChevronLeft className="text-icon-noraml" />
 					</Link>
 					<div className="flex items-center gap-4">
-						{/* TODO: 미리보기 버튼 */}
-						{/* TODO: 임시저장 기능 추가 필요 */}
-						{/* <Button variant="assistive" className="h-12" onClick={() => setTempSaveModalOpen(true)}>
-							임시저장
-						</Button> */}
 						<Button
 							variant="secondary"
 							className="h-12"
 							disabled={isSubmitPending}
-							onClick={form.handleSubmit(handleSubmit)}
+							onClick={form.handleSubmit(onSubmit)}
 						>
-							등록하기
+							{submitLabel}
 						</Button>
 					</div>
 				</div>
 			</header>
-
-			{/* TODO: 임시저장 기능 추가 필요 */}
-			{/* <TempSaveModal
-				open={tempSaveModalOpen}
-				onOpenChange={setTempSaveModalOpen}
-				onCancel={() => setTempSaveModalOpen(false)}
-				onSave={() => handleTemporarySave()}
-			/> */}
 
 			<Form {...form}>
 				<form
 					onSubmit={(e) => {
 						e.preventDefault();
 						if (isSubmitPending) return;
-						form.handleSubmit(handleSubmit)(e);
+						form.handleSubmit(onSubmit)(e);
 					}}
 				>
 					<Section className="mx-auto w-full max-w-[800px] py-8">
@@ -130,13 +124,15 @@ export default function CreateNoticePage() {
 												onValueChange={(value: string) => {
 													if (value) field.onChange(value);
 												}}
+												disabled={mode === 'edit'}
 												className="flex gap-2"
 											>
 												{CATEGORY_OPTIONS.map(({ value, label }) => (
 													<ToggleGroupItem
 														key={value}
 														value={value}
-														className="w-fit flex-none cursor-pointer rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
+														disabled={mode === 'edit'}
+														className="w-fit flex-none cursor-pointer rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal disabled:cursor-not-allowed disabled:opacity-60"
 													>
 														{label}
 													</ToggleGroupItem>
@@ -371,7 +367,7 @@ export default function CreateNoticePage() {
 											}}
 										/>
 									</div>
-									{/* 제출 마감 (까지) - 에러 문구는 이 행(submissionEndTime) 하단에 표시 */}
+									{/* 제출 마감 (까지) */}
 									<div className="flex items-start gap-2">
 										<FormField
 											control={form.control}
@@ -666,4 +662,4 @@ export default function CreateNoticePage() {
 			</Form>
 		</AppLayout>
 	);
-}
+};

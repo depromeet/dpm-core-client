@@ -29,7 +29,7 @@ export const AttendanceMeInfo = (props: AttendanceMeInfoProps) => {
 					</Badge>
 				)}
 			</div>
-			<ul className="flex justify-between rounded-xl bg-background-subtle px-5 py-[18px] text-body2">
+			<ul className="flex justify-between rounded-xl bg-background-subtle px-5 py-4.5 text-body2">
 				<li>
 					<span className="mr-1 font-medium text-label-assistive">출석</span>
 					<span className="font-semibold text-label-subtle">{attendance.presentCount ?? 0}</span>

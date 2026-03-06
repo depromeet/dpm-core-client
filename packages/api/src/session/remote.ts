@@ -12,7 +12,7 @@ type SessionListResponse = {
 	sessions: Session[];
 };
 
-type CurrentWeekSessionResponse = Session & SessionAttendanceCode;
+type CurrentWeekSessionResponse = Session & SessionAttendanceStatusTime & SessionAttendanceCode;
 
 type SessionWeeksResponse = {
 	sessions: SessionWeek[];

@@ -1,14 +1,9 @@
-import { ATTENDANCE_GAP_DURATION, ATTENDANCE_LATE_DURATION, ONE_MINUTE } from '@dpm-core/shared';
+import dayjs from 'dayjs';
 
-export const showAttendanceBanner = (date: string) => {
-	if (!date) {
+export const showAttendanceBanner = (attendanceStart: string, lateStart: string) => {
+	if (!attendanceStart || !lateStart) {
 		return false;
 	}
-	const now = new Date();
-	const nowTime = now.getTime();
-	const startDateTime = new Date(date).getTime();
-	const endDateTime =
-		startDateTime + ATTENDANCE_GAP_DURATION + ATTENDANCE_LATE_DURATION + ONE_MINUTE;
-
-	return nowTime >= startDateTime && nowTime < endDateTime;
+	const now = dayjs();
+	return now.isAfter(dayjs(attendanceStart)) && now.isBefore(dayjs(lateStart));
 };

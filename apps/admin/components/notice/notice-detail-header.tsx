@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { ChevronLeft } from 'lucide-react';
-import { Button, cn, Edit, IconButton, type Profile, ProfileStack } from '@dpm-core/shared';
+import { Button, cn, IconButton, type Profile, ProfileStack } from '@dpm-core/shared';
 
 export interface NoticeDetailHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 	title: string;
@@ -10,6 +10,7 @@ export interface NoticeDetailHeaderProps extends React.HTMLAttributes<HTMLDivEle
 	readCount?: number;
 	onBack?: () => void;
 	onEdit?: () => void;
+	onDelete?: () => void;
 	showEditButton?: boolean;
 }
 
@@ -20,6 +21,7 @@ export const NoticeDetailHeader = ({
 	readCount = 0,
 	onBack,
 	onEdit,
+	onDelete,
 	showEditButton = true,
 	...props
 }: NoticeDetailHeaderProps) => {
@@ -45,10 +47,14 @@ export const NoticeDetailHeader = ({
 				)}
 
 				{showEditButton && (
-					<Button variant="secondary" size="lg" onClick={onEdit}>
-						<Edit className="size-5" />
-						수정하기
-					</Button>
+					<div className="flex items-center gap-2">
+						<Button variant="secondary" size="lg" onClick={onEdit}>
+							수정하기
+						</Button>
+						<Button variant="secondary" size="lg" onClick={onDelete}>
+							삭제하기
+						</Button>
+					</div>
 				)}
 			</div>
 		</div>

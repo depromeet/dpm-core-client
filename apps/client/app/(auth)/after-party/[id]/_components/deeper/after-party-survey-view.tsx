@@ -3,7 +3,7 @@
 import { Suspense } from 'react';
 import { Loader2Icon } from 'lucide-react';
 import type { AfterPartyDetail } from '@dpm-core/api';
-import { CircleCheck, cn, toast } from '@dpm-core/shared';
+import { Button, CircleCheck, cn, toast } from '@dpm-core/shared';
 
 import type { AttendanceStatus } from '../../_types/after-party-survey';
 import { AfterPartyEditBottomSheet } from './after-party-edit-bottom-sheet';
@@ -50,9 +50,9 @@ export const AfterPartySurveyView = ({
 						isClosed={isClosed}
 						afterPartyId={afterPartyId}
 					>
-						<button type="button" className="font-medium text-body2 text-label-assistive">
+						<Button size="md" variant="text" className="h-10 px-4">
 							수정하기
-						</button>
+						</Button>
 					</AfterPartyEditBottomSheet>
 				</div>
 

@@ -2,28 +2,60 @@
 
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast } from '@dpm-core/shared';
 
-import { type NoticeSchema, noticeSchema } from '@/app/(auth)/notice/create/_schemas/notice-schema';
-import { buildAnnouncementPayload } from '@/app/(auth)/notice/create/_utils/build-announcement-payload';
-import { createAnnouncementMutationOptions } from '@/remotes/mutations/announcement';
+import { type NoticeSchema, noticeSchema } from '@/app/(auth)/announcement/create/_schemas/notice-schema';
+import { buildAnnouncementPayload } from '@/app/(auth)/announcement/create/_utils/build-announcement-payload';
+import {
+	createAnnouncementMutationOptions,
+	updateAnnouncementMutationOptions,
+} from '@/remotes/mutations/announcement';
 
-export const useNoticeForm = (defaultValues?: Partial<NoticeSchema>) => {
+interface UseNoticeFormOptions {
+	mode?: 'create' | 'edit';
+	announcementId?: number;
+	defaultValues?: Partial<NoticeSchema>;
+}
+
+export const useNoticeForm = (options: UseNoticeFormOptions = {}) => {
+	const { mode = 'create', announcementId, defaultValues } = options;
 	const router = useRouter();
+	const queryClient = useQueryClient();
 
-	const { mutate: createAnnouncement, isPending: isSubmitPending } = useMutation(
+	const { mutate: createAnnouncement, isPending: isCreatePending } = useMutation(
 		createAnnouncementMutationOptions({
 			onSuccess: () => {
 				toast.success('공지를 등록하였습니다.');
-				router.replace('/notice');
+				queryClient.invalidateQueries({ queryKey: ['announcement-list'] });
+				router.replace('/announcement');
 			},
 			onError: () => {
 				toast.error('공지 등록에 실패하였습니다.');
 			},
 		}),
 	);
+
+	const { mutate: updateAnnouncement, isPending: isUpdatePending } = useMutation(
+		updateAnnouncementMutationOptions({
+			onSuccess: () => {
+				toast.success('공지를 수정하였습니다.');
+				queryClient.invalidateQueries({ queryKey: ['announcement-list'] });
+				if (announcementId) {
+					queryClient.invalidateQueries({
+						queryKey: ['announcement-detail', announcementId],
+					});
+				}
+				router.replace('/announcement');
+			},
+			onError: () => {
+				toast.error('공지 수정에 실패하였습니다.');
+			},
+		}),
+	);
+
+	const isSubmitPending = mode === 'edit' ? isUpdatePending : isCreatePending;
 
 	const form = useForm<NoticeSchema>({
 		resolver: zodResolver(noticeSchema),
@@ -47,7 +79,12 @@ export const useNoticeForm = (defaultValues?: Partial<NoticeSchema>) => {
 
 	const handleSubmit = (data: NoticeSchema) => {
 		const payload = buildAnnouncementPayload(data);
-		createAnnouncement(payload);
+
+		if (mode === 'edit' && announcementId) {
+			updateAnnouncement({ announcementId, body: payload });
+		} else {
+			createAnnouncement(payload);
+		}
 	};
 
 	const handleTemporarySave = () => {
