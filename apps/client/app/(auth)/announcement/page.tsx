@@ -8,6 +8,7 @@ import type { Announcement } from '@dpm-core/api';
 import { AppLayout, TeamTabBar } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
+import { BottomTabBar } from '@/components/bottom-tab-bar';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { NoticeCard } from '@/components/notice/notice-card';
@@ -58,7 +59,8 @@ const NoticeListContainer = ({ selectedType }: NoticeListContainerProps) => {
 		filterByType(item, selectedType),
 	);
 
-	const handleNoticeClick = (announcementId: number) => router.push(`/announcement/${announcementId}`);
+	const handleNoticeClick = (announcementId: number) =>
+		router.push(`/announcement/${announcementId}`);
 
 	if (filteredAnnouncements.length === 0) {
 		return (
@@ -69,7 +71,7 @@ const NoticeListContainer = ({ selectedType }: NoticeListContainerProps) => {
 	}
 
 	return (
-		<div className="flex w-full flex-col px-4 py-5">
+		<div className="scrollbar-hide flex w-full flex-1 flex-col overflow-y-auto px-4 py-5">
 			{filteredAnnouncements.map((item: Announcement, index: number) => (
 				<div key={item.announcementId}>
 					<NoticeCard
@@ -92,8 +94,8 @@ const NoticePage = () => {
 	const [selectedType, setSelectedType] = useState<NoticeType>('all');
 
 	return (
-		<AppLayout className="bg-background-normal">
-			<AppHeader title="공지" className='py-0 mb-0'/>
+		<AppLayout className="h-dvh bg-background-normal">
+			<AppHeader title="공지" className="mb-0 py-0" />
 
 			<TeamTabBar
 				tabs={[...NOTICE_TABS]}
@@ -115,6 +117,7 @@ const NoticePage = () => {
 					<NoticeListContainer selectedType={selectedType} />
 				</Suspense>
 			</ErrorBoundary>
+			<BottomTabBar />
 		</AppLayout>
 	);
 };
