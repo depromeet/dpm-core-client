@@ -24,7 +24,8 @@ function getTagsFromAnnouncement(detail: AnnouncementDetail): NoticeTagType[] {
 		if (detail.assignmentType === 'TEAM') tags.push('team');
 		return tags;
 	}
-	return ['default'];
+	if (detail.announcementType === 'NOTICE') return ['default'];
+	return ['etc'];
 }
 
 interface NoticeDetailContentProps {
@@ -60,7 +61,7 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 	const formattedDueAt = detail.dueAt ? formatISOStringToKoreanDate(detail.dueAt) : undefined;
 
 	return (
-		<div className="relative flex flex-col gap-5 p-4 flex-1">
+		<div className="flex flex-1 flex-col gap-5 p-4">
 			<NoticeInfo
 				title={detail.title}
 				date={formattedDate}
@@ -78,18 +79,16 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 				/>
 			)}
 
-			<div className="whitespace-pre-wrap font-medium text-body2 text-label-normal pb-16">
+			<div className="whitespace-pre-wrap font-medium text-body2 text-label-normal">
 				{detail.content}
 			</div>
 
-			<div className="absolute bottom-4 left-4">
-				<ReadButton
-					readCount={detail.markAsReadCount}
-					isRead={isRead}
-					showTooltip={showTooltip}
-					onClick={handleReadClick}
-				/>
-			</div>
+			<ReadButton
+				readCount={detail.markAsReadCount}
+				isRead={isRead}
+				showTooltip={showTooltip}
+				onClick={handleReadClick}
+			/>
 		</div>
 	);
 };

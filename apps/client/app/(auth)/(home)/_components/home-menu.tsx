@@ -34,7 +34,7 @@ export const HomeMenu = () => {
 			className="flex flex-col divide-y-8 divide-background-strong"
 		>
 			<ul className="mt-5 flex items-center justify-center gap-x-13 pb-10">
-				<IconCard icon={IconNotice} title="공지" href="/notice" />
+				<IconCard icon={IconNotice} title="공지" href="/announcement" />
 				<IconCard icon={IconAttendance} title="출석" href="/attendance/me" />
 				<IconCard icon={IconSession} title="세션" href="/session" />
 				<IconCard icon={IconAfterParty} title="회식" href="/after-party" />

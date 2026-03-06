@@ -31,7 +31,8 @@ function getTagsFromAnnouncement(item: Announcement): NoticeTag[] {
 		if (item.assignmentType === 'TEAM') tags.push('team');
 		return tags;
 	}
-	return ['default'];
+	if (item.announcementType === 'NOTICE') return ['default'];
+	return ['etc'];
 }
 
 function filterByType(item: Announcement, selectedType: NoticeType): boolean {
@@ -57,7 +58,7 @@ const NoticeListContainer = ({ selectedType }: NoticeListContainerProps) => {
 		filterByType(item, selectedType),
 	);
 
-	const handleNoticeClick = (announcementId: number) => router.push(`/notice/${announcementId}`);
+	const handleNoticeClick = (announcementId: number) => router.push(`/announcement/${announcementId}`);
 
 	if (filteredAnnouncements.length === 0) {
 		return (

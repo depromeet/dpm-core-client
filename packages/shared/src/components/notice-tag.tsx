@@ -28,7 +28,7 @@ const labelMap: Record<string, string> = {
 	assignment: '과제 공지',
 	individual: '개인 과제',
 	team: '팀 과제',
-	etc: '기타 공지',
+	etc: '일반 공지',
 };
 
 export interface NoticeTagProps
