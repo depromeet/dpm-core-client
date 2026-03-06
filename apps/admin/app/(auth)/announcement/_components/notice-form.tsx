@@ -55,6 +55,12 @@ interface NoticeFormProps {
 	backHref: string;
 }
 
+/** 부분 입력된 시간값을 placeholder로 패딩하여 4자리로 만듦 */
+function padTimeValue(value: string, placeholder: string): string {
+	if (!value || value.length === 4) return value;
+	return (value + placeholder.slice(value.length)).slice(0, 4);
+}
+
 export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending, backHref }: NoticeFormProps) => {
 	const [scheduledDateOpen, setScheduledDateOpen] = useState(false);
 	const [submissionStartDateOpen, setSubmissionStartDateOpen] = useState(false);
@@ -91,7 +97,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending, backHref }: 
 						<Button
 							variant="secondary"
 							className="h-12"
-							disabled={isSubmitPending}
+							loading={isSubmitPending}
 							onClick={form.handleSubmit(onSubmit)}
 						>
 							{submitLabel}
@@ -116,7 +122,12 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending, backHref }: 
 								name="category"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel className="text-body1">카테고리</FormLabel>
+										<div className="flex flex-col gap-1">
+											<FormLabel className="text-body1">카테고리</FormLabel>
+											<p className="font-medium text-caption1 text-label-assistive">
+												카테고리는 공지 등록 이후에 다시 수정할 수 없어요.
+											</p>
+										</div>
 										<FormControl>
 											<ToggleGroup
 												type="single"
@@ -331,6 +342,12 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending, backHref }: 
 																	}
 																}}
 																{...field}
+																onBlur={() => {
+																	field.onBlur();
+																	if (field.value && field.value.length < 4) {
+																		field.onChange(padTimeValue(field.value, '0000'));
+																	}
+																}}
 															>
 																<InputOTPGroup className="gap-0">
 																	<InputOTPSlot
@@ -460,6 +477,12 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending, backHref }: 
 																maxLength={4}
 																placeholder="2359"
 																{...field}
+																onBlur={() => {
+																	field.onBlur();
+																	if (field.value && field.value.length < 4) {
+																		field.onChange(padTimeValue(field.value, '2359'));
+																	}
+																}}
 															>
 																<InputOTPGroup className="gap-0">
 																	<InputOTPSlot
@@ -595,6 +618,12 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending, backHref }: 
 																maxLength={4}
 																placeholder="0000"
 																{...field}
+																onBlur={() => {
+																	field.onBlur();
+																	if (field.value && field.value.length < 4) {
+																		field.onChange(padTimeValue(field.value, '0000'));
+																	}
+																}}
 															>
 																<InputOTPGroup className="gap-0">
 																	<InputOTPSlot
