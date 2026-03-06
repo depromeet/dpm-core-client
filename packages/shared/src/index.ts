@@ -14,6 +14,8 @@ export * from './components/icons';
 export * from './components/member-profile';
 export * from './components/modals';
 export * from './components/multi-action-toolbar';
+export * from './components/notice-info';
+export * from './components/notice-tag';
 export * from './components/profile-stack';
 export * from './components/reminder-callout';
 export * from './components/search-input';

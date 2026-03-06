@@ -48,7 +48,7 @@ const NoticeListContainer = ({ selectedType, onTabChange }: NoticeListContainerP
 		data: { data: announcementResponse },
 	} = useSuspenseQuery(getAnnouncementListQuery);
 
-	const filteredAnnouncements = announcementResponse.announcements.filter((item) =>
+	const filteredAnnouncements = announcementResponse.announcements.filter((item: Announcement) =>
 		filterByType(item, selectedType),
 	);
 
@@ -89,7 +89,7 @@ const NoticeListContainer = ({ selectedType, onTabChange }: NoticeListContainerP
 
 			{/* Notice Card List */}
 			<div className="flex w-full flex-col gap-3 px-10 py-6">
-				{filteredAnnouncements.map((item) => (
+				{filteredAnnouncements.map((item: Announcement) => (
 					<NoticeCard
 						key={item.announcementId}
 						title={item.title}

@@ -1,6 +1,6 @@
 'use client';
 
-import { NoticeTag as NoticeTagComponent } from '@/components/notice/notice-tag';
+import { NoticeInfo } from '@dpm-core/shared';
 
 import type { NoticeTag } from '../../types';
 
@@ -17,20 +17,16 @@ export const NoticeContent = ({ title, date, readCount, content, tags }: NoticeC
 
 	return (
 		<div className="flex flex-col gap-10">
-			{/* Title Section */}
-			<div className="flex flex-col gap-4">
-				{firstTag && <NoticeTagComponent type={firstTag} className="w-fit" />}
-
-				<div className="flex flex-col gap-2">
-					<h2 className="font-semibold text-label-strong text-title1">{title}</h2>
-
-					<div className="flex items-center gap-1 text-body2 text-label-assistive">
-						<span>{date}</span>
-						<div className="h-4 w-px bg-line-normal" />
-						<span>{readCount}명 읽음</span>
-					</div>
-				</div>
-			</div>
+			<NoticeInfo
+				title={title}
+				date={date}
+				readCount={readCount}
+				tags={firstTag ? [firstTag] : []}
+				className="gap-4"
+				titleClassName="text-title1 text-label-strong"
+				captionClassName="text-body2"
+				dividerClassName="h-4 bg-line-normal"
+			/>
 
 			{/* Content Section */}
 			<div className="whitespace-pre-wrap font-medium text-body2 text-label-normal">{content}</div>
