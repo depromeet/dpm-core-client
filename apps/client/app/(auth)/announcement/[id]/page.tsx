@@ -79,9 +79,10 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 				/>
 			)}
 
-			<div className="whitespace-pre-wrap font-medium text-body2 text-label-normal">
-				{detail.content}
-			</div>
+			<div
+				className="ProseMirror font-medium text-body2 text-label-normal"
+				dangerouslySetInnerHTML={{ __html: detail.content }}
+			/>
 
 			<ReadButton
 				readCount={detail.markAsReadCount}
@@ -111,7 +112,7 @@ const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
 	}
 
 	return (
-		<AppLayout className=" bg-background-normal">
+		<AppLayout className="bg-background-normal">
 			<AppHeader title="공지 상세" className="mb-0" />
 			<ErrorBoundary
 				fallback={(props: ErrorBoundaryFallbackProps) => <ErrorBox onReset={() => props.reset()} />}
@@ -123,7 +124,7 @@ const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
 						</div>
 					}
 				>
-					<div className="flex  flex-1 overflow-y-auto">
+					<div className="flex flex-1 overflow-y-auto">
 						<NoticeDetailContent announcementId={announcementId} />
 					</div>
 				</Suspense>
