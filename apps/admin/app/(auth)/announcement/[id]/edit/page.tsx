@@ -86,7 +86,6 @@ const EditNoticeContent = ({ announcementId }: EditNoticeContentProps) => {
 			form={form}
 			onSubmit={handleSubmit}
 			isSubmitPending={isSubmitPending}
-			backHref={`/announcement/${announcementId}`}
 		/>
 	);
 };

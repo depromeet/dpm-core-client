@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
@@ -52,7 +52,6 @@ interface NoticeFormProps {
 	form: UseFormReturn<NoticeSchema>;
 	onSubmit: (data: NoticeSchema) => void;
 	isSubmitPending: boolean;
-	backHref: string;
 }
 
 /** 부분 입력된 시간값을 placeholder로 패딩하여 4자리로 만듦 */
@@ -61,7 +60,8 @@ function padTimeValue(value: string, placeholder: string): string {
 	return (value + placeholder.slice(value.length)).slice(0, 4);
 }
 
-export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending, backHref }: NoticeFormProps) => {
+export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeFormProps) => {
+	const router = useRouter();
 	const [scheduledDateOpen, setScheduledDateOpen] = useState(false);
 	const [submissionStartDateOpen, setSubmissionStartDateOpen] = useState(false);
 	const [submissionEndDateOpen, setSubmissionEndDateOpen] = useState(false);
@@ -90,9 +90,9 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending, backHref }: 
 			{/* 상단 헤더 */}
 			<header className="sticky top-0 z-20 border-line-normal border-b bg-background-normal">
 				<div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4 py-3 md:px-10 md:py-4">
-					<Link href={backHref} className="flex items-center gap-2">
+					<button type="button" onClick={() => router.back()} className="flex items-center gap-2">
 						<ChevronLeft className="text-icon-noraml" />
-					</Link>
+					</button>
 					<div className="flex items-center gap-4">
 						<Button
 							variant="secondary"
