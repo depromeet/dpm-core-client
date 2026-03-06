@@ -29,7 +29,10 @@ export const NoticeContent = ({ title, date, readCount, content, tags }: NoticeC
 			/>
 
 			{/* Content Section */}
-			<div className="whitespace-pre-wrap font-medium text-body2 text-label-normal">{content}</div>
+			<div
+				className="ProseMirror font-medium text-body2 text-label-normal"
+				dangerouslySetInnerHTML={{ __html: content }}
+			/>
 		</div>
 	);
 };
