@@ -1,9 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { TeamTabBar } from '@dpm-core/shared';
 
-import type { AssignmentDetailProps, Member } from '../../types';
+import { getAnnouncementReadMembersQuery } from '@/remotes/queries/announcement';
+
+import { type AssignmentDetailProps, type Member, toClientSubmitStatus } from '../../types';
 import { AssignmentDetailTab } from './detail-tab';
 import { SubmissionStatusTab } from './submission-tab';
 
@@ -17,37 +20,24 @@ export const AssignmentDetail = ({
 }: AssignmentDetailProps) => {
 	const [activeMainTab, setActiveMainTab] = useState<'detail' | 'status'>('detail');
 
-	// 목업 데이터
+	const {
+		data: { data: readMembersData },
+	} = useSuspenseQuery(getAnnouncementReadMembersQuery(announcementId));
+
+	// readMembers + unreadMembers 합산으로 전체 멤버 목록 구성
 	const members: Member[] = [
-		{
-			id: '1',
-			name: '{디퍼 이름}',
-			team: '{N}팀',
-			role: '{디퍼 직무}',
-			submitStatus: 'not-submitted',
-		},
-		{
-			id: '2',
-			name: '{디퍼 이름}',
-			team: '{N}팀',
-			role: '{디퍼 직무}',
-			submitStatus: 'completed',
-		},
-		{
-			id: '3',
-			name: '{디퍼 이름}',
-			team: '{N}팀',
-			role: '{디퍼 직무}',
-			submitStatus: 'late',
-		},
-		{
-			id: '4',
-			name: '{디퍼 이름}',
-			team: '{N}팀',
-			role: '{디퍼 직무}',
-			submitStatus: 'pending',
-		},
-	];
+		...readMembersData.readMembers.map((m) => ({ ...m, isRead: true })),
+		...readMembersData.unreadMembers.map((m) => ({ ...m, isRead: false })),
+	].map(({ memberId, name, teamId, part, submitStatus, score, isRead }) => ({
+		id: String(memberId),
+		name,
+		team: `${teamId}팀`,
+		teamId,
+		role: part,
+		submitStatus: toClientSubmitStatus(submitStatus),
+		isRead,
+		score,
+	}));
 
 	const handleSendReminder = () => {
 		// TODO: 리마인드 API 연동 필요

@@ -43,11 +43,15 @@ export interface AnnouncementDetail {
 	isRead: boolean;
 }
 
+export type ServerSubmitStatus = 'PENDING' | 'SUBMITTED' | 'LATE_SUBMITTED' | 'NOT_SUBMITTED';
+
 export interface ReadMember {
 	memberId: number;
 	name: string;
 	teamId: number;
 	part: string;
+	submitStatus?: ServerSubmitStatus;
+	score?: number;
 }
 
 export interface ReadMembersData {
