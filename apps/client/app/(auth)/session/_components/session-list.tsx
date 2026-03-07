@@ -29,7 +29,7 @@ const SessionListContainer = () => {
 
 function SessionItem({ session }: { session: Session }) {
 	const handleClick = () => {
-		toast.light('세션은 상세 정보를 제공하지 않아요.');
+		toast.light('디퍼에는 세션은 상세 정보를 제공하지 않아요.');
 	};
 
 	return (
