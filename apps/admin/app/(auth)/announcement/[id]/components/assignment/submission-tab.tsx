@@ -21,10 +21,13 @@ import {
 } from '@dpm-core/shared';
 
 import { patchAssignmentStatusMutationOptions } from '@/remotes/mutations/announcement';
-import { getAnnouncementDetailQuery } from '@/remotes/queries/announcement';
+import {
+	getAnnouncementDetailQuery,
+	getAnnouncementReadMembersQuery,
+} from '@/remotes/queries/announcement';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
-import type { Member } from '../../types';
+import { type Member, toServerSubmitStatus } from '../../types';
 
 interface SubmissionStatusTabProps {
 	announcementId: number;
@@ -37,6 +40,7 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 		patchAssignmentStatusMutationOptions(announcementId, {
 			onSuccess: () => {
 				queryClient.invalidateQueries(getAnnouncementDetailQuery(announcementId));
+				queryClient.invalidateQueries(getAnnouncementReadMembersQuery(announcementId));
 				toast.success('제출 상태가 변경되었어요.');
 			},
 			onError: () => {
@@ -63,7 +67,11 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 	const [statusModalOpen, setStatusModalOpen] = useState(false);
 	const [selectedStatus, setSelectedStatus] = useState<SubmissionStatus>('pending');
 
-	const [scores, setScores] = useState<Record<string, string>>({});
+	const [scores, setScores] = useState<Record<string, string>>(() =>
+		Object.fromEntries(
+			members.filter((m) => m.score != null).map((m) => [m.id, String(m.score)]),
+		),
+	);
 
 	// 멤버 데이터에서 팀 목록 동적 추출
 	const teamTabs = useMemo(() => {
@@ -168,7 +176,7 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 
 	const handleStatusModalSave = () => {
 		patchAssignmentStatus({
-			submitStatus: selectedStatus.toUpperCase(),
+			submitStatus: toServerSubmitStatus(selectedStatus),
 			memberIds: Array.from(selectedMembers).map(Number),
 		});
 		setStatusModalOpen(false);

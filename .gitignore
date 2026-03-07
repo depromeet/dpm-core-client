@@ -58,6 +58,9 @@ yarn-error.log*
 *storybook.log
 *.tsbuildinfo
 
+# Playwright MCP
+.playwright-mcp/
+
 
 app-example
 

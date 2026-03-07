@@ -6,7 +6,7 @@ import { TeamTabBar } from '@dpm-core/shared';
 
 import { getAnnouncementReadMembersQuery } from '@/remotes/queries/announcement';
 
-import type { AssignmentDetailProps, Member } from '../../types';
+import { type AssignmentDetailProps, type Member, toClientSubmitStatus } from '../../types';
 import { AssignmentDetailTab } from './detail-tab';
 import { SubmissionStatusTab } from './submission-tab';
 
@@ -25,18 +25,18 @@ export const AssignmentDetail = ({
 	} = useSuspenseQuery(getAnnouncementReadMembersQuery(announcementId));
 
 	// readMembers + unreadMembers 합산으로 전체 멤버 목록 구성
-	// TODO: 제출 상태(submitStatus)는 백엔드 API 구현 후 교체 필요
 	const members: Member[] = [
 		...readMembersData.readMembers.map((m) => ({ ...m, isRead: true })),
 		...readMembersData.unreadMembers.map((m) => ({ ...m, isRead: false })),
-	].map(({ memberId, name, teamId, part, isRead }) => ({
+	].map(({ memberId, name, teamId, part, submitStatus, score, isRead }) => ({
 		id: String(memberId),
 		name,
 		team: `${teamId}팀`,
 		teamId,
 		role: part,
-		submitStatus: 'not-submitted' as const,
+		submitStatus: toClientSubmitStatus(submitStatus),
 		isRead,
+		score,
 	}));
 
 	const handleSendReminder = () => {
