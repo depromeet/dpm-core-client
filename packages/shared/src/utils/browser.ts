@@ -36,3 +36,33 @@ export function testPlatform(re: RegExp): boolean | undefined {
 		? re.test(window.navigator.platform)
 		: undefined;
 }
+
+const DPM_APP_UA_REGEX = /DPMApp\/(\d+\.\d+\.\d+)\s*\((\w+)\)/i;
+
+export interface DPMAppInfo {
+	isApp: boolean;
+	appVersion: string | null;
+	platform: 'ios' | 'android' | null;
+}
+
+export type AppPlatform = 'ios' | 'android';
+
+export function parseAppPlatform(value: string | null | undefined): AppPlatform | null {
+	if (value === 'ios') return 'ios';
+	if (value === 'android') return 'android';
+	return null;
+}
+
+export function parseDPMAppUserAgent(userAgent: string): DPMAppInfo {
+	const match = userAgent.match(DPM_APP_UA_REGEX);
+
+	if (!match) {
+		return { isApp: false, appVersion: null, platform: null };
+	}
+
+	return {
+		isApp: true,
+		appVersion: match[1],
+		platform: parseAppPlatform(match[2].toLowerCase()),
+	};
+}
