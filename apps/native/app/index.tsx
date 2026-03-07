@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createWebView } from '@webview-bridge/react-native';
+import Constants from 'expo-constants';
 import { SplashScreen } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { BackHandler, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
@@ -63,6 +64,7 @@ export default function Home() {
 						style={styles.webview}
 						ref={webViewRef}
 						source={{ uri: WEBVIEW_URL }}
+						applicationNameForUserAgent={`DPMApp/${Constants.expoConfig?.version ?? '1.0.0'} (${Platform.OS === 'ios' ? 'iOS' : 'Android'})`}
 						onNavigationStateChange={handleNavigationChanage}
 						onLoadEnd={handleWebViewLoadEnd}
 						overScrollMode="never"
