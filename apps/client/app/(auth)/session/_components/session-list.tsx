@@ -6,7 +6,7 @@ import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
 import type { Session } from '@dpm-core/api';
-import { Calender, Clock, formatDotFullDate } from '@dpm-core/shared';
+import { Calender, Clock, formatDotFullDate, toast } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
@@ -28,8 +28,12 @@ const SessionListContainer = () => {
 };
 
 function SessionItem({ session }: { session: Session }) {
+	const handleClick = () => {
+		toast.light('세션은 상세 정보를 제공하지 않아요.');
+	};
+
 	return (
-		<div className="px-4">
+		<div className="cursor-pointer px-4" onClick={handleClick} role="button" tabIndex={0}>
 			<div className="flex flex-col border-line-subtle border-b px-3 py-4">
 				<p className="mb-0.5 font-medium text-caption1 text-label-assistive">
 					{formatSessionWeekString(session.week)}
