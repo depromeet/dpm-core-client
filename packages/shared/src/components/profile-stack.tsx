@@ -30,9 +30,13 @@ export const ProfileStack = ({
 
 	return (
 		<div className={cn('flex items-center gap-1', className)} {...props}>
-			<div className="flex items-center pr-5">
+			<div className="flex items-center justify-end pr-5">
 				{displayProfiles.map(({ id, avatarSrc, name, avatarFallback }, index) => (
-					<Avatar key={id} className={cn('size-10 border-2 border-white', index > 0 && '-ml-5')}>
+					<Avatar
+						key={id}
+						className={cn('size-10 border-2 border-white', index > 0 && '-ml-5')}
+						style={{ zIndex: displayProfiles.length - index }}
+					>
 						{avatarSrc && <AvatarImage src={avatarSrc} alt={name} />}
 						<AvatarFallback className="bg-primary-extralight text-primary-normal">
 							{avatarFallback || name.charAt(0)}

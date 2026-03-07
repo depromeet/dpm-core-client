@@ -24,7 +24,10 @@ import { LoadingBox } from '@/components/loading-box';
 import { NoticeDetailHeader } from '@/components/notice/notice-detail-header';
 import { formatISOStringToDate } from '@/lib/date';
 import { deleteAnnouncementMutationOptions } from '@/remotes/mutations/announcement';
-import { getAnnouncementDetailQuery } from '@/remotes/queries/announcement';
+import {
+	getAnnouncementDetailQuery,
+	getAnnouncementReadMembersQuery,
+} from '@/remotes/queries/announcement';
 
 import { AssignmentDetail } from './components/assignment/assignment-detail';
 import { NoticeContent } from './components/common/notice-content';
@@ -54,6 +57,10 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 		data: { data: detail },
 	} = useSuspenseQuery(getAnnouncementDetailQuery(announcementId));
 
+	const {
+		data: { data: readMembersData },
+	} = useSuspenseQuery(getAnnouncementReadMembersQuery(announcementId));
+
 	const { mutate: deleteAnnouncement } = useMutation(
 		deleteAnnouncementMutationOptions(announcementId, {
 			onSuccess: () => {
@@ -70,7 +77,10 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 	const isAssignment = detail.announcementType === 'ASSIGNMENT';
 	const tags = getTagsFromAnnouncement(detail);
 	const formattedDate = formatISOStringToDate(detail.createdAt);
-	const readProfiles: Profile[] = [];
+	const readProfiles: Profile[] = readMembersData.readMembers.map(({ memberId, name }) => ({
+		id: String(memberId),
+		name,
+	}));
 
 	const handleBack = () => router.push('/announcement');
 
@@ -104,7 +114,7 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 			/>
 
 			<Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-				<DialogContent className="gap-8 sm:max-w-[640px]" showCloseButton={false}>
+				<DialogContent className="gap-8 sm:max-w-160" showCloseButton={false}>
 					<DialogHeader className="gap-6 text-left">
 						<DialogTitle className="text-[22px]">공지 삭제</DialogTitle>
 						<DialogDescription>
