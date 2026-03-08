@@ -1,5 +1,7 @@
 'use client';
 
+import { Suspense } from 'react';
+import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
 import type { Part } from '@dpm-core/api';
@@ -7,6 +9,8 @@ import { Aesterisk } from '@dpm-core/shared';
 
 import { Profile } from '@/components/attendance/profile';
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
+import { ErrorBox } from '@/components/error-box';
+import { LoadingBox } from '@/components/loading-box';
 import { useAuth } from '@/providers/auth-provider';
 import { getAfterPartyInvitedMembersQueryOptions } from '@/remotes/queries/after-party';
 
@@ -16,7 +20,7 @@ interface AfterPartyParticipantsListProps {
 	afterPartyId: number;
 }
 
-export const AfterPartyParticipantsList = (props: AfterPartyParticipantsListProps) => {
+const AfterPartyParticipantsListContainer = (props: AfterPartyParticipantsListProps) => {
 	const { afterPartyId } = props;
 	const { afterPartyParticipantsStatus, afterPartyParticipantsIsMyTeam } =
 		useAfterPartyParticipantsFilterSearchParams();
@@ -78,5 +82,17 @@ const AfterPartyParticipantsItem = (props: AfterPartyParticipantsItemProps) => {
 				part={props.part === 'ETC' ? 'WEB' : props.part}
 			/>
 		</li>
+	);
+};
+
+export const AfterPartyParticipantsList = (props: AfterPartyParticipantsListProps) => {
+	return (
+		<ErrorBoundary
+			fallback={(props: ErrorBoundaryFallbackProps) => <ErrorBox onReset={() => props.reset()} />}
+		>
+			<Suspense fallback={<LoadingBox />}>
+				<AfterPartyParticipantsListContainer {...props} />
+			</Suspense>
+		</ErrorBoundary>
 	);
 };
