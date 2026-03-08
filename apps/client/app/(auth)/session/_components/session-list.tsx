@@ -6,8 +6,9 @@ import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
 import type { Session } from '@dpm-core/api';
-import { Calender, Clock, formatDotFullDate, toast } from '@dpm-core/shared';
+import { Aesterisk, Calender, Clock, formatDotFullDate, toast } from '@dpm-core/shared';
 
+import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringHHMM } from '@/lib/date';
@@ -18,6 +19,18 @@ const SessionListContainer = () => {
 	const {
 		data: { data: sessionResponse },
 	} = useSuspenseQuery(getSessionListQuery);
+
+	if (sessionResponse.sessions.length === 0) {
+		return (
+			<Empty className="h-full min-h-41.5">
+				<EmptyHeader>
+					<Aesterisk />
+					<EmptyTitle>등록된 세션이 없어요</EmptyTitle>
+				</EmptyHeader>
+			</Empty>
+		);
+	}
+
 	return (
 		<Virtuoso
 			data={sessionResponse.sessions}
@@ -55,15 +68,14 @@ function SessionItem({ session }: { session: Session }) {
 	);
 }
 
-const SessionList = ErrorBoundary.with(
-	{
-		fallback: ({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />,
-	},
-	() => (
-		<Suspense fallback={<LoadingBox />}>
-			<SessionListContainer />
-		</Suspense>
-	),
-);
-
-export { SessionList };
+export const SessionList = () => {
+	return (
+		<ErrorBoundary
+			fallback={(props: ErrorBoundaryFallbackProps) => <ErrorBox onReset={props.reset} />}
+		>
+			<Suspense fallback={<LoadingBox />}>
+				<SessionListContainer />
+			</Suspense>
+		</ErrorBoundary>
+	);
+};
