@@ -55,7 +55,13 @@ interface NoticeFormProps {
 	backHref: string;
 }
 
-export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending, backHref }: NoticeFormProps) => {
+export const NoticeForm = ({
+	mode,
+	form,
+	onSubmit,
+	isSubmitPending,
+	backHref,
+}: NoticeFormProps) => {
 	const [scheduledDateOpen, setScheduledDateOpen] = useState(false);
 	const [submissionStartDateOpen, setSubmissionStartDateOpen] = useState(false);
 	const [submissionEndDateOpen, setSubmissionEndDateOpen] = useState(false);
