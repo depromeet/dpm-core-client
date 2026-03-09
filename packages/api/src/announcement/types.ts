@@ -67,3 +67,17 @@ export interface ReadMembersData {
 	readMembers: ReadMember[];
 	unreadMembers: ReadMember[];
 }
+
+export interface AssignmentStatusMember {
+	memberId: number;
+	name: string;
+	teamId: number;
+	part: string;
+	submitStatus: ServerSubmitStatus;
+	score?: number;
+	submitLink?: string;
+}
+
+export interface AssignmentStatusData {
+	members: AssignmentStatusMember[];
+}
