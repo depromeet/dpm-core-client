@@ -43,6 +43,7 @@ export const deleteAnnouncementMutationOptions = (
 
 export type PatchAssignmentStatusVariables = {
 	submitStatus: string;
+	assignmentScore?: number;
 	memberIds: number[];
 };
 

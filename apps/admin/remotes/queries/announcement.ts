@@ -17,3 +17,9 @@ export const getAnnouncementReadMembersQuery = (announcementId: number) =>
 		queryKey: ['announcement-read-members', announcementId],
 		queryFn: () => announcement.getReadMembers(announcementId),
 	});
+
+export const getAnnouncementAssignmentStatusQuery = (announcementId: number) =>
+	queryOptions({
+		queryKey: ['announcement-assignment-status', announcementId],
+		queryFn: () => announcement.getAssignmentStatus(announcementId),
+	});
