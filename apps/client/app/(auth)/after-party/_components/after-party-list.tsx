@@ -15,7 +15,7 @@ import { getAfterPartiesQueryOptions } from '@/remotes/queries/after-party';
 
 import { useAfterPartyListFilterSearchParams } from '../_hooks/use-after-party-list-filter-search-params';
 import { getDaysUntilDeadline } from '../_utils/get-days-until-deadline';
-
+import Image from 'next/image';
 dayjs.locale('ko');
 
 interface AfterPartyItemProps {
@@ -237,6 +237,16 @@ const AfterPartyListContainer = () => {
 	/** 개발 환경에서 rsvpStatus=null 예시를 목록 맨 위에 표시 */
 	const displayList =
 		process.env.NODE_ENV === 'development' ? [MOCK_UNANSWERED_ITEM, ...filteredList] : filteredList;
+	
+
+	if (displayList.length === 0) {
+		return (
+			<section className="flex h-full flex-col items-center justify-center">
+				<Image src="/empty.svg" alt="목록이 비어있습니다" width={31.5} height={31.5} />
+				<div className="mt-4 text-body1 text-gray-400">등록된 회식이 없어요</div>
+			</section>
+		);
+	}
 
 	return (
 		<div className="[&_[data-virtuoso-scroller]]:scrollbar-hide h-full">
