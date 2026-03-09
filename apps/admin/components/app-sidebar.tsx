@@ -72,6 +72,11 @@ const SIDEBAR_ITEMS = [
 		icon: IconSession,
 	},
 	{
+		title: '멤버 관리',
+		href: '/member',
+		icon: IconHome, // [TODO]: 아이콘 준비되면 교체 필요
+	},
+	{
 		title: '정산',
 		href: '#',
 		icon: IconSettlement,
