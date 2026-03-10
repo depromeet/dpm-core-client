@@ -68,7 +68,7 @@ class Http {
 
 	patch = async <Response = unknown>(url: string, options?: Options) => {
 		const res = await this.instance.patch<ApiResponse<Response>>(url, options);
-		return res.text();
+		return res.json();
 	};
 
 	delete = async <Response = unknown>(url: string, options?: Options) => {

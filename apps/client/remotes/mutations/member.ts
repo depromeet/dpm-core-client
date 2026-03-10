@@ -29,6 +29,6 @@ type ApproveWhitelistOptions = MutationOptions<
 export const approveWhitelistMutationOptions = (options: ApproveWhitelistOptions) =>
 	mutationOptions({
 		mutationKey: ['whitelist'],
-		mutationFn: (params: ApproveWhitelistParams) => member.approveWhitelist(params),
+		mutationFn: (params: ApproveWhitelistParams) => member.approveWhitelistForSignup(params),
 		...options,
 	});

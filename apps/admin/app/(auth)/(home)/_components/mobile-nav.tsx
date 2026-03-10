@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import IconAttendance from '@/assets/icons/icon_attendance.png';
+import IconHome from '@/assets/icons/icon_home.png'; // [TODO]: 멤버관리 아이콘 준비되면 교체 필요
 import IconSession from '@/assets/icons/icon_session.png';
 import IconSettlement from '@/assets/icons/icon_settlement.png';
 
@@ -19,6 +20,7 @@ export const MobileNav = () => {
 					href={`/attendance/search/session?week=${SESSION_ID}`}
 				/>
 				<IconCard icon={IconSession} title="세션" href="/session" />
+				<IconCard icon={IconHome} title="멤버 관리" href="/member" />
 				<FeatureComingSoon>
 					<IconCard icon={IconSettlement} title="정산" href="#" />
 				</FeatureComingSoon>

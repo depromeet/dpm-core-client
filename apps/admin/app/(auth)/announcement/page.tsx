@@ -52,7 +52,8 @@ const NoticeListContainer = ({ selectedType, onTabChange }: NoticeListContainerP
 		filterByType(item, selectedType),
 	);
 
-	const handleNoticeClick = (announcementId: number) => router.push(`/announcement/${announcementId}`);
+	const handleNoticeClick = (announcementId: number) =>
+		router.push(`/announcement/${announcementId}`);
 
 	return (
 		<>
