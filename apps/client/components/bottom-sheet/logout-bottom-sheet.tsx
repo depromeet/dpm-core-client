@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { type PropsWithChildren, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
 	Drawer,
 	DrawerContent,
@@ -27,6 +27,8 @@ const LogoutBottomSheet = ({ children, disabled }: PropsWithChildren<LogoutBotto
 	const router = useRouter();
 	const { ref } = useAppShell();
 
+	const queryClient = useQueryClient();
+
 	const handleClose = () => {
 		setIsOpen(false);
 	};
@@ -38,6 +40,7 @@ const LogoutBottomSheet = ({ children, disabled }: PropsWithChildren<LogoutBotto
 	const { mutate: logoutMutate, isPending: isLogoutPending } = useMutation(
 		logoutMutationOptions({
 			onSuccess: () => {
+				queryClient.clear();
 				deleteToken();
 				handleClose();
 				redirectToLogin();
