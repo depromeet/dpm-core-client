@@ -74,12 +74,7 @@ interface AfterPartyAttendeesItemProps {
 const AfterPartyAttendeesItem = (props: AfterPartyAttendeesItemProps) => {
 	return (
 		<li className="px-4 py-1.5">
-			<Profile
-				size={40}
-				name={props.name}
-				teamNumber={props.team}
-				part={props.part === 'ETC' ? 'WEB' : props.part}
-			/>
+			<Profile size={40} name={props.name} teamNumber={props.team} part={props.part} />
 		</li>
 	);
 };
