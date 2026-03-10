@@ -75,12 +75,7 @@ interface AfterPartyParticipantsItemProps {
 const AfterPartyParticipantsItem = (props: AfterPartyParticipantsItemProps) => {
 	return (
 		<li className="px-4 py-1.5">
-			<Profile
-				size={40}
-				name={props.name}
-				teamNumber={props.team}
-				part={props.part === 'ETC' ? 'WEB' : props.part}
-			/>
+			<Profile size={40} name={props.name} teamNumber={props.team} part={props.part} />
 		</li>
 	);
 };
@@ -90,7 +85,13 @@ export const AfterPartyParticipantsList = (props: AfterPartyParticipantsListProp
 		<ErrorBoundary
 			fallback={(props: ErrorBoundaryFallbackProps) => <ErrorBox onReset={() => props.reset()} />}
 		>
-			<Suspense fallback={<LoadingBox />}>
+			<Suspense
+				fallback={
+					<div className="flex h-full flex-col">
+						<LoadingBox />
+					</div>
+				}
+			>
 				<AfterPartyParticipantsListContainer {...props} />
 			</Suspense>
 		</ErrorBoundary>

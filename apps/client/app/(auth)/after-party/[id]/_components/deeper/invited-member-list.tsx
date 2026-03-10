@@ -4,26 +4,19 @@ import { useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import type { AfterPartyInvitedMember } from '@dpm-core/api';
 import {
+	Aesterisk,
 	Checkbox,
 	Label,
-	MemberProfile,
 	Tabs,
 	TabsContent,
 	TabsList,
 	TabsTrigger,
 } from '@dpm-core/shared';
 
+import { Profile } from '@/components/attendance/profile';
+import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
 import { useAuth } from '@/providers/auth-provider';
 import { getAfterPartyInvitedMembersQueryOptions } from '@/remotes/queries/after-party';
-
-const PART_LABEL: Record<string, string> = {
-	WEB: '웹',
-	ANDROID: '안드로이드',
-	IOS: 'iOS',
-	DESIGN: '디자인',
-	SERVER: '서버',
-	ETC: '기타',
-};
 
 interface InvitedMemberListProps {
 	afterPartyId: number;
@@ -133,20 +126,24 @@ export const InvitedMemberList = ({ afterPartyId, isClosed }: InvitedMemberListP
 const MemberListContent = ({ members }: { members: AfterPartyInvitedMember[] }) => {
 	if (members.length === 0) {
 		return (
-			<div className="flex items-center justify-center py-10">
-				<p className="text-body2 text-label-assistive">해당하는 멤버가 없어요</p>
-			</div>
+			<Empty>
+				<EmptyHeader>
+					<Aesterisk />
+					<EmptyTitle>해당하는 멤버가 없어요</EmptyTitle>
+				</EmptyHeader>
+			</Empty>
 		);
 	}
 
 	return (
 		<div className="flex flex-col">
 			{members.map((member) => (
-				<MemberProfile
+				<Profile
+					size={40}
 					key={member.memberId}
 					name={member.name}
-					team={`${member.team}팀`}
-					role={PART_LABEL[member.part] ?? member.part}
+					teamNumber={member.team}
+					part={member.part}
 				/>
 			))}
 		</div>
