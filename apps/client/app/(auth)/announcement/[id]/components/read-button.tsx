@@ -19,7 +19,7 @@ export const ReadButton = ({ readCount, isRead, showTooltip, onClick }: ReadButt
 						읽음 버튼을 눌러주세요!
 					</p>
 					<div
-						className="-bottom-1.25 absolute left-1/2 -translate-x-1/2 h-[5px] w-[11.5px] bg-background-inverse"
+						className="-bottom-1.25 -translate-x-1/2 absolute left-1/2 h-[5px] w-[11.5px] bg-background-inverse"
 						style={{ clipPath: 'polygon(0 0, 100% 0, 50% 100%)' }}
 					/>
 				</div>
@@ -32,7 +32,7 @@ export const ReadButton = ({ readCount, isRead, showTooltip, onClick }: ReadButt
 					'flex h-10 cursor-pointer items-center justify-center overflow-hidden rounded-[38px] border',
 					isRead
 						? 'border-primary-normal bg-primary-extralight px-2.5'
-						: 'gap-1.5 border-line-normal bg-comp-fill-white px-4 font-semibold text-body3 tracking-tight text-label-alternative',
+						: 'gap-1.5 border-line-normal bg-comp-fill-white px-4 font-semibold text-body3 text-label-alternative tracking-tight',
 				)}
 			>
 				<CircleCheck size={20} color={isRead ? '#5e83fe' : '#9CA3AF'} />

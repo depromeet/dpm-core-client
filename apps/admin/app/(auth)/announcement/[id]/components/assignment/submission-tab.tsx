@@ -68,9 +68,7 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 	const [selectedStatus, setSelectedStatus] = useState<SubmissionStatus>('pending');
 
 	const [scores, setScores] = useState<Record<string, string>>(() =>
-		Object.fromEntries(
-			members.filter((m) => m.score != null).map((m) => [m.id, String(m.score)]),
-		),
+		Object.fromEntries(members.filter((m) => m.score != null).map((m) => [m.id, String(m.score)])),
 	);
 
 	// 멤버 데이터에서 팀 목록 동적 추출
