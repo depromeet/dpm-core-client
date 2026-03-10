@@ -7,7 +7,7 @@ import { getMemberPartLabel } from '@/lib/member/part';
 import { isExistPart } from '@/lib/utils';
 
 interface ProfileProps extends React.ComponentProps<'div'> {
-	part: Exclude<Part, 'ETC'>;
+	part: Part;
 	name: string;
 	teamNumber: number;
 	size?: number;
@@ -16,7 +16,7 @@ interface ProfileProps extends React.ComponentProps<'div'> {
 export const Profile = (props: ProfileProps) => {
 	const { part: partProp, name, teamNumber, size = 40 } = props;
 
-	const part = isExistPart(partProp) ? partProp : 'WEB';
+	const part = isExistPart(partProp) ? partProp : 'ETC';
 
 	return (
 		<div className="flex items-center gap-4">

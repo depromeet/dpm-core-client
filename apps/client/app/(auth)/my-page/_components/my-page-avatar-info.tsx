@@ -19,18 +19,17 @@ const MyPageAvatarInfoContainer = () => {
 		data: { data: myMemberInfo },
 	} = useSuspenseQuery(getMyMemberInfoQuery);
 
-	const part = isExistPart(myMemberInfo.part) ? myMemberInfo.part : 'WEB';
+	const part = isExistPart(myMemberInfo.part) ? myMemberInfo.part : 'ETC';
 
 	return (
 		<motion.div
 			variants={fadeInOutVariatns.variants}
 			className="flex flex-col items-center gap-y-2.5"
 		>
-			<div className="h-[120px] w-[120px] overflow-hidden rounded-full bg-white">
+			<div className="h-30 w-30 overflow-hidden rounded-full bg-background-normal">
 				<Image
-					// FIXME: 유효하지 않은 파트일 경우 디폴트 이미지
 					src={cohort[part].icon}
-					alt={myMemberInfo.part}
+					alt={`${cohort[part].label}_프로필_이미지`}
 					width={120}
 					height={120}
 					priority
