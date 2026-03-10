@@ -28,6 +28,12 @@ function getPartImage(part: Part) {
 	return isExistPart(part) ? cohort[part] : null;
 }
 
+const PART_SET = new Set<string>(['ETC', 'DESIGN', 'WEB', 'SERVER', 'IOS', 'ANDROID']);
+
+function isPart(value: string): value is Part {
+	return PART_SET.has(value);
+}
+
 const PART_OPTIONS: { value: Part; label: string }[] = [
 	{ value: 'ETC', label: '미배정' },
 	{ value: 'DESIGN', label: PART_LABEL_MAP.DESIGN },
@@ -50,6 +56,7 @@ interface EditMemberModalProps {
 	onOpenChange: (open: boolean) => void;
 	members: MemberListItem[];
 	onSubmit: (part: Part, teamNumber: number) => void;
+	isPending?: boolean;
 }
 
 export const EditMemberModal = ({
@@ -57,13 +64,16 @@ export const EditMemberModal = ({
 	onOpenChange,
 	members,
 	onSubmit,
+	isPending = false,
 }: EditMemberModalProps) => {
-	const [selectedPart, setSelectedPart] = useState<Part>('ETC');
-	const [selectedTeam, setSelectedTeam] = useState<string>('0');
+	const [selectedPart, setSelectedPart] = useState<Part | ''>('');
+	const [selectedTeam, setSelectedTeam] = useState<string>('');
+
+	const isFormValid = selectedPart !== '' && selectedTeam !== '';
 
 	const handleSubmit = () => {
+		if (!isFormValid) return;
 		onSubmit(selectedPart, Number(selectedTeam));
-		onOpenChange(false);
 	};
 
 	return (
@@ -128,7 +138,7 @@ export const EditMemberModal = ({
 							<ToggleGroup
 								type="single"
 								value={selectedPart}
-								onValueChange={(v) => v && setSelectedPart(v as Part)}
+								onValueChange={(v) => v && isPart(v) && setSelectedPart(v)}
 								className="flex h-full w-full flex-row items-stretch"
 							>
 								{PART_OPTIONS.map((opt) => (
@@ -166,10 +176,11 @@ export const EditMemberModal = ({
 				<div className="flex w-full flex-col items-center px-8 pb-8 pt-6">
 					<button
 						type="button"
-						className="flex h-12 w-full items-center justify-center rounded-lg bg-[#1F2937] font-semibold text-[16px] leading-[150%] text-white"
+						className="flex h-12 w-full items-center justify-center rounded-lg bg-[#1F2937] font-semibold text-[16px] leading-[150%] text-white disabled:opacity-40"
 						onClick={handleSubmit}
+						disabled={isPending || !isFormValid}
 					>
-						수정하기
+						{isPending ? '수정 중...' : '수정하기'}
 					</button>
 				</div>
 			</DialogContent>

@@ -84,7 +84,13 @@ export const ApproveMemberModal = ({
 								<Image
 									width={40}
 									height={40}
-									src={member.part === 'ETC' ? EtcIcon : (isExistPart(member.part) ? cohort[member.part] : cohort.WEB)}
+									src={
+										member.part === 'ETC'
+											? EtcIcon
+											: isExistPart(member.part)
+												? cohort[member.part]
+												: cohort.WEB
+									}
 									alt={member.part === 'ETC' ? '파트 미배정' : `${member.name} 프로필`}
 									className="size-10 rounded-[19.5px] object-cover"
 								/>

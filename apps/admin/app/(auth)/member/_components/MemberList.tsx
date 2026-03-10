@@ -1,5 +1,6 @@
 'use client';
 
+/** 멤버 관리 페이지 */
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import {
@@ -13,149 +14,38 @@ import {
 	TableRow,
 	toast,
 } from '@dpm-core/shared';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import EtcIcon from '@/assets/icons/etc.webp';
+import { LoadingBox } from '@/components/loading-box';
 import { Profile } from '@/components/attendance/profile';
 import { cohort } from '@/constants/cohort';
 import { isExistPart } from '@/lib/utils';
+import {
+	approveWhitelistMutationOptions,
+	updateMembersInitMutationOptions,
+} from '@/remotes/mutations/member';
+import { getMembersOverviewQuery } from '@/remotes/queries/member';
 
+import { mapMemberOverviewToListItem } from '../_lib/map-overview-to-list-item';
 import type { MemberListItem } from '../_types';
 import { ApproveMemberModal } from './ApproveMemberModal';
 import { EditMemberModal } from './EditMemberModal';
 import { MemberFilter, type MemberFilterValues } from './MemberFilter';
 import { MemberStatusLabel } from './MemberStatusLabel';
 
-const MOCK_MEMBERS: MemberListItem[] = [
-	// 팀·파트 모두 미배정
-	{
-		id: 1,
-		name: '김디퍼',
-		teamNumber: 0,
-		part: 'ETC',
-		status: 'PENDING',
-		assignmentScore: undefined,
-	},
-	{
-		id: 2,
-		name: '이디퍼',
-		teamNumber: 0,
-		part: 'ETC',
-		status: 'PENDING',
-		assignmentScore: undefined,
-	},
-	{
-		id: 3,
-		name: '박디퍼',
-		teamNumber: 0,
-		part: 'ETC',
-		status: 'PENDING',
-		assignmentScore: undefined,
-	},
-	{
-		id: 4,
-		name: '최디퍼',
-		teamNumber: 0,
-		part: 'ETC',
-		status: 'ACTIVE',
-		assignmentScore: undefined,
-	},
-	{
-		id: 5,
-		name: '정디퍼',
-		teamNumber: 0,
-		part: 'ETC',
-		status: 'INACTIVE',
-		assignmentScore: undefined,
-	},
-	// 팀만 미배정
-	{
-		id: 6,
-		name: '강디퍼',
-		teamNumber: 0,
-		part: 'WEB',
-		status: 'PENDING',
-		assignmentScore: undefined,
-	},
-	{
-		id: 7,
-		name: '조디퍼',
-		teamNumber: 0,
-		part: 'ANDROID',
-		status: 'PENDING',
-		assignmentScore: undefined,
-	},
-	// 파트만 미배정
-	{
-		id: 8,
-		name: '윤디퍼',
-		teamNumber: 1,
-		part: 'ETC',
-		status: 'PENDING',
-		assignmentScore: undefined,
-	},
-	{ id: 9, name: '장디퍼', teamNumber: 2, part: 'ETC', status: 'ACTIVE', assignmentScore: 85 },
-	// 배정 완료
-	{
-		id: 10,
-		name: '한디퍼',
-		teamNumber: 1,
-		part: 'WEB',
-		status: 'PENDING',
-		assignmentScore: undefined,
-	},
-	{
-		id: 11,
-		name: '오디퍼',
-		teamNumber: 2,
-		part: 'ANDROID',
-		status: 'PENDING',
-		assignmentScore: undefined,
-	},
-	{
-		id: 12,
-		name: '서디퍼',
-		teamNumber: 3,
-		part: 'IOS',
-		status: 'PENDING',
-		assignmentScore: undefined,
-	},
-	{ id: 13, name: '신디퍼', teamNumber: 1, part: 'DESIGN', status: 'ACTIVE', assignmentScore: 88 },
-	{ id: 14, name: '권디퍼', teamNumber: 2, part: 'SERVER', status: 'ACTIVE', assignmentScore: 92 },
-	{ id: 15, name: '황디퍼', teamNumber: 3, part: 'WEB', status: 'ACTIVE', assignmentScore: 78 },
-	{ id: 16, name: '안디퍼', teamNumber: 1, part: 'ANDROID', status: 'ACTIVE', assignmentScore: 95 },
-	{ id: 17, name: '송디퍼', teamNumber: 2, part: 'IOS', status: 'ACTIVE', assignmentScore: 82 },
-	{
-		id: 18,
-		name: '류디퍼',
-		teamNumber: 3,
-		part: 'DESIGN',
-		status: 'INACTIVE',
-		assignmentScore: 65,
-	},
-	{
-		id: 19,
-		name: '전디퍼',
-		teamNumber: 1,
-		part: 'SERVER',
-		status: 'INACTIVE',
-		assignmentScore: 70,
-	},
-	{
-		id: 20,
-		name: '홍디퍼',
-		teamNumber: 2,
-		part: 'WEB',
-		status: 'INACTIVE',
-		assignmentScore: undefined,
-	},
-];
-
-const PENDING_COUNT = MOCK_MEMBERS.filter((m) => m.status === 'PENDING').length;
-
 export const MemberList = () => {
+	const queryClient = useQueryClient();
+	const { data, isLoading } = useQuery(getMembersOverviewQuery);
+
+	const members = useMemo(() => {
+		if (!data?.data?.members) return [];
+		return data.data.members.map(mapMemberOverviewToListItem);
+	}, [data]);
+
 	const [searchQuery, setSearchQuery] = useState('');
 	const [filterValues, setFilterValues] = useState<MemberFilterValues>({
-		unapprovedOnly: false,
+		unapprovedOnly: true,
 		parts: [],
 		teams: [],
 	});
@@ -164,7 +54,7 @@ export const MemberList = () => {
 	const [editModalOpen, setEditModalOpen] = useState(false);
 
 	const filteredMembers = useMemo(() => {
-		let result = MOCK_MEMBERS;
+		let result = members;
 
 		if (filterValues.unapprovedOnly) {
 			result = result.filter((m) => m.status === 'PENDING');
@@ -182,7 +72,12 @@ export const MemberList = () => {
 		}
 
 		return result;
-	}, [filterValues, searchQuery]);
+	}, [members, filterValues, searchQuery]);
+
+	const pendingCount = useMemo(
+		() => members.filter((m) => m.status === 'PENDING').length,
+		[members],
+	);
 
 	const isAllSelected =
 		filteredMembers.length > 0 && filteredMembers.every((m) => selectedIds.has(m.id));
@@ -190,7 +85,7 @@ export const MemberList = () => {
 	const isApproveEnabled =
 		selectedIds.size > 0 &&
 		Array.from(selectedIds).every((id) => {
-			const member = MOCK_MEMBERS.find((m) => m.id === id);
+			const member = members.find((m) => m.id === id);
 			return member?.status === 'PENDING';
 		});
 
@@ -214,9 +109,27 @@ export const MemberList = () => {
 	const membersToApprove = useMemo(
 		() =>
 			Array.from(selectedIds)
-				.map((id) => MOCK_MEMBERS.find((m) => m.id === id))
+				.map((id) => members.find((m) => m.id === id))
 				.filter((m): m is MemberListItem => m != null && m.status === 'PENDING'),
-		[selectedIds],
+		[selectedIds, members],
+	);
+
+	const { mutate: approveMembers } = useMutation(
+		approveWhitelistMutationOptions({
+			onSuccess: (_data, variables) => {
+				setSelectedIds((prev) => {
+					const next = new Set(prev);
+					for (const id of variables.members) next.delete(id);
+					return next;
+				});
+				queryClient.invalidateQueries({ queryKey: getMembersOverviewQuery.queryKey });
+				setApproveModalOpen(false);
+				toast.success('승인 완료했습니다.');
+			},
+			onError: () => {
+				toast.error('승인에 실패했습니다.');
+			},
+		}),
 	);
 
 	const handleApproveClick = () => {
@@ -224,41 +137,53 @@ export const MemberList = () => {
 	};
 
 	const handleApproveConfirm = () => {
-		// TODO: API 연동
-		setSelectedIds((prev) => {
-			const next = new Set(prev);
-			for (const m of membersToApprove) next.delete(m.id);
-			return next;
+		approveMembers({
+			members: membersToApprove.map((m) => m.id),
 		});
-		toast.success('승인 완료했습니다.');
 	};
 
 	const handleReject = () => {
-		// TODO: API 연동
-		setSelectedIds((prev) => {
-			const next = new Set(prev);
-			for (const m of membersToApprove) next.delete(m.id);
-			return next;
-		});
+		// 반려: 모달만 닫음 (API 호출 없음)
 	};
 
 	const membersToEdit = useMemo(
 		() =>
 			Array.from(selectedIds)
-				.map((id) => MOCK_MEMBERS.find((m) => m.id === id))
+				.map((id) => members.find((m) => m.id === id))
 				.filter((m): m is MemberListItem => m != null),
-		[selectedIds],
+		[selectedIds, members],
 	);
 
 	const handleEditClick = () => {
 		setEditModalOpen(true);
 	};
 
-	const handleEditSubmit = (_part: import('@dpm-core/api').Part, _teamNumber: number) => {
-		// TODO: API 연동
-		setSelectedIds(new Set());
-		toast.success('수정 완료했습니다.');
+	const { mutate: updateMembers, isPending: isUpdatePending } = useMutation(
+		updateMembersInitMutationOptions({
+			onSuccess: () => {
+				setSelectedIds(new Set());
+				queryClient.invalidateQueries({ queryKey: getMembersOverviewQuery.queryKey });
+				setEditModalOpen(false);
+				toast.success('수정 완료했습니다.');
+			},
+			onError: () => {
+				toast.error('수정에 실패했습니다.');
+			},
+		}),
+	);
+
+	const handleEditSubmit = (part: import('@dpm-core/api').Part, teamNumber: number) => {
+		updateMembers({
+			members: membersToEdit.map((m) => ({
+				memberId: m.id,
+				memberPart: part,
+				team: String(teamNumber),
+				status: m.status,
+			})),
+		});
 	};
+
+	if (isLoading) return <LoadingBox />;
 
 	return (
 		<div className="mx-auto flex w-full max-w-[1200px] flex-col items-start gap-10 bg-background-normal px-4 pt-8 md:px-10">
@@ -269,7 +194,7 @@ export const MemberList = () => {
 						<span className="font-bold text-label-normal text-title1 tracking-[-0.01em]">
 							멤버 승인
 						</span>
-						<span className="font-medium text-body1 text-primary-normal">{PENDING_COUNT}</span>
+						<span className="font-medium text-body1 text-primary-normal">{pendingCount}</span>
 					</div>
 				</div>
 
@@ -416,6 +341,7 @@ export const MemberList = () => {
 				onOpenChange={setEditModalOpen}
 				members={membersToEdit}
 				onSubmit={handleEditSubmit}
+				isPending={isUpdatePending}
 			/>
 		</div>
 	);
