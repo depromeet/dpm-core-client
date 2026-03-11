@@ -43,15 +43,28 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 
 	const { mutate: markAsRead } = useMutation({
 		mutationFn: () => announcement.markAsRead(announcementId),
+		onMutate: () => {
+			const previousIsRead = isRead;
+			const previousShowTooltip = showTooltip;
+
+			setIsRead(true);
+			setShowTooltip(false);
+
+			return { previousIsRead, previousShowTooltip };
+		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['announcement-detail', announcementId] });
+		},
+		onError: (_error, _variables, context) => {
+			if (context) {
+				setIsRead(context.previousIsRead);
+				setShowTooltip(context.previousShowTooltip);
+			}
 		},
 	});
 
 	const handleReadClick = () => {
 		if (isRead) return;
-		setIsRead(true);
-		setShowTooltip(false);
 		markAsRead();
 	};
 
