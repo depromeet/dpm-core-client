@@ -2,6 +2,7 @@ import { http } from '../http';
 import type {
 	Announcement,
 	AnnouncementDetail,
+	AssignmentStatusData,
 	CreateAnnouncementRequest,
 	ReadMembersData,
 	UpdateAnnouncementRequest,
@@ -77,6 +78,16 @@ export const announcement = {
 	},
 
 	/**
+	 * 멤버들 과제 제출 현황 조회
+	 * 멤버 별로 과제 제출 현황을 조회합니다.
+	 * @param announcementId 공지/과제 ID
+	 * @returns 멤버별 제출 상태 및 점수
+	 */
+	getAssignmentStatus: async (announcementId: number) => {
+		return http.get<AssignmentStatusData>(`v1/announcements/${announcementId}/assignment-status`);
+	},
+
+	/**
 	 * 과제 제출 상태 변경
 	 * 과제 제출 상태를 변경합니다.
 	 * @param announcementId 공지/과제 ID
@@ -84,7 +95,7 @@ export const announcement = {
 	 */
 	patchAssignmentStatus: async (
 		announcementId: number,
-		body: { submitStatus: string; memberIds: number[] },
+		body: { submitStatus: string; assignmentScore?: number; memberIds: number[] },
 	) => {
 		return http.patch(`v1/announcements/${announcementId}/assignment-status`, { json: body });
 	},

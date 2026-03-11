@@ -46,7 +46,7 @@ function SessionItem({ session }: { session: Session }) {
 	};
 
 	return (
-		<div className="cursor-pointer px-4" onClick={handleClick} role="button" tabIndex={0}>
+		<button type="button" className="w-full cursor-pointer px-4 text-left" onClick={handleClick}>
 			<div className="flex flex-col border-line-subtle border-b px-3 py-4">
 				<p className="mb-0.5 font-medium text-caption1 text-label-assistive">
 					{formatSessionWeekString(session.week)}
@@ -64,7 +64,7 @@ function SessionItem({ session }: { session: Session }) {
 					</p>
 				</div>
 			</div>
-		</div>
+		</button>
 	);
 }
 

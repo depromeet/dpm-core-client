@@ -22,12 +22,18 @@ import {
 
 import { patchAssignmentStatusMutationOptions } from '@/remotes/mutations/announcement';
 import {
+	getAnnouncementAssignmentStatusQuery,
 	getAnnouncementDetailQuery,
 	getAnnouncementReadMembersQuery,
 } from '@/remotes/queries/announcement';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
-import { type Member, toServerSubmitStatus } from '../../types';
+import {
+	type Member,
+	submitStatusToServer,
+	toClientSubmitStatus,
+	toServerSubmitStatus,
+} from '../../types';
 
 interface SubmissionStatusTabProps {
 	announcementId: number;
@@ -37,21 +43,44 @@ interface SubmissionStatusTabProps {
 export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatusTabProps) => {
 	const queryClient = useQueryClient();
 	const { mutate: patchAssignmentStatus } = useMutation(
-		patchAssignmentStatusMutationOptions(announcementId, {
-			onSuccess: () => {
-				queryClient.invalidateQueries(getAnnouncementDetailQuery(announcementId));
-				queryClient.invalidateQueries(getAnnouncementReadMembersQuery(announcementId));
-				toast.success('제출 상태가 변경되었어요.');
-			},
-			onError: () => {
-				toast.error('제출 상태 변경에 실패했어요.');
-			},
-		}),
+		patchAssignmentStatusMutationOptions(announcementId),
 	);
+
+	const invalidateAssignmentQueries = () => {
+		queryClient.invalidateQueries(getAnnouncementDetailQuery(announcementId));
+		queryClient.invalidateQueries(getAnnouncementReadMembersQuery(announcementId));
+		queryClient.invalidateQueries(getAnnouncementAssignmentStatusQuery(announcementId));
+	};
 
 	const {
 		data: { data: myInfo },
 	} = useSuspenseQuery(getMyMemberInfoQuery);
+
+	const {
+		data: { data: assignmentStatusData },
+	} = useSuspenseQuery(getAnnouncementAssignmentStatusQuery(announcementId));
+
+	// assignment-status API 데이터를 memberId 기준으로 빠르게 조회할 수 있는 맵
+	const assignmentStatusMap = useMemo(
+		() => new Map(assignmentStatusData.members.map((m) => [m.memberId, m])),
+		[assignmentStatusData.members],
+	);
+
+	// members 데이터에 assignment-status API 데이터를 병합 (제출 상태 및 점수 초기 세팅)
+	const enrichedMembers = useMemo<Member[]>(
+		() =>
+			members.map((m) => {
+				const statusData = assignmentStatusMap.get(Number(m.id));
+				if (!statusData) return m;
+				return {
+					...m,
+					submitStatus: toClientSubmitStatus(statusData.submitStatus),
+					score: statusData.score,
+					submitLink: statusData.submitLink,
+				};
+			}),
+		[members, assignmentStatusMap],
+	);
 
 	const [activeTeamTab, setActiveTeamTab] = useState('all');
 	const [showMyTeamOnly, setShowMyTeamOnly] = useState(false);
@@ -67,22 +96,27 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 	const [statusModalOpen, setStatusModalOpen] = useState(false);
 	const [selectedStatus, setSelectedStatus] = useState<SubmissionStatus>('pending');
 
+	// assignment-status API 데이터로 점수 초기 세팅
 	const [scores, setScores] = useState<Record<string, string>>(() =>
-		Object.fromEntries(members.filter((m) => m.score != null).map((m) => [m.id, String(m.score)])),
+		Object.fromEntries(
+			assignmentStatusData.members
+				.filter((m) => m.score != null)
+				.map((m) => [String(m.memberId), String(m.score)]),
+		),
 	);
 
-	// 멤버 데이터에서 팀 목록 동적 추출
+	// enrichedMembers 데이터에서 팀 목록 동적 추출
 	const teamTabs = useMemo(() => {
-		const teamIds = [...new Set(members.map((m) => m.teamId))].sort((a, b) => a - b);
+		const teamIds = [...new Set(enrichedMembers.map((m) => m.teamId))].sort((a, b) => a - b);
 		return [
 			{ id: 'all', label: '전체' },
 			...teamIds.map((id) => ({ id: String(id), label: `${id}팀` })),
 		];
-	}, [members]);
+	}, [enrichedMembers]);
 
 	// 필터링된 멤버 목록
 	const filteredMembers = useMemo(() => {
-		let result = members;
+		let result = enrichedMembers;
 
 		// 내 팀만 보기
 		if (showMyTeamOnly) {
@@ -115,10 +149,18 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 			);
 		}
 
-		// 링크별 필터 - 멤버별 제출 링크 데이터 필요 (백엔드 API 구현 후 적용 예정)
+		// 링크별 필터 - submitLink 유무 또는 제출 상태(submitted/late)로 판단
+		const linkFilter = (filters.링크별 || [])[0];
+		if (linkFilter) {
+			result = result.filter((m) => {
+				const hasLink =
+					m.submitLink != null || m.submitStatus === 'completed' || m.submitStatus === 'late';
+				return linkFilter === 'has-link' ? hasLink : !hasLink;
+			});
+		}
 
 		return result;
-	}, [members, showMyTeamOnly, myInfo.teamNumber, activeTeamTab, searchQuery, filters]);
+	}, [enrichedMembers, showMyTeamOnly, myInfo.teamNumber, activeTeamTab, searchQuery, filters]);
 	const handleSelectAll = (checked: boolean) => {
 		if (checked) setSelectedMembers(new Set(filteredMembers.map(({ id }) => id)));
 		else setSelectedMembers(new Set());
@@ -173,18 +215,61 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 	};
 
 	const handleStatusModalSave = () => {
-		patchAssignmentStatus({
-			submitStatus: toServerSubmitStatus(selectedStatus),
-			memberIds: Array.from(selectedMembers).map(Number),
-		});
-		setStatusModalOpen(false);
+		const memberIds = Array.from(selectedMembers).map(Number);
+
+		patchAssignmentStatus(
+			{ submitStatus: toServerSubmitStatus(selectedStatus), memberIds },
+			{
+				onSuccess: () => {
+					invalidateAssignmentQueries();
+					toast.light('제출 상태가 변경되었어요.');
+					setStatusModalOpen(false);
+				},
+				onError: () => {
+					toast.error('제출 상태 변경에 실패했어요.');
+				},
+			},
+		);
+	};
+
+	const handleScoreSave = (memberId: string) => {
+		const score = scores[memberId];
+		if (!score || score.trim() === '') return;
+
+		const numericScore = Number(score);
+		if (Number.isNaN(numericScore)) {
+			toast.error('점수는 숫자만 입력 가능해요.');
+			return;
+		}
+
+		const member = enrichedMembers.find((m) => m.id === memberId);
+		if (!member) return;
+
+		patchAssignmentStatus(
+			{
+				submitStatus: submitStatusToServer(member.submitStatus ?? 'pending'),
+				assignmentScore: numericScore,
+				memberIds: [Number(memberId)],
+			},
+			{
+				onSuccess: () => {
+					invalidateAssignmentQueries();
+					toast.light('점수가 저장되었어요.');
+				},
+				onError: () => {
+					toast.error('점수 저장에 실패했어요.');
+				},
+			},
+		);
 	};
 
 	const handleScoreChange = (memberId: string, score: string) =>
 		setScores((prev) => ({ ...prev, [memberId]: score }));
 
 	// 선택된 멤버들의 이름 목록
-	const selectedMemberNames = members.filter((m) => selectedMembers.has(m.id)).map((m) => m.name);
+	const selectedMemberNames = enrichedMembers
+		.filter((m) => selectedMembers.has(m.id))
+		.map((m) => m.name);
 
 	return (
 		<div className="flex flex-1 flex-col overflow-hidden bg-background-normal p-10">
@@ -269,7 +354,7 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 
 			{/* 다중 액션 툴바 */}
 			<MultiActionToolbar
-				totalCount={members.length}
+				totalCount={enrichedMembers.length}
 				selectedCount={selectedMembers.size}
 				actions={[
 					{
@@ -333,6 +418,7 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 										className="h-10 w-full"
 										value={scores[id] || ''}
 										onChange={(e) => handleScoreChange(id, e.target.value)}
+										onBlur={() => handleScoreSave(id)}
 									/>
 								</td>
 							</tr>
