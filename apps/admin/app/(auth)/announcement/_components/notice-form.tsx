@@ -2,9 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import type { UseFormReturn } from 'react-hook-form';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { CalendarIcon } from 'lucide-react';
+import type { UseFormReturn } from 'react-hook-form';
 import {
 	AppLayout,
 	Button,
@@ -29,8 +29,8 @@ import {
 	ToggleGroupItem,
 } from '@dpm-core/shared';
 
-import { Section } from '@/components/section';
 import type { NoticeSchema } from '@/app/(auth)/announcement/create/_schemas/notice-schema';
+import { Section } from '@/components/section';
 import { usePreventPageExit } from '@/hooks/use-prevent-page-exit';
 import { formatDateWithDay } from '@/lib/date';
 
@@ -89,7 +89,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 		<AppLayout className="bg-background-normal">
 			{/* 상단 헤더 */}
 			<header className="sticky top-0 z-20 border-line-normal border-b bg-background-normal">
-				<div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4 py-3 md:px-10 md:py-4">
+				<div className="mx-auto flex w-full max-w-300 items-center justify-between px-4 py-3 md:px-10 md:py-4">
 					<button type="button" onClick={() => router.back()} className="flex items-center gap-2">
 						<ChevronLeft className="text-icon-noraml" />
 					</button>
@@ -108,13 +108,13 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 
 			<Form {...form}>
 				<form
-					onSubmit={(e) => {
+					onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
 						e.preventDefault();
 						if (isSubmitPending) return;
 						form.handleSubmit(onSubmit)(e);
 					}}
 				>
-					<Section className="mx-auto w-full max-w-[800px] py-8">
+					<Section className="mx-auto w-full max-w-200 py-8">
 						<div className="flex flex-col gap-8">
 							{/* 카테고리 */}
 							<FormField
@@ -143,7 +143,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 														key={value}
 														value={value}
 														disabled={mode === 'edit'}
-														className="w-fit flex-none cursor-pointer rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal disabled:cursor-not-allowed disabled:opacity-60"
+														className="w-fit flex-none cursor-pointer rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 disabled:cursor-not-allowed disabled:opacity-60 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
 													>
 														{label}
 													</ToggleGroupItem>
@@ -335,7 +335,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 																)}
 																maxLength={4}
 																placeholder="0000"
-																onKeyDown={(e) => {
+																onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
 																	if (e.key === 'Tab' && !e.shiftKey) {
 																		e.preventDefault();
 																		form.setFocus('submissionEndTime');

@@ -6,6 +6,7 @@ import { Section } from '@/components/section';
 import { CurrentWeekSession } from './_components/current-week-session';
 import { HomeAttendance } from './_components/home-attendance';
 import HomeHeader from './_components/home-header';
+import { MemberApprovalBanner } from './_components/member-approval-banner';
 import { MobileNav } from './_components/mobile-nav';
 import { SessionBanner } from './_components/session-banner';
 import { SessionProivder } from './_components/session-provider';
@@ -15,7 +16,8 @@ const HomePage = () => {
 		<AppLayout className="bg-background-normal">
 			<GAPageTracker type="home" />
 			<HomeHeader />
-			<main>
+			<main className="flex flex-col">
+				<MemberApprovalBanner />
 				<SessionProivder>
 					<SessionBanner />
 

@@ -69,6 +69,7 @@ export default function Home() {
 						bounces={false}
 						sharedCookiesEnabled={true}
 						allowsBackForwardNavigationGestures={true}
+						webviewDebuggingEnabled={true}
 					/>
 					<StatusBar style="dark" />
 				</KeyboardAvoidingView>
