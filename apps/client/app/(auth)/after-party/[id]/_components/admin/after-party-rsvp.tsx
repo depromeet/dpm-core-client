@@ -44,7 +44,8 @@ export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
 
 	const isNotSubmitted = rsvpStatusProp === null;
 
-	const handleChangeRsvpStatus = (value: '참석' | '불참') => {
+	const handleChangeRsvpStatus = (value: string) => {
+		if (!value) return;
 		setRsvpStatus(value);
 	};
 
