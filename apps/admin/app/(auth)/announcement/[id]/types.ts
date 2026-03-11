@@ -1,5 +1,5 @@
-import type { SubmissionStatus, SubmitStatus } from '@dpm-core/shared';
 import type { ServerSubmitStatus } from '@dpm-core/api';
+import type { SubmissionStatus, SubmitStatus } from '@dpm-core/shared';
 
 const SERVER_TO_CLIENT_STATUS: Record<ServerSubmitStatus, SubmitStatus> = {
 	PENDING: 'pending',
@@ -21,6 +21,13 @@ const CLIENT_TO_SERVER_STATUS: Record<SubmissionStatus, ServerSubmitStatus> = {
 export const toServerSubmitStatus = (clientStatus: SubmissionStatus): ServerSubmitStatus =>
 	CLIENT_TO_SERVER_STATUS[clientStatus];
 
+export const submitStatusToServer = (status: SubmitStatus): ServerSubmitStatus => {
+	const invertedMap = Object.fromEntries(
+		Object.entries(SERVER_TO_CLIENT_STATUS).map(([k, v]) => [v, k]),
+	) as Record<SubmitStatus, ServerSubmitStatus>;
+	return invertedMap[status];
+};
+
 export interface Member {
 	id: string;
 	name: string;
@@ -31,6 +38,7 @@ export interface Member {
 	submitStatus: SubmitStatus;
 	isRead: boolean;
 	score?: number;
+	submitLink?: string;
 }
 
 export type NoticeTag = 'default' | 'assignment' | 'individual' | 'team' | 'etc';

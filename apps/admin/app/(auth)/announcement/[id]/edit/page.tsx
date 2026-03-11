@@ -6,9 +6,9 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import type { AnnouncementDetail } from '@dpm-core/api';
 import { SidebarInset } from '@dpm-core/shared';
 
+import type { NoticeSchema } from '@/app/(auth)/announcement/create/_schemas/notice-schema';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
-import type { NoticeSchema } from '@/app/(auth)/announcement/create/_schemas/notice-schema';
 import { useNoticeForm } from '@/hooks/use-notice-form';
 import { getAnnouncementDetailQuery } from '@/remotes/queries/announcement';
 
