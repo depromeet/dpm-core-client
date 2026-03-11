@@ -16,19 +16,16 @@ const HomePage = () => {
 		<AppLayout className="bg-background-normal">
 			<GAPageTracker type="home" />
 			<HomeHeader />
-			<main className="flex flex-col">
+			<main>
 				<MemberApprovalBanner />
 				<SessionProivder>
 					<SessionBanner />
-
 					<Section className="mt-5 border-background-strong border-b-8 pb-10 md:hidden">
 						<MobileNav />
 					</Section>
-
 					<Section>
 						<CurrentWeekSession />
 					</Section>
-
 					<Section className="md:hidden">
 						<Link
 							href="https://forms.gle/yV88T98WsADu6VNc6"
@@ -48,7 +45,6 @@ const HomePage = () => {
 							<ChevronRight className="text-icon-noraml" />
 						</Link>
 					</Section>
-
 					<HomeAttendance />
 				</SessionProivder>
 			</main>
