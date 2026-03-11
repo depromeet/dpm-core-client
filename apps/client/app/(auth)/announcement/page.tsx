@@ -5,10 +5,11 @@ import { Suspense, useState } from 'react';
 import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import type { Announcement } from '@dpm-core/api';
-import { AppLayout, TeamTabBar } from '@dpm-core/shared';
+import { Aesterisk, AppLayout, TeamTabBar } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
 import { BottomTabBar } from '@/components/bottom-tab-bar';
+import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { NoticeCard } from '@/components/notice/notice-card';
@@ -64,9 +65,12 @@ const NoticeListContainer = ({ selectedType }: NoticeListContainerProps) => {
 
 	if (filteredAnnouncements.length === 0) {
 		return (
-			<div className="flex flex-1 items-center justify-center py-20">
-				<p className="text-body1 text-label-alternative">등록된 공지가 없습니다.</p>
-			</div>
+			<Empty className="h-full min-h-41.5">
+				<EmptyHeader>
+					<Aesterisk />
+					<EmptyTitle>등록된 공지가 없어요</EmptyTitle>
+				</EmptyHeader>
+			</Empty>
 		);
 	}
 

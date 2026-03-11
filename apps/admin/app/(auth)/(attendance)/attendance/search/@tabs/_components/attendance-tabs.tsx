@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { redirect, useSelectedLayoutSegment } from 'next/navigation';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { cn, Tabs, TabsList, TabsTrigger } from '@dpm-core/shared';
 
-import { SESSION_ID } from '../const/const';
+import { getSessionWeeks } from '@/remotes/queries/session';
 
 const CONST_TABS = [
 	{ value: 'session', label: '세션별' },
@@ -14,8 +15,12 @@ const CONST_TABS = [
 export const AttendanceTabs = () => {
 	const tab = useSelectedLayoutSegment();
 
+	const {
+		data: { data: sessionWeek },
+	} = useSuspenseQuery(getSessionWeeks());
+
 	if (!tab || !CONST_TABS.some(({ value }) => value === tab)) {
-		redirect(`/attendance/search/session?week=${SESSION_ID}`);
+		redirect(`/attendance/search/session?week=${sessionWeek?.sessions[0]?.id}`);
 	}
 
 	return (
@@ -27,7 +32,7 @@ export const AttendanceTabs = () => {
 						return (
 							<TabsTrigger key={value} value={value} asChild>
 								<Link
-									href={`/attendance/search/${value === 'session' ? `session?week=${SESSION_ID}` : value}`}
+									href={`/attendance/search/${value === 'session' ? `session?week=${sessionWeek?.sessions[0]?.id}` : value}`}
 									replace
 								>
 									{label}
@@ -51,7 +56,7 @@ export const AttendanceTabs = () => {
 						return (
 							<Link
 								key={value}
-								href={`/attendance/search/${value === 'session' ? `session?week=${SESSION_ID}` : value}`}
+								href={`/attendance/search/${value === 'session' ? `session?week=${sessionWeek?.sessions[0]?.id}` : value}`}
 								replace
 								className={cn(
 									'whitespace-nowrap font-bold text-headline1 tracking-[-0.48px]',
