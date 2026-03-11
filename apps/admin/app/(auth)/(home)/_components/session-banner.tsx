@@ -35,7 +35,7 @@ const SessionBannerContainer = () => {
 				...fadeInOutVariatns.variants,
 				initial: { ...fadeInOutVariatns.variants.initial, y: -20 },
 			}}
-			className="mx-auto max-w-[1200px] md:flex md:items-center md:justify-start md:gap-5 md:px-10"
+			className="mx-auto max-w-[1200px] md:mt-8! md:flex md:items-center md:justify-start md:gap-5 md:px-10"
 		>
 			{showAttendanceCodeBanner(currentWeekSession.date) && (
 				<AttendanceCodeBanner
