@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
+import type { ComponentType } from 'react';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import type { Part } from '@dpm-core/api';
 import {
 	Button,
@@ -38,13 +39,13 @@ import {
 	useIsTablet,
 } from '@dpm-core/shared';
 
-import { SESSION_ID } from '@/app/(auth)/(attendance)/attendance/search/@tabs/const/const';
 import { VocBanner } from '@/app/(auth)/(home)/_components/voc-banner';
 import { cohort } from '@/constants/cohort';
 import { isExistPart } from '@/lib/utils';
 import { useAuth } from '@/providers/auth-provider';
 import { logoutMutationOptions } from '@/remotes/mutations/auth';
 import { withdrawMutationOptions } from '@/remotes/mutations/member';
+import { getSessionWeeks } from '@/remotes/queries/session';
 
 const ICON_COLOR_ACTIVE = '#374151';
 const ICON_COLOR_INACTIVE = '#D1D5DB';
@@ -56,7 +57,14 @@ interface IconProps {
 const IconHome = ({ active }: IconProps) => {
 	const fill = active ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE;
 	return (
-		<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="17"
+			height="17"
+			viewBox="0 0 17 17"
+			fill="none"
+			aria-hidden="true"
+		>
 			<path
 				fillRule="evenodd"
 				clipRule="evenodd"
@@ -69,7 +77,14 @@ const IconHome = ({ active }: IconProps) => {
 const IconAttendance = ({ active }: IconProps) => {
 	const fill = active ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE;
 	return (
-		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none" aria-hidden="true">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="16"
+			height="17"
+			viewBox="0 0 16 17"
+			fill="none"
+			aria-hidden="true"
+		>
 			<path
 				d="M4.48021 0.611111C4.48021 0.449034 4.41864 0.293596 4.30905 0.17899C4.19946 0.0643848 4.05082 0 3.89583 0C3.74085 0 3.59221 0.0643848 3.48262 0.17899C3.37303 0.293596 3.31146 0.449034 3.31146 0.611111V1.89852C2.18946 1.99222 1.45393 2.222 0.913183 2.7883C0.371662 3.35378 0.151937 4.12378 0.0615542 5.2963H15.5218C15.4314 4.12296 15.2117 3.35378 14.6701 2.7883C14.1294 2.222 13.3931 1.99222 12.2719 1.8977V0.611111C12.2719 0.449034 12.2103 0.293596 12.1007 0.17899C11.9911 0.0643848 11.8425 0 11.6875 0C11.5325 0 11.3839 0.0643848 11.2743 0.17899C11.1647 0.293596 11.1031 0.449034 11.1031 0.611111V1.84393C10.585 1.83333 10.0037 1.83333 9.35 1.83333H6.23333C5.57961 1.83333 4.99835 1.83333 4.48021 1.84393V0.611111Z"
 				fill={fill}
@@ -86,7 +101,14 @@ const IconAttendance = ({ active }: IconProps) => {
 const IconSession = ({ active }: IconProps) => {
 	const fill = active ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE;
 	return (
-		<svg xmlns="http://www.w3.org/2000/svg" width="15" height="17" viewBox="0 0 15 17" fill="none" aria-hidden="true">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="15"
+			height="17"
+			viewBox="0 0 15 17"
+			fill="none"
+			aria-hidden="true"
+		>
 			<path
 				d="M5.2963 0C4.97214 0 4.66127 0.130392 4.43205 0.362492C4.20284 0.594591 4.07407 0.909386 4.07407 1.23762V2.06271C4.07407 2.39094 4.20284 2.70574 4.43205 2.93784C4.66127 3.16994 4.97214 3.30033 5.2963 3.30033H9.37037C9.69452 3.30033 10.0054 3.16994 10.2346 2.93784C10.4638 2.70574 10.5926 2.39094 10.5926 2.06271V1.23762C10.5926 0.909386 10.4638 0.594591 10.2346 0.362492C10.0054 0.130392 9.69452 0 9.37037 0H5.2963Z"
 				fill={fill}
@@ -104,7 +126,14 @@ const IconSession = ({ active }: IconProps) => {
 const IconAnnounce = ({ active }: IconProps) => {
 	const fill = active ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE;
 	return (
-		<svg xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17" fill="none" aria-hidden="true">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="13"
+			height="17"
+			viewBox="0 0 13 17"
+			fill="none"
+			aria-hidden="true"
+		>
 			<mask
 				id="mask0_20920_801"
 				style={{ maskType: 'luminance' } as React.CSSProperties}
@@ -136,7 +165,14 @@ const IconAnnounce = ({ active }: IconProps) => {
 const IconMember = ({ active }: IconProps) => {
 	const fill = active ? ICON_COLOR_ACTIVE : ICON_COLOR_INACTIVE;
 	return (
-		<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="17"
+			height="17"
+			viewBox="0 0 17 17"
+			fill="none"
+			aria-hidden="true"
+		>
 			<path
 				fillRule="evenodd"
 				clipRule="evenodd"
@@ -156,7 +192,7 @@ const SIDEBAR_ITEMS = [
 	},
 	{
 		title: '출석',
-		href: `/attendance/search/session?week=${SESSION_ID}`,
+		href: `/attendance/search/session`,
 		icon: IconAttendance,
 		matchPath: '/attendance',
 	},
@@ -214,6 +250,8 @@ export const AppSidebar = () => {
 						<SidebarMenu>
 							{SIDEBAR_ITEMS.map((item) => {
 								const active = isActive(item.matchPath);
+								if (item.matchPath === '/attendance')
+									return <AttendanceSideBarItem key={item.href} active={active} {...item} />;
 								return (
 									<SidebarMenuItem key={item.href}>
 										<SidebarMenuButton asChild className="h-auto gap-1 p-2 lg:h-12">
@@ -425,5 +463,39 @@ const WithdrawAlert = () => {
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>
+	);
+};
+
+interface AttendanceSideBarItemProps {
+	icon: ComponentType<IconProps>;
+	active: boolean;
+	href: string;
+	title: string;
+}
+
+const AttendanceSideBarItem = (props: AttendanceSideBarItemProps) => {
+	const {
+		data: { data: sessionWeek },
+	} = useSuspenseQuery(getSessionWeeks());
+
+	return (
+		<SidebarMenuItem>
+			<SidebarMenuButton asChild className="h-auto gap-1 p-2 lg:h-12">
+				<Link
+					href={`${props.href}?week=${sessionWeek?.sessions[0]?.id}`}
+					className="flex flex-col gap-2 lg:flex-row lg:gap-3"
+				>
+					<props.icon active={props.active} />
+					<span
+						className={cn(
+							'font-semibold text-body2',
+							props.active ? 'text-label-normal' : 'text-label-subtle',
+						)}
+					>
+						{props.title}
+					</span>
+				</Link>
+			</SidebarMenuButton>
+		</SidebarMenuItem>
 	);
 };
