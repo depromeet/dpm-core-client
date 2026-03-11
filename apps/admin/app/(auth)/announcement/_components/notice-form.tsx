@@ -1,10 +1,10 @@
 'use client';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import type { UseFormReturn } from 'react-hook-form';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { CalendarIcon } from 'lucide-react';
+import type { UseFormReturn } from 'react-hook-form';
 import {
 	AppLayout,
 	Button,
@@ -29,8 +29,8 @@ import {
 	ToggleGroupItem,
 } from '@dpm-core/shared';
 
-import { Section } from '@/components/section';
 import type { NoticeSchema } from '@/app/(auth)/announcement/create/_schemas/notice-schema';
+import { Section } from '@/components/section';
 import { usePreventPageExit } from '@/hooks/use-prevent-page-exit';
 import { formatDateWithDay } from '@/lib/date';
 
@@ -52,16 +52,16 @@ interface NoticeFormProps {
 	form: UseFormReturn<NoticeSchema>;
 	onSubmit: (data: NoticeSchema) => void;
 	isSubmitPending: boolean;
-	backHref: string;
 }
 
-export const NoticeForm = ({
-	mode,
-	form,
-	onSubmit,
-	isSubmitPending,
-	backHref,
-}: NoticeFormProps) => {
+/** 부분 입력된 시간값을 placeholder로 패딩하여 4자리로 만듦 */
+function padTimeValue(value: string, placeholder: string): string {
+	if (!value || value.length === 4) return value;
+	return (value + placeholder.slice(value.length)).slice(0, 4);
+}
+
+export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeFormProps) => {
+	const router = useRouter();
 	const [scheduledDateOpen, setScheduledDateOpen] = useState(false);
 	const [submissionStartDateOpen, setSubmissionStartDateOpen] = useState(false);
 	const [submissionEndDateOpen, setSubmissionEndDateOpen] = useState(false);
@@ -89,15 +89,15 @@ export const NoticeForm = ({
 		<AppLayout className="bg-background-normal">
 			{/* 상단 헤더 */}
 			<header className="sticky top-0 z-20 border-line-normal border-b bg-background-normal">
-				<div className="mx-auto flex w-full max-w-[1200px] items-center justify-between px-4 py-3 md:px-10 md:py-4">
-					<Link href={backHref} className="flex items-center gap-2">
+				<div className="mx-auto flex w-full max-w-300 items-center justify-between px-4 py-3 md:px-10 md:py-4">
+					<button type="button" onClick={() => router.back()} className="flex items-center gap-2">
 						<ChevronLeft className="text-icon-noraml" />
-					</Link>
+					</button>
 					<div className="flex items-center gap-4">
 						<Button
 							variant="secondary"
 							className="h-12"
-							disabled={isSubmitPending}
+							loading={isSubmitPending}
 							onClick={form.handleSubmit(onSubmit)}
 						>
 							{submitLabel}
@@ -108,13 +108,13 @@ export const NoticeForm = ({
 
 			<Form {...form}>
 				<form
-					onSubmit={(e) => {
+					onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
 						e.preventDefault();
 						if (isSubmitPending) return;
 						form.handleSubmit(onSubmit)(e);
 					}}
 				>
-					<Section className="mx-auto w-full max-w-[800px] py-8">
+					<Section className="mx-auto w-full max-w-200 py-8">
 						<div className="flex flex-col gap-8">
 							{/* 카테고리 */}
 							<FormField
@@ -122,7 +122,12 @@ export const NoticeForm = ({
 								name="category"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel className="text-body1">카테고리</FormLabel>
+										<div className="flex flex-col gap-1">
+											<FormLabel className="text-body1">카테고리</FormLabel>
+											<p className="font-medium text-caption1 text-label-assistive">
+												카테고리는 공지 등록 이후에 다시 수정할 수 없어요.
+											</p>
+										</div>
 										<FormControl>
 											<ToggleGroup
 												type="single"
@@ -138,7 +143,7 @@ export const NoticeForm = ({
 														key={value}
 														value={value}
 														disabled={mode === 'edit'}
-														className="w-fit flex-none cursor-pointer rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal disabled:cursor-not-allowed disabled:opacity-60"
+														className="w-fit flex-none cursor-pointer rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 disabled:cursor-not-allowed disabled:opacity-60 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
 													>
 														{label}
 													</ToggleGroupItem>
@@ -330,13 +335,19 @@ export const NoticeForm = ({
 																)}
 																maxLength={4}
 																placeholder="0000"
-																onKeyDown={(e) => {
+																onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
 																	if (e.key === 'Tab' && !e.shiftKey) {
 																		e.preventDefault();
 																		form.setFocus('submissionEndTime');
 																	}
 																}}
 																{...field}
+																onBlur={() => {
+																	field.onBlur();
+																	if (field.value && field.value.length < 4) {
+																		field.onChange(padTimeValue(field.value, '0000'));
+																	}
+																}}
 															>
 																<InputOTPGroup className="gap-0">
 																	<InputOTPSlot
@@ -466,6 +477,12 @@ export const NoticeForm = ({
 																maxLength={4}
 																placeholder="2359"
 																{...field}
+																onBlur={() => {
+																	field.onBlur();
+																	if (field.value && field.value.length < 4) {
+																		field.onChange(padTimeValue(field.value, '2359'));
+																	}
+																}}
 															>
 																<InputOTPGroup className="gap-0">
 																	<InputOTPSlot
@@ -601,6 +618,12 @@ export const NoticeForm = ({
 																maxLength={4}
 																placeholder="0000"
 																{...field}
+																onBlur={() => {
+																	field.onBlur();
+																	if (field.value && field.value.length < 4) {
+																		field.onChange(padTimeValue(field.value, '0000'));
+																	}
+																}}
 															>
 																<InputOTPGroup className="gap-0">
 																	<InputOTPSlot

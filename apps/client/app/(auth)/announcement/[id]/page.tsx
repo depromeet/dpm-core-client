@@ -20,8 +20,8 @@ type NoticeTagType = 'default' | 'assignment' | 'individual' | 'team' | 'etc';
 function getTagsFromAnnouncement(detail: AnnouncementDetail): NoticeTagType[] {
 	if (detail.announcementType === 'ASSIGNMENT') {
 		const tags: NoticeTagType[] = ['assignment'];
-		if (detail.assignmentType === 'INDIVIDUAL') tags.push('individual');
-		if (detail.assignmentType === 'TEAM') tags.push('team');
+		if (detail.assignment?.submitType === 'INDIVIDUAL') tags.push('individual');
+		if (detail.assignment?.submitType === 'TEAM') tags.push('team');
 		return tags;
 	}
 	if (detail.announcementType === 'NOTICE') return ['default'];
@@ -43,22 +43,35 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 
 	const { mutate: markAsRead } = useMutation({
 		mutationFn: () => announcement.markAsRead(announcementId),
+		onMutate: () => {
+			const previousIsRead = isRead;
+			const previousShowTooltip = showTooltip;
+
+			setIsRead(true);
+			setShowTooltip(false);
+
+			return { previousIsRead, previousShowTooltip };
+		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['announcement-detail', announcementId] });
+		},
+		onError: (_error, _variables, context) => {
+			if (context) {
+				setIsRead(context.previousIsRead);
+				setShowTooltip(context.previousShowTooltip);
+			}
 		},
 	});
 
 	const handleReadClick = () => {
 		if (isRead) return;
-		setIsRead(true);
-		setShowTooltip(false);
 		markAsRead();
 	};
 
 	const isAssignment = detail.announcementType === 'ASSIGNMENT';
 	const tags = getTagsFromAnnouncement(detail);
 	const formattedDate = formatISOStringToDotDate(detail.createdAt);
-	const formattedDueAt = detail.dueAt ? formatISOStringToKoreanDate(detail.dueAt) : undefined;
+	const formattedDueAt = detail.assignment?.dueAt ? formatISOStringToKoreanDate(detail.assignment.dueAt) : undefined;
 
 	return (
 		<div className="flex flex-1 flex-col gap-5 p-4">
@@ -74,8 +87,8 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 			{isAssignment && (
 				<AssignmentInfoCard
 					dueAt={formattedDueAt}
-					assignmentType={detail.assignmentType}
-					submitLink={detail.submitLink}
+					assignmentType={detail.assignment?.submitType ?? null}
+					submitLink={detail.assignment?.submitLink}
 				/>
 			)}
 

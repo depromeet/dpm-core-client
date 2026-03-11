@@ -46,17 +46,17 @@ function toFormDefaults(detail: AnnouncementDetail): Partial<NoticeSchema> {
 		defaults.scheduledTime = extractTimeHHMM(detail.scheduledAt);
 	}
 
-	if (isAssignment) {
-		defaults.assignmentType = detail.assignmentType === 'INDIVIDUAL' ? 'individual' : 'team';
-		defaults.submissionLink = detail.submitLink ?? '';
+	if (isAssignment && detail.assignment) {
+		defaults.assignmentType = detail.assignment.submitType === 'INDIVIDUAL' ? 'individual' : 'team';
+		defaults.submissionLink = detail.assignment.submitLink ?? '';
 
-		if (detail.startAt) {
-			defaults.submissionStartDate = new Date(detail.startAt);
-			defaults.submissionStartTime = extractTimeHHMM(detail.startAt);
+		if (detail.assignment.startAt) {
+			defaults.submissionStartDate = new Date(detail.assignment.startAt);
+			defaults.submissionStartTime = extractTimeHHMM(detail.assignment.startAt);
 		}
-		if (detail.dueAt) {
-			defaults.submissionEndDate = new Date(detail.dueAt);
-			defaults.submissionEndTime = extractTimeHHMM(detail.dueAt);
+		if (detail.assignment.dueAt) {
+			defaults.submissionEndDate = new Date(detail.assignment.dueAt);
+			defaults.submissionEndTime = extractTimeHHMM(detail.assignment.dueAt);
 		}
 	}
 
@@ -86,7 +86,6 @@ const EditNoticeContent = ({ announcementId }: EditNoticeContentProps) => {
 			form={form}
 			onSubmit={handleSubmit}
 			isSubmitPending={isSubmitPending}
-			backHref={`/announcement/${announcementId}`}
 		/>
 	);
 };

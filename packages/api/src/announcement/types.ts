@@ -31,16 +31,25 @@ export interface Announcement {
 	readMemberCount: number;
 }
 
+export interface AnnouncementDetailAssignment {
+	submitType: 'INDIVIDUAL' | 'TEAM';
+	startAt?: string;
+	dueAt?: string;
+	submitLink?: string;
+}
+
 export interface AnnouncementDetail {
+	announcementId: number;
 	title: string;
 	content: string;
 	createdAt: string;
 	markAsReadCount: number;
 	announcementType: AnnouncementType;
-	assignmentType: AssignmentType;
-	dueAt?: string;
-	submitLink?: string;
+	assignment?: AnnouncementDetailAssignment;
 	isRead: boolean;
+	scheduledAt?: string;
+	shouldSendNotification?: boolean;
+	startAt?: string;
 }
 
 export type ServerSubmitStatus = 'PENDING' | 'SUBMITTED' | 'LATE_SUBMITTED' | 'NOT_SUBMITTED';

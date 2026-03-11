@@ -38,8 +38,8 @@ type NoticeTag = 'default' | 'assignment' | 'individual' | 'team' | 'etc';
 function getTagsFromAnnouncement(item?: AnnouncementDetail): NoticeTag[] {
 	if (item?.announcementType === 'ASSIGNMENT') {
 		const tags: NoticeTag[] = ['assignment'];
-		if (item.assignmentType === 'INDIVIDUAL') tags.push('individual');
-		if (item.assignmentType === 'TEAM') tags.push('team');
+		if (item.assignment?.submitType === 'INDIVIDUAL') tags.push('individual');
+		if (item.assignment?.submitType === 'TEAM') tags.push('team');
 		return tags;
 	}
 	return ['default'];
