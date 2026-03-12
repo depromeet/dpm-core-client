@@ -8,6 +8,7 @@ import {
 	getGAConfigScript,
 	getGAScriptSrc,
 	parseAppPlatform,
+	parseSafeAreaInsets,
 	Toaster,
 } from '@dpm-core/shared';
 
@@ -30,6 +31,7 @@ export const viewport: Viewport = {
 	maximumScale: 1,
 	userScalable: false,
 	minimumScale: 1,
+	viewportFit: 'cover',
 };
 export default async function RootLayout({
 	children,
@@ -40,6 +42,7 @@ export default async function RootLayout({
 	const isApp = headersList.get('x-app-is-app') === 'true';
 	const appVersion = headersList.get('x-app-version') ?? null;
 	const platform = parseAppPlatform(headersList.get('x-app-platform'));
+	const safeAreaInsets = parseSafeAreaInsets(headersList.get('x-app-safe-area-insets'));
 
 	return (
 		<html lang="ko">
@@ -56,7 +59,12 @@ export default async function RootLayout({
 				<NextScript id="google-analytics">{getGAConfigScript()}</NextScript>
 				<QueryProvider>
 					<GAInitializer />
-					<AppConfigProvider isApp={isApp} appVersion={appVersion} platform={platform}>
+					<AppConfigProvider
+						isApp={isApp}
+						appVersion={appVersion}
+						platform={platform}
+						safeAreaInsets={safeAreaInsets}
+					>
 						<BridgeProvider>
 							<AppShell>{children}</AppShell>
 						</BridgeProvider>

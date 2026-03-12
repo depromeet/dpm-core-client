@@ -7,6 +7,7 @@ const [AppConfigProviderContext, useAppConfig] = createContext<DPMAppInfo>('AppC
 	isApp: false,
 	appVersion: null,
 	platform: null,
+	safeAreaInsets: { top: 0, right: 0, bottom: 0, left: 0 },
 });
 
 const AppConfigProvider = ({
@@ -14,9 +15,15 @@ const AppConfigProvider = ({
 	isApp,
 	appVersion,
 	platform,
+	safeAreaInsets,
 }: PropsWithChildren<DPMAppInfo>) => {
 	return (
-		<AppConfigProviderContext isApp={isApp} appVersion={appVersion} platform={platform}>
+		<AppConfigProviderContext
+			isApp={isApp}
+			appVersion={appVersion}
+			platform={platform}
+			safeAreaInsets={safeAreaInsets}
+		>
 			{children}
 		</AppConfigProviderContext>
 	);
