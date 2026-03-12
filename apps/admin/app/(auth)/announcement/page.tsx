@@ -117,7 +117,7 @@ const NoticePage = () => {
 
 	return (
 		<SidebarInset>
-			<div className="flex h-screen max-w-full flex-col items-center">
+			<div className="mx-auto flex h-screen w-full max-w-[1200px] flex-col items-center">
 				<NoticeHeader title="공지" className="w-full" />
 
 				<div className="flex w-full flex-1 flex-col items-start bg-background-normal">
