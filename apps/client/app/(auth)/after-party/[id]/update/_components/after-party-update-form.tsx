@@ -55,7 +55,7 @@ const gatheringSchema = z
 			.date()
 			.optional()
 			.refine((val) => val !== undefined, '참여 조사 마감 시간을 선택해주세요'),
-		allowEditAfterClose: z.boolean(),
+		canEditAfterApproval: z.boolean(),
 	})
 	.superRefine((data, ctx) => {
 		if (data.closedAt && !dayjs(data.closedAt).isAfter(dayjs())) {
@@ -147,19 +147,21 @@ const ClockIcon = () => (
 );
 
 interface AfterPartyUpdateFormProps {
-	gatheringId: number;
+	afterPartyId: number;
 }
 
-const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
+const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 	const { user } = useAuth();
 	const router = useRouter();
 	const queryClient = useQueryClient();
 	const {
 		data: { data: detail },
-	} = useSuspenseQuery(getAfterPartyByIdQueryOptions(gatheringId));
+	} = useSuspenseQuery(getAfterPartyByIdQueryOptions(afterPartyId));
 
 	// 어드민만 수정 폼 접근 가능 (실제 수정 가능 여부는 API에서 검증)
 	const canEdit = user?.isAdmin;
+	// canEditAfterApproval이 false일 때 수정 불가 (API 미반환 시 수정 허용)
+	const isFormDisabled = detail.canEditAfterApproval === false;
 
 	// API 원본 문자열 보존 (타임존 변환 없이 그대로 전송하기 위함)
 	const originalScheduledAt = detail.scheduledAt;
@@ -172,7 +174,7 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 			description: detail.description ?? '',
 			scheduledAt: parseAfterPartyDateTime(detail.scheduledAt),
 			closedAt: parseAfterPartyDateTime(detail.closedAt),
-			allowEditAfterClose: false,
+			canEditAfterApproval: detail.canEditAfterApproval ?? false,
 		},
 	});
 
@@ -183,7 +185,7 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 			description: detail.description ?? '',
 			scheduledAt: parseAfterPartyDateTime(detail.scheduledAt),
 			closedAt: parseAfterPartyDateTime(detail.closedAt),
-			allowEditAfterClose: false,
+			canEditAfterApproval: detail.canEditAfterApproval ?? false,
 		});
 	}, [detail, form]);
 
@@ -192,7 +194,7 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 			onSuccess: () => {
 				toast.success('수정 완료했어요');
 				queryClient.invalidateQueries({ queryKey: ['after-parties'] });
-				queryClient.invalidateQueries({ queryKey: ['after-party', gatheringId] });
+				queryClient.invalidateQueries({ queryKey: ['after-party', afterPartyId] });
 				router.replace('/after-party');
 			},
 			onError: (error) => {
@@ -243,11 +245,11 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 						: '',
 			isApproved: false,
 			authorMemberId: detail.authorMemberId,
-			canEditAfterApproval: data.allowEditAfterClose,
+			canEditAfterApproval: data.canEditAfterApproval,
 			inviteTags,
 		};
 		console.log('[회식 수정] payload:', payload);
-		updateAfterParty({ gatheringId, params: payload });
+		updateAfterParty({ afterPartyId, params: payload });
 	};
 
 	if (!canEdit) {
@@ -265,7 +267,12 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 					className="flex flex-1 flex-col overflow-y-auto px-[16px] pt-1.5 pb-[24px]"
 				>
 					<section className="space-y-[24px]">
-						<h2 className="font-semibold text-[#111827] text-title2">기본 정보</h2>
+						<h2 className="font-semibold text-[#111827] text-title2">
+							기본 정보
+							{isFormDisabled && (
+								<span className="ml-2 font-medium text-[#9CA3AF]">(수정 불가)</span>
+							)}
+						</h2>
 
 						<FormField
 							control={form.control}
@@ -279,6 +286,8 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 											variant="line"
 											placeholder="ex. 17기 OT 회식"
 											maxLength={20}
+											disabled={isFormDisabled}
+											className={cn(isFormDisabled && 'cursor-not-allowed bg-[#F9FAFB]')}
 										/>
 									</FormControl>
 									<FormMessage className="font-medium text-caption1 text-red-500" />
@@ -301,11 +310,13 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 										<textarea
 											{...field}
 											className={cn(
-												'flex min-h-[120px] w-full resize-none rounded-lg border bg-white p-4 font-medium text-body2 outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-gray-900',
+												'flex min-h-[120px] w-full resize-none rounded-lg border p-4 font-medium text-body2 outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-gray-900',
 												fieldState.error ? 'border-red-400' : 'border-line-normal',
+												isFormDisabled ? 'cursor-not-allowed bg-[#F9FAFB]' : 'bg-white',
 											)}
 											placeholder="ex. 17기 OT 회식"
 											maxLength={500}
+											disabled={isFormDisabled}
 										/>
 									</FormControl>
 									<FormMessage className="font-medium text-caption1 text-red-500" />
@@ -351,9 +362,11 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 										>
 											<button
 												type="button"
+												disabled={isFormDisabled}
 												className={cn(
-													'flex flex-1 items-center gap-[8px] rounded-lg border bg-white px-[16px] py-[12px]',
+													'flex flex-1 items-center gap-[8px] rounded-lg border px-[16px] py-[12px]',
 													fieldState.error ? 'border-red-400' : 'border-line-normal',
+													isFormDisabled ? 'cursor-not-allowed bg-[#F9FAFB]' : 'bg-white',
 												)}
 											>
 												<CalendarIcon />
@@ -369,9 +382,11 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 										>
 											<button
 												type="button"
+												disabled={isFormDisabled}
 												className={cn(
-													'flex items-center gap-[8px] rounded-lg border bg-white px-[16px] py-[12px]',
+													'flex items-center gap-[8px] rounded-lg border px-[16px] py-[12px]',
 													fieldState.error ? 'border-red-400' : 'border-line-normal',
+													isFormDisabled ? 'cursor-not-allowed bg-[#F9FAFB]' : 'bg-white',
 												)}
 											>
 												<ClockIcon />
@@ -406,9 +421,11 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 										>
 											<button
 												type="button"
+												disabled={isFormDisabled}
 												className={cn(
-													'flex flex-1 items-center gap-[8px] rounded-lg border bg-white px-[16px] py-[12px]',
+													'flex flex-1 items-center gap-[8px] rounded-lg border px-[16px] py-[12px]',
 													fieldState.error ? 'border-red-400' : 'border-line-normal',
+													isFormDisabled ? 'cursor-not-allowed bg-[#F9FAFB]' : 'bg-white',
 												)}
 											>
 												<CalendarIcon />
@@ -428,9 +445,11 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 										>
 											<button
 												type="button"
+												disabled={isFormDisabled}
 												className={cn(
-													'flex items-center gap-[8px] rounded-lg border bg-white px-[16px] py-[12px]',
+													'flex items-center gap-[8px] rounded-lg border px-[16px] py-[12px]',
 													fieldState.error ? 'border-red-400' : 'border-line-normal',
+													isFormDisabled ? 'cursor-not-allowed bg-[#F9FAFB]' : 'bg-white',
 												)}
 											>
 												<ClockIcon />
@@ -446,10 +465,15 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 
 						<FormField
 							control={form.control}
-							name="allowEditAfterClose"
+							name="canEditAfterApproval"
 							render={({ field }) => (
 								<FormItem>
-									<div className="flex items-start justify-between gap-[24px]">
+									<div
+										className={cn(
+											'flex items-start justify-between gap-[24px] rounded-lg border border-line-normal px-4 py-3',
+											isFormDisabled && 'bg-[#F9FAFB]',
+										)}
+									>
 										<div className="space-y-[4px]">
 											<Label className="font-semibold text-[#4B5563] text-body2">
 												참여 조사 마감 후 수정 허용
@@ -464,10 +488,12 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 											type="button"
 											role="switch"
 											aria-checked={field.value}
-											onClick={() => field.onChange(!field.value)}
+											disabled={isFormDisabled}
+											onClick={() => !isFormDisabled && field.onChange(!field.value)}
 											className={cn(
 												'relative h-[22px] w-[42px] shrink-0 rounded-full p-[2px] shadow-xs transition-colors',
 												field.value ? 'bg-[#1F2937]' : 'bg-[#E5E7EB]',
+												isFormDisabled && 'cursor-not-allowed opacity-60',
 											)}
 										>
 											<span
@@ -490,8 +516,11 @@ const AfterPartyUpdateForm = ({ gatheringId }: AfterPartyUpdateFormProps) => {
 					type="button"
 					variant="secondary"
 					size="full"
-					className="h-[48px] rounded-lg bg-[#1F2937] text-white"
-					disabled={isPending}
+					className={cn(
+						'h-[48px] rounded-lg bg-[#1F2937] text-white',
+						isFormDisabled && 'cursor-not-allowed bg-[#9CA3AF]',
+					)}
+					disabled={isPending || isFormDisabled}
 					onClick={() => form.handleSubmit(handleSubmit)()}
 				>
 					수정하기

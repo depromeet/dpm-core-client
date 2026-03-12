@@ -1,13 +1,14 @@
 'use client';
 
 import { Suspense } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
 import type { Session } from '@dpm-core/api';
-import { Calender, Clock, formatDotFullDate } from '@dpm-core/shared';
+import { Aesterisk, Calender, Clock, formatDotFullDate, toast } from '@dpm-core/shared';
 
+import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringHHMM } from '@/lib/date';
@@ -18,18 +19,34 @@ const SessionListContainer = () => {
 	const {
 		data: { data: sessionResponse },
 	} = useSuspenseQuery(getSessionListQuery);
+
+	if (sessionResponse.sessions.length === 0) {
+		return (
+			<Empty className="h-full min-h-41.5">
+				<EmptyHeader>
+					<Aesterisk />
+					<EmptyTitle>등록된 세션이 없어요</EmptyTitle>
+				</EmptyHeader>
+			</Empty>
+		);
+	}
+
 	return (
 		<Virtuoso
 			data={sessionResponse.sessions}
 			itemContent={(_, session) => <SessionItem key={session.id} session={session} />}
-			className="flex-1"
+			className="scrollbar-hide flex-1"
 		/>
 	);
 };
 
 function SessionItem({ session }: { session: Session }) {
+	const handleClick = () => {
+		toast.light('디퍼에게는 세션 상세 정보를 제공하지 않아요.');
+	};
+
 	return (
-		<div className="px-4">
+		<button type="button" className="w-full cursor-pointer px-4 text-left" onClick={handleClick}>
 			<div className="flex flex-col border-line-subtle border-b px-3 py-4">
 				<p className="mb-0.5 font-medium text-caption1 text-label-assistive">
 					{formatSessionWeekString(session.week)}
@@ -47,19 +64,18 @@ function SessionItem({ session }: { session: Session }) {
 					</p>
 				</div>
 			</div>
-		</div>
+		</button>
 	);
 }
 
-const SessionList = ErrorBoundary.with(
-	{
-		fallback: ({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />,
-	},
-	() => (
-		<Suspense fallback={<LoadingBox />}>
-			<SessionListContainer />
-		</Suspense>
-	),
-);
-
-export { SessionList };
+export const SessionList = () => {
+	return (
+		<ErrorBoundary
+			fallback={(props: ErrorBoundaryFallbackProps) => <ErrorBox onReset={props.reset} />}
+		>
+			<Suspense fallback={<LoadingBox />}>
+				<SessionListContainer />
+			</Suspense>
+		</ErrorBoundary>
+	);
+};

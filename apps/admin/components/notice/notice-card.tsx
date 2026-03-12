@@ -1,9 +1,7 @@
 'use client';
 
 import type React from 'react';
-import { cn } from '@dpm-core/shared';
-
-import { NoticeTag } from './notice-tag';
+import { cn, NoticeTag } from '@dpm-core/shared';
 
 export interface NoticeCardProps extends React.HTMLAttributes<HTMLDivElement> {
 	title: string;

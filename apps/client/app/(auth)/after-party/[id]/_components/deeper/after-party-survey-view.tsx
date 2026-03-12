@@ -3,7 +3,7 @@
 import { Suspense } from 'react';
 import { Loader2Icon } from 'lucide-react';
 import type { AfterPartyDetail } from '@dpm-core/api';
-import { CircleCheck, cn, toast } from '@dpm-core/shared';
+import { Button, CircleCheck, cn, toast, XRed } from '@dpm-core/shared';
 
 import type { AttendanceStatus } from '../../_types/after-party-survey';
 import { AfterPartyEditBottomSheet } from './after-party-edit-bottom-sheet';
@@ -16,7 +16,7 @@ interface AfterPartySurveyViewProps {
 	attendance: AttendanceStatus;
 	onAttendanceChange: (status: AttendanceStatus) => void;
 	isClosed: boolean;
-	gatheringId: number;
+	afterPartyId: number;
 }
 
 export const AfterPartySurveyView = ({
@@ -24,7 +24,7 @@ export const AfterPartySurveyView = ({
 	attendance,
 	onAttendanceChange,
 	isClosed,
-	gatheringId,
+	afterPartyId,
 }: AfterPartySurveyViewProps) => {
 	const attendanceLabel = attendance === 'attending' ? '참석' : '불참';
 
@@ -48,16 +48,16 @@ export const AfterPartySurveyView = ({
 						attendance={attendance}
 						onEditSuccess={handleEditSuccess}
 						isClosed={isClosed}
-						gatheringId={gatheringId}
+						afterPartyId={afterPartyId}
 					>
-						<button type="button" className="font-medium text-body2 text-label-assistive">
+						<Button size="md" variant="text" className="h-10 px-4">
 							수정하기
-						</button>
+						</Button>
 					</AfterPartyEditBottomSheet>
 				</div>
 
 				<div className="mt-3 flex items-center gap-2 rounded-lg border-none bg-background-subtle px-4 py-3">
-					<CircleCheck size={16} />
+					{attendanceLabel === '참석' ? <CircleCheck /> : <XRed />}
 					<span className="font-medium text-body2 text-label-normal">{attendanceLabel}</span>
 				</div>
 
@@ -94,7 +94,7 @@ export const AfterPartySurveyView = ({
 					</div>
 				}
 			>
-				<InvitedMemberList gatheringId={gatheringId} isClosed={isClosed} />
+				<InvitedMemberList afterPartyId={afterPartyId} isClosed={isClosed} />
 			</Suspense>
 		</div>
 	);

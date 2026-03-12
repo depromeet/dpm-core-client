@@ -3,8 +3,6 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-// import { useMutation } from '@tanstack/react-query';
-// import * as motion from 'motion/react-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
@@ -72,7 +70,7 @@ const createGatheringSchema = z
 			.optional()
 			.refine((val) => val !== undefined, '참여 조사 마감 시간을 선택해주세요'),
 		/** 참여 조사 마감 후 수정 허용 */
-		allowEditAfterClose: z.boolean(),
+		canEditAfterApproval: z.boolean(),
 	})
 	.superRefine((data, ctx) => {
 		if (data.closedAt && !dayjs(data.closedAt).isAfter(dayjs())) {
@@ -124,7 +122,7 @@ const AfterPartyCreatePage = () => {
 			title: '',
 			description: '',
 			inviteScopes: [],
-			allowEditAfterClose: false,
+			canEditAfterApproval: false,
 		},
 	});
 
@@ -191,8 +189,7 @@ const AfterPartyCreatePage = () => {
 			inviteTags,
 			scheduledAt: data.scheduledAt ? dayjs(data.scheduledAt).toISOString() : '',
 			closedAt: data.closedAt ? dayjs(data.closedAt).toISOString() : '',
-			allowEditAfterClose: data.allowEditAfterClose,
-			canEditAfterApproval: false,
+			canEditAfterApproval: data.canEditAfterApproval,
 		};
 		createAfterParty(payload);
 	};
@@ -410,7 +407,7 @@ const AfterPartyCreatePage = () => {
 						{/* 참여 조사 마감 후 수정 허용 */}
 						<FormField
 							control={form.control}
-							name="allowEditAfterClose"
+							name="canEditAfterApproval"
 							render={({ field }) => (
 								<FormItem>
 									<div className="flex items-start justify-between gap-[24px]">

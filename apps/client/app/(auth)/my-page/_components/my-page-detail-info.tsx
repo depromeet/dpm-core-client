@@ -1,8 +1,8 @@
 'use client';
 
 import { Suspense } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useIsMutating, useSuspenseQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
 import { ChevronRight, fadeInOutVariatns } from '@dpm-core/shared';
@@ -26,7 +26,7 @@ const MyPageDetailInfoContainer = () => {
 	return (
 		<motion.div
 			variants={fadeInOutVariatns.variants}
-			className="flex flex-1 flex-col gap-y-2 p-[30px] px-4"
+			className="flex flex-1 flex-col gap-y-2 p-7.5 px-4"
 		>
 			<MypPageBox className="flex flex-col gap-y-5">
 				<div className="flex flex-col gap-y-2">

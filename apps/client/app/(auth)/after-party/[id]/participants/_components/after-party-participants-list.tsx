@@ -1,10 +1,16 @@
 'use client';
 
+import { Suspense } from 'react';
+import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
 import type { Part } from '@dpm-core/api';
+import { Aesterisk } from '@dpm-core/shared';
 
 import { Profile } from '@/components/attendance/profile';
+import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
+import { ErrorBox } from '@/components/error-box';
+import { LoadingBox } from '@/components/loading-box';
 import { useAuth } from '@/providers/auth-provider';
 import { getAfterPartyInvitedMembersQueryOptions } from '@/remotes/queries/after-party';
 
@@ -14,7 +20,7 @@ interface AfterPartyParticipantsListProps {
 	afterPartyId: number;
 }
 
-export const AfterPartyParticipantsList = (props: AfterPartyParticipantsListProps) => {
+const AfterPartyParticipantsListContainer = (props: AfterPartyParticipantsListProps) => {
 	const { afterPartyId } = props;
 	const { afterPartyParticipantsStatus, afterPartyParticipantsIsMyTeam } =
 		useAfterPartyParticipantsFilterSearchParams();
@@ -27,13 +33,23 @@ export const AfterPartyParticipantsList = (props: AfterPartyParticipantsListProp
 
 	const filteredList = afterPartyParticipants.filter((member) => {
 		const matchStatus =
-			// isRsvpGoing가 null인 경우 미제출, 아닌 경우 제출, isRsvpGoing가 true인 경우 참석, false인 경우 불참
 			afterPartyParticipantsStatus === 'NO'
-				? member.isRsvpGoing === null
-				: member.isRsvpGoing !== null;
+				? member.rsvpStatus === null
+				: member.rsvpStatus !== null;
 		const matchTeam = afterPartyParticipantsIsMyTeam ? member.team === user?.teamNumber : true;
 		return matchStatus && matchTeam;
 	});
+
+	if (filteredList.length === 0) {
+		return (
+			<Empty className="h-full min-h-41.5">
+				<EmptyHeader>
+					<Aesterisk />
+					<EmptyTitle>해당하는 멤버가 없어요</EmptyTitle>
+				</EmptyHeader>
+			</Empty>
+		);
+	}
 
 	return (
 		<ul className="h-full py-3">
@@ -53,18 +69,31 @@ interface AfterPartyParticipantsItemProps {
 	name: string;
 	part: Part;
 	team: number;
-	isRsvpGoing: boolean;
+	rsvpStatus: boolean | null;
 }
 
 const AfterPartyParticipantsItem = (props: AfterPartyParticipantsItemProps) => {
 	return (
 		<li className="px-4 py-1.5">
-			<Profile
-				size={40}
-				name={props.name}
-				teamNumber={props.team}
-				part={props.part === 'ETC' ? 'WEB' : props.part}
-			/>
+			<Profile size={40} name={props.name} teamNumber={props.team} part={props.part} />
 		</li>
+	);
+};
+
+export const AfterPartyParticipantsList = (props: AfterPartyParticipantsListProps) => {
+	return (
+		<ErrorBoundary
+			fallback={(props: ErrorBoundaryFallbackProps) => <ErrorBox onReset={() => props.reset()} />}
+		>
+			<Suspense
+				fallback={
+					<div className="flex h-full flex-col">
+						<LoadingBox />
+					</div>
+				}
+			>
+				<AfterPartyParticipantsListContainer {...props} />
+			</Suspense>
+		</ErrorBoundary>
 	);
 };

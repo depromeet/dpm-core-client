@@ -1,5 +1,6 @@
 // Components
 export * from './components/app-shell-provider';
+export * from './components/assignment-submit-status';
 export * from './components/badge';
 export * from './components/chip-group';
 export * from './components/create-context';
@@ -13,8 +14,12 @@ export * from './components/icons';
 export * from './components/member-profile';
 export * from './components/modals';
 export * from './components/multi-action-toolbar';
+export * from './components/notice-info';
+export * from './components/notice-tag';
 export * from './components/profile-stack';
 export * from './components/reminder-callout';
+export * from './components/search-input';
+export * from './components/search-input-outlined';
 export * from './components/status-badge';
 export * from './components/table';
 export * from './components/team-tab-bar';
@@ -44,6 +49,7 @@ export * from './components/ui/skeleton';
 export * from './components/ui/sonner';
 export * from './components/ui/switch';
 export * from './components/ui/table';
+export * from './components/ui/table-checkbox';
 export * from './components/ui/tabs';
 export * from './components/ui/textarea';
 export * from './components/ui/toast';

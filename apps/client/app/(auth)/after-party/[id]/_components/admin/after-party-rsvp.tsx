@@ -27,15 +27,15 @@ import {
 interface AfterPartyRsvpProps {
 	title: string;
 	rsvpStatus: boolean | null;
-	gatheringId: number;
+	afterPartyId: number;
 }
 
 export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
-	const { title, rsvpStatus: rsvpStatusProp, gatheringId } = props;
+	const { title, rsvpStatus: rsvpStatusProp, afterPartyId } = props;
 
 	const queryClient = useQueryClient();
 	const { mutate: submitRsvpStatus, isPending: isSubmitRsvpStatusPending } = useMutation(
-		submitAttendanceStatusMutationOptions(gatheringId),
+		submitAttendanceStatusMutationOptions(afterPartyId),
 	);
 
 	const [rsvpStatus, setRsvpStatus] = useState(() =>
@@ -44,7 +44,8 @@ export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
 
 	const isNotSubmitted = rsvpStatusProp === null;
 
-	const handleChangeRsvpStatus = (value: '참석' | '불참') => {
+	const handleChangeRsvpStatus = (value: string) => {
+		if (!value) return;
 		setRsvpStatus(value);
 	};
 
@@ -55,9 +56,9 @@ export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
 			{ isRsvpGoing },
 			{
 				onSuccess: () => {
-					queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(gatheringId));
+					queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(afterPartyId));
 					queryClient.invalidateQueries(getAfterPartiesQueryOptions);
-					queryClient.invalidateQueries(getAfterPartyInvitedMembersQueryOptions(gatheringId));
+					queryClient.invalidateQueries(getAfterPartyInvitedMembersQueryOptions(afterPartyId));
 					toast.success('저장했어요');
 				},
 				onError: () => {
@@ -74,9 +75,9 @@ export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
 			{ isRsvpGoing },
 			{
 				onSuccess: () => {
-					queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(gatheringId));
+					queryClient.invalidateQueries(getAfterPartyByIdQueryOptions(afterPartyId));
 					queryClient.invalidateQueries(getAfterPartiesQueryOptions);
-					queryClient.invalidateQueries(getAfterPartyInvitedMembersQueryOptions(gatheringId));
+					queryClient.invalidateQueries(getAfterPartyInvitedMembersQueryOptions(afterPartyId));
 					toast.success('수정 완료했어요');
 				},
 				onError: () => {
@@ -176,7 +177,7 @@ export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
 						</DrawerTrigger>
 						<DrawerContent className="mx-auto max-w-lg">
 							<DrawerHeader className="mb-3 px-5 pt-5">
-								<DrawerTitle>참석 여부 제출전 확인</DrawerTitle>
+								<DrawerTitle>참석 여부 제출 전 확인</DrawerTitle>
 							</DrawerHeader>
 							<section className="px-5 pb-3">
 								<p className="mb-2 font-semibold text-body1 text-label-subtle">{title}</p>

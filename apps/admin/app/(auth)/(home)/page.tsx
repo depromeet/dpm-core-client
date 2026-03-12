@@ -6,6 +6,7 @@ import { Section } from '@/components/section';
 import { CurrentWeekSession } from './_components/current-week-session';
 import { HomeAttendance } from './_components/home-attendance';
 import HomeHeader from './_components/home-header';
+import { MemberApprovalBanner } from './_components/member-approval-banner';
 import { MobileNav } from './_components/mobile-nav';
 import { SessionBanner } from './_components/session-banner';
 import { SessionProivder } from './_components/session-provider';
@@ -16,17 +17,15 @@ const HomePage = () => {
 			<GAPageTracker type="home" />
 			<HomeHeader />
 			<main>
+				<MemberApprovalBanner />
 				<SessionProivder>
 					<SessionBanner />
-
 					<Section className="mt-5 border-background-strong border-b-8 pb-10 md:hidden">
 						<MobileNav />
 					</Section>
-
 					<Section>
 						<CurrentWeekSession />
 					</Section>
-
 					<Section className="md:hidden">
 						<Link
 							href="https://forms.gle/yV88T98WsADu6VNc6"
@@ -46,7 +45,6 @@ const HomePage = () => {
 							<ChevronRight className="text-icon-noraml" />
 						</Link>
 					</Section>
-
 					<HomeAttendance />
 				</SessionProivder>
 			</main>

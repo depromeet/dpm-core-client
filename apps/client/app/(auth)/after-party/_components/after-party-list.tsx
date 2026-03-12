@@ -15,12 +15,12 @@ import { getAfterPartiesQueryOptions } from '@/remotes/queries/after-party';
 
 import { useAfterPartyListFilterSearchParams } from '../_hooks/use-after-party-list-filter-search-params';
 import { getDaysUntilDeadline } from '../_utils/get-days-until-deadline';
-
+import Image from 'next/image';
 dayjs.locale('ko');
 
 interface AfterPartyItemProps {
 	/** 회식 고유 ID */
-	gatheringId: number;
+	afterPartyId: number;
 	/** 회식 제목 */
 	title: string;
 	/** 내가 생성한 회식 여부 */
@@ -134,7 +134,7 @@ const UserIcon = () => {
 };
 
 const AfterPartyItem = ({
-	gatheringId,
+	afterPartyId,
 	title,
 	isOwner,
 	isClosed,
@@ -181,7 +181,7 @@ const AfterPartyItem = ({
 						)}
 					</div>
 				</div>
-				<Link href={`/after-party/${gatheringId}`} className="block space-y-[8px]">
+				<Link href={`/after-party/${afterPartyId}`} className="block space-y-[8px]">
 					<p className="font-semibold text-body1 text-gray-800">{title}</p>
 					<p className="text-ellipsis font-medium text-body2 text-gray-600">{description}</p>
 				</Link>
@@ -207,7 +207,7 @@ const AfterPartyItem = ({
 
 /** rsvpStatus=null 예시용 목 데이터 (개발 시 확인용) */
 const MOCK_UNANSWERED_ITEM = {
-	gatheringId: 0,
+	afterPartyId: 0,
 	title: '[예시] 미응답 회식',
 	isOwner: false,
 	rsvpStatus: null as boolean | null,
@@ -237,6 +237,16 @@ const AfterPartyListContainer = () => {
 	/** 개발 환경에서 rsvpStatus=null 예시를 목록 맨 위에 표시 */
 	const displayList =
 		process.env.NODE_ENV === 'development' ? [MOCK_UNANSWERED_ITEM, ...filteredList] : filteredList;
+	
+
+	if (displayList.length === 0) {
+		return (
+			<section className="flex h-full flex-col items-center justify-center">
+				<Image src="/empty.svg" alt="목록이 비어있습니다" width={31.5} height={31.5} />
+				<div className="mt-4 text-body1 text-gray-400">등록된 회식이 없어요</div>
+			</section>
+		);
+	}
 
 	return (
 		<div className="[&_[data-virtuoso-scroller]]:scrollbar-hide h-full">
@@ -244,7 +254,7 @@ const AfterPartyListContainer = () => {
 				style={{ height: '100%' }}
 				data={displayList}
 				itemContent={(_, item) => {
-					return <AfterPartyItem key={item.gatheringId} {...item} />;
+					return <AfterPartyItem key={item.afterPartyId} {...item} />;
 				}}
 			/>
 		</div>

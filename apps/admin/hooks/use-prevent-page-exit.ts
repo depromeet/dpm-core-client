@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 export const usePreventPageExit = (enabled: boolean) => {
+	const pushedRef = useRef(false);
+
 	useEffect(() => {
 		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
 			if (!enabled) return;
@@ -22,15 +24,18 @@ export const usePreventPageExit = (enabled: boolean) => {
 
 		const handlePopState = () => {
 			if (window.confirm('작성 중인 내용이 있습니다. 정말 나가시겠습니까?')) {
-				// 사용자가 확인하면 뒤로가기 허용
+				window.removeEventListener('popstate', handlePopState);
+				pushedRef.current = false;
+				window.history.back();
 				return;
 			}
-			// 사용자가 취소하면 뒤로가기 방지
 			window.history.pushState(null, '', window.location.href);
 		};
 
-		// 현재 상태를 히스토리에 추가하여 뒤로가기 감지 가능하게 함
-		window.history.pushState(null, '', window.location.href);
+		if (!pushedRef.current) {
+			window.history.pushState(null, '', window.location.href);
+			pushedRef.current = true;
+		}
 		window.addEventListener('popstate', handlePopState);
 
 		return () => {

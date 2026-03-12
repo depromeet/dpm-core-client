@@ -7,8 +7,10 @@ import { Button, cn, IconButton, type Profile, ProfileStack } from '@dpm-core/sh
 export interface NoticeDetailHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 	title: string;
 	readProfiles?: Profile[];
+	readCount?: number;
 	onBack?: () => void;
 	onEdit?: () => void;
+	onDelete?: () => void;
 	showEditButton?: boolean;
 }
 
@@ -16,8 +18,10 @@ export const NoticeDetailHeader = ({
 	className,
 	title,
 	readProfiles = [],
+	readCount = 0,
 	onBack,
 	onEdit,
+	onDelete,
 	showEditButton = true,
 	...props
 }: NoticeDetailHeaderProps) => {
@@ -35,12 +39,22 @@ export const NoticeDetailHeader = ({
 			<h1 className="flex-1 font-bold text-headline1 text-label-normal">{title}</h1>
 
 			<div className="flex items-center gap-6">
-				{readProfiles.length > 0 && <ProfileStack profiles={readProfiles} max={3} />}
+				{readProfiles.length > 0 && (
+					<div className="flex items-center gap-1">
+						<ProfileStack profiles={readProfiles} max={3} showCount={false} />
+						<p className="font-semibold text-body2 text-label-assistive">+{readCount}명 읽음</p>
+					</div>
+				)}
 
 				{showEditButton && (
-					<Button variant="secondary" size="lg" onClick={onEdit}>
-						수정하기
-					</Button>
+					<div className="flex items-center gap-2">
+						<Button variant="secondary" size="lg" onClick={onEdit}>
+							수정하기
+						</Button>
+						<Button variant="secondary" size="lg" onClick={onDelete}>
+							삭제하기
+						</Button>
+					</div>
 				)}
 			</div>
 		</div>

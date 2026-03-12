@@ -4,8 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
 import { ArrowRight, Button, ChevronRight, fadeInOutVariatns, useIsMobile } from '@dpm-core/shared';
@@ -35,7 +35,7 @@ const SessionBannerContainer = () => {
 				...fadeInOutVariatns.variants,
 				initial: { ...fadeInOutVariatns.variants.initial, y: -20 },
 			}}
-			className="mx-auto max-w-[1200px] md:mt-8 md:flex md:items-center md:justify-start md:gap-5 md:px-10"
+			className="mx-auto max-w-[1200px] md:mt-8! md:flex md:items-center md:justify-start md:gap-5 md:px-10"
 		>
 			{showAttendanceCodeBanner(currentWeekSession.date) && (
 				<AttendanceCodeBanner

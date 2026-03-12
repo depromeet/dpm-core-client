@@ -21,7 +21,7 @@ export interface InviteTagItem {
 }
 
 export interface AfterParty {
-	gatheringId: number;
+	afterPartyId: number;
 	title: string;
 	isOwner: boolean;
 	rsvpStatus: boolean | null;
@@ -39,7 +39,7 @@ export interface AfterParty {
 
 /** getAfterPartyById 상세 조회 전용 응답 타입 */
 export interface AfterPartyDetail {
-	gatheringId: number;
+	afterPartyId: number;
 	title: string;
 	isOwner: boolean;
 	rsvpStatus: boolean | null;
@@ -47,12 +47,16 @@ export interface AfterPartyDetail {
 	description: string;
 	scheduledAt: string;
 	closedAt: string;
-	isRsvpGoingCount: number;
+	notRsvpGoingCount: number;
+	rsvpGoingCount: number;
+	submitRsvpCount: number;
 	attendanceCount: number;
 	inviteeCount: number;
 	authorMemberId: number;
 	createdAt: string;
 	isClosed: boolean;
+	/** false일 때 수정 페이지에서 폼 비활성화 */
+	canEditAfterApproval?: boolean;
 	inviteTags: {
 		inviteTags: InviteTagItem[];
 	};
@@ -69,15 +73,14 @@ export interface CreateAfterPartyRequest {
 	}[];
 	scheduledAt: string;
 	closedAt: string;
-	allowEditAfterClose: boolean;
 	canEditAfterApproval: boolean;
 }
 
 export interface CreateAfterPartyResponse {
-	gatheringId: string; // 회식 ID
+	afterPartyId: string; // 회식 ID
 }
 
-/** PATCH /v2/gatherings/{gatheringId} 수정 API 요청 */
+/** PATCH /v2/after-party/{afterPartyId} 수정 API 요청 */
 export interface UpdateAfterPartyRequest {
 	title: string;
 	description: string;
@@ -111,5 +114,5 @@ export interface AfterPartyInvitedMember {
 	name: string;
 	part: Part;
 	team: number;
-	isRsvpGoing: boolean;
+	rsvpStatus: boolean | null;
 }

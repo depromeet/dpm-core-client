@@ -86,6 +86,8 @@
 	--color-background-normal: var(--color-gray-0);
 	--color-background-subtle: var(--color-gray-50);
 	--color-background-strong: var(--color-gray-100);
+	--color-background-pending: var(--color-yellow-50); /* #FFFCF7, 승인 필요 */
+	--color-background-pending-hover: var(--color-yellow-100);
 	--color-background-heavy: var(--color-gray-200);
 	--color-background-inverse: var(--color-gray-800);
 	--color-background-hover: --alpha(var(--color-gray-500) / 6%);
