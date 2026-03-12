@@ -15,8 +15,15 @@ export const member = {
 		return res;
 	},
 
-	getMembersOverview: async () => {
-		const res = await http.get<MembersOverviewResponse>('v1/members/overview');
+	/** GET /v1/members/overview - currentCohortOnly 파라미터 지원 */
+	getMembersOverview: async (params?: { currentCohortOnly?: boolean }) => {
+		const searchParams =
+			params?.currentCohortOnly != null
+				? { currentCohortOnly: String(params.currentCohortOnly) }
+				: undefined;
+		const res = await http.get<MembersOverviewResponse>('v1/members/overview', {
+			searchParams,
+		});
 		return res;
 	},
 

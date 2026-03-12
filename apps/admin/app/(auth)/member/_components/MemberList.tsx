@@ -3,6 +3,7 @@
 /** 멤버 관리 페이지 */
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
 	SearchInputOutlined,
 	Table,
@@ -14,11 +15,10 @@ import {
 	TableRow,
 	toast,
 } from '@dpm-core/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import EtcIcon from '@/assets/icons/etc.webp';
-import { LoadingBox } from '@/components/loading-box';
 import { Profile } from '@/components/attendance/profile';
+import { LoadingBox } from '@/components/loading-box';
 import { cohort } from '@/constants/cohort';
 import { isExistPart } from '@/lib/utils';
 import {
@@ -36,22 +36,25 @@ import { MemberStatusLabel } from './MemberStatusLabel';
 
 export const MemberList = () => {
 	const queryClient = useQueryClient();
-	const { data, isLoading } = useQuery(getMembersOverviewQuery);
-
-	const members = useMemo(() => {
-		if (!data?.data?.members) return [];
-		return data.data.members.map(mapMemberOverviewToListItem);
-	}, [data]);
-
 	const [searchQuery, setSearchQuery] = useState('');
 	const [filterValues, setFilterValues] = useState<MemberFilterValues>({
 		unapprovedOnly: true,
+		currentCohortOnly: true,
 		parts: [],
 		teams: [],
 	});
 	const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 	const [approveModalOpen, setApproveModalOpen] = useState(false);
 	const [editModalOpen, setEditModalOpen] = useState(false);
+
+	const { data, isLoading } = useQuery(
+		getMembersOverviewQuery({ currentCohortOnly: filterValues.currentCohortOnly }),
+	);
+
+	const members = useMemo(() => {
+		if (!data?.data?.members) return [];
+		return data.data.members.map(mapMemberOverviewToListItem);
+	}, [data]);
 
 	const filteredMembers = useMemo(() => {
 		let result = members;
@@ -122,7 +125,7 @@ export const MemberList = () => {
 					for (const id of variables.members) next.delete(id);
 					return next;
 				});
-				queryClient.invalidateQueries({ queryKey: getMembersOverviewQuery.queryKey });
+				queryClient.invalidateQueries({ queryKey: ['members-overview'] });
 				setApproveModalOpen(false);
 				toast.success('승인 완료했습니다.');
 			},
@@ -162,7 +165,7 @@ export const MemberList = () => {
 		updateMembersInitMutationOptions({
 			onSuccess: () => {
 				setSelectedIds(new Set());
-				queryClient.invalidateQueries({ queryKey: getMembersOverviewQuery.queryKey });
+				queryClient.invalidateQueries({ queryKey: ['members-overview'] });
 				setEditModalOpen(false);
 				toast.success('수정 완료했습니다.');
 			},
@@ -219,7 +222,7 @@ export const MemberList = () => {
 					<div className="flex flex-row items-center gap-2">
 						<button
 							type="button"
-							className="flex h-10 items-center justify-center rounded-lg bg-background-inverse px-4 py-3 font-semibold text-body2 text-label-inverse transition-opacity disabled:opacity-40"
+							className="flex h-10 cursor-pointer items-center justify-center rounded-lg bg-background-inverse px-4 py-3 font-semibold text-body2 text-label-inverse transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
 							disabled={!isApproveEnabled}
 							onClick={handleApproveClick}
 						>
@@ -227,7 +230,7 @@ export const MemberList = () => {
 						</button>
 						<button
 							type="button"
-							className="flex h-10 items-center justify-center rounded-lg bg-background-inverse px-4 py-3 font-semibold text-body2 text-label-inverse transition-opacity disabled:opacity-40"
+							className="flex h-10 cursor-pointer items-center justify-center rounded-lg bg-background-inverse px-4 py-3 font-semibold text-body2 text-label-inverse transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
 							disabled={selectedIds.size === 0}
 							onClick={handleEditClick}
 						>
@@ -245,7 +248,7 @@ export const MemberList = () => {
 							</p>
 						</div>
 					) : (
-						<Table className="table-fixed w-full">
+						<Table className="w-full table-fixed">
 							<TableHeader>
 								<TableRow className="h-10 border-0 bg-background-strong hover:bg-background-strong">
 									<TableHead className="w-10 px-3 [&:has([role=checkbox])]:pr-0">
