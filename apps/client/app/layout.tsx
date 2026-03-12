@@ -45,7 +45,17 @@ export default async function RootLayout({
 	const safeAreaInsets = parseSafeAreaInsets(headersList.get('x-app-safe-area-insets'));
 
 	return (
-		<html lang="ko">
+		<html
+			lang="ko"
+			style={
+				{
+					'--safe-area-inset-top': `${safeAreaInsets.top}px`,
+					'--safe-area-inset-right': `${safeAreaInsets.right}px`,
+					'--safe-area-inset-bottom': `${safeAreaInsets.bottom}px`,
+					'--safe-area-inset-left': `${safeAreaInsets.left}px`,
+				} as React.CSSProperties
+			}
+		>
 			<head>
 				<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
