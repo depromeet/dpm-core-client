@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
+import { useState } from 'react';
+import { XIcon } from 'lucide-react';
+import type { Part } from '@dpm-core/api';
 import {
 	Dialog,
 	DialogClose,
@@ -12,7 +14,6 @@ import {
 	ToggleGroup,
 	ToggleGroupItem,
 } from '@dpm-core/shared';
-import { XIcon } from 'lucide-react';
 
 import EtcIcon from '@/assets/icons/etc.webp';
 import { cohort } from '@/constants/cohort';
@@ -20,7 +21,6 @@ import { PART_LABEL_MAP } from '@/lib/member/part';
 import { isExistPart } from '@/lib/utils';
 
 import type { MemberListItem } from '../_types';
-import type { Part } from '@dpm-core/api';
 
 /** 파트별 이미지 반환 - ETC(미배정)는 etc.webp */
 function getPartImage(part: Part) {
@@ -85,15 +85,15 @@ export const EditMemberModal = ({
 				{/* Header - padding 32px 32px 16px, gap 12px, height 112px */}
 				<DialogHeader className="flex h-[112px] w-full flex-row items-start justify-end gap-3 self-stretch px-8 pt-8 pb-4">
 					<div className="flex flex-1 flex-col items-start gap-3">
-						<DialogTitle className="font-bold text-[22px] leading-[136%] tracking-[-0.02em] text-[#1F2937]">
+						<DialogTitle className="font-bold text-[#1F2937] text-[22px] leading-[136%] tracking-[-0.02em]">
 							멤버 수정하기
 						</DialogTitle>
-						<DialogDescription className="font-medium text-[14px] leading-[22px] text-[#81898F]">
+						<DialogDescription className="font-medium text-[#81898F] text-[14px] leading-[22px]">
 							멤버의 정보가 변동되거나 잘못 기입된 경우에 수정해주세요
 						</DialogDescription>
 					</div>
 					<DialogClose
-						className="absolute right-8 top-8 flex size-7 items-center justify-center rounded-full bg-[#F3F4F6] p-1.5"
+						className="absolute top-8 right-8 flex size-7 items-center justify-center rounded-full bg-[#F3F4F6] p-1.5"
 						aria-label="닫기"
 					>
 						<XIcon className="size-4 text-[#6B7280]" />
@@ -119,7 +119,7 @@ export const EditMemberModal = ({
 										<div className="size-10 rounded-[19.5px] bg-[#F3F4F6]" />
 									)}
 								</div>
-								<span className="font-semibold text-[16px] leading-[150%] text-[#1F2937]">
+								<span className="font-semibold text-[#1F2937] text-[16px] leading-[150%]">
 									{member.name}
 								</span>
 							</div>
@@ -131,7 +131,7 @@ export const EditMemberModal = ({
 				<div className="flex w-full flex-col gap-6 px-8 py-6">
 					{/* Part - gap 8px, label 16px semibold #4B5563, toggle h-12 border #D1D5DB rounded-lg */}
 					<div className="flex flex-col gap-2">
-						<span className="h-6 font-semibold text-[16px] leading-[150%] text-[#4B5563]">
+						<span className="h-6 font-semibold text-[#4B5563] text-[16px] leading-[150%]">
 							파트
 						</span>
 						<div className="flex h-12 w-full overflow-hidden rounded-lg border border-[#D1D5DB]">
@@ -152,7 +152,7 @@ export const EditMemberModal = ({
 
 					{/* Team - gap 8px */}
 					<div className="flex flex-col gap-2">
-						<span className="h-6 font-semibold text-[16px] leading-[150%] text-[#4B5563]">
+						<span className="h-6 font-semibold text-[#4B5563] text-[16px] leading-[150%]">
 							팀 정보 입력
 						</span>
 						<div className="flex h-12 w-full overflow-hidden rounded-lg border border-[#D1D5DB]">
@@ -173,10 +173,10 @@ export const EditMemberModal = ({
 				</div>
 
 				{/* Footer - padding 24px 32px 32px, button h-12 rounded-lg #1F2937 */}
-				<div className="flex w-full flex-col items-center px-8 pb-8 pt-6">
+				<div className="flex w-full flex-col items-center px-8 pt-6 pb-8">
 					<button
 						type="button"
-						className="flex h-12 w-full items-center justify-center rounded-lg bg-[#1F2937] font-semibold text-[16px] leading-[150%] text-white disabled:opacity-40"
+						className="flex h-12 w-full cursor-pointer items-center justify-center rounded-lg bg-[#1F2937] font-semibold text-[16px] text-white leading-[150%] disabled:cursor-not-allowed disabled:opacity-40"
 						onClick={handleSubmit}
 						disabled={isPending || !isFormValid}
 					>
