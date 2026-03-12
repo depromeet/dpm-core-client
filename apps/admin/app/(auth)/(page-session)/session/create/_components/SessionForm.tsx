@@ -22,7 +22,8 @@ export const buildServerDatePayload = (formData: SessionSchema) => {
 
 	const baseDate = dayjs(sessionDate.date).format('YYYY-MM-DD');
 
-	const combine = (time: string) => dayjs(`${baseDate}T${time}`).format('YYYY-MM-DDTHH:mm:ss');
+	const combine = (time: string) =>
+		dayjs(`${baseDate}T${time.slice(0, 2)}:${time.slice(2, 4)}`).format('YYYY-MM-DDTHH:mm:ss');
 
 	return {
 		name,
