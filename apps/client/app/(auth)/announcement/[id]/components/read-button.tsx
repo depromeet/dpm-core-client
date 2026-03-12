@@ -29,14 +29,14 @@ export const ReadButton = ({ readCount, isRead, showTooltip, onClick }: ReadButt
 				onClick={onClick}
 				disabled={isRead}
 				className={cn(
-					'flex h-10 cursor-pointer items-center justify-center overflow-hidden rounded-[38px] border',
+					'flex h-10 cursor-pointer items-center justify-center gap-1.5 overflow-hidden rounded-[38px] border px-4 font-semibold text-body3',
 					isRead
-						? 'pointer-events-none border-primary-normal bg-primary-extralight px-2.5'
-						: 'gap-1.5 border-line-normal bg-comp-fill-white px-4 font-semibold text-body3 text-label-alternative tracking-tight',
+						? 'pointer-events-none border-primary-normal bg-primary-extralight'
+						: 'border-line-normal bg-comp-fill-white text-label-alternative tracking-tight',
 				)}
 			>
 				<CircleCheck size={20} color={isRead ? '#5e83fe' : '#9CA3AF'} />
-				{!isRead && <span>읽었어요! · {readCount}</span>}
+				{<span>읽었어요! · {readCount}</span>}
 			</button>
 		</div>
 	);
