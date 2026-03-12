@@ -39,7 +39,7 @@ export const MemberList = () => {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [filterValues, setFilterValues] = useState<MemberFilterValues>({
 		unapprovedOnly: true,
-		currentCohortOnly: true,
+		latest: true,
 		parts: [],
 		teams: [],
 	});
@@ -48,7 +48,7 @@ export const MemberList = () => {
 	const [editModalOpen, setEditModalOpen] = useState(false);
 
 	const { data, isLoading } = useQuery(
-		getMembersOverviewQuery({ currentCohortOnly: filterValues.currentCohortOnly }),
+		getMembersOverviewQuery({ latest: filterValues.latest }),
 	);
 
 	const members = useMemo(() => {

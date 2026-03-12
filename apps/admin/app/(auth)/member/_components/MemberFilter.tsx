@@ -30,7 +30,7 @@ const TEAM_OPTIONS = [
 
 export interface MemberFilterValues {
 	unapprovedOnly: boolean;
-	currentCohortOnly: boolean;
+	latest: boolean;
 	parts: string[];
 	teams: string[];
 }
@@ -140,25 +140,22 @@ export const MemberFilter = ({ values, onChange }: MemberFilterProps) => {
 				tabIndex={0}
 				className={cn(
 					'flex cursor-pointer items-center gap-1.5 rounded-lg border px-4 py-2.5',
-					values.currentCohortOnly
+					values.latest
 						? 'border-primary-normal'
 						: 'border-line-subtle bg-background-normal',
 				)}
-				onClick={() => onChange({ ...values, currentCohortOnly: !values.currentCohortOnly })}
+				onClick={() => onChange({ ...values, latest: !values.latest })}
 				onKeyDown={(e) => {
 					if (e.key === 'Enter' || e.key === ' ') {
 						e.preventDefault();
-						onChange({
-							...values,
-							currentCohortOnly: !values.currentCohortOnly,
-						});
+						onChange({ ...values, latest: !values.latest });
 					}
 				}}
-				aria-pressed={values.currentCohortOnly}
+				aria-pressed={values.latest}
 				aria-label="이번 기수만 보기"
 			>
 				<Checkbox
-					checked={values.currentCohortOnly}
+					checked={values.latest}
 					className="pointer-events-none size-4 shrink-0 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 				/>
 				<Label className="cursor-pointer font-normal text-body2 text-label-assistive">
