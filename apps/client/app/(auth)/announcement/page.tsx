@@ -65,7 +65,7 @@ const NoticeListContainer = ({ selectedType }: NoticeListContainerProps) => {
 
 	if (filteredAnnouncements.length === 0) {
 		return (
-			<Empty className="h-full min-h-41.5">
+			<Empty className="flex-1 min-h-41.5">
 				<EmptyHeader>
 					<Aesterisk />
 					<EmptyTitle>등록된 공지가 없어요</EmptyTitle>
