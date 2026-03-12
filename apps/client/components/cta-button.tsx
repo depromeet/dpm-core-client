@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Loader2Icon } from 'lucide-react';
 import { type HTMLMotionProps, motion } from 'motion/react';
 import { createPortal } from 'react-dom';
-import { cn, useAppShell, useKeyboardTop } from '@dpm-core/shared';
+import { cn, isWebView, useAppShell, useKeyboardTop } from '@dpm-core/shared';
 
 import { MotionButton } from './motion';
 
@@ -14,12 +14,25 @@ interface CtaButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
 	onKeyboardStateChange?: (isKeyboardOpen: boolean) => void;
 }
 
+function useKeyboardTopSafe<T extends HTMLElement>(options?: {
+	onKeyboardStateChange?: (isKeyboardOpen: boolean) => void;
+}) {
+	const fallbackRef = useRef<T>(null);
+	const keyboardRef = useKeyboardTop<T>(options);
+
+	if (isWebView()) {
+		return fallbackRef;
+	}
+	return keyboardRef;
+}
+
 const CtaButton = ({ text, isLoading, onKeyboardStateChange, ...props }: CtaButtonProps) => {
 	const [isButtonPressed, setIsButtonPressed] = useState(false);
 	const { ref } = useAppShell();
-	const buttonRef = useKeyboardTop<HTMLButtonElement>({
+	const buttonRef = useKeyboardTopSafe<HTMLButtonElement>({
 		onKeyboardStateChange,
 	});
+
 	return createPortal(
 		<MotionButton
 			variant="secondary"
