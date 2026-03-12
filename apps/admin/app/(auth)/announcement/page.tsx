@@ -10,9 +10,9 @@ import { Button, Plus, SidebarInset, TeamTabBar } from '@dpm-core/shared';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { NoticeCard } from '@/components/notice/notice-card';
-import { NoticeHeader } from '@/components/notice/notice-header';
 import { formatISOStringToDate } from '@/lib/date';
 import { getAnnouncementListQuery } from '@/remotes/queries/announcement';
+import { AppHeader } from '@/components/app-header';
 
 type NoticeType = 'all' | 'general' | 'assignment' | 'etc';
 type NoticeTag = 'default' | 'assignment' | 'individual' | 'team' | 'etc';
@@ -56,9 +56,9 @@ const NoticeListContainer = ({ selectedType, onTabChange }: NoticeListContainerP
 		router.push(`/announcement/${announcementId}`);
 
 	return (
-		<>
+		<div className="mx-auto w-full max-w-[1200px]">
 			{/* Title + Button */}
-			<div className="flex w-full items-center justify-between px-10 pt-6">
+			<div className="flex w-full items-center justify-between px-4 pt-6 md:px-10">
 				<div className="flex items-center gap-2">
 					<h2 className="font-bold text-label-normal text-title1">공지 목록</h2>
 					<span className="font-medium text-body1 text-primary-normal">
@@ -85,11 +85,11 @@ const NoticeListContainer = ({ selectedType, onTabChange }: NoticeListContainerP
 				]}
 				activeTabId={selectedType}
 				onTabChange={(tabId) => onTabChange(tabId as NoticeType)}
-				className="w-full px-10"
+				className="w-full px-4 md:px-10"
 			/>
 
 			{/* Notice Card List */}
-			<div className="flex w-full flex-col gap-3 px-10 py-6">
+			<div className="flex w-full flex-col gap-3 px-4 py-6 md:px-10">
 				{filteredAnnouncements.map((item: Announcement) => (
 					<NoticeCard
 						key={item.announcementId}
@@ -108,7 +108,7 @@ const NoticeListContainer = ({ selectedType, onTabChange }: NoticeListContainerP
 					<p className="text-body1 text-label-alternative">등록된 공지가 없습니다.</p>
 				</div>
 			)}
-		</>
+		</div>
 	);
 };
 
@@ -117,8 +117,8 @@ const NoticePage = () => {
 
 	return (
 		<SidebarInset>
-			<div className="mx-auto flex h-screen w-full max-w-[1200px] flex-col items-center">
-				<NoticeHeader title="공지" className="w-full" />
+			<div className="flex h-screen max-w-full flex-col items-center">
+				<AppHeader title="공지"/>
 
 				<div className="flex w-full flex-1 flex-col items-start bg-background-normal">
 					<ErrorBoundary
