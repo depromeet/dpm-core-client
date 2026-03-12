@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { XIcon } from 'lucide-react';
 import {
 	Button,
-	cn,
 	Dialog,
 	DialogClose,
 	DialogContent,
@@ -113,39 +112,24 @@ export const ApproveMemberModal = ({
 					))}
 				</div>
 
-				<DialogFooter className="flex h-[104px] w-full flex-row items-start gap-2 self-stretch px-8 pt-6 pb-8">
-					<div
-						className={cn(
-							'relative flex h-12 flex-1 basis-0 flex-col items-center justify-center rounded-lg bg-[#1F2937] px-5 py-3 opacity-40',
-							members.length === 0 ? 'cursor-not-allowed' : 'cursor-pointer',
-						)}
+				<DialogFooter className="grid h-[104px] w-full grid-cols-2 gap-2 self-stretch px-8 pt-6 pb-8">
+					<button
+						type="button"
+						className="flex h-12 cursor-pointer items-center justify-center rounded-lg bg-[#1F2937] px-5 py-3 opacity-40 disabled:cursor-not-allowed"
+						disabled={members.length === 0}
+						onClick={handleReject}
 					>
-						<button
-							type="button"
-							className="absolute inset-0 cursor-inherit rounded-lg"
-							disabled={members.length === 0}
-							onClick={handleReject}
-						/>
-						<span className="relative font-semibold text-body1 text-white leading-[150%]">
-							반려하기
-						</span>
-					</div>
-					<div
-						className={cn(
-							'flex h-12 flex-1 basis-0',
-							members.length === 0 ? 'cursor-not-allowed opacity-40' : 'cursor-pointer',
-						)}
+						<span className="font-semibold text-body1 text-white leading-[150%]">반려하기</span>
+					</button>
+					<Button
+						variant="secondary"
+						size="lg"
+						className="h-12 cursor-pointer rounded-lg px-5 py-3 disabled:cursor-not-allowed disabled:opacity-40"
+						disabled={members.length === 0}
+						onClick={handleApprove}
 					>
-						<Button
-							variant="secondary"
-							size="lg"
-							className="h-12 w-full rounded-lg px-5 py-3"
-							disabled={members.length === 0}
-							onClick={handleApprove}
-						>
-							승인하기
-						</Button>
-					</div>
+						승인하기
+					</Button>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>
