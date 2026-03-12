@@ -83,6 +83,7 @@ export const UserActionList = () => {
 				</Link>
 				<Link
 					href={USER_GUIDE_LINK}
+					target="_blank"
 					className="flex basis-1/2 flex-col items-start gap-3 rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f8feff_56.78%,#effdff_73.36%)] p-4 shadow-[0_0_10px_rgba(0,0,0,0.04)]"
 				>
 					<div className="flex w-full flex-wrap items-center justify-between">
