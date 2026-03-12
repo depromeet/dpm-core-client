@@ -10,7 +10,7 @@ export interface GetMembersOverviewParams {
 /** 1. 배너 승인요청 개수 - members overview에서 PENDING 개수 사용 */
 export const getPendingMemberCountQuery = queryOptions({
 	queryKey: MEMBERS_OVERVIEW_QUERY_KEY,
-	queryFn: () => member.getMembersOverview(),
+	queryFn: () => member.getMembersOverview({ latest: true }),
 	select: (data) => data.data.members.filter((m) => m.status === 'PENDING').length,
 });
 
