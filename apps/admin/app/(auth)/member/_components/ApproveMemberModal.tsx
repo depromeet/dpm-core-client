@@ -116,7 +116,7 @@ export const ApproveMemberModal = ({
 				<DialogFooter className="flex h-[104px] w-full flex-row items-start gap-2 self-stretch px-8 pt-6 pb-8">
 					<div
 						className={cn(
-							'relative flex h-12 min-w-0 flex-1 flex-col items-center justify-center rounded-lg bg-[#1F2937] px-5 py-3 opacity-40',
+							'relative flex h-12 flex-1 basis-0 flex-col items-center justify-center rounded-lg bg-[#1F2937] px-5 py-3 opacity-40',
 							members.length === 0 ? 'cursor-not-allowed' : 'cursor-pointer',
 						)}
 					>
@@ -132,14 +132,14 @@ export const ApproveMemberModal = ({
 					</div>
 					<div
 						className={cn(
-							'flex min-w-0 flex-1',
+							'flex h-12 flex-1 basis-0',
 							members.length === 0 ? 'cursor-not-allowed opacity-40' : 'cursor-pointer',
 						)}
 					>
 						<Button
 							variant="secondary"
 							size="lg"
-							className="h-12 flex-1 rounded-lg px-5 py-3"
+							className="h-12 w-full rounded-lg px-5 py-3"
 							disabled={members.length === 0}
 							onClick={handleApprove}
 						>
