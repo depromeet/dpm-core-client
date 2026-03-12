@@ -36,3 +36,8 @@ export function testPlatform(re: RegExp): boolean | undefined {
 		? re.test(window.navigator.platform)
 		: undefined;
 }
+
+export function isWebView(): boolean {
+	if (typeof window === 'undefined') return false;
+	return 'ReactNativeWebView' in window;
+}
