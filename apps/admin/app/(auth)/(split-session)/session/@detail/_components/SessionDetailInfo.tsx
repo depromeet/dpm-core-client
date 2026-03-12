@@ -6,10 +6,11 @@ import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import {
 	CopyButton,
-	calcSessionAttendanceTime,
 	GAPageTracker,
 	useIsMobile,
 } from '@dpm-core/shared';
+
+import dayjs from 'dayjs';
 
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
@@ -64,15 +65,13 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 				<p className="font-semibold text-body2 text-label-assistive">출석 시간</p>
 				<p className="font-medium text-body2 text-label-subtle">
 					{formatISOStringHHMM(sessionDetail.attendanceStart)} -{' '}
-					{formatISOStringHHMM(
-						calcSessionAttendanceTime(sessionDetail.attendanceStart).toISOString(),
-					)}
+					{dayjs(sessionDetail.lateStart).subtract(1, 'minute').format('HH:mm')}
 				</p>
 
 				<p className="font-semibold text-body2 text-label-assistive">지각 시간</p>
 				<p className="font-medium text-body2 text-label-subtle">
 					{formatISOStringHHMM(sessionDetail.lateStart)} -{' '}
-					{formatISOStringHHMM(sessionDetail.absentStart)}
+					{dayjs(sessionDetail.absentStart).subtract(1, 'minute').format('HH:mm')}
 				</p>
 			</SessionDetailInfoBox>
 		</div>
