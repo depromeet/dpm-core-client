@@ -14,7 +14,7 @@ import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
-import { getSessionDetailQuery, getSessionWeeks } from '@/remotes/queries/session';
+import { getSessionWeeks } from '@/remotes/queries/session';
 
 import { AttendanceFilter } from '../../_components/attendance-filter';
 import { SearchInput } from '../../_components/search-input';
@@ -38,10 +38,6 @@ const AttendanceSessionContainer = () => {
 		return data.sessions?.find((session) => session.id.toString() === selectedWeekId);
 	}, [data.sessions, selectedWeekId]);
 
-	const { data: sessionDetail } = useSuspenseQuery(
-		getSessionDetailQuery(Number(selectedWeekId)),
-	);
-
 	const searchParams = customSearchParams.getAll();
 	const attendanceSearchParams = useMemo(
 		() => ({
@@ -49,9 +45,8 @@ const AttendanceSessionContainer = () => {
 			statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
 			teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
 			name: searchParams.name,
-			attendanceCode: sessionDetail?.data?.attendanceCode,
 		}),
-		[searchParams, sessionDetail?.data?.attendanceCode],
+		[searchParams],
 	);
 
 	const {
