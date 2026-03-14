@@ -15,8 +15,13 @@ export const member = {
 		return res;
 	},
 
-	getMembersOverview: async () => {
-		const res = await http.get<MembersOverviewResponse>('v1/members/overview');
+	/** GET /v1/members/overview - latest 파라미터 (이번 기수만 보기, false면 미전송) */
+	getMembersOverview: async (params?: { latest?: boolean }) => {
+		const searchParams =
+			params?.latest === true ? { latest: 'true' } : undefined;
+		const res = await http.get<MembersOverviewResponse>('v1/members/overview', {
+			searchParams,
+		});
 		return res;
 	},
 

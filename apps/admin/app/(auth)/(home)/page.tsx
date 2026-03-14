@@ -17,9 +17,9 @@ const HomePage = () => {
 			<GAPageTracker type="home" />
 			<HomeHeader />
 			<main>
-				<MemberApprovalBanner />
 				<SessionProivder>
 					<SessionBanner />
+					<MemberApprovalBanner />
 					<Section className="mt-5 border-background-strong border-b-8 pb-10 md:hidden">
 						<MobileNav />
 					</Section>

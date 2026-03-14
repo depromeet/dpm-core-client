@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { XIcon } from 'lucide-react';
 import {
 	Button,
 	Dialog,
@@ -11,7 +12,6 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@dpm-core/shared';
-import { XIcon } from 'lucide-react';
 
 import EtcIcon from '@/assets/icons/etc.webp';
 import { cohort } from '@/constants/cohort';
@@ -61,17 +61,17 @@ export const ApproveMemberModal = ({
 				showCloseButton={false}
 			>
 				<DialogClose
-					className="absolute right-8 top-8 flex size-7 items-center justify-center rounded-full bg-[#F3F4F6] p-1.5"
+					className="absolute top-8 right-8 flex size-7 items-center justify-center rounded-full bg-[#F3F4F6] p-1.5"
 					aria-label="닫기"
 				>
 					<XIcon className="size-4 text-[#6B7280]" />
 				</DialogClose>
 				<DialogHeader className="flex w-full flex-row items-start justify-end gap-3 self-stretch px-8 pt-8 pb-4">
 					<div className="flex flex-1 flex-col items-start gap-3">
-						<DialogTitle className="font-bold text-[22px] leading-[136%] tracking-[-0.02em] text-[#1F2937]">
+						<DialogTitle className="font-bold text-[#1F2937] text-[22px] leading-[136%] tracking-[-0.02em]">
 							멤버 승인하기
 						</DialogTitle>
-						<DialogDescription className="font-medium text-[14px] leading-[22px] text-[#81898F]">
+						<DialogDescription className="font-medium text-[#81898F] text-[14px] leading-[22px]">
 							멤버의 정보가 맞는지 확인해주세요
 						</DialogDescription>
 					</div>
@@ -96,15 +96,15 @@ export const ApproveMemberModal = ({
 								/>
 							</div>
 							<div className="flex flex-row flex-wrap items-center gap-3">
-								<span className="font-semibold text-body1 leading-[150%] text-[#1F2937]">
+								<span className="font-semibold text-[#1F2937] text-body1 leading-[150%]">
 									{member.name}
 								</span>
 								<div className="h-4 w-px shrink-0 bg-[rgba(107,114,128,0.2)]" />
-								<span className="font-semibold text-body1 leading-[150%] text-[#1F2937]">
+								<span className="font-semibold text-[#1F2937] text-body1 leading-[150%]">
 									{getTeamLabel(member)}
 								</span>
 								<div className="h-4 w-px shrink-0 bg-[rgba(107,114,128,0.2)]" />
-								<span className="font-semibold text-body1 leading-[150%] text-[#1F2937]">
+								<span className="font-semibold text-[#1F2937] text-body1 leading-[150%]">
 									{getPartLabel(member)}
 								</span>
 							</div>
@@ -112,18 +112,20 @@ export const ApproveMemberModal = ({
 					))}
 				</div>
 
-				<DialogFooter className="flex h-[104px] w-full flex-row items-start gap-2 self-stretch px-8 pb-8 pt-6">
+				<DialogFooter className="grid h-[104px] w-full grid-cols-2 gap-2 self-stretch px-8 pt-6 pb-8">
 					<button
 						type="button"
-						className="flex h-12 flex-1 cursor-pointer flex-col items-center justify-center rounded-lg bg-[#1F2937] px-5 py-3 opacity-40"
+						className="flex h-12 cursor-pointer items-center justify-center rounded-lg bg-[#1F2937] px-5 py-3 opacity-40 disabled:cursor-not-allowed"
+						disabled={members.length === 0}
 						onClick={handleReject}
 					>
-						<span className="font-semibold text-body1 leading-[150%] text-white">반려하기</span>
+						<span className="font-semibold text-body1 text-white leading-[150%]">반려하기</span>
 					</button>
 					<Button
 						variant="secondary"
 						size="lg"
-						className="h-12 flex-1 rounded-lg px-5 py-3"
+						className="h-12 cursor-pointer rounded-lg px-5 py-3 disabled:cursor-not-allowed disabled:opacity-40"
+						disabled={members.length === 0}
 						onClick={handleApprove}
 					>
 						승인하기
