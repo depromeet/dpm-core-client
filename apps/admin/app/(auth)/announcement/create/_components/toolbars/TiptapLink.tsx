@@ -128,6 +128,7 @@ export const TiptapLink = ({ editor }: EditorProps) => {
 			<div ref={containerRef} className="relative">
 				<button
 					type="button"
+					tabIndex={-1}
 					onClick={handleOpen}
 					className={cn(
 						'flex h-8 w-8 items-center justify-center rounded hover:bg-background-strong',
