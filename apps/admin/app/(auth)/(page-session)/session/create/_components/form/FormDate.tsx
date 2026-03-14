@@ -15,6 +15,7 @@ import {
 	InputOTP,
 	InputOTPGroup,
 	InputOTPSlot,
+	koLocale,
 	Label,
 	Popover,
 	PopoverContent,
@@ -56,10 +57,7 @@ export const FormDate = () => {
 										<Calendar
 											className="px-5 py-3.5"
 											mode="single"
-											formatters={{
-												formatCaption: (date) =>
-													date.toLocaleDateString('ko-KR', { month: 'long' }),
-											}}
+											locale={koLocale}
 											selected={field.value}
 											onSelect={(date) => {
 												field.onChange(date);
