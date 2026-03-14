@@ -8,6 +8,7 @@ interface getAttendanceBySessionOptionsParams {
 	statuses?: string[];
 	teams?: number[];
 	name?: string;
+	attendanceCode?: string;
 }
 
 export const getAttendanceBySessionOptions = (params: getAttendanceBySessionOptionsParams) =>
