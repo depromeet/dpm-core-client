@@ -53,10 +53,12 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		}
 	}, [memberInfo]);
 
+	// 미로그인 인 경우, 접속 하자마자 홈으로 진입으로 변경, 로그인 페이지로 바로 진입아님
 	if (error && pathname !== '/login') {
 		return <UnauthenticatedLayout />;
 	}
 
+	// 로그인인데,
 	if (memberInfo?.status === 'PENDING' && pathname !== '/auth') {
 		return redirect('/auth');
 	}

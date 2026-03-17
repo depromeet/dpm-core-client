@@ -1,3 +1,5 @@
+import '@/lib/api-setup';
+
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
