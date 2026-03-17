@@ -4,7 +4,9 @@ import { useRef, useState } from 'react';
 import { Loader2Icon } from 'lucide-react';
 import { type HTMLMotionProps, motion } from 'motion/react';
 import { createPortal } from 'react-dom';
-import { cn, isWebView, useAppShell, useKeyboardTop } from '@dpm-core/shared';
+import { cn, useAppShell, useKeyboardTop } from '@dpm-core/shared';
+
+import { useAppConfig } from '@/providers/app-config-provider';
 
 import { MotionButton } from './motion';
 
@@ -20,7 +22,9 @@ function useKeyboardTopSafe<T extends HTMLElement>(options?: {
 	const fallbackRef = useRef<T>(null);
 	const keyboardRef = useKeyboardTop<T>(options);
 
-	if (isWebView()) {
+	const { isApp } = useAppConfig();
+
+	if (isApp) {
 		return fallbackRef;
 	}
 	return keyboardRef;
