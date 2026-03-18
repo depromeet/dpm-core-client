@@ -1,4 +1,5 @@
-import { DpmText } from '@dpm-core/shared';
+import Link from 'next/link';
+import { ChevronLeft, DpmText } from '@dpm-core/shared';
 
 import { AppleLoginButton } from '@/components/apple-login-button';
 import { EmailLoginButton } from '@/components/email-login-button';
@@ -7,7 +8,10 @@ import { CoreLogo } from '@/components/lotties/core-logo';
 
 const LoginPage = () => {
 	return (
-		<div className="flex min-h-dvh flex-col justify-center gap-y-10 bg-background-subtle">
+		<div className="relative flex min-h-dvh flex-col justify-center gap-y-10 bg-background-subtle">
+			<Link href="/" className="absolute top-3 left-4 p-1">
+				<ChevronLeft />
+			</Link>
 			<div className="mx-auto flex flex-col gap-y-10 text-center">
 				<div className="flex flex-col items-center gap-y-4">
 					<CoreLogo />

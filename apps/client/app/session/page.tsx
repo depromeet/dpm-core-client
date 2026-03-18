@@ -6,7 +6,7 @@ import { BottomTabBar } from '@/components/bottom-tab-bar';
 import { SessionList } from './_components/session-list';
 import { SessionPageTracker } from './_components/session-page-tracker';
 
-const SessionPage = () => {
+export default function SessionPage() {
 	return (
 		<AppLayout className="h-dvh bg-background-normal">
 			<GAPageTracker type="session" />
@@ -16,6 +16,4 @@ const SessionPage = () => {
 			<BottomTabBar />
 		</AppLayout>
 	);
-};
-
-export default SessionPage;
+}

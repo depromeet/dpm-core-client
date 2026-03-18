@@ -9,8 +9,12 @@ import type { ApiResponse } from './type';
 
 export const BASE_URL = getApiBaseUrl();
 
+export type TokenProvider = () => string | undefined | Promise<string | undefined>;
+
 class Http {
 	private instance: KyInstance;
+	private tokenProvider: TokenProvider = () => Cookies.get(COOKIE_KEYS.ACCESS_TOKEN);
+
 	constructor() {
 		const instance = ky.extend({
 			prefixUrl: BASE_URL,
@@ -24,7 +28,7 @@ class Http {
 				beforeRequest: [
 					async (request) => {
 						logger.api(request.method, request.url);
-						const token = Cookies.get(COOKIE_KEYS.ACCESS_TOKEN);
+						const token = await this.tokenProvider();
 						if (token) {
 							request.headers.set('Authorization', `Bearer ${token}`);
 						}
@@ -37,7 +41,7 @@ class Http {
 						return response;
 					},
 					createRefreshPlugin({
-						whitelist: ['/v1/reissue', '/login/email'],
+						whitelist: ['/v1/reissue', '/login/email', '/v1/sessions/next'],
 						refreshUrl: `${BASE_URL}/v1/reissue`,
 					}),
 				],
@@ -49,6 +53,14 @@ class Http {
 				],
 			},
 		});
+	}
+
+	setTokenProvider(provider: TokenProvider) {
+		this.tokenProvider = provider;
+	}
+
+	getDefaultToken(): string | undefined {
+		return Cookies.get(COOKIE_KEYS.ACCESS_TOKEN);
 	}
 
 	get = async <Response = unknown>(url: string, options?: Options) => {

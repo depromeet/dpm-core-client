@@ -42,7 +42,7 @@ const SessionListContainer = () => {
 
 function SessionItem({ session }: { session: Session }) {
 	const handleClick = () => {
-		toast.light('디퍼에게는 세션 상세 정보를 제공하지 않아요.');
+		toast.error('세션 상세 정보는 운영진만 접근 가능합니다.');
 	};
 
 	return (

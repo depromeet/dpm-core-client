@@ -1,3 +1,5 @@
+import '@/lib/api-setup';
+
 import type { Metadata, Viewport } from 'next';
 import { headers } from 'next/headers';
 import NextScript from 'next/script';
