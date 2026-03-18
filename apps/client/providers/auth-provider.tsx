@@ -4,7 +4,7 @@ import { redirect, usePathname } from 'next/navigation';
 import { type PropsWithChildren, useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { auth, type Member } from '@dpm-core/api';
-import { createContext } from '@dpm-core/shared';
+import { createContext, toast } from '@dpm-core/shared';
 
 import { UnauthenticatedLayout } from '@/components/unauthenticated-layout';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
@@ -58,8 +58,9 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		return <UnauthenticatedLayout />;
 	}
 
-	// 로그인인데,
-	if (memberInfo?.status === 'PENDING' && pathname === '/auth') {
+	// 로그인인데, 홈과 세션탭이 아닌경우
+	if (memberInfo?.status === 'PENDING' && pathname !== '/' && pathname !== '/session') {
+		toast.error('승인 대기 중입니다. 관리자에게 문의해주세요.');
 		return redirect('/');
 	}
 
