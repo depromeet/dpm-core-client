@@ -44,6 +44,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			return memberInfo;
 		},
 		retry: false,
+		refetchInterval: pathname === '/auth' ? 5000 : false,
 	});
 
 	useEffect(() => {
@@ -55,6 +56,10 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
 	if (error && pathname !== '/login') {
 		return <UnauthenticatedLayout />;
+	}
+
+	if (memberInfo?.status === 'ACTIVE' && pathname === '/auth') {
+		return redirect('/');
 	}
 
 	if (memberInfo?.status === 'PENDING' && pathname !== '/auth') {
