@@ -60,15 +60,8 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
 	// 로그인인데, 홈과 세션탭이 아닌경우
 	if (memberInfo?.status === 'PENDING' && pathname !== '/' && pathname !== '/session') {
-		if (pathname === 'auth') {
-			toast.light('로그인 완료 되었습니다. 운영진이 회원 정보를 검토하고 있어요.');
-			return redirect('/');
-		}
-
-		if (pathname !== '/my-page') {
-			toast.error('승인 대기 중입니다. 관리자에게 문의해주세요.');
-			return redirect('/');
-		}
+		toast.error('승인 대기 중입니다. 관리자에게 문의해주세요.');
+		return redirect('/');
 	}
 
 	if (isLoading) {
