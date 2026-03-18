@@ -59,9 +59,9 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	}
 
 	// 로그인인데,
-	if (memberInfo?.status === 'PENDING' && pathname !== '/auth') {
-		return redirect('/auth');
-	}
+	// if (memberInfo?.status === 'PENDING' && pathname !== '/auth') {
+	// 	return redirect('/');
+	// }
 
 	if (isLoading) {
 		return null;

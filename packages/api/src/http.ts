@@ -41,7 +41,7 @@ class Http {
 						return response;
 					},
 					createRefreshPlugin({
-						whitelist: ['/v1/reissue', '/login/email'],
+						whitelist: ['/v1/reissue', '/login/email', '/v1/sessions/next'],
 						refreshUrl: `${BASE_URL}/v1/reissue`,
 					}),
 				],
