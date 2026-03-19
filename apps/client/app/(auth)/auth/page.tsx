@@ -2,7 +2,7 @@ import { SafeAreaAppLayout } from '@/components/app-layout';
 
 export default function SignupPage() {
 	return (
-		<SafeAreaAppLayout className="items-center justify-center bg-[linear-gradient(169deg,var(--Background-Normal,#FFF)_20.53%,#CFD9FF_60.84%,#E6F9FF_99%)] px-4 pt-8">
+		<SafeAreaAppLayout className="items-center justify-center bg-[linear-gradient(169deg,var(--Background-Normal,#FFF)_20.53%,#CFD9FF_60.84%,#E6F9FF_99%)]">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="43"
