@@ -8,14 +8,16 @@ import { MyPageTracker } from './_components/my-page-tracker';
 
 const MyPage = () => {
 	return (
-		<SafeAreaAppLayout hasBottomTabBar>
+		<SafeAreaAppLayout hasBottomTabBar className="h-dvh">
 			<MyPageTracker />
-			<AppHeader title="마이페이지" />
-			<main className="flex-1">
-				<MyPageAvatarInfo />
-				<MyPageDetailInfo />
-			</main>
-			<Footer />
+			<AppHeader title="마이페이지" className="sticky top-0 bg-background-subtle" />
+			<div className="scrollbar-hide flex-1 overflow-auto">
+				<section className="flex-1">
+					<MyPageAvatarInfo />
+					<MyPageDetailInfo />
+				</section>
+				<Footer />
+			</div>
 		</SafeAreaAppLayout>
 	);
 };
