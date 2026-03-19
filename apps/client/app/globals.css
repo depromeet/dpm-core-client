@@ -9,6 +9,22 @@
 	scrollbar-width: none;
 }
 
+@utility pt-safe-area {
+	padding-top: var(--safe-area-inset-top);
+}
+
+@utility pb-safe-area {
+	padding-bottom: var(--safe-area-inset-top);
+}
+
+@utility pl-safe-area {
+	padding-left: var(--safe-area-inset-left);
+}
+
+@utility pr-safe-area {
+	padding-right: var(--safe-area-inset-right);
+}
+
 @layer base {
 	body {
 		@apply bg-background-strong;
