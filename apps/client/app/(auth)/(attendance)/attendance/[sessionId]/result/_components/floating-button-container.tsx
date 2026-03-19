@@ -11,13 +11,15 @@ export const FloatingButtonContainer = () => {
 	};
 
 	return (
-		<Pressable
-			variant="secondary"
-			size="full"
-			className="fixed bottom-0 w-full max-w-lg"
-			onClick={goToAttendanceMe}
-		>
-			내 출석 현황 확인
-		</Pressable>
+		<section className="px-4 py-4">
+			<Pressable
+				variant="secondary"
+				size="lg"
+				className="relative w-full max-w-lg"
+				onClick={goToAttendanceMe}
+			>
+				내 출석 현황 확인
+			</Pressable>
+		</section>
 	);
 };

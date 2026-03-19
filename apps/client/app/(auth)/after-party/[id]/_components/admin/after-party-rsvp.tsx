@@ -99,7 +99,7 @@ export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
 									수정하기
 								</Button>
 							</DrawerTrigger>
-							<DrawerContent className="mx-auto max-w-lg">
+							<DrawerContent className="mx-auto max-w-lg pb-safe-area">
 								<DrawerHeader className="mb-3 px-5 pt-5">
 									<DrawerTitle>수정하기</DrawerTitle>
 								</DrawerHeader>
@@ -175,7 +175,7 @@ export const AfterPartyRsvp = (props: AfterPartyRsvpProps) => {
 								제출하기
 							</Button>
 						</DrawerTrigger>
-						<DrawerContent className="mx-auto max-w-lg">
+						<DrawerContent className="mx-auto max-w-lg pb-safe-area">
 							<DrawerHeader className="mb-3 px-5 pt-5">
 								<DrawerTitle>참석 여부 제출 전 확인</DrawerTitle>
 							</DrawerHeader>

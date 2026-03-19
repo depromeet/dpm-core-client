@@ -1,8 +1,9 @@
 'use client';
 
-import { AppLayout, GAPageTracker } from '@dpm-core/shared';
+import { GAPageTracker } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
+import { SafeAreaAppLayout } from '@/components/app-layout';
 import { BottomTabBar } from '@/components/bottom-tab-bar';
 import { useAuth } from '@/providers/auth-provider';
 
@@ -15,7 +16,10 @@ const AfterPartyPage = () => {
 	const { user } = useAuth();
 
 	return (
-		<AppLayout className="relative h-dvh overflow-hidden bg-background-normal">
+		<SafeAreaAppLayout
+			hasBottomTabBar
+			className="relative h-dvh overflow-hidden bg-background-normal"
+		>
 			<GAPageTracker type="after-party" />
 			<AppHeader title="회식" className="mb-1.5" />
 			<AfterPartyStatusFilter />
@@ -23,7 +27,7 @@ const AfterPartyPage = () => {
 			<AfterPartyList />
 			<BottomTabBar />
 			{user?.isAdmin && <AfterPartyAddButton />}
-		</AppLayout>
+		</SafeAreaAppLayout>
 	);
 };
 

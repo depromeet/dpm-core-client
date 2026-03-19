@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { AppLayout, ChevronLeft } from '@dpm-core/shared';
+import { ChevronLeft } from '@dpm-core/shared';
 
+import { SafeAreaAppLayout } from '@/components/app-layout';
 import { NavigationBar } from '@/components/navigation-bar';
 
 import { AttendanceResult } from './_components/attendance-result-container';
@@ -13,15 +14,17 @@ const AttendanceCheckResultPage = async ({ params }: Props) => {
 	const { sessionId } = await params;
 
 	return (
-		<AppLayout className="bg-gray-0">
+		<SafeAreaAppLayout className="bg-background-normal">
 			<NavigationBar>
 				<Link href="/">
 					<ChevronLeft />
 				</Link>
 			</NavigationBar>
-			<AttendanceResult sessionId={Number(sessionId)} />
+			<main className="flex-1">
+				<AttendanceResult sessionId={Number(sessionId)} />
+			</main>
 			<FloatingButtonContainer />
-		</AppLayout>
+		</SafeAreaAppLayout>
 	);
 };
 
