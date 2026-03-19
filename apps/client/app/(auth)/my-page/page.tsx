@@ -1,6 +1,5 @@
-import { AppLayout } from '@dpm-core/shared';
-
 import { AppHeader } from '@/components/app-header';
+import { SafeAreaAppLayout } from '@/components/app-layout';
 import { Footer } from '@/components/footer';
 
 import { MyPageAvatarInfo } from './_components/my-page-avatar-info';
@@ -9,16 +8,15 @@ import { MyPageTracker } from './_components/my-page-tracker';
 
 const MyPage = () => {
 	return (
-		<AppLayout>
+		<SafeAreaAppLayout>
 			<MyPageTracker />
 			<AppHeader title="마이페이지" />
-
-			<MyPageAvatarInfo />
-
-			<MyPageDetailInfo />
-
+			<main className="flex-1">
+				<MyPageAvatarInfo />
+				<MyPageDetailInfo />
+			</main>
 			<Footer />
-		</AppLayout>
+		</SafeAreaAppLayout>
 	);
 };
 
