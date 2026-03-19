@@ -154,7 +154,7 @@ export const ReviewBottomSheet = ({
 					</p>
 				</div>
 
-				<DrawerFooter className="shrink-0 gap-3 px-5 pt-4 pb-[calc(16px+env(safe-area-inset-bottom))]">
+				<DrawerFooter className="shrink-0 gap-3 px-5 pt-4 pb-3">
 					<div className="flex gap-3">
 						<DrawerTrigger asChild>
 							<Button

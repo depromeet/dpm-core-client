@@ -511,7 +511,7 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 				</form>
 			</Form>
 
-			<div className="relative shrink-0 bg-white px-4 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))]">
+			<div className="relative shrink-0 bg-white px-4 pt-3 pb-3">
 				<Button
 					type="button"
 					variant="secondary"

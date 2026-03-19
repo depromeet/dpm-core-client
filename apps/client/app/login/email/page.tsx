@@ -5,7 +5,7 @@ import { LoginEamilForm } from './_components/login-form';
 
 export default function EmailLoginPage() {
 	return (
-		<SafeAreaAppLayout className="bg-background-normal pb-safe-area">
+		<SafeAreaAppLayout className="bg-background-normal">
 			<AppHeader title="이메일 로그인" />
 			<section className="px-4">
 				<LoginEamilForm />
