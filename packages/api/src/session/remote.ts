@@ -80,9 +80,11 @@ export const session = {
 	 * @returns 세션 출석 시작 시간
 	 */
 	getSessionAttendanceTime: async (sessionId: number) => {
-		const res = await http.get<{ attendanceStartTime: string }>(
-			`v1/sessions/${sessionId}/attendance-time`,
-		);
+		const res = await http.get<{
+			attendanceStartTime: string;
+			attendanceLateTime: string;
+			attendanceAbsentTime: string;
+		}>(`v1/sessions/${sessionId}/attendance-time`);
 		return res;
 	},
 
