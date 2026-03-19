@@ -14,7 +14,7 @@
 }
 
 @utility pb-safe-area {
-	padding-bottom: var(--safe-area-inset-top);
+	padding-bottom: var(--safe-area-inset-bottom);
 }
 
 @utility pl-safe-area {
