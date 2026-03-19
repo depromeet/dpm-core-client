@@ -8,5 +8,6 @@ export * from './constants';
 export * from './env';
 export * from './http';
 export * from './member';
+export * from './notification';
 export * from './session';
 export type * from './type';
