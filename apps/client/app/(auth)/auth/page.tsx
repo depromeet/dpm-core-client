@@ -1,8 +1,8 @@
-import { AppLayout } from '@dpm-core/shared';
+import { SafeAreaAppLayout } from '@/components/app-layout';
 
 export default function SignupPage() {
 	return (
-		<AppLayout className="items-center justify-center bg-[linear-gradient(169deg,var(--Background-Normal,#FFF)_20.53%,#CFD9FF_60.84%,#E6F9FF_99%)] px-4 pt-8">
+		<SafeAreaAppLayout className="items-center justify-center bg-[linear-gradient(169deg,var(--Background-Normal,#FFF)_20.53%,#CFD9FF_60.84%,#E6F9FF_99%)]">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="43"
@@ -54,6 +54,6 @@ export default function SignupPage() {
 			<p className="bg-[linear-gradient(90deg,var(--Label-Subtle,#4B5563)_0%,#7A98C2_100%)] bg-clip-text text-center font-medium text-body1 text-transparent">
 				승인이 완료되면 홈화면에 접속할 수 있어요
 			</p>
-		</AppLayout>
+		</SafeAreaAppLayout>
 	);
 }

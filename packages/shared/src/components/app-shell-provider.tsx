@@ -23,8 +23,6 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
 				ref={ref}
 				style={{
 					boxShadow: '0px -4px 21.1px 0px #0000001F',
-					paddingTop: 'var(--safe-area-inset-top)',
-					paddingBottom: 'var(--safe-area-inset-bottom)',
 				}}
 			>
 				{children}

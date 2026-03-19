@@ -8,7 +8,6 @@ import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
-	AppLayout,
 	Button,
 	cn,
 	Form,
@@ -23,6 +22,7 @@ import {
 } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
+import { SafeAreaAppLayout } from '@/components/app-layout';
 import { useAuth } from '@/providers/auth-provider';
 import { updateAfterPartyOptions } from '@/remotes/mutations/after-party';
 import { getAfterPartyByIdQueryOptions } from '@/remotes/queries/after-party';
@@ -257,16 +257,16 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 	}
 
 	return (
-		<AppLayout className="h-[100dvh] bg-white">
+		<SafeAreaAppLayout className="h-dvh bg-white">
 			<GAPageTracker type="after-party-update" />
 			<AppHeader title="회식 수정하기" backHref="/after-party" className="shrink-0" />
 
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(handleSubmit)}
-					className="flex flex-1 flex-col overflow-y-auto px-[16px] pt-1.5 pb-[24px]"
+					className="flex flex-1 flex-col overflow-y-auto px-4 pt-1.5 pb-6"
 				>
-					<section className="space-y-[24px]">
+					<section className="space-y-6">
 						<h2 className="font-semibold text-[#111827] text-title2">
 							기본 정보
 							{isFormDisabled && (
@@ -310,7 +310,7 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 										<textarea
 											{...field}
 											className={cn(
-												'flex min-h-[120px] w-full resize-none rounded-lg border p-4 font-medium text-body2 outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-gray-900',
+												'flex min-h-30 w-full resize-none rounded-lg border p-4 font-medium text-body2 outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-gray-900',
 												fieldState.error ? 'border-red-400' : 'border-line-normal',
 												isFormDisabled ? 'cursor-not-allowed bg-[#F9FAFB]' : 'bg-white',
 											)}
@@ -331,7 +331,7 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 							<Label className="font-semibold text-[#4B5563] text-body2">
 								회식 초대 범위 <span className="font-medium text-[#9CA3AF]">(수정 불가)</span>
 							</Label>
-							<div className="mt-2 flex min-h-[48px] flex-wrap items-center gap-2 rounded-lg border border-line-normal bg-[#F9FAFB] px-3 py-2">
+							<div className="mt-2 flex min-h-12 flex-wrap items-center gap-2 rounded-lg border border-line-normal bg-[#F9FAFB] px-3 py-2">
 								{detail.inviteTags?.inviteTags && detail.inviteTags.inviteTags.length > 0 ? (
 									detail.inviteTags.inviteTags.map((t) => (
 										<span
@@ -354,7 +354,7 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 								<FormItem>
 									<Label className="font-semibold text-[#4B5563] text-body2">회식 시간</Label>
 									<FormMessage className="font-medium text-caption1 text-red-500" />
-									<div className="flex gap-[8px]">
+									<div className="flex gap-2">
 										<DateTimePickerDrawer
 											title="회식 시간"
 											value={field.value}
@@ -364,7 +364,7 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 												type="button"
 												disabled={isFormDisabled}
 												className={cn(
-													'flex flex-1 items-center gap-[8px] rounded-lg border px-[16px] py-[12px]',
+													'flex flex-1 items-center gap-2 rounded-lg border px-4 py-3',
 													fieldState.error ? 'border-red-400' : 'border-line-normal',
 													isFormDisabled ? 'cursor-not-allowed bg-[#F9FAFB]' : 'bg-white',
 												)}
@@ -384,7 +384,7 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 												type="button"
 												disabled={isFormDisabled}
 												className={cn(
-													'flex items-center gap-[8px] rounded-lg border px-[16px] py-[12px]',
+													'flex items-center gap-2 rounded-lg border px-4 py-3',
 													fieldState.error ? 'border-red-400' : 'border-line-normal',
 													isFormDisabled ? 'cursor-not-allowed bg-[#F9FAFB]' : 'bg-white',
 												)}
@@ -409,7 +409,7 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 										참여 조사 마감 시간
 									</Label>
 									<FormMessage className="font-medium text-caption1 text-red-500" />
-									<div className="flex gap-[8px]">
+									<div className="flex gap-2">
 										<DateTimePickerDrawer
 											title="참여 조사 마감 일시"
 											value={field.value}
@@ -423,7 +423,7 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 												type="button"
 												disabled={isFormDisabled}
 												className={cn(
-													'flex flex-1 items-center gap-[8px] rounded-lg border px-[16px] py-[12px]',
+													'flex flex-1 items-center gap-2 rounded-lg border px-4 py-3',
 													fieldState.error ? 'border-red-400' : 'border-line-normal',
 													isFormDisabled ? 'cursor-not-allowed bg-[#F9FAFB]' : 'bg-white',
 												)}
@@ -447,7 +447,7 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 												type="button"
 												disabled={isFormDisabled}
 												className={cn(
-													'flex items-center gap-[8px] rounded-lg border px-[16px] py-[12px]',
+													'flex items-center gap-2 rounded-lg border px-4 py-3',
 													fieldState.error ? 'border-red-400' : 'border-line-normal',
 													isFormDisabled ? 'cursor-not-allowed bg-[#F9FAFB]' : 'bg-white',
 												)}
@@ -470,11 +470,11 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 								<FormItem>
 									<div
 										className={cn(
-											'flex items-start justify-between gap-[24px] rounded-lg border border-line-normal px-4 py-3',
+											'flex items-start justify-between gap-6 rounded-lg border border-line-normal px-4 py-3',
 											isFormDisabled && 'bg-[#F9FAFB]',
 										)}
 									>
-										<div className="space-y-[4px]">
+										<div className="space-y-1">
 											<Label className="font-semibold text-[#4B5563] text-body2">
 												참여 조사 마감 후 수정 허용
 											</Label>
@@ -491,15 +491,15 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 											disabled={isFormDisabled}
 											onClick={() => !isFormDisabled && field.onChange(!field.value)}
 											className={cn(
-												'relative h-[22px] w-[42px] shrink-0 rounded-full p-[2px] shadow-xs transition-colors',
+												'relative h-5.5 w-10.5 shrink-0 rounded-full p-0.5 shadow-xs transition-colors',
 												field.value ? 'bg-[#1F2937]' : 'bg-[#E5E7EB]',
 												isFormDisabled && 'cursor-not-allowed opacity-60',
 											)}
 										>
 											<span
 												className={cn(
-													'block h-[18px] w-[18px] rounded-full bg-white transition-transform',
-													field.value ? 'translate-x-[20px]' : 'translate-x-0',
+													'block h-4.5 w-4.5 rounded-full bg-white transition-transform',
+													field.value ? 'translate-x-5' : 'translate-x-0',
 												)}
 											/>
 										</button>
@@ -511,13 +511,13 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 				</form>
 			</Form>
 
-			<div className="relative shrink-0 bg-white px-[16px] pt-[12px] pb-[calc(12px+env(safe-area-inset-bottom))]">
+			<div className="relative shrink-0 bg-white px-4 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))]">
 				<Button
 					type="button"
 					variant="secondary"
 					size="full"
 					className={cn(
-						'h-[48px] rounded-lg bg-[#1F2937] text-white',
+						'h-12 rounded-lg bg-[#1F2937] text-white',
 						isFormDisabled && 'cursor-not-allowed bg-[#9CA3AF]',
 					)}
 					disabled={isPending || isFormDisabled}
@@ -526,7 +526,7 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 					수정하기
 				</Button>
 			</div>
-		</AppLayout>
+		</SafeAreaAppLayout>
 	);
 };
 

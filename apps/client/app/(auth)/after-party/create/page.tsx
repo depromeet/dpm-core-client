@@ -8,7 +8,6 @@ import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
-	AppLayout,
 	Button,
 	cn,
 	Form,
@@ -23,6 +22,7 @@ import {
 } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
+import { SafeAreaAppLayout } from '@/components/app-layout';
 import { createAfterPartyOptions } from '@/remotes/mutations/after-party';
 import { getInviteTagsQueryOptions } from '@/remotes/queries/after-party';
 
@@ -195,7 +195,7 @@ const AfterPartyCreatePage = () => {
 	};
 
 	return (
-		<AppLayout className="h-[100dvh] bg-white">
+		<SafeAreaAppLayout className="h-[100dvh] bg-white pb-safe-area">
 			{/* <AppLayout className="bg-white"> */}
 			<GAPageTracker type="after-party-create" />
 			<AppHeader title="회식 생성하기" className="shrink-0" />
@@ -471,7 +471,7 @@ const AfterPartyCreatePage = () => {
 					</Button>
 				</ReviewBottomSheet>
 			</div>
-		</AppLayout>
+		</SafeAreaAppLayout>
 	);
 };
 

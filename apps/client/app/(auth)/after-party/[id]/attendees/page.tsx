@@ -1,6 +1,5 @@
-import { AppLayout } from '@dpm-core/shared';
-
 import { AppHeader } from '@/components/app-header';
+import { SafeAreaAppLayout } from '@/components/app-layout';
 
 import { AfterPartyAttendeesFilter } from './_components/after-party-attendees-filter';
 import { AfterPartyAttendeesList } from './_components/after-party-attendees-list';
@@ -13,7 +12,7 @@ export default async function AfterPartyAttendeesPage({
 	const { id } = await params;
 
 	return (
-		<AppLayout className="h-dvh bg-background-normal">
+		<SafeAreaAppLayout className="h-dvh bg-background-normal">
 			<AppHeader title="참석자" className="mb-0" />
 			<section className="px-4 py-3">
 				<AfterPartyAttendeesFilter />
@@ -21,6 +20,6 @@ export default async function AfterPartyAttendeesPage({
 			<section className="flex-1">
 				<AfterPartyAttendeesList afterPartyId={Number(id)} />
 			</section>
-		</AppLayout>
+		</SafeAreaAppLayout>
 	);
 }

@@ -74,7 +74,10 @@ export const AfterPartyEditBottomSheet = ({
 	return (
 		<Drawer open={isOpen} onOpenChange={handleOpenChange} container={ref.current}>
 			<DrawerTrigger asChild>{children}</DrawerTrigger>
-			<DrawerContent className="mx-auto" style={{ maxWidth: ref.current?.clientWidth ?? 'auto' }}>
+			<DrawerContent
+				className="mx-auto pb-safe-area"
+				style={{ maxWidth: ref.current?.clientWidth ?? 'auto' }}
+			>
 				<DrawerHeader>
 					<DrawerTitle className="font-semibold text-label-normal text-title2">
 						수정하기

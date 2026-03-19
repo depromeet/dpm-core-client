@@ -2,7 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import { CircleCheck } from 'lucide-react';
-import { AppLayout, Button } from '@dpm-core/shared';
+import { Button } from '@dpm-core/shared';
+
+import { SafeAreaAppLayout } from '@/components/app-layout';
 
 const AfterPartyCreateCompletePage = () => {
 	const router = useRouter();
@@ -12,7 +14,7 @@ const AfterPartyCreateCompletePage = () => {
 	};
 
 	return (
-		<AppLayout className="flex flex-col bg-white">
+		<SafeAreaAppLayout className="flex flex-col bg-white">
 			{/* 메인 컨텐츠 - 중앙 정렬 */}
 			<div className="flex flex-1 flex-col items-center justify-center">
 				<CircleCheck className="h-[56px] w-[56px] fill-[#5E83FE] text-white" />
@@ -32,7 +34,7 @@ const AfterPartyCreateCompletePage = () => {
 					홈 화면으로
 				</Button>
 			</div>
-		</AppLayout>
+		</SafeAreaAppLayout>
 	);
 };
 

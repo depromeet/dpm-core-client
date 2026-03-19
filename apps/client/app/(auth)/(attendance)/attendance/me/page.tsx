@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { AppLayout, Button, ChevronLeft } from '@dpm-core/shared';
+import { Button, ChevronLeft } from '@dpm-core/shared';
 
+import { SafeAreaAppLayout } from '@/components/app-layout';
 import { BottomTabBar } from '@/components/bottom-tab-bar';
 import { NavigationBar } from '@/components/navigation-bar';
 
@@ -8,7 +9,7 @@ import { AttendanceMe } from '../_components/attendance-me';
 
 export default function AttendanceMePage() {
 	return (
-		<AppLayout className="h-dvh bg-background-normal">
+		<SafeAreaAppLayout hasBottomTabBar className="h-dvh bg-background-normal">
 			<NavigationBar>
 				<Link href="/">
 					<ChevronLeft />
@@ -27,6 +28,6 @@ export default function AttendanceMePage() {
 			</NavigationBar>
 			<AttendanceMe />
 			<BottomTabBar />
-		</AppLayout>
+		</SafeAreaAppLayout>
 	);
 }

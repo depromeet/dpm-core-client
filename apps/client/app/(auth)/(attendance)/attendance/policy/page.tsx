@@ -1,12 +1,13 @@
 import { AppHeader } from '@/components/app-header';
+import { SafeAreaAppLayout } from '@/components/app-layout';
 
 import { ATTENDANCE_POLICY } from './const/policy';
 
 export default function AttendancePolicyPage() {
 	return (
-		<>
-			<AppHeader title="출석 규정" className="mb-[25px]" />
-			<section className="mx-4 pb-5">
+		<SafeAreaAppLayout className="h-dvh bg-background-normal">
+			<AppHeader title="출석 규정" className="mb-6" />
+			<section className="scrollbar-hide mx-4 flex-1 overflow-auto pb-4">
 				{ATTENDANCE_POLICY.map((section, idx) => (
 					<article key={Number(idx)} className="mb-5 text-label-subtle last:mb-0">
 						<h3 className="mb-2 font-semibold text-body1">{section.title}</h3>
@@ -27,6 +28,6 @@ export default function AttendancePolicyPage() {
 					</article>
 				))}
 			</section>
-		</>
+		</SafeAreaAppLayout>
 	);
 }

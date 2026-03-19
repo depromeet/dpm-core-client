@@ -16,38 +16,20 @@ interface CtaButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
 	onKeyboardStateChange?: (isKeyboardOpen: boolean) => void;
 }
 
-function useKeyboardTopSafe<T extends HTMLElement>(options?: {
-	onKeyboardStateChange?: (isKeyboardOpen: boolean) => void;
-}) {
-	const fallbackRef = useRef<T>(null);
-	const keyboardRef = useKeyboardTop<T>(options);
-
+const CtaButton = (props: CtaButtonProps) => {
 	const { isApp } = useAppConfig();
 
-	if (isApp) {
-		return fallbackRef;
-	}
-	return keyboardRef;
-}
+	return isApp ? <NativeCtaButton {...props} /> : <WebCtaButton {...props} />;
+};
 
-const CtaButton = ({ text, isLoading, onKeyboardStateChange, ...props }: CtaButtonProps) => {
+const CtaButtonUI = ({ text, isLoading, ...props }: CtaButtonProps) => {
 	const [isButtonPressed, setIsButtonPressed] = useState(false);
-	const { ref } = useAppShell();
-	const buttonRef = useKeyboardTopSafe<HTMLButtonElement>({
-		onKeyboardStateChange,
-	});
-
-	return createPortal(
+	return (
 		<MotionButton
 			variant="secondary"
 			size="full"
-			{...props}
-			style={{
-				...props.style,
-				maxWidth: ref.current.clientWidth,
-			}}
 			className={cn('rounded-none', props.className)}
-			onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+			onClick={(event) => {
 				if (isLoading) {
 					event.preventDefault();
 					return;
@@ -57,16 +39,55 @@ const CtaButton = ({ text, isLoading, onKeyboardStateChange, ...props }: CtaButt
 			onTapStart={() => setIsButtonPressed(true)}
 			onTap={() => setIsButtonPressed(false)}
 			onTapCancel={() => setIsButtonPressed(false)}
-			ref={buttonRef}
+			{...props}
 		>
 			{isLoading ? (
 				<Loader2Icon className="animate-spin" />
 			) : (
 				<motion.p animate={{ scale: isButtonPressed ? 0.9 : 1 }}>{text}</motion.p>
 			)}
-		</MotionButton>,
-		ref.current,
+		</MotionButton>
 	);
 };
+
+function WebCtaButton({ text, isLoading, onKeyboardStateChange, ...props }: CtaButtonProps) {
+	const { ref } = useAppShell();
+
+	const buttonRef = useKeyboardTop<HTMLButtonElement>({
+		onKeyboardStateChange: onKeyboardStateChange,
+	});
+
+	return createPortal(
+		<CtaButtonUI
+			text={text}
+			isLoading={isLoading}
+			ref={buttonRef}
+			style={{
+				...props.style,
+				maxWidth: ref.current?.clientWidth,
+			}}
+			{...props}
+		/>,
+		ref.current,
+	);
+}
+
+function NativeCtaButton({ onKeyboardStateChange, ...props }: CtaButtonProps) {
+	const { ref } = useAppShell();
+
+	const buttonRef = useRef<HTMLButtonElement>(null);
+
+	return createPortal(
+		<CtaButtonUI
+			ref={buttonRef}
+			style={{
+				...props.style,
+				maxWidth: ref.current?.clientWidth,
+			}}
+			{...props}
+		/>,
+		ref.current,
+	);
+}
 
 export { CtaButton };

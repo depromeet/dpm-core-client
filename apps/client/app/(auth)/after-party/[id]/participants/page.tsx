@@ -1,6 +1,5 @@
-import { AppLayout } from '@dpm-core/shared';
-
 import { AppHeader } from '@/components/app-header';
+import { SafeAreaAppLayout } from '@/components/app-layout';
 
 // import { NonParticipantsNotification } from '../_components/admin/non-participants-notification';
 import { AfterPartyParticipantsFilter } from './_components/after-party-participants-filter';
@@ -14,7 +13,7 @@ export default async function AfterPartyParticipantsPage({
 	const { id } = await params;
 
 	return (
-		<AppLayout className="h-dvh bg-background-normal">
+		<SafeAreaAppLayout className="h-dvh bg-background-normal">
 			<AppHeader title="제출 현황" className="mb-0" />
 			<section className="px-4 py-3">
 				<AfterPartyParticipantsFilter />
@@ -26,6 +25,6 @@ export default async function AfterPartyParticipantsPage({
 			{/* <section className="fixed bottom-0 w-full max-w-lg px-4 py-8">
 				<NonParticipantsNotification size="lg" />
 			</section> */}
-		</AppLayout>
+		</SafeAreaAppLayout>
 	);
 }
