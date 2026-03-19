@@ -51,7 +51,7 @@ const WithdrawBottomSheet = ({
 	const isDisabled = isWithdrawPending || disabled;
 
 	return (
-		<Drawer open={isOpen} onOpenChange={setIsOpen} container={ref.current}>
+		<Drawer open={isOpen} onOpenChange={setIsOpen}>
 			<DrawerTrigger asChild>{children}</DrawerTrigger>
 			<DrawerContent
 				className="mx-auto px-2! pb-safe-area"

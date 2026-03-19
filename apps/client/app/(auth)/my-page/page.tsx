@@ -8,7 +8,7 @@ import { MyPageTracker } from './_components/my-page-tracker';
 
 const MyPage = () => {
 	return (
-		<SafeAreaAppLayout>
+		<SafeAreaAppLayout hasBottomTabBar>
 			<MyPageTracker />
 			<AppHeader title="마이페이지" />
 			<main className="flex-1">

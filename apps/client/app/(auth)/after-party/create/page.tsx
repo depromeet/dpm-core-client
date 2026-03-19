@@ -195,7 +195,7 @@ const AfterPartyCreatePage = () => {
 	};
 
 	return (
-		<SafeAreaAppLayout className="h-[100dvh] bg-white pb-safe-area">
+		<SafeAreaAppLayout className="h-dvh bg-white">
 			{/* <AppLayout className="bg-white"> */}
 			<GAPageTracker type="after-party-create" />
 			<AppHeader title="회식 생성하기" className="shrink-0" />
@@ -447,7 +447,7 @@ const AfterPartyCreatePage = () => {
 			</Form>
 
 			{/* 하단 CTA 버튼 */}
-			<div className="before:-top-[24px] relative shrink-0 bg-white px-[16px] pt-[12px] pb-[calc(12px+env(safe-area-inset-bottom))] before:pointer-events-none before:absolute before:right-0 before:left-0 before:h-[24px] before:bg-gradient-to-t before:from-white before:to-transparent">
+			<div className="before:-top-[24px] relative shrink-0 bg-white px-[16px] pt-[12px] pb-3 before:pointer-events-none before:absolute before:right-0 before:left-0 before:h-[24px] before:bg-gradient-to-t before:from-white before:to-transparent">
 				<ReviewBottomSheet
 					data={{
 						title: form.watch('title'),
