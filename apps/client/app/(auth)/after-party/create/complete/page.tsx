@@ -24,7 +24,7 @@ const AfterPartyCreateCompletePage = () => {
 			</div>
 
 			{/* 하단 버튼 */}
-			<div className="px-4 pb-[calc(16px+env(safe-area-inset-bottom))]">
+			<div className="px-4 pb-4">
 				<Button
 					variant="secondary"
 					size="full"
