@@ -25,7 +25,7 @@ export const HomeBannerList = () => {
 			<Empty className="min-h-41.5">
 				<EmptyHeader>
 					<Aesterisk />
-					<EmptyTitle>아직 등록된 세션 정보가 없어요</EmptyTitle>
+					<EmptyTitle>해당 주차에 대한 세션 정보가 없어요.</EmptyTitle>
 				</EmptyHeader>
 			</Empty>
 		);
