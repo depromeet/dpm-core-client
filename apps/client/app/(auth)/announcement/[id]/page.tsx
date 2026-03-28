@@ -77,7 +77,7 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 		: undefined;
 
 	return (
-		<div className="flex flex-1 flex-col gap-5 p-4">
+		<div className="flex flex-1 flex-col gap-5 p-4 min-w-0">
 			<NoticeInfo
 				title={detail.title}
 				date={formattedDate}
@@ -96,7 +96,7 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 			)}
 
 			<div
-				className="ProseMirror font-medium text-body2 text-label-normal"
+				className="ProseMirror font-medium text-body2 text-label-normal break-words"
 				dangerouslySetInnerHTML={{ __html: detail.content }}
 			/>
 
@@ -140,7 +140,7 @@ const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
 						</div>
 					}
 				>
-					<div className="flex flex-1 overflow-y-auto">
+					<div className="flex flex-1 overflow-y-auto min-w-0">
 						<NoticeDetailContent announcementId={announcementId} />
 					</div>
 				</Suspense>
