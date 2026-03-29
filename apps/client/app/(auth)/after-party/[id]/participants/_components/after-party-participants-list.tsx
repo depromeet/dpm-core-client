@@ -36,7 +36,9 @@ const AfterPartyParticipantsListContainer = (props: AfterPartyParticipantsListPr
 			afterPartyParticipantsStatus === 'NO'
 				? member.rsvpStatus === null
 				: member.rsvpStatus !== null;
-		const matchTeam = afterPartyParticipantsIsMyTeam ? member.team === user?.teamNumber : true;
+		const matchTeam = afterPartyParticipantsIsMyTeam
+			? member.teamNumber === user?.teamNumber
+			: true;
 		return matchStatus && matchTeam;
 	});
 
@@ -68,14 +70,14 @@ interface AfterPartyParticipantsItemProps {
 	memberId: number;
 	name: string;
 	part: Part;
-	team: number;
+	teamNumber: number;
 	rsvpStatus: boolean | null;
 }
 
 const AfterPartyParticipantsItem = (props: AfterPartyParticipantsItemProps) => {
 	return (
 		<li className="px-4 py-1.5">
-			<Profile size={40} name={props.name} teamNumber={props.team} part={props.part} />
+			<Profile size={40} name={props.name} teamNumber={props.teamNumber} part={props.part} />
 		</li>
 	);
 };

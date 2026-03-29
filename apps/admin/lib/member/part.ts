@@ -9,5 +9,5 @@ export const PART_LABEL_MAP: Record<Exclude<Part, 'ETC'>, string> = {
 };
 
 export const getMemberPartLabel = (part: Exclude<Part, 'ETC'>) => {
-	return PART_LABEL_MAP[part] ?? '-';
+	return PART_LABEL_MAP[part] ?? '파트 미배정';
 };

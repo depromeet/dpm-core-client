@@ -71,7 +71,13 @@ export const AttendanceModifyStatus = (props: AttendanceModifyStatusProps) => {
 					<DrawerTitle>출석 규정 안내</DrawerTitle>
 				</DrawerHeader>
 				<section className="mx-5 mb-5">
-					<Profile size={60} name={member.name} part={member.part} teamNumber={member.teamNumber} />
+					<Profile
+						size={60}
+						name={member.name}
+						part={member.part}
+						teamNumber={member.teamNumber}
+						isAdmin={member.isAdmin}
+					/>
 					<RadioGroup.Root
 						value={selectedStatus}
 						className="mt-3 flex w-full rounded-lg border border-line-normal"

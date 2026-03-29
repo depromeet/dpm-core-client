@@ -17,6 +17,7 @@ interface AttendanceMember {
 	teamNumber: number;
 	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER';
 	attendanceStatus: AttendanceStatus;
+	isAdmin: boolean;
 }
 
 interface AttendanceListProps {
@@ -74,6 +75,7 @@ const AttendanceList = ({
 								name={member.name}
 								teamNumber={member.teamNumber}
 								part={member.part}
+								isAdmin={member.isAdmin}
 							/>
 							<AttendanceStatusLabel status={member.attendanceStatus} />
 						</Link>
@@ -130,6 +132,7 @@ const AttendanceList = ({
 										name={member.name}
 										teamNumber={member.teamNumber}
 										part={member.part}
+										isAdmin={member.isAdmin}
 									/>
 								</div>
 								<AttendanceStatusLabel

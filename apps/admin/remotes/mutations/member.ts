@@ -31,7 +31,7 @@ export const updateMembersInitMutationOptions = (
 				members: params.members.map((m) => ({
 					memberId: String(m.memberId),
 					memberPart: partToApiPart(m.memberPart),
-					team: m.team,
+					teamId: Number(m.team),
 					status: m.status,
 				})),
 			}),

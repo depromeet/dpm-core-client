@@ -5,12 +5,19 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { Button, MemberProfile, ReminderCallout, TeamTabBar } from '@dpm-core/shared';
 
 import { EmptyView } from '@/components/attendance/EmptyView';
+import { cohort } from '@/constants/cohort';
+import { getMemberPartLabel } from '@/lib/member/part';
+import { isExistPart } from '@/lib/utils';
 import { getAnnouncementReadMembersQuery } from '@/remotes/queries/announcement';
 
 interface ReadStatusSidebarProps {
 	announcementId: number;
 	onSendReminder?: () => void;
 }
+
+const getTeamLabel = (teamNumber: number) => (teamNumber === 0 ? '팀 미배정' : `${teamNumber}팀`);
+const getPartLabel = (part: string) =>
+	isExistPart(part) ? getMemberPartLabel(part) : '파트 미배정';
 
 export const ReadStatusSidebar = ({ announcementId, onSendReminder }: ReadStatusSidebarProps) => {
 	const [activeReadTab, setActiveReadTab] = useState<'unread' | 'read'>('unread');
@@ -38,12 +45,14 @@ export const ReadStatusSidebar = ({ announcementId, onSendReminder }: ReadStatus
 			<div className="flex-1 overflow-y-auto bg-background-normal p-5">
 				{currentMembers.length > 0 ? (
 					<div className="flex flex-col gap-2">
-						{currentMembers.map(({ memberId, name, teamId, part }) => (
+						{currentMembers.map(({ memberId, name, teamNumber, part, isAdmin }) => (
 							<MemberProfile
+								isAdmin={isAdmin}
 								key={memberId}
 								name={name}
-								team={`${teamId}팀`}
-								role={part}
+								team={getTeamLabel(teamNumber)}
+								role={getPartLabel(part)}
+								avatarSrc={isExistPart(part) ? cohort[part].src : cohort.ETC.src}
 								showHover
 							/>
 						))}
