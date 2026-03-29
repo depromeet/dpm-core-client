@@ -24,7 +24,7 @@ export const Profile = (props: ProfileProps) => {
 
 	return (
 		<div className="flex items-center gap-4">
-			<div className={cn('rounded-full bg-background-strong')}>
+			<div className={cn('shrink-0 rounded-full bg-background-strong')}>
 				<Image
 					width={size}
 					height={size}
