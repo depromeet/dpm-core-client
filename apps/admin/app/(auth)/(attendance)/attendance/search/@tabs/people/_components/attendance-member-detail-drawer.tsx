@@ -54,6 +54,7 @@ const _AttendanceMemberHeader = ({ memberId }: { memberId: number }) => {
 				name={data.member.name}
 				part={data.member.part}
 				teamNumber={data.member.teamNumber}
+				isAdmin={data.member.isAdmin}
 			/>
 			{data.member.attendanceStatus !== 'NORMAL' && (
 				<Badge variant={data.member.attendanceStatus}>
@@ -186,6 +187,7 @@ const _AttendanceSessionDetailView = ({
 				name={data.member.name}
 				part={data.member.part}
 				teamNumber={data.member.teamNumber}
+				isAdmin={data.member.isAdmin}
 			/>
 
 			<AttendanceStatusSection

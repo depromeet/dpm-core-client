@@ -69,6 +69,7 @@ export const AttendanceList = ({ sessionId }: { sessionId: number }) => {
 										name={member.name}
 										teamNumber={member.teamNumber}
 										part={member.part}
+										isAdmin={member.isAdmin}
 									/>
 								</TableCell>
 								<TableCell>
@@ -89,10 +90,11 @@ interface TableProfileProps extends React.ComponentProps<'div'> {
 	name: string;
 	teamNumber: number;
 	size?: number;
+	isAdmin: boolean;
 }
 
 export const TableProfile = (props: TableProfileProps) => {
-	const { part, name, teamNumber, size = 40 } = props;
+	const { part, name, teamNumber, size = 40, isAdmin } = props;
 
 	return (
 		<figure className="flex items-center gap-3">
@@ -100,14 +102,20 @@ export const TableProfile = (props: TableProfileProps) => {
 				<Image
 					width={size}
 					height={size}
-					src={isExistPart(part) ? cohort[part] : cohort.WEB}
+					src={isExistPart(part) ? cohort[part] : cohort.ETC}
 					alt={`${part} 파트 프로필 이미지`}
 				/>
 			</div>
 			<figcaption className="flex">
 				<strong className="mr-3 font-semibold text-body1 text-foreground">{name}</strong>
 				<p className="flex items-center gap-1.5 text-caption1 text-label-assistive">
-					<span>{teamNumber}팀</span>
+					{isAdmin && (
+						<>
+							<span>운영진</span>
+							<span aria-hidden="true" className="h-3 border-line-subtle border-l" />
+						</>
+					)}
+					<span>{teamNumber > 0 ? `${teamNumber}팀` : '팀 미배정'}</span>
 					<span aria-hidden="true" className="h-3 border-line-subtle border-l" />
 					<span>{getMemberPartLabel(part)}</span>
 				</p>

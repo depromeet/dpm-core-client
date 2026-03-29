@@ -8,6 +8,7 @@ export interface MemberListItem {
 	email?: string;
 	teamNumber: number;
 	part: Part;
+	isAdmin: boolean;
 	status: MemberStatus;
 	assignmentScore?: number;
 }

@@ -104,63 +104,63 @@ export const MemberFilter = ({ values, onChange }: MemberFilterProps) => {
 	};
 
 	return (
-		<div className="flex items-center gap-2">
-			{/* biome-ignore lint/a11y/useSemanticElements: Checkbox가 버튼 컴포넌트이므로 nested button 이슈를 해결하기 위해 div role button 사용 */}
-			<div
-				role="button"
-				tabIndex={0}
-				className={cn(
-					'flex cursor-pointer items-center gap-1.5 rounded-lg border px-4 py-2.5',
-					values.unapprovedOnly
-						? 'border-primary-normal'
-						: 'border-line-subtle bg-background-normal',
-				)}
-				onClick={() => onChange({ ...values, unapprovedOnly: !values.unapprovedOnly })}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						e.preventDefault();
-						onChange({ ...values, unapprovedOnly: !values.unapprovedOnly });
-					}
-				}}
-				aria-pressed={values.unapprovedOnly}
-				aria-label="미승인만 보기"
-			>
-				<Checkbox
-					checked={values.unapprovedOnly}
-					className="pointer-events-none size-4 shrink-0 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
-				/>
-				<Label className="cursor-pointer font-normal text-body2 text-label-assistive">
-					미승인만 보기
-				</Label>
-			</div>
+		<div className="flex flex-wrap items-center justify-end gap-2">
+			<div className="flex flex-wrap justify-end gap-2">
+				{/* biome-ignore lint/a11y/useSemanticElements: Checkbox가 버튼 컴포넌트이므로 nested button 이슈를 해결하기 위해 div role button 사용 */}
+				<div
+					role="button"
+					tabIndex={0}
+					className={cn(
+						'flex cursor-pointer items-center gap-1.5 rounded-lg border px-4 py-2.5',
+						values.unapprovedOnly
+							? 'border-primary-normal'
+							: 'border-line-subtle bg-background-normal',
+					)}
+					onClick={() => onChange({ ...values, unapprovedOnly: !values.unapprovedOnly })}
+					onKeyDown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							onChange({ ...values, unapprovedOnly: !values.unapprovedOnly });
+						}
+					}}
+					aria-pressed={values.unapprovedOnly}
+					aria-label="미승인만 보기"
+				>
+					<Checkbox
+						checked={values.unapprovedOnly}
+						className="pointer-events-none size-4 shrink-0 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
+					/>
+					<Label className="cursor-pointer font-normal text-body2 text-label-assistive">
+						미승인만 보기
+					</Label>
+				</div>
 
-			{/* biome-ignore lint/a11y/useSemanticElements: Checkbox가 버튼 컴포넌트이므로 nested button 이슈를 해결하기 위해 div role button 사용 */}
-			<div
-				role="button"
-				tabIndex={0}
-				className={cn(
-					'flex cursor-pointer items-center gap-1.5 rounded-lg border px-4 py-2.5',
-					values.latest
-						? 'border-primary-normal'
-						: 'border-line-subtle bg-background-normal',
-				)}
-				onClick={() => onChange({ ...values, latest: !values.latest })}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						e.preventDefault();
-						onChange({ ...values, latest: !values.latest });
-					}
-				}}
-				aria-pressed={values.latest}
-				aria-label="이번 기수만 보기"
-			>
-				<Checkbox
-					checked={values.latest}
-					className="pointer-events-none size-4 shrink-0 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
-				/>
-				<Label className="cursor-pointer font-normal text-body2 text-label-assistive">
-					이번 기수만 보기
-				</Label>
+				{/* biome-ignore lint/a11y/useSemanticElements: Checkbox가 버튼 컴포넌트이므로 nested button 이슈를 해결하기 위해 div role button 사용 */}
+				<div
+					role="button"
+					tabIndex={0}
+					className={cn(
+						'flex cursor-pointer items-center gap-1.5 rounded-lg border px-4 py-2.5',
+						values.latest ? 'border-primary-normal' : 'border-line-subtle bg-background-normal',
+					)}
+					onClick={() => onChange({ ...values, latest: !values.latest })}
+					onKeyDown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							onChange({ ...values, latest: !values.latest });
+						}
+					}}
+					aria-pressed={values.latest}
+					aria-label="이번 기수만 보기"
+				>
+					<Checkbox
+						checked={values.latest}
+						className="pointer-events-none size-4 shrink-0 rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
+					/>
+					<Label className="cursor-pointer font-normal text-body2 text-label-assistive">
+						이번 기수만 보기
+					</Label>
+				</div>
 			</div>
 
 			<div className="flex gap-2">

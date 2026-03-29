@@ -32,7 +32,8 @@ export interface Member {
 	id: string;
 	name: string;
 	team: string;
-	teamId: number;
+	teamNumber: number;
+	isAdmin: boolean;
 	role: string;
 	avatarSrc?: string;
 	submitStatus: SubmitStatus;
