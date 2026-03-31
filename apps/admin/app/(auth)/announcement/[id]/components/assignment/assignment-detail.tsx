@@ -28,14 +28,15 @@ export const AssignmentDetail = ({
 	const members: Member[] = [
 		...readMembersData.readMembers.map((m) => ({ ...m, isRead: true })),
 		...readMembersData.unreadMembers.map((m) => ({ ...m, isRead: false })),
-	].map(({ memberId, name, teamId, part, submitStatus, score, isRead }) => ({
+	].map(({ memberId, name, teamNumber, part, submitStatus, score, isRead, isAdmin }) => ({
 		id: String(memberId),
 		name,
-		team: `${teamId}팀`,
-		teamId,
+		team: teamNumber === 0 ? '팀 미배정' : `${teamNumber}팀`,
+		teamNumber,
 		role: part,
 		submitStatus: toClientSubmitStatus(submitStatus),
 		isRead,
+		isAdmin,
 		score,
 	}));
 

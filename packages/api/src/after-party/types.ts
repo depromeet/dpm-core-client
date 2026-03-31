@@ -113,6 +113,6 @@ export interface AfterPartyInvitedMember {
 	memberId: number;
 	name: string;
 	part: Part;
-	team: number;
+	teamNumber: number;
 	rsvpStatus: boolean | null;
 }

@@ -47,6 +47,7 @@ const _AttendanceSessionDetailContent = ({
 				name={data.member.name}
 				part={data.member.part}
 				teamNumber={data.member.teamNumber}
+				isAdmin={data.member.isAdmin}
 			/>
 
 			<AttendanceStatusSection

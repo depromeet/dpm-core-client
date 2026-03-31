@@ -1,7 +1,6 @@
 'use client';
 
 /** 멤버 관리 페이지 */
-import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -16,11 +15,8 @@ import {
 	toast,
 } from '@dpm-core/shared';
 
-import EtcIcon from '@/assets/icons/etc.webp';
 import { Profile } from '@/components/attendance/profile';
 import { LoadingBox } from '@/components/loading-box';
-import { cohort } from '@/constants/cohort';
-import { isExistPart } from '@/lib/utils';
 import {
 	approveWhitelistMutationOptions,
 	updateMembersInitMutationOptions,
@@ -47,9 +43,7 @@ export const MemberList = () => {
 	const [approveModalOpen, setApproveModalOpen] = useState(false);
 	const [editModalOpen, setEditModalOpen] = useState(false);
 
-	const { data, isLoading } = useQuery(
-		getMembersOverviewQuery({ latest: filterValues.latest }),
-	);
+	const { data, isLoading } = useQuery(getMembersOverviewQuery({ latest: filterValues.latest }));
 
 	const members = useMemo(() => {
 		if (!data?.data?.members) return [];
@@ -202,8 +196,8 @@ export const MemberList = () => {
 				</div>
 
 				{/* Search & Filter */}
-				<div className="mb-[18px] flex w-full flex-row items-center justify-between">
-					<div className="w-[270px]">
+				<div className="mb-4.5 flex w-full flex-row items-center justify-between">
+					<div className="min-w-0 shrink basis-67.5">
 						<SearchInputOutlined
 							placeholder="디퍼 검색"
 							value={searchQuery}
@@ -284,42 +278,13 @@ export const MemberList = () => {
 											/>
 										</TableCell>
 										<TableCell className="p-3">
-											{member.part === 'ETC' || member.teamNumber === 0 ? (
-												<div className="flex items-center gap-4">
-													<div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-background-strong">
-														{member.part === 'ETC' ? (
-															<Image
-																src={EtcIcon}
-																alt="파트 미배정"
-																width={40}
-																height={40}
-																className="size-10 object-cover"
-															/>
-														) : (
-															<Image
-																src={isExistPart(member.part) ? cohort[member.part] : cohort.WEB}
-																alt={`${member.part} 파트`}
-																width={40}
-																height={40}
-																className="size-10 object-cover"
-															/>
-														)}
-													</div>
-													<div className="flex flex-col gap-0.5">
-														<span className="font-semibold text-body1 text-label-normal">
-															{member.name}
-														</span>
-														<span className="text-caption1 text-label-assistive">미배정</span>
-													</div>
-												</div>
-											) : (
-												<Profile
-													size={40}
-													name={member.name}
-													teamNumber={member.teamNumber}
-													part={member.part}
-												/>
-											)}
+											<Profile
+												size={40}
+												name={member.name}
+												teamNumber={member.teamNumber}
+												part={member.part}
+												isAdmin={member.isAdmin}
+											/>
 										</TableCell>
 										<TableCell className="w-[200px] px-3">
 											<MemberStatusLabel status={member.status} />
