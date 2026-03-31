@@ -26,7 +26,12 @@ export async function requestPushNotificationPermission() {
 
 	if (finalStatus !== 'granted') {
 		throw new Error('푸시 알람 권한이 없습니다.');
-	} else {
-		// 알람 권한이 있는 경우 서버로 토큰 전송
 	}
+
+	const token = await Notifications.getExpoPushTokenAsync({
+		projectId: '036040bf-3e75-4d0e-877c-cb579653f8e8',
+	});
+
+	console.log('Expo Push Token:', token.data);
+	return token.data;
 }

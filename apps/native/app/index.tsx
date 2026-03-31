@@ -9,6 +9,7 @@ import type { WebView as NativeWebView, WebViewNavigation } from 'react-native-w
 
 import { appBridge } from '@/bridge/app-bridge';
 import { useBehavior } from '@/hooks/useBehavior';
+import { requestPushNotificationPermission } from '@/lib/push-notification-permission';
 
 export const { WebView } = createWebView({
 	bridge: appBridge,
@@ -34,6 +35,10 @@ function WebViewContainer() {
 	useEffect(() => {
 		hideSplashScreen();
 	}, [hideSplashScreen]);
+
+	useEffect(() => {
+		requestPushNotificationPermission().catch(console.error);
+	}, []);
 
 	const handleWebViewLoadEnd = () => {
 		setAppIsReady(true);
