@@ -57,7 +57,9 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
 			if (!pushRegistered.current) {
 				pushRegistered.current = true;
-				requestAndRegister();
+				void requestAndRegister().then((success) => {
+					if (!success) pushRegistered.current = false;
+				});
 			}
 		}
 	}, [memberInfo, requestAndRegister]);

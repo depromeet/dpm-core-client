@@ -12,16 +12,20 @@ export function usePushNotification() {
 	const requestPushPermission = useBridgeStore(
 		({ requestPushPermission }) => requestPushPermission,
 	);
-	const { mutate: registerToken } = useMutation(registerPushTokenMutationOptions());
+	const { mutateAsync: registerToken } = useMutation(registerPushTokenMutationOptions());
 
-	const requestAndRegister = async () => {
+	const requestAndRegister = async (): Promise<boolean> => {
 		if (!isApp || !isWebViewBridgeAvailable || !isNativeMethodAvailable('requestPushPermission'))
-			return;
+			return false;
 
-		const result = await requestPushPermission();
+		try {
+			const result = await requestPushPermission();
+			if (!result.success) return false;
 
-		if (result.success) {
-			registerToken(result.token);
+			await registerToken(result.token);
+			return true;
+		} catch {
+			return false;
 		}
 	};
 

@@ -29,7 +29,8 @@ export async function requestPushNotificationPermission(): Promise<string> {
 		throw new Error('푸시 알람 권한이 없습니다.');
 	}
 
-	const projectId = Constants?.expoConfig?.extra?.eas?.projectId;
+	const projectId =
+		Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
 	if (!projectId) {
 		throw new Error('EAS Project ID가 설정되지 않았습니다.');
 	}
