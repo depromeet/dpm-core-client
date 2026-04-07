@@ -14,15 +14,18 @@ export function usePushNotification() {
 	);
 	const { mutate: registerToken } = useMutation(registerPushTokenMutationOptions());
 
-	const requestAndRegister = async () => {
+	const requestAndRegister = async (): Promise<boolean> => {
 		if (!isApp || !isWebViewBridgeAvailable || !isNativeMethodAvailable('requestPushPermission'))
-			return;
+			return false;
 
 		const result = await requestPushPermission();
 
 		if (result.success) {
 			registerToken(result.token);
+			return true;
 		}
+
+		return false;
 	};
 
 	return { requestAndRegister };

@@ -56,8 +56,9 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			setUser(memberInfo);
 
 			if (!pushRegistered.current) {
-				pushRegistered.current = true;
-				requestAndRegister();
+				requestAndRegister().then((success) => {
+					if (success) pushRegistered.current = true;
+				});
 			}
 		}
 	}, [memberInfo, requestAndRegister]);
