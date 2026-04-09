@@ -1,12 +1,13 @@
 'use client';
 
 import { redirect, usePathname } from 'next/navigation';
-import { type PropsWithChildren, useEffect, useState } from 'react';
+import { type PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { auth, type Member } from '@dpm-core/api';
 import { createContext, toast } from '@dpm-core/shared';
 
 import { UnauthenticatedLayout } from '@/components/unauthenticated-layout';
+import { usePushNotification } from '@/hooks/use-push-notification';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
 interface AuthContextType {
@@ -27,8 +28,11 @@ const [AuthProviderContext, useAuth] = createContext<AuthContextType>('Auth', {
 const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [user, setUser] = useState<Member | null>(null);
-	const pathname = usePathname();
 
+	const pushRegistered = useRef(false);
+
+	const pathname = usePathname();
+	const { requestAndRegister } = usePushNotification();
 	const queryClient = useQueryClient();
 
 	const {
@@ -50,8 +54,15 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		if (memberInfo) {
 			setIsAuthenticated(true);
 			setUser(memberInfo);
+
+			if (!pushRegistered.current) {
+				pushRegistered.current = true;
+				void requestAndRegister().then((success) => {
+					if (!success) pushRegistered.current = false;
+				});
+			}
 		}
-	}, [memberInfo]);
+	}, [memberInfo, requestAndRegister]);
 
 	// 미로그인 인 경우, 접속 하자마자 홈으로 진입으로 변경, 로그인 페이지로 바로 진입아님
 	if (error && pathname !== '/login') {
