@@ -5,6 +5,7 @@ import type {
 	ApiResponse,
 	CreateAfterPartyRequest,
 	CreateAfterPartyResponse,
+	SendUnmarkedRsvpNotificationRequest,
 	UpdateAfterPartyRequest,
 } from '@dpm-core/api';
 import { afterParty } from '@dpm-core/api';
@@ -49,6 +50,27 @@ type SubmitAttendanceStatusOptions = MutationOptions<
 	SubmitAttendanceStatusParams,
 	unknown
 >;
+
+type SendUnmarkedRsvpNotificationOptions = MutationOptions<
+	unknown,
+	Error,
+	SendUnmarkedRsvpNotificationRequest,
+	unknown
+>;
+
+/**
+ * 회식 참여 여부 미제출자 알림 발송 mutation
+ */
+export const sendUnmarkedRsvpNotificationMutationOptions = (
+	afterPartyId: number,
+	options?: SendUnmarkedRsvpNotificationOptions,
+) =>
+	mutationOptions({
+		mutationKey: [MUTATE_KEY, 'un-marked-rsvp-notification', afterPartyId],
+		mutationFn: (params: SendUnmarkedRsvpNotificationRequest) =>
+			afterParty.sendUnmarkedRsvpNotification(afterPartyId, params),
+		...options,
+	});
 
 /**
  * 회식 참여 여부 제출 mutation
