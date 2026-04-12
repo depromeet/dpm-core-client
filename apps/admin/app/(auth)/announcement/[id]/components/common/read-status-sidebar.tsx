@@ -13,13 +13,18 @@ import { getAnnouncementReadMembersQuery } from '@/remotes/queries/announcement'
 interface ReadStatusSidebarProps {
 	announcementId: number;
 	onSendReminder?: () => void;
+	isRemindPending?: boolean;
 }
 
 const getTeamLabel = (teamNumber: number) => (teamNumber === 0 ? '팀 미배정' : `${teamNumber}팀`);
 const getPartLabel = (part: string) =>
 	isExistPart(part) ? getMemberPartLabel(part) : '파트 미배정';
 
-export const ReadStatusSidebar = ({ announcementId, onSendReminder }: ReadStatusSidebarProps) => {
+export const ReadStatusSidebar = ({
+	announcementId,
+	onSendReminder,
+	isRemindPending,
+}: ReadStatusSidebarProps) => {
 	const [activeReadTab, setActiveReadTab] = useState<'unread' | 'read'>('unread');
 
 	const {
@@ -73,7 +78,12 @@ export const ReadStatusSidebar = ({ announcementId, onSendReminder }: ReadStatus
 						title="리마인드 알림 일괄 전송"
 						description={`안읽은 디퍼들에게 푸시 알림이 전송돼요.\n알림은 24시간 내 한 번만 보낼 수 있어요.`}
 					/>
-					<Button size="lg" className="w-full" onClick={onSendReminder} disabled={!onSendReminder}>
+					<Button
+						size="lg"
+						className="w-full"
+						onClick={onSendReminder}
+						disabled={!onSendReminder || isRemindPending}
+					>
 						리마인드 전송
 					</Button>
 				</div>

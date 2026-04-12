@@ -99,4 +99,13 @@ export const announcement = {
 	) => {
 		return http.patch(`v1/announcements/${announcementId}/assignment-status`, { json: body });
 	},
+
+	/**
+	 * 공지/과제 리마인드 알림 전송
+	 * 안 읽은 멤버들에게 리마인드 푸시 알림을 발송합니다.
+	 * @param announcementId 공지/과제 ID
+	 */
+	remindNotification: async (announcementId: number) => {
+		return http.post(`v1/announcements/${announcementId}/remind-notification`);
+	},
 };

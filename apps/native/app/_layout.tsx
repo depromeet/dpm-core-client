@@ -13,6 +13,11 @@ Notifications.setNotificationHandler({
 
 SplashScreen.preventAutoHideAsync();
 
+// 토큰 확인용 (테스트 후 제거)
+Notifications.getExpoPushTokenAsync({
+	projectId: '036040bf-3e75-4d0e-877c-cb579653f8e8',
+}).then(({ data }) => console.log('📱 Expo Push Token:', data));
+
 export default function RootLayout() {
 	return (
 		<Stack screenOptions={{ headerShown: false }}>
