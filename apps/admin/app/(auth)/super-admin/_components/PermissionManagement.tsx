@@ -20,6 +20,7 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
+	Skeleton,
 	StatusBadge,
 	Table,
 	TableBody,
@@ -253,8 +254,28 @@ export const PermissionManagement = () => {
 			</div>
 			{/* Table */}
 			{membersLoading ? (
-				<div className="flex min-h-75 w-full items-center justify-center py-12">
-					<p className="font-medium text-body1 text-label-assistive">멤버 목록을 불러오는 중...</p>
+				<div className="flex w-full flex-col">
+					<div className="flex h-10 items-center gap-6 bg-background-strong px-3">
+						<Skeleton className="h-4 w-8" />
+						<Skeleton className="h-4 w-12" />
+						<Skeleton className="h-4 w-12" />
+						<Skeleton className="h-4 w-12" />
+						<Skeleton className="h-4 w-12" />
+						<Skeleton className="ml-auto h-4 w-12" />
+					</div>
+					{['sk-1', 'sk-2', 'sk-3', 'sk-4', 'sk-5'].map((key) => (
+						<div
+							key={key}
+							className="flex h-14 items-center gap-6 border-line-subtle border-b px-3"
+						>
+							<Skeleton className="h-4 w-8" />
+							<Skeleton className="h-4 w-20" />
+							<Skeleton className="h-4 w-12" />
+							<Skeleton className="h-4 w-16" />
+							<Skeleton className="h-4 w-16" />
+							<Skeleton className="ml-auto h-4 w-32" />
+						</div>
+					))}
 				</div>
 			) : filteredAndSortedMembers.length === 0 ? (
 				<div className="flex min-h-75 w-full items-center justify-center py-12">

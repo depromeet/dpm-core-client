@@ -12,6 +12,7 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
+	Skeleton,
 	Table,
 	TableBody,
 	TableCell,
@@ -133,8 +134,22 @@ export const CohortManagement = () => {
 
 			{/* Table */}
 			{isLoading ? (
-				<div className="flex min-h-[200px] w-full items-center justify-center py-12">
-					<p className="font-medium text-body1 text-label-assistive">기수 목록을 불러오는 중...</p>
+				<div className="flex w-full flex-col">
+					<div className="flex h-10 items-center gap-3 bg-background-strong px-3">
+						<Skeleton className="h-4 w-16" />
+						<Skeleton className="h-4 w-16" />
+						<Skeleton className="ml-auto h-4 w-12" />
+					</div>
+					{['sk-1', 'sk-2', 'sk-3'].map((key) => (
+						<div
+							key={key}
+							className="flex h-14 items-center gap-3 border-line-subtle border-b px-3"
+						>
+							<Skeleton className="h-4 w-10" />
+							<Skeleton className="h-4 w-20" />
+							<Skeleton className="ml-auto h-4 w-24" />
+						</div>
+					))}
 				</div>
 			) : cohorts.length === 0 ? (
 				<div className="flex min-h-[200px] w-full items-center justify-center py-12">
