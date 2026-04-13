@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { HTTPError } from 'ky';
 import { ArrowDownAZ, ArrowUpAZ } from 'lucide-react';
 import type { MemberOverviewItem } from '@dpm-core/api';
 import {
@@ -54,6 +55,18 @@ const SORT_COLUMNS = [
 	{ key: 'status', label: '상태' },
 ] as const;
 
+const getErrorMessage = async (error: Error, fallback: string) => {
+	if (error instanceof HTTPError) {
+		try {
+			const body = await error.response.json();
+			if (body?.message) return body.message as string;
+		} catch {
+			// 파싱 실패 시 fallback 사용
+		}
+	}
+	return fallback;
+};
+
 const statusBadgeStatus = (status: string) => {
 	switch (status) {
 		case 'ACTIVE':
@@ -72,7 +85,11 @@ const statusBadgeStatus = (status: string) => {
 export const PermissionManagement = () => {
 	const queryClient = useQueryClient();
 
-	const { data: membersData, isLoading: membersLoading } = useQuery(getMembersOverviewQuery());
+	const {
+		data: membersData,
+		isLoading: membersLoading,
+		isFetching: membersFething,
+	} = useQuery(getMembersOverviewQuery());
 	const { data: cohortsData } = useQuery(getCohortListQuery);
 
 	const members = membersData?.data.members ?? [];
@@ -133,20 +150,19 @@ export const PermissionManagement = () => {
 	}, [members, searchQuery, sortKey, sortOrder, cohortMap]);
 
 	const invalidateMembers = () => {
-		setTimeout(() => {
-			queryClient.invalidateQueries({ queryKey: ['members-overview'] });
-		}, 500);
+		queryClient.invalidateQueries({ queryKey: ['members-overview'] });
 	};
 
 	const { mutate: updateRole, isPending: isRolePending } = useMutation(
 		updateMemberRoleMutationOptions({
 			onSuccess: () => {
+				setDialogOpen(false);
 				toast.success('역할이 변경되었습니다.');
 				invalidateMembers();
-				setDialogOpen(false);
 			},
-			onError: () => {
-				toast.error('역할 변경에 실패했습니다.');
+			onError: async (error) => {
+				const message = await getErrorMessage(error, '역할 변경에 실패했습니다.');
+				toast.error(message);
 			},
 		}),
 	);
@@ -154,12 +170,13 @@ export const PermissionManagement = () => {
 	const { mutate: updateStatus, isPending: isStatusPending } = useMutation(
 		updateMemberStatusMutationOptions({
 			onSuccess: () => {
+				setDialogOpen(false);
 				toast.success('멤버 상태가 변경되었습니다.');
 				invalidateMembers();
-				setDialogOpen(false);
 			},
-			onError: () => {
-				toast.error('상태 변경에 실패했습니다.');
+			onError: async (error) => {
+				const message = await getErrorMessage(error, '상태 변경에 실패했습니다.');
+				toast.error(message);
 			},
 		}),
 	);
@@ -234,14 +251,13 @@ export const PermissionManagement = () => {
 					/>
 				</div>
 			</div>
-
 			{/* Table */}
 			{membersLoading ? (
-				<div className="flex min-h-[300px] w-full items-center justify-center py-12">
+				<div className="flex min-h-75 w-full items-center justify-center py-12">
 					<p className="font-medium text-body1 text-label-assistive">멤버 목록을 불러오는 중...</p>
 				</div>
 			) : filteredAndSortedMembers.length === 0 ? (
-				<div className="flex min-h-[300px] w-full items-center justify-center py-12">
+				<div className="flex min-h-75 w-full items-center justify-center py-12">
 					<p className="font-medium text-body1 text-label-assistive">
 						{searchQuery ? '검색 결과가 없습니다' : '등록된 멤버가 없습니다'}
 					</p>
@@ -267,14 +283,29 @@ export const PermissionManagement = () => {
 									</button>
 								</TableHead>
 							))}
-							<TableHead className="w-[200px] px-3 text-right font-medium text-body2 text-label-subtle">
+							<TableHead className="w-50 px-6 font-medium text-body2 text-label-subtle">
 								관리
 							</TableHead>
 						</TableRow>
 					</TableHeader>
+					{membersFething && !membersLoading && (
+						<TableBody>
+							<TableRow className="h-0 border-0 p-0 hover:bg-transparent">
+								<TableCell colSpan={6} className="h-0 border-0 p-0">
+									<div className="h-0.5 w-full overflow-hidden bg-background-strong">
+										<div
+											className="h-full w-1/3 bg-primary-normal"
+											style={{ animation: 'progress 1s ease-in-out infinite' }}
+										/>
+									</div>
+									<style>{`@keyframes progress { 0% { transform: translateX(-100%); } 100% { transform: translateX(400%); } }`}</style>
+								</TableCell>
+							</TableRow>
+						</TableBody>
+					)}
 					<TableBody>
 						{filteredAndSortedMembers.map((m) => (
-							<TableRow key={m.memberId} className="h-[56px] border-line-subtle">
+							<TableRow key={m.memberId} className="h-12 border-line-subtle">
 								<TableCell className="px-3 font-medium text-body1 text-label-normal">
 									{m.memberId}
 								</TableCell>
@@ -311,7 +342,6 @@ export const PermissionManagement = () => {
 					</TableBody>
 				</Table>
 			)}
-
 			{/* Action Dialog */}
 			<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
 				<DialogContent>
@@ -348,6 +378,7 @@ export const PermissionManagement = () => {
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
+			;
 		</div>
 	);
 };
