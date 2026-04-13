@@ -1,5 +1,7 @@
 import { DpmText } from '@dpm-core/shared';
 
+import { AppHeader } from '@/components/app-header';
+import { SafeAreaAppLayout } from '@/components/app-layout';
 import { AppleLoginButton } from '@/components/apple-login-button';
 import { EmailLoginButton } from '@/components/email-login-button';
 import { LoginButton } from '@/components/login-button';
@@ -7,8 +9,9 @@ import { CoreLogo } from '@/components/lotties/core-logo';
 
 const LoginPage = () => {
 	return (
-		<div className="flex min-h-dvh flex-col justify-center gap-y-10 bg-background-subtle">
-			<div className="mx-auto flex flex-col gap-y-10 text-center">
+		<SafeAreaAppLayout className="h-dvh bg-background-subtle">
+			<AppHeader title="" backHref="/" className="mb-0" />
+			<div className="mx-auto flex flex-1 flex-col justify-center gap-y-10 text-center">
 				<div className="flex flex-col items-center gap-y-4">
 					<CoreLogo />
 					<div className="mx-auto flex items-start gap-x-2.5 font-semibold text-headline1 text-label-normal uppercase">
@@ -34,7 +37,7 @@ const LoginPage = () => {
 					<EmailLoginButton />
 				</div>
 			</div>
-		</div>
+		</SafeAreaAppLayout>
 	);
 };
 

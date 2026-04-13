@@ -123,8 +123,8 @@ const TAB_LIST = [
 export const BottomTabBar = () => {
 	const pathName = usePathname();
 	return (
-		<nav className="sticky right-0 bottom-0 left-0 z-10 border-line-subtle border-t bg-background-normal">
-			<ul className="flex h-19 items-center justify-between">
+		<nav className="sticky right-0 bottom-0 left-0 z-10 border-line-subtle border-t bg-background-normal pb-safe-area">
+			<ul className="flex items-center justify-between py-2">
 				{TAB_LIST.map((tab) => {
 					const isActive = pathName === tab.href;
 					return <BottomTabBarItem key={tab.href} {...tab} isActive={isActive} />;

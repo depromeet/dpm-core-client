@@ -25,6 +25,14 @@ export const buildServerDatePayload = (formData: SessionSchema) => {
 	const combine = (time: string) =>
 		dayjs(`${baseDate}T${time.slice(0, 2)}:${time.slice(2, 4)}`).format('YYYY-MM-DDTHH:mm:ss');
 
+	const absentTimeStr = plusOneMinute(attendanceLateTime.end);
+	const crossesMidnight = absentTimeStr < attendanceLateTime.end;
+	const absentStart = crossesMidnight
+		? dayjs(`${baseDate}T${absentTimeStr.slice(0, 2)}:${absentTimeStr.slice(2, 4)}`)
+				.add(1, 'day')
+				.format('YYYY-MM-DDTHH:mm:ss')
+		: combine(absentTimeStr);
+
 	return {
 		name,
 		date: combine(sessionDate.time),
@@ -33,7 +41,7 @@ export const buildServerDatePayload = (formData: SessionSchema) => {
 		week: Number(week),
 		attendanceStart: combine(attendancePresentTime.start),
 		lateStart: combine(attendanceLateTime.start),
-		absentStart: combine(plusOneMinute(attendanceLateTime.end)),
+		absentStart,
 	};
 };
 

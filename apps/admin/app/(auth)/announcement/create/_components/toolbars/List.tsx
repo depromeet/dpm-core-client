@@ -13,6 +13,7 @@ export const List = ({ editor }: EditorProps) => {
 		<div className="flex items-center gap-1">
 			<button
 				type="button"
+				tabIndex={-1}
 				onClick={() => editor.chain().focus().toggleBulletList().run()}
 				disabled={!editor.can().chain().focus().toggleBulletList().run()}
 				className={cn(
@@ -25,6 +26,7 @@ export const List = ({ editor }: EditorProps) => {
 			</button>
 			<button
 				type="button"
+				tabIndex={-1}
 				onClick={() => editor.chain().focus().toggleOrderedList().run()}
 				disabled={!editor.can().chain().focus().toggleOrderedList().run()}
 				className={cn(

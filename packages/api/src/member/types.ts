@@ -12,7 +12,7 @@ export interface MemberOverviewItem {
 	cohortId: number;
 	name: string;
 	email?: string;
-	teamName: string;
+	teamNumber: number;
 	isAdmin: boolean;
 	status: MemberStatus;
 	part: MemberOverviewPart;
@@ -46,7 +46,7 @@ export type UpdateMembersInitPart = Exclude<Part, 'ETC'> | 'UNASSIGNED';
 export interface UpdateMembersInitItem {
 	memberId: string;
 	memberPart: UpdateMembersInitPart;
-	team: string;
+	teamId: number;
 	status: MemberStatus;
 }
 

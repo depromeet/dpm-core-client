@@ -64,7 +64,7 @@ export const NonParticipantsNotification = (props: NonParticipantsNotificationPr
 					미투표자 리마인드 보내기
 				</Button>
 			</DrawerTrigger>
-			<DrawerContent className="mx-auto max-w-lg">
+			<DrawerContent className="mx-auto max-w-lg pb-safe-area">
 				<DrawerHeader className="mb-8">
 					<DrawerTitle>미참여자 리마인드 보내기</DrawerTitle>
 				</DrawerHeader>

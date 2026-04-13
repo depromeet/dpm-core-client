@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 export interface MemberProfileProps extends React.HTMLAttributes<HTMLDivElement> {
 	name: string;
 	team?: string;
+	isAdmin: boolean;
 	role?: string;
 	avatarSrc?: string;
 	avatarFallback?: string;
@@ -19,6 +20,7 @@ export const MemberProfile = ({
 	name,
 	team,
 	role,
+	isAdmin,
 	avatarSrc,
 	avatarFallback,
 	showHover = false,
@@ -41,11 +43,13 @@ export const MemberProfile = ({
 			</Avatar>
 
 			<div className="flex flex-col gap-0.75">
-				<p className="font-semibold text-caption1 text-label-normal">{name}</p>
+				<p className="font-semibold text-body1 text-label-normal">{name}</p>
 				{(team || role) && (
-					<div className="flex items-center gap-1.5 text-body2 text-label-assistive">
+					<div className="flex items-center gap-1.5 font-medium text-caption1 text-label-assistive">
+						{isAdmin && <span>운영진</span>}
+						{isAdmin && team && <div className="h-3.5 w-px bg-line-subtle" />}
 						{team && <span>{team}</span>}
-						{team && role && <div className="h-4 w-px bg-gray-500" />}
+						{team && role && <div className="h-3.5 w-px bg-line-subtle" />}
 						{role && <span>{role}</span>}
 					</div>
 				)}

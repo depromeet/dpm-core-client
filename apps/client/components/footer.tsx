@@ -5,9 +5,9 @@ import CopyRight from '@/assets/images/copyright.png';
 
 const Footer = () => {
 	return (
-		<footer className="flex min-h-[223px] flex-col bg-background-inverse px-4 py-[26px]">
+		<footer className="flex min-h-55 flex-col bg-background-inverse px-4 py-6.5">
 			<TextLogo className="text-gray-0" />
-			<div className="my-[18px] flex items-center gap-x-2">
+			<div className="my-4.5 flex items-center gap-x-2">
 				<a
 					href="https://depromeet.notion.site/24645b4338b380a59fd3d82fad44c5fd"
 					target="_blank"
@@ -35,7 +35,7 @@ const Footer = () => {
 					>
 						Instagram
 					</a>
-					<div className="mx-2 h-[10px] w-px bg-gray-400" />
+					<div className="mx-2 h-2.5 w-px bg-gray-400" />
 					<a
 						href="https://www.behance.net/Depromeet"
 						target="_blank"
@@ -44,7 +44,7 @@ const Footer = () => {
 					>
 						Behance
 					</a>
-					<div className="mx-2 h-[10px] w-px bg-gray-400" />
+					<div className="mx-2 h-2.5 w-px bg-gray-400" />
 					<a
 						href="https://github.com/depromeet/"
 						target="_blank"
@@ -53,7 +53,7 @@ const Footer = () => {
 					>
 						Github
 					</a>
-					<div className="mx-2 h-[10px] w-px bg-gray-400" />
+					<div className="mx-2 h-2.5 w-px bg-gray-400" />
 					<a
 						href="https://depromeet.medium.com/"
 						target="_blank"
@@ -62,7 +62,7 @@ const Footer = () => {
 					>
 						Medium
 					</a>
-					<div className="mx-2 h-[10px] w-px bg-gray-400" />
+					<div className="mx-2 h-2.5 w-px bg-gray-400" />
 					<a
 						href="https://www.linkedin.com/company/depromeet/"
 						target="_blank"

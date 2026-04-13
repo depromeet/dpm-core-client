@@ -79,7 +79,7 @@ export const ReviewBottomSheet = ({
 			<DrawerTrigger asChild>{children}</DrawerTrigger>
 			<DrawerContent
 				aria-describedby={undefined}
-				className="mx-auto flex max-h-[90vh] max-w-lg flex-col"
+				className="mx-auto flex max-h-[90vh] max-w-lg flex-col pb-safe-area"
 			>
 				<DrawerHeader showCloseButton className="shrink-0 px-5 pt-5 pb-4 text-left">
 					<DrawerTitle className="font-semibold text-[#1F2937] text-[18px] leading-[144%]">
@@ -154,7 +154,7 @@ export const ReviewBottomSheet = ({
 					</p>
 				</div>
 
-				<DrawerFooter className="shrink-0 gap-3 px-5 pt-4 pb-[calc(16px+env(safe-area-inset-bottom))]">
+				<DrawerFooter className="shrink-0 gap-3 px-5 pt-4 pb-3">
 					<div className="flex gap-3">
 						<DrawerTrigger asChild>
 							<Button

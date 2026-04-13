@@ -5,9 +5,10 @@ import { Suspense, useState } from 'react';
 import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import type { Announcement } from '@dpm-core/api';
-import { Aesterisk, AppLayout, TeamTabBar } from '@dpm-core/shared';
+import { Aesterisk, TeamTabBar } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
+import { SafeAreaAppLayout } from '@/components/app-layout';
 import { BottomTabBar } from '@/components/bottom-tab-bar';
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
 import { ErrorBox } from '@/components/error-box';
@@ -65,7 +66,7 @@ const NoticeListContainer = ({ selectedType }: NoticeListContainerProps) => {
 
 	if (filteredAnnouncements.length === 0) {
 		return (
-			<Empty className="flex-1 min-h-41.5">
+			<Empty className="min-h-41.5 flex-1">
 				<EmptyHeader>
 					<Aesterisk />
 					<EmptyTitle>등록된 공지가 없어요</EmptyTitle>
@@ -98,7 +99,7 @@ const NoticePage = () => {
 	const [selectedType, setSelectedType] = useState<NoticeType>('all');
 
 	return (
-		<AppLayout className="h-dvh bg-background-normal">
+		<SafeAreaAppLayout hasBottomTabBar className="h-dvh bg-background-normal">
 			<AppHeader title="공지" className="mb-0 py-0" />
 
 			<TeamTabBar
@@ -122,7 +123,7 @@ const NoticePage = () => {
 				</Suspense>
 			</ErrorBoundary>
 			<BottomTabBar />
-		</AppLayout>
+		</SafeAreaAppLayout>
 	);
 };
 

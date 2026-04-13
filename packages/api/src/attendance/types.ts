@@ -21,6 +21,7 @@ export interface AttendanceMember {
 	id: number;
 	name: string;
 	teamNumber: number;
+	isAdmin: boolean;
 	part: Exclude<Part, 'ETC'>;
 	attendanceStatus: MemberAttendanceStatus;
 }
@@ -56,6 +57,7 @@ export interface AttendanceBySessionReponse {
 		id: number;
 		name: string;
 		teamNumber: number;
+		isAdmin: boolean;
 		part: Exclude<Part, 'ETC'>;
 		attendanceStatus: AttendanceStatus;
 	}[];
@@ -69,6 +71,7 @@ export interface AttendanceByMemberReponse {
 		id: number;
 		name: string;
 		teamNumber: number;
+		isAdmin: boolean;
 		part: Exclude<Part, 'ETC'>;
 		attendanceStatus: MemberAttendanceStatus;
 	}[];

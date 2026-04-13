@@ -1,3 +1,5 @@
+import '@/lib/api-setup';
+
 import type { Metadata, Viewport } from 'next';
 import { headers } from 'next/headers';
 import NextScript from 'next/script';
@@ -86,6 +88,7 @@ export default async function RootLayout({
 						style={{
 							display: 'flex',
 							justifyContent: 'center',
+							marginTop: 'var(--safe-area-inset-top)',
 						}}
 						toastOptions={{
 							duration: 3_000,

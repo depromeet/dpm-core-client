@@ -66,7 +66,10 @@ export const AfterPartySubmitButton = ({
 						참석 여부 제출하기
 					</Button>
 				</DrawerTrigger>
-				<DrawerContent className="mx-auto" style={{ maxWidth: ref.current?.clientWidth ?? 'auto' }}>
+				<DrawerContent
+					className="mx-auto pb-safe-area"
+					style={{ maxWidth: ref.current?.clientWidth ?? 'auto' }}
+				>
 					<DrawerHeader>
 						<DrawerTitle className="font-semibold text-label-normal text-title2">
 							참석 여부 제출 전 확인

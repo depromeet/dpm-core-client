@@ -4,9 +4,10 @@ import { Suspense, use, useState } from 'react';
 import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { type AnnouncementDetail, announcement } from '@dpm-core/api';
-import { AppLayout, NoticeInfo } from '@dpm-core/shared';
+import { NoticeInfo } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
+import { SafeAreaAppLayout } from '@/components/app-layout';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringToDotDate, formatISOStringToKoreanDate } from '@/lib/date';
@@ -71,10 +72,12 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 	const isAssignment = detail.announcementType === 'ASSIGNMENT';
 	const tags = getTagsFromAnnouncement(detail);
 	const formattedDate = formatISOStringToDotDate(detail.createdAt);
-	const formattedDueAt = detail.assignment?.dueAt ? formatISOStringToKoreanDate(detail.assignment.dueAt) : undefined;
+	const formattedDueAt = detail.assignment?.dueAt
+		? formatISOStringToKoreanDate(detail.assignment.dueAt)
+		: undefined;
 
 	return (
-		<div className="flex flex-1 flex-col gap-5 p-4">
+		<div className="flex flex-1 flex-col gap-5 p-4 min-w-0">
 			<NoticeInfo
 				title={detail.title}
 				date={formattedDate}
@@ -93,7 +96,7 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 			)}
 
 			<div
-				className="ProseMirror font-medium text-body2 text-label-normal"
+				className="ProseMirror font-medium text-body2 text-label-normal break-words"
 				dangerouslySetInnerHTML={{ __html: detail.content }}
 			/>
 
@@ -117,15 +120,15 @@ const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
 
 	if (Number.isNaN(announcementId)) {
 		return (
-			<AppLayout className="bg-background-normal">
+			<SafeAreaAppLayout className="bg-background-normal">
 				<AppHeader title="공지 상세" className="mb-0" />
 				<ErrorBox onReset={() => {}} />
-			</AppLayout>
+			</SafeAreaAppLayout>
 		);
 	}
 
 	return (
-		<AppLayout className="bg-background-normal">
+		<SafeAreaAppLayout className="bg-background-normal">
 			<AppHeader title="공지 상세" className="mb-0" />
 			<ErrorBoundary
 				fallback={(props: ErrorBoundaryFallbackProps) => <ErrorBox onReset={() => props.reset()} />}
@@ -137,12 +140,12 @@ const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
 						</div>
 					}
 				>
-					<div className="flex flex-1 overflow-y-auto">
+					<div className="flex flex-1 overflow-y-auto min-w-0">
 						<NoticeDetailContent announcementId={announcementId} />
 					</div>
 				</Suspense>
 			</ErrorBoundary>
-		</AppLayout>
+		</SafeAreaAppLayout>
 	);
 };
 

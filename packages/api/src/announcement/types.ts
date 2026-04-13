@@ -57,7 +57,8 @@ export type ServerSubmitStatus = 'PENDING' | 'SUBMITTED' | 'LATE_SUBMITTED' | 'N
 export interface ReadMember {
 	memberId: number;
 	name: string;
-	teamId: number;
+	teamNumber: number;
+	isAdmin: boolean;
 	part: string;
 	submitStatus?: ServerSubmitStatus;
 	score?: number;
@@ -71,7 +72,8 @@ export interface ReadMembersData {
 export interface AssignmentStatusMember {
 	memberId: number;
 	name: string;
-	teamId: number;
+	teamNumber: number;
+	isAdmin: boolean;
 	part: string;
 	submitStatus: ServerSubmitStatus;
 	score?: number;

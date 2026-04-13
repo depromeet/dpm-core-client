@@ -32,11 +32,11 @@ const AfterPartyAttendeesListContainer = (props: AfterPartyAttendeesListProps) =
 	} = useSuspenseQuery(getAfterPartyInvitedMembersQueryOptions(afterPartyId));
 
 	const filteredList = afterPartyAttendees.filter((member) => {
-		const { rsvpStatus, team } = member;
+		const { rsvpStatus, teamNumber } = member;
 
 		if (rsvpStatus == null) return false;
 		const matchStatus = rsvpStatus === (afterPartyAttendeesStatus === 'YES');
-		const matchTeam = !afterPartyAttendeesIsMyTeam || team === user?.teamNumber;
+		const matchTeam = !afterPartyAttendeesIsMyTeam || teamNumber === user?.teamNumber;
 
 		return matchStatus && matchTeam;
 	});
@@ -67,14 +67,14 @@ interface AfterPartyAttendeesItemProps {
 	memberId: number;
 	name: string;
 	part: Part;
-	team: number;
+	teamNumber: number;
 	rsvpStatus: boolean | null;
 }
 
 const AfterPartyAttendeesItem = (props: AfterPartyAttendeesItemProps) => {
 	return (
 		<li className="px-4 py-1.5">
-			<Profile size={40} name={props.name} teamNumber={props.team} part={props.part} />
+			<Profile size={40} name={props.name} teamNumber={props.teamNumber} part={props.part} />
 		</li>
 	);
 };
