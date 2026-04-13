@@ -80,7 +80,7 @@ export interface UpdateMemberRoleRequest {
 /** PATCH /v1/members/status - 멤버 상태 변경 */
 export interface UpdateMemberStatusRequest {
 	memberId: string;
-	memberStatus: 'PENDING' | 'ACTIVE';
+	memberStatus: 'PENDING' | 'ACTIVE' | 'INACTIVE';
 }
 
 /** POST /v1/members/authority/cohort/init/{cohortId}/{memberId} - 신규 기수 참여 회원 init */

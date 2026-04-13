@@ -46,6 +46,7 @@ type SortOrder = 'asc' | 'desc';
 const STATUS_OPTIONS = [
 	{ value: 'PENDING', label: 'PENDING' },
 	{ value: 'ACTIVE', label: 'ACTIVE' },
+	{ value: 'INACTIVE', label: 'INACTIVE' },
 ] as const;
 
 const SORT_COLUMNS = [
@@ -104,7 +105,7 @@ export const PermissionManagement = () => {
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [actionType, setActionType] = useState<ActionType>('role');
 	const [targetMember, setTargetMember] = useState<MemberOverviewItem | null>(null);
-	const [selectedStatus, setSelectedStatus] = useState<'PENDING' | 'ACTIVE'>('ACTIVE');
+	const [selectedStatus, setSelectedStatus] = useState<'PENDING' | 'ACTIVE' | 'INACTIVE'>('ACTIVE');
 
 	const handleSort = (key: SortKey) => {
 		if (sortKey === key) {
@@ -374,7 +375,7 @@ export const PermissionManagement = () => {
 					{actionType === 'status' && (
 						<Select
 							value={selectedStatus}
-							onValueChange={(value) => setSelectedStatus(value as 'PENDING' | 'ACTIVE')}
+							onValueChange={(value) => setSelectedStatus(value as 'PENDING' | 'ACTIVE' | 'INACTIVE')}
 						>
 							<SelectTrigger className="w-full">
 								<SelectValue placeholder="상태 선택" />
