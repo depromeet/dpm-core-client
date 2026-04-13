@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { CohortItem } from '@dpm-core/api';
 import {
 	Button,
 	Dialog,
@@ -10,6 +12,7 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
+	Skeleton,
 	Table,
 	TableBody,
 	TableCell,
@@ -19,20 +22,18 @@ import {
 	toast,
 } from '@dpm-core/shared';
 
-interface CohortItem {
-	cohortId: number;
-	cohortNumber: string;
-}
-
-// TODO: API 연동 후 제거
-const MOCK_COHORTS: CohortItem[] = [
-	{ cohortId: 1, cohortNumber: '15기' },
-	{ cohortId: 2, cohortNumber: '16기' },
-	{ cohortId: 3, cohortNumber: '17기' },
-];
+import {
+	createCohortMutationOptions,
+	deleteCohortMutationOptions,
+	updateCohortMutationOptions,
+} from '@/remotes/mutations/cohort';
+import { COHORT_LIST_QUERY_KEY, getCohortListQuery } from '@/remotes/queries/cohort';
 
 export const CohortManagement = () => {
-	const [cohorts, setCohorts] = useState<CohortItem[]>(MOCK_COHORTS);
+	const queryClient = useQueryClient();
+	const { data: cohortsData, isLoading } = useQuery(getCohortListQuery);
+	const cohorts = cohortsData?.data.cohorts ?? [];
+
 	const [createDialogOpen, setCreateDialogOpen] = useState(false);
 	const [editDialogOpen, setEditDialogOpen] = useState(false);
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -40,40 +41,66 @@ export const CohortManagement = () => {
 	const [editTarget, setEditTarget] = useState<CohortItem | null>(null);
 	const [deleteTarget, setDeleteTarget] = useState<CohortItem | null>(null);
 
+	const invalidateCohorts = () => {
+		queryClient.invalidateQueries({ queryKey: COHORT_LIST_QUERY_KEY });
+	};
+
+	const { mutate: createCohort, isPending: isCreatePending } = useMutation(
+		createCohortMutationOptions({
+			onSuccess: () => {
+				toast.success('기수가 생성되었습니다.');
+				invalidateCohorts();
+				setCreateDialogOpen(false);
+				setInputValue('');
+			},
+			onError: () => {
+				toast.error('기수 생성에 실패했습니다.');
+			},
+		}),
+	);
+
+	const { mutate: updateCohort, isPending: isUpdatePending } = useMutation(
+		updateCohortMutationOptions({
+			onSuccess: () => {
+				toast.success('기수가 수정되었습니다.');
+				invalidateCohorts();
+				setEditDialogOpen(false);
+				setEditTarget(null);
+				setInputValue('');
+			},
+			onError: () => {
+				toast.error('기수 수정에 실패했습니다.');
+			},
+		}),
+	);
+
+	const { mutate: deleteCohort, isPending: isDeletePending } = useMutation(
+		deleteCohortMutationOptions({
+			onSuccess: () => {
+				toast.success('기수가 삭제되었습니다.');
+				invalidateCohorts();
+				setDeleteDialogOpen(false);
+				setDeleteTarget(null);
+			},
+			onError: () => {
+				toast.error('기수 삭제에 실패했습니다.');
+			},
+		}),
+	);
+
 	const handleCreate = () => {
 		if (!inputValue.trim()) return;
-		// TODO: API 연동
-		const newCohort: CohortItem = {
-			cohortId: Math.max(0, ...cohorts.map((c) => c.cohortId)) + 1,
-			cohortNumber: inputValue.trim(),
-		};
-		setCohorts((prev) => [...prev, newCohort]);
-		setCreateDialogOpen(false);
-		setInputValue('');
-		toast.success('기수가 생성되었습니다.');
+		createCohort({ value: inputValue.trim() });
 	};
 
 	const handleEdit = () => {
 		if (!editTarget || !inputValue.trim()) return;
-		// TODO: API 연동
-		setCohorts((prev) =>
-			prev.map((c) =>
-				c.cohortId === editTarget.cohortId ? { ...c, cohortNumber: inputValue.trim() } : c,
-			),
-		);
-		setEditDialogOpen(false);
-		setEditTarget(null);
-		setInputValue('');
-		toast.success('기수가 수정되었습니다.');
+		updateCohort({ cohortId: editTarget.cohortId, params: { value: inputValue.trim() } });
 	};
 
 	const handleDelete = () => {
 		if (!deleteTarget) return;
-		// TODO: API 연동
-		setCohorts((prev) => prev.filter((c) => c.cohortId !== deleteTarget.cohortId));
-		setDeleteDialogOpen(false);
-		setDeleteTarget(null);
-		toast.success('기수가 삭제되었습니다.');
+		deleteCohort(deleteTarget.cohortId);
 	};
 
 	const openEditDialog = (item: CohortItem) => {
@@ -106,7 +133,25 @@ export const CohortManagement = () => {
 			</div>
 
 			{/* Table */}
-			{cohorts.length === 0 ? (
+			{isLoading ? (
+				<div className="flex w-full flex-col">
+					<div className="flex h-10 items-center gap-3 bg-background-strong px-3">
+						<Skeleton className="h-4 w-16" />
+						<Skeleton className="h-4 w-16" />
+						<Skeleton className="ml-auto h-4 w-12" />
+					</div>
+					{['sk-1', 'sk-2', 'sk-3'].map((key) => (
+						<div
+							key={key}
+							className="flex h-14 items-center gap-3 border-line-subtle border-b px-3"
+						>
+							<Skeleton className="h-4 w-10" />
+							<Skeleton className="h-4 w-20" />
+							<Skeleton className="ml-auto h-4 w-24" />
+						</div>
+					))}
+				</div>
+			) : cohorts.length === 0 ? (
 				<div className="flex min-h-[200px] w-full items-center justify-center py-12">
 					<p className="font-medium text-body1 text-label-assistive">등록된 기수가 없습니다</p>
 				</div>
@@ -161,7 +206,9 @@ export const CohortManagement = () => {
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>기수 추가</DialogTitle>
-						<DialogDescription>새로운 기수를 생성합니다. 최신 기수 역할이 자동 생성됩니다.</DialogDescription>
+						<DialogDescription>
+							새로운 기수를 생성합니다. 최신 기수 역할이 자동 생성됩니다.
+						</DialogDescription>
 					</DialogHeader>
 					<input
 						type="text"
@@ -174,8 +221,8 @@ export const CohortManagement = () => {
 						<DialogClose asChild>
 							<Button variant="assistive">취소</Button>
 						</DialogClose>
-						<Button onClick={handleCreate} disabled={!inputValue.trim()}>
-							생성
+						<Button onClick={handleCreate} disabled={!inputValue.trim() || isCreatePending}>
+							{isCreatePending ? '생성 중...' : '생성'}
 						</Button>
 					</DialogFooter>
 				</DialogContent>
@@ -201,8 +248,8 @@ export const CohortManagement = () => {
 						<DialogClose asChild>
 							<Button variant="assistive">취소</Button>
 						</DialogClose>
-						<Button onClick={handleEdit} disabled={!inputValue.trim()}>
-							수정
+						<Button onClick={handleEdit} disabled={!inputValue.trim() || isUpdatePending}>
+							{isUpdatePending ? '수정 중...' : '수정'}
 						</Button>
 					</DialogFooter>
 				</DialogContent>
@@ -214,15 +261,16 @@ export const CohortManagement = () => {
 					<DialogHeader>
 						<DialogTitle>기수 삭제</DialogTitle>
 						<DialogDescription>
-							{deleteTarget?.cohortNumber} 기수를 정말 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+							{deleteTarget?.cohortNumber} 기수를 정말 삭제하시겠습니까? 이 작업은 되돌릴 수
+							없습니다.
 						</DialogDescription>
 					</DialogHeader>
 					<DialogFooter>
 						<DialogClose asChild>
 							<Button variant="assistive">취소</Button>
 						</DialogClose>
-						<Button variant="secondary" onClick={handleDelete}>
-							삭제
+						<Button variant="secondary" onClick={handleDelete} disabled={isDeletePending}>
+							{isDeletePending ? '삭제 중...' : '삭제'}
 						</Button>
 					</DialogFooter>
 				</DialogContent>
