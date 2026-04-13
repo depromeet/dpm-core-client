@@ -1,10 +1,24 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowDownAZ, ArrowUpAZ } from 'lucide-react';
+import type { MemberOverviewItem } from '@dpm-core/api';
 import {
+	Button,
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
 	SearchInputOutlined,
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
 	StatusBadge,
 	Table,
 	TableBody,
@@ -12,13 +26,25 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
+	toast,
 } from '@dpm-core/shared';
 
+import {
+	updateMemberRoleMutationOptions,
+	updateMemberStatusMutationOptions,
+} from '@/remotes/mutations/member';
 import { getCohortListQuery } from '@/remotes/queries/cohort';
 import { getMembersOverviewQuery } from '@/remotes/queries/member';
 
+type ActionType = 'role' | 'status';
+
 type SortKey = 'memberId' | 'name' | 'cohortId' | 'part' | 'status';
 type SortOrder = 'asc' | 'desc';
+
+const STATUS_OPTIONS = [
+	{ value: 'PENDING', label: 'PENDING' },
+	{ value: 'ACTIVE', label: 'ACTIVE' },
+] as const;
 
 const SORT_COLUMNS = [
 	{ key: 'memberId', label: 'ID' },
@@ -44,6 +70,8 @@ const statusBadgeStatus = (status: string) => {
 };
 
 export const PermissionManagement = () => {
+	const queryClient = useQueryClient();
+
 	const { data: membersData, isLoading: membersLoading } = useQuery(getMembersOverviewQuery());
 	const { data: cohortsData } = useQuery(getCohortListQuery);
 
@@ -54,6 +82,11 @@ export const PermissionManagement = () => {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [sortKey, setSortKey] = useState<SortKey>('memberId');
 	const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+
+	const [dialogOpen, setDialogOpen] = useState(false);
+	const [actionType, setActionType] = useState<ActionType>('role');
+	const [targetMember, setTargetMember] = useState<MemberOverviewItem | null>(null);
+	const [selectedStatus, setSelectedStatus] = useState<'PENDING' | 'ACTIVE'>('ACTIVE');
 
 	const handleSort = (key: SortKey) => {
 		if (sortKey === key) {
@@ -98,6 +131,89 @@ export const PermissionManagement = () => {
 			}
 		});
 	}, [members, searchQuery, sortKey, sortOrder, cohortMap]);
+
+	const invalidateMembers = () => {
+		setTimeout(() => {
+			queryClient.invalidateQueries({ queryKey: ['members-overview'] });
+		}, 500);
+	};
+
+	const { mutate: updateRole, isPending: isRolePending } = useMutation(
+		updateMemberRoleMutationOptions({
+			onSuccess: () => {
+				toast.success('역할이 변경되었습니다.');
+				invalidateMembers();
+				setDialogOpen(false);
+			},
+			onError: () => {
+				toast.error('역할 변경에 실패했습니다.');
+			},
+		}),
+	);
+
+	const { mutate: updateStatus, isPending: isStatusPending } = useMutation(
+		updateMemberStatusMutationOptions({
+			onSuccess: () => {
+				toast.success('멤버 상태가 변경되었습니다.');
+				invalidateMembers();
+				setDialogOpen(false);
+			},
+			onError: () => {
+				toast.error('상태 변경에 실패했습니다.');
+			},
+		}),
+	);
+
+	const isPending = isRolePending || isStatusPending;
+
+	const openDialog = (member: MemberOverviewItem, action: ActionType) => {
+		setTargetMember(member);
+		setActionType(action);
+		setSelectedStatus('ACTIVE');
+		setDialogOpen(true);
+	};
+
+	const handleConfirm = () => {
+		if (!targetMember) return;
+
+		switch (actionType) {
+			case 'role': {
+				const cohortNumber = cohortMap.get(targetMember.cohortId) ?? String(targetMember.cohortId);
+				updateRole({
+					memberId: targetMember.memberId,
+					isAdmin: !targetMember.isAdmin,
+					cohort: cohortNumber,
+				});
+				break;
+			}
+			case 'status':
+				updateStatus({
+					memberId: String(targetMember.memberId),
+					memberStatus: selectedStatus,
+				});
+				break;
+		}
+	};
+
+	const getDialogConfig = () => {
+		const targetRole = targetMember?.isAdmin ? 'DEEPER' : 'ORGANIZER';
+		switch (actionType) {
+			case 'role':
+				return {
+					title: `${targetRole} 역할 변환`,
+					description: `${targetMember?.name}(ID: ${targetMember?.memberId}) 멤버를 ${targetRole}로 변환하시겠습니까?`,
+					confirmLabel: '변환',
+				};
+			case 'status':
+				return {
+					title: '멤버 상태 변경',
+					description: `${targetMember?.name}(ID: ${targetMember?.memberId}) 멤버의 상태를 변경합니다.`,
+					confirmLabel: '변경',
+				};
+		}
+	};
+
+	const dialogConfig = getDialogConfig();
 
 	return (
 		<div className="flex w-full flex-col gap-6">
@@ -174,14 +290,64 @@ export const PermissionManagement = () => {
 								<TableCell className="px-3">
 									<StatusBadge status={statusBadgeStatus(m.status)}>{m.status}</StatusBadge>
 								</TableCell>
-								<TableCell className="px-3 text-right font-medium text-body2 text-label-assistive">
-									API 연동 후 추가 예정
+								<TableCell className="flex items-center justify-end gap-2 px-3">
+									<button
+										type="button"
+										className="cursor-pointer rounded-md px-3 py-1.5 font-medium text-body2 text-label-normal hover:bg-background-strong"
+										onClick={() => openDialog(m, 'role')}
+									>
+										{m.isAdmin ? 'DEEPER 변환' : 'ORGANIZER 변환'}
+									</button>
+									<button
+										type="button"
+										className="cursor-pointer rounded-md px-3 py-1.5 font-medium text-body2 text-label-normal hover:bg-background-strong"
+										onClick={() => openDialog(m, 'status')}
+									>
+										상태 변경
+									</button>
 								</TableCell>
 							</TableRow>
 						))}
 					</TableBody>
 				</Table>
 			)}
+
+			{/* Action Dialog */}
+			<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>{dialogConfig.title}</DialogTitle>
+						<DialogDescription>{dialogConfig.description}</DialogDescription>
+					</DialogHeader>
+
+					{actionType === 'status' && (
+						<Select
+							value={selectedStatus}
+							onValueChange={(value) => setSelectedStatus(value as 'PENDING' | 'ACTIVE')}
+						>
+							<SelectTrigger className="w-full">
+								<SelectValue placeholder="상태 선택" />
+							</SelectTrigger>
+							<SelectContent>
+								{STATUS_OPTIONS.map((opt) => (
+									<SelectItem key={opt.value} value={opt.value}>
+										{opt.label}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					)}
+
+					<DialogFooter>
+						<DialogClose asChild>
+							<Button variant="assistive">취소</Button>
+						</DialogClose>
+						<Button onClick={handleConfirm} disabled={isPending}>
+							{isPending ? '처리 중...' : dialogConfig.confirmLabel}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 };
