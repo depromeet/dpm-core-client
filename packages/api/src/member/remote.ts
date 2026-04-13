@@ -3,8 +3,11 @@ import type {
 	ApproveWhitelistForSignupRequest,
 	ApproveWhitelistRequest,
 	ApproveWhitelistResponse,
+	InitCohortMemberParams,
 	Member,
 	MembersOverviewResponse,
+	UpdateMemberRoleRequest,
+	UpdateMemberStatusRequest,
 	UpdateMembersInitRequest,
 	UpdateMembersInitResponse,
 } from './types';
@@ -51,6 +54,30 @@ export const member = {
 		const res = await http.patch<ApproveWhitelistResponse>('v1/members/whitelist', {
 			json: params,
 		});
+		return res;
+	},
+
+	/** PATCH /v1/roles/members/{memberId} - 멤버 기수별 역할 변경 (isAdmin: true=ORGANIZER, false=DEEPER) */
+	updateMemberRole: async (memberId: number, params: UpdateMemberRoleRequest) => {
+		const res = await http.patch(`v1/roles/members/${memberId}`, {
+			json: params,
+		});
+		return res;
+	},
+
+	/** PATCH /v1/members/status - 멤버 상태 변경 */
+	updateMemberStatus: async (params: UpdateMemberStatusRequest) => {
+		const res = await http.patch('v1/members/status', {
+			json: params,
+		});
+		return res;
+	},
+
+	/** POST /v1/members/authority/cohort/init/{cohortId}/{memberId} - 신규 기수 참여 회원 init */
+	initCohortMember: async (params: InitCohortMemberParams) => {
+		const res = await http.post(
+			`v1/members/authority/cohort/init/${params.cohortId}/${params.memberId}`,
+		);
 		return res;
 	},
 };

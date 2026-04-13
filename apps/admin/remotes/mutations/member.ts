@@ -1,5 +1,11 @@
 import { type MutationOptions, mutationOptions } from '@tanstack/react-query';
-import type { MemberStatus, Part } from '@dpm-core/api';
+import type {
+	InitCohortMemberParams,
+	MemberStatus,
+	Part,
+	UpdateMemberRoleRequest,
+	UpdateMemberStatusRequest,
+} from '@dpm-core/api';
 import { member } from '@dpm-core/api';
 
 type WithdrawMutationOptions = MutationOptions;
@@ -63,5 +69,59 @@ export const approveWhitelistMutationOptions = (
 		mutationKey: ['whitelist'],
 		mutationFn: (params: ApproveWhitelistParams) =>
 			member.approveWhitelist({ members: params.members }),
+		...options,
+	});
+
+/** PATCH /v1/roles/members/{memberId} - 멤버 역할 변경 (isAdmin: true=ORGANIZER, false=DEEPER) */
+export interface UpdateMemberRoleParams {
+	memberId: number;
+	isAdmin: boolean;
+	cohort: string;
+}
+
+export const updateMemberRoleMutationOptions = (
+	options?: MutationOptions<
+		Awaited<ReturnType<typeof member.updateMemberRole>>,
+		Error,
+		UpdateMemberRoleParams
+	>,
+) =>
+	mutationOptions({
+		mutationKey: ['members', 'role'],
+		mutationFn: (params: UpdateMemberRoleParams) =>
+			member.updateMemberRole(params.memberId, {
+				isAdmin: params.isAdmin,
+				cohort: params.cohort,
+			}),
+		...options,
+	});
+
+/** PATCH /v1/members/status - 멤버 상태 변경 */
+export const updateMemberStatusMutationOptions = (
+	options?: MutationOptions<
+		Awaited<ReturnType<typeof member.updateMemberStatus>>,
+		Error,
+		UpdateMemberStatusRequest
+	>,
+) =>
+	mutationOptions({
+		mutationKey: ['members', 'status'],
+		mutationFn: (params: UpdateMemberStatusRequest) =>
+			member.updateMemberStatus(params),
+		...options,
+	});
+
+/** POST /v1/members/authority/cohort/init/{cohortId}/{memberId} - 신규 기수 참여 회원 init */
+export const initCohortMemberMutationOptions = (
+	options?: MutationOptions<
+		Awaited<ReturnType<typeof member.initCohortMember>>,
+		Error,
+		InitCohortMemberParams
+	>,
+) =>
+	mutationOptions({
+		mutationKey: ['members', 'authority', 'cohort', 'init'],
+		mutationFn: (params: InitCohortMemberParams) =>
+			member.initCohortMember(params),
 		...options,
 	});
