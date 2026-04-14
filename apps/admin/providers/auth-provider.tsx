@@ -1,6 +1,6 @@
 'use client';
 
-import { redirect, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { type PropsWithChildren, useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { auth, type Member } from '@dpm-core/api';
@@ -53,7 +53,15 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		if (memberInfo) {
 			if (!memberInfo.isAdmin) {
 				logoutMutate();
-				redirect('/login');
+
+				const stage = process.env.NEXT_PUBLIC_STAGE;
+				if (stage === 'production') {
+					window.location.href = 'https://core.depromeet.com';
+				} else if (stage === 'development') {
+					window.location.href = 'https://core.depromeet.shop';
+				}
+
+				return;
 			}
 			setIsAuthenticated(true);
 			setUser(memberInfo);
