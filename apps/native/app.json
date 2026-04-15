@@ -12,7 +12,10 @@
 			"supportsTablet": true,
 			"bundleIdentifier": "com.depromeet.core.app",
 			"infoPlist": {
-				"ITSAppUsesNonExemptEncryption": false
+				"ITSAppUsesNonExemptEncryption": false,
+				"NSAppTransportSecurity": {
+					"NSAllowsArbitraryLoads": true
+				}
 			}
 		},
 		"android": {
