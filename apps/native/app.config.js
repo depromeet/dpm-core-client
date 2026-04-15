@@ -48,7 +48,7 @@ const config = {
 			'expo-build-properties',
 			{
 				android: {
-					usesCleartextTraffic: true,
+					usesCleartextTraffic: process.env.APP_ENV !== 'production',
 				},
 			},
 		],

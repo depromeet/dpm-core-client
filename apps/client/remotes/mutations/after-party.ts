@@ -46,14 +46,14 @@ interface SubmitAttendanceStatusParams {
 
 type SubmitAttendanceStatusOptions = MutationOptions<
 	unknown,
-	Error,
+	HTTPError<ApiErrorReponse>,
 	SubmitAttendanceStatusParams,
 	unknown
 >;
 
 type SendUnmarkedRsvpNotificationOptions = MutationOptions<
 	unknown,
-	Error,
+	HTTPError<ApiErrorReponse>,
 	SendUnmarkedRsvpNotificationRequest,
 	unknown
 >;
