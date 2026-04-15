@@ -108,4 +108,16 @@ export const announcement = {
 	remindNotification: async (announcementId: number) => {
 		return http.post(`v1/announcements/${announcementId}/remind-notification`);
 	},
+
+	/**
+	 * 지정된 디퍼들에게 공지/과제 리마인드 알림 전송
+	 * 지정된 멤버들에게 공지나 과제의 리마인드 알림을 발송합니다.
+	 * @param announcementId 공지/과제 ID
+	 * @param body 알림을 받을 멤버 ID 목록
+	 */
+	remindNotificationToMembers: async (announcementId: number, body: { memberIds: number[] }) => {
+		return http.post(`v1/announcements/${announcementId}/remind-notification-to-members`, {
+			json: body,
+		});
+	},
 };
