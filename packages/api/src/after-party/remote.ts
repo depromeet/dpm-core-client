@@ -7,6 +7,7 @@ import type {
 	CreateAfterPartyResponse,
 	GetAfterPartiesResponse,
 	GetInviteTagsResponse,
+	SendUnmarkedRsvpNotificationRequest,
 	SubmitAttendanceStatusRequest,
 	UpdateAfterPartyRequest,
 } from './types';
@@ -61,6 +62,22 @@ export const afterParty = {
 	getInvitedMembers: async (afterPartyId: number) => {
 		const res = await http.get<AfterPartyInvitedMember[]>(
 			`v2/after-parties/${afterPartyId}/rsvp-members`,
+		);
+		return res;
+	},
+
+	/**
+	 * 회식 참여 여부 미제출자 알림 발송
+	 * @param afterPartyId 회식 ID
+	 * @param body 알림 제목 및 내용
+	 */
+	sendUnmarkedRsvpNotification: async (
+		afterPartyId: number,
+		body: SendUnmarkedRsvpNotificationRequest,
+	) => {
+		const res = await http.post(
+			`v2/after-parties/notifications/${afterPartyId}/un-marked-rsvp`,
+			{ json: body },
 		);
 		return res;
 	},

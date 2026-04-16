@@ -23,7 +23,10 @@ import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { NoticeDetailHeader } from '@/components/notice/notice-detail-header';
 import { formatISOStringToDate } from '@/lib/date';
-import { deleteAnnouncementMutationOptions } from '@/remotes/mutations/announcement';
+import {
+	deleteAnnouncementMutationOptions,
+	remindNotificationMutationOptions,
+} from '@/remotes/mutations/announcement';
 import {
 	getAnnouncementDetailQuery,
 	getAnnouncementReadMembersQuery,
@@ -74,6 +77,17 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 		}),
 	);
 
+	const { mutate: remindNotification, isPending: isRemindPending } = useMutation(
+		remindNotificationMutationOptions(announcementId, {
+			onSuccess: () => {
+				toast.light('리마인드 알림이 전송되었어요.');
+			},
+			onError: () => {
+				toast.error('리마인드 알림 전송에 실패하였습니다.');
+			},
+		}),
+	);
+
 	const isAssignment = detail.announcementType === 'ASSIGNMENT';
 	const tags = getTagsFromAnnouncement(detail);
 	const formattedDate = formatISOStringToDate(detail.createdAt);
@@ -98,8 +112,7 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 	};
 
 	const handleRemindSend = () => {
-		// TODO: 리마인드 전송 API 호출
-		toast.light('리마인드 알림이 전송되었어요.');
+		remindNotification();
 	};
 
 	return (
@@ -159,7 +172,11 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 						/>
 					</div>
 
-					<ReadStatusSidebar announcementId={announcementId} onSendReminder={handleRemindSend} />
+					<ReadStatusSidebar
+					announcementId={announcementId}
+					onSendReminder={handleRemindSend}
+					isRemindPending={isRemindPending}
+				/>
 				</div>
 			)}
 		</div>
