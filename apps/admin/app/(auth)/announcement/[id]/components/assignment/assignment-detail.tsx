@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { TeamTabBar } from '@dpm-core/shared';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { TeamTabBar, toast } from '@dpm-core/shared';
+
+import { remindNotificationMutationOptions } from '@/remotes/mutations/announcement';
 
 import { getAnnouncementReadMembersQuery } from '@/remotes/queries/announcement';
 
@@ -40,9 +42,19 @@ export const AssignmentDetail = ({
 		score,
 	}));
 
+	const { mutate: remindNotification, isPending: isRemindPending } = useMutation(
+		remindNotificationMutationOptions(announcementId, {
+			onSuccess: () => {
+				toast.light('리마인드 알림이 전송되었어요.');
+			},
+			onError: () => {
+				toast.error('리마인드 알림 전송에 실패하였습니다.');
+			},
+		}),
+	);
+
 	const handleSendReminder = () => {
-		// TODO: 리마인드 API 연동 필요
-		console.log('리마인드 전송');
+		remindNotification();
 	};
 
 	return (
@@ -70,6 +82,7 @@ export const AssignmentDetail = ({
 					content={content}
 					tags={tags}
 					onSendReminder={handleSendReminder}
+					isRemindPending={isRemindPending}
 				/>
 			) : (
 				<SubmissionStatusTab announcementId={announcementId} members={members} />

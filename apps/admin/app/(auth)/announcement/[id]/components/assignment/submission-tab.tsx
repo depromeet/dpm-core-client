@@ -24,7 +24,10 @@ import {
 import { cohort } from '@/constants/cohort';
 import { getMemberPartLabel } from '@/lib/member/part';
 import { isExistPart } from '@/lib/utils';
-import { patchAssignmentStatusMutationOptions } from '@/remotes/mutations/announcement';
+import {
+	patchAssignmentStatusMutationOptions,
+	remindNotificationToMembersMutationOptions,
+} from '@/remotes/mutations/announcement';
 import {
 	getAnnouncementAssignmentStatusQuery,
 	getAnnouncementDetailQuery,
@@ -51,6 +54,9 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 	const queryClient = useQueryClient();
 	const { mutate: patchAssignmentStatus } = useMutation(
 		patchAssignmentStatusMutationOptions(announcementId),
+	);
+	const { mutate: remindNotificationToMembers } = useMutation(
+		remindNotificationToMembersMutationOptions(announcementId),
 	);
 
 	const invalidateAssignmentQueries = () => {
@@ -215,10 +221,19 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 	const hasLinkFilter = (filters.링크별 || []).length > 0;
 
 	const handleSubmissionRequest = () => {
-		// TODO: 제출 요청 API 호출
+		const memberIds = Array.from(selectedMembers).map(Number);
 
-		// API 구현 전까지 임시 처리
-		toast.light('제출 요청 기능이 준비 중이에요.');
+		remindNotificationToMembers(
+			{ memberIds },
+			{
+				onSuccess: () => {
+					toast.light('제출 요청 알림을 보냈어요.');
+				},
+				onError: () => {
+					toast.error('제출 요청 알림 전송에 실패했어요.');
+				},
+			},
+		);
 	};
 
 	const handleStatusModalSave = () => {

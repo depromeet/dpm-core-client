@@ -107,6 +107,14 @@ export interface SubmitAttendanceStatusRequest {
 }
 
 /**
+ * 회식 참여 여부 미제출자 알림 발송 요청
+ */
+export interface SendUnmarkedRsvpNotificationRequest {
+	title: string;
+	content: string;
+}
+
+/**
  * 회식 초대자 목록 멤버
  */
 export interface AfterPartyInvitedMember {
