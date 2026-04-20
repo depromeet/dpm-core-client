@@ -13,6 +13,9 @@ const config = {
 		bundleIdentifier: 'com.depromeet.core.app',
 		infoPlist: {
 			ITSAppUsesNonExemptEncryption: false,
+			NSAppTransportSecurity: {
+				NSAllowsArbitraryLoads: true,
+			},
 		},
 	},
 	android: {
@@ -68,7 +71,7 @@ const config = {
 	extra: {
 		router: {},
 		eas: {
-			projectId: '036040bf-3e75-4d0e-877c-cb579653f8e8',
+			projectId: 'edf6cb70-d20c-4c1c-ae76-d2b322f00597',
 		},
 	},
 };
