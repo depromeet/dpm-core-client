@@ -16,6 +16,7 @@ interface AttendanceMember {
 	teamNumber: number;
 	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER';
 	attendanceStatus: MemberAttendanceStatus;
+	isAdmin: boolean;
 }
 
 interface AttendanceListProps {
@@ -56,6 +57,7 @@ export const AttendanceList = ({ data, targetRef }: AttendanceListProps) => {
 								name={member.name}
 								teamNumber={member.teamNumber}
 								part={member.part}
+								isAdmin={member.isAdmin}
 							/>
 							{member.attendanceStatus !== 'NORMAL' && (
 								<Badge variant={member.attendanceStatus}>
@@ -89,6 +91,7 @@ export const AttendanceList = ({ data, targetRef }: AttendanceListProps) => {
 									name={member.name}
 									teamNumber={member.teamNumber}
 									part={member.part}
+									isAdmin={member.isAdmin}
 								/>
 								<Badge variant={member.attendanceStatus}>
 									{getAttendanceMemberStatusLabel(member.attendanceStatus)}

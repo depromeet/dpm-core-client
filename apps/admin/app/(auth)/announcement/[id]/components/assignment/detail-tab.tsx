@@ -12,6 +12,7 @@ interface AssignmentDetailTabProps {
 	content: string;
 	tags: NoticeTag[];
 	onSendReminder?: () => void;
+	isRemindPending?: boolean;
 }
 
 export const AssignmentDetailTab = ({
@@ -22,6 +23,7 @@ export const AssignmentDetailTab = ({
 	content,
 	tags,
 	onSendReminder,
+	isRemindPending,
 }: AssignmentDetailTabProps) => {
 	return (
 		<div className="flex flex-1 overflow-hidden">
@@ -37,7 +39,11 @@ export const AssignmentDetailTab = ({
 			</div>
 
 			{/* 우측: 조회 현황 */}
-			<ReadStatusSidebar announcementId={announcementId} onSendReminder={onSendReminder} />
+			<ReadStatusSidebar
+				announcementId={announcementId}
+				onSendReminder={onSendReminder}
+				isRemindPending={isRemindPending}
+			/>
 		</div>
 	);
 };

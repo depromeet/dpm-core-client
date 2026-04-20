@@ -9,8 +9,6 @@ import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
-	calcSessionAttendanceTime,
-	calcSessionLateAttendanceTime,
 	cn,
 	Form,
 	FormControl,
@@ -42,8 +40,8 @@ interface AttendanceFormProps {
 	sessionId: number;
 }
 
-function addOneMinute(date: string) {
-	return dayjs(date).add(1, 'minute').toISOString();
+function minusOneMinute(date: string) {
+	return dayjs(date).subtract(1, 'minute').toISOString();
 }
 
 const AttendanceFormContainer = ({ sessionId }: AttendanceFormProps) => {
@@ -51,12 +49,7 @@ const AttendanceFormContainer = ({ sessionId }: AttendanceFormProps) => {
 		data: { data: attendance },
 	} = useSuspenseQuery(getSessionAttendanceTimeOptions(sessionId));
 
-	return (
-		<AttendanceFormControl
-			sessionId={sessionId}
-			attendanceStartTime={attendance.attendanceStartTime}
-		/>
-	);
+	return <AttendanceFormControl sessionId={sessionId} {...attendance} />;
 };
 
 const FormSchema = z.object({
@@ -65,8 +58,14 @@ const FormSchema = z.object({
 	}),
 });
 
-const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTime: string }) => {
-	const { sessionId, attendanceStartTime } = props;
+const AttendanceFormControl = (
+	props: AttendanceFormProps & {
+		attendanceStartTime: string;
+		attendanceLateTime: string;
+		attendanceAbsentTime: string;
+	},
+) => {
+	const { sessionId, attendanceStartTime, attendanceLateTime, attendanceAbsentTime } = props;
 	const [keyboardOpen, setKeyboardOpen] = useState(false);
 
 	const router = useRouter();
@@ -145,20 +144,12 @@ const AttendanceFormControl = (props: AttendanceFormProps & { attendanceStartTim
 								<FormDescription className="mt-8 font-medium text-body2 text-label-assistive">
 									<span>
 										출석 시간 : {formatISOStringHHMM(attendanceStartTime)} -{' '}
-										{formatISOStringHHMM(
-											calcSessionAttendanceTime(attendanceStartTime).toISOString(),
-										)}
+										{formatISOStringHHMM(minusOneMinute(attendanceLateTime))}
 									</span>
 									<br />
 									<span>
-										지각 시간 :{' '}
-										{formatISOStringHHMM(
-											calcSessionAttendanceTime(addOneMinute(attendanceStartTime)).toISOString(),
-										)}{' '}
-										-{' '}
-										{formatISOStringHHMM(
-											calcSessionLateAttendanceTime(attendanceStartTime).toISOString(),
-										)}
+										지각 시간 : {formatISOStringHHMM(attendanceLateTime)} -{' '}
+										{formatISOStringHHMM(attendanceAbsentTime)}
 									</span>
 								</FormDescription>
 							</FormItem>

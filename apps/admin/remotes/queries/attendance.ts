@@ -15,7 +15,7 @@ export const getAttendanceBySessionOptions = (params: getAttendanceBySessionOpti
 		queryKey: [ATTENDANCE_QUERY_KEY, params],
 		initialPageParam: 1,
 		queryFn: ({ pageParam }) => {
-			return attendance.getAttendanceBySession({ ...params, cursorId: pageParam, size: 80 });
+			return attendance.getAttendanceBySession({ ...params, cursorId: pageParam, size: 100 });
 		},
 		getNextPageParam: (lastPage) => {
 			return lastPage.data.hasNext && lastPage.data.nextCursorId != null
@@ -33,7 +33,7 @@ export const getAttendanceByMemberOptions = (
 		queryKey: [ATTENDANCE_QUERY_KEY, params],
 		initialPageParam: 1,
 		queryFn: ({ pageParam }) => {
-			return attendance.getAttendanceByMember({ ...params, cursorId: pageParam });
+			return attendance.getAttendanceByMember({ ...params, cursorId: pageParam, size: 100 });
 		},
 		getNextPageParam: (lastPage) => {
 			return lastPage.data.hasNext && lastPage.data.nextCursorId != null

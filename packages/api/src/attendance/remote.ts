@@ -79,8 +79,9 @@ export const attendance = {
 		teams?: number[];
 		name?: string;
 		cursorId: number;
+		size?: number;
 	}) => {
-		const { statuses, teams, name, cursorId } = params;
+		const { statuses, teams, name, cursorId, size } = params;
 		const searchParams = new URLSearchParams();
 
 		if (statuses && statuses.length > 0) {
@@ -100,6 +101,10 @@ export const attendance = {
 		}
 
 		searchParams.set('cursorId', cursorId.toString());
+
+		if (size) {
+			searchParams.set('size', size.toString());
+		}
 
 		const res = await http.get<AttendanceByMemberReponse>(`v1/members/attendances`, {
 			searchParams,

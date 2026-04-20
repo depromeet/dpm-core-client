@@ -15,7 +15,13 @@ export const AttendanceMemberInfo = (props: AttendanceMemberInfoProps) => {
 	return (
 		<section className="mt-5 mb-4 px-4">
 			<div className="mb-4 flex items-center justify-between">
-				<Profile size={60} name={member.name} part={member.part} teamNumber={member.teamNumber} />
+				<Profile
+					size={60}
+					name={member.name}
+					part={member.part}
+					teamNumber={member.teamNumber}
+					isAdmin={member.isAdmin}
+				/>
 				{member.attendanceStatus !== 'NORMAL' && (
 					<Badge variant={member.attendanceStatus}>
 						{getAttendanceMemberStatusLabel(member.attendanceStatus)}

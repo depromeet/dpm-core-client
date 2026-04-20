@@ -12,7 +12,8 @@ export interface MemberOverviewItem {
 	cohortId: number;
 	name: string;
 	email?: string;
-	teamName: string;
+	teamNumber: number;
+	isAdmin: boolean;
 	status: MemberStatus;
 	part: MemberOverviewPart;
 }
@@ -45,7 +46,7 @@ export type UpdateMembersInitPart = Exclude<Part, 'ETC'> | 'UNASSIGNED';
 export interface UpdateMembersInitItem {
 	memberId: string;
 	memberPart: UpdateMembersInitPart;
-	team: string;
+	teamId: number;
 	status: MemberStatus;
 }
 
@@ -68,4 +69,22 @@ export interface Member {
 	teamNumber: number;
 	isAdmin: boolean;
 	status: MemberStatus;
+}
+
+/** PATCH /v1/roles/members/{memberId} - 멤버 기수별 역할 변경 */
+export interface UpdateMemberRoleRequest {
+	isAdmin: boolean;
+	cohort: string;
+}
+
+/** PATCH /v1/members/status - 멤버 상태 변경 */
+export interface UpdateMemberStatusRequest {
+	memberId: string;
+	memberStatus: 'PENDING' | 'ACTIVE' | 'INACTIVE';
+}
+
+/** POST /v1/members/authority/cohort/init/{cohortId}/{memberId} - 신규 기수 참여 회원 init */
+export interface InitCohortMemberParams {
+	cohortId: number;
+	memberId: number;
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
@@ -174,6 +174,17 @@ const AfterPartyCreatePage = () => {
 		return () => subscription.unsubscribe();
 	}, [form]);
 
+	// 모바일 키보드 닫힐 때 스크롤 위치 복원
+	const formRef = useRef<HTMLFormElement>(null);
+	const handleFocusOut = useCallback((e: React.FocusEvent) => {
+		const target = e.target as HTMLElement;
+		if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+			requestAnimationFrame(() => {
+				window.scrollTo(0, 0);
+			});
+		}
+	}, []);
+
 	const titleValue = form.watch('title');
 	const descriptionValue = form.watch('description') ?? '';
 	const scheduledAtValue = form.watch('scheduledAt');
@@ -195,7 +206,7 @@ const AfterPartyCreatePage = () => {
 	};
 
 	return (
-		<SafeAreaAppLayout className="h-[100dvh] bg-white pb-safe-area">
+		<SafeAreaAppLayout className="h-dvh bg-white">
 			{/* <AppLayout className="bg-white"> */}
 			<GAPageTracker type="after-party-create" />
 			<AppHeader title="회식 생성하기" className="shrink-0" />
@@ -203,7 +214,9 @@ const AfterPartyCreatePage = () => {
 
 			<Form {...form}>
 				<form
+					ref={formRef}
 					onSubmit={form.handleSubmit(handleSubmit)}
+					onBlurCapture={handleFocusOut}
 					className="flex flex-1 flex-col overflow-y-auto px-[16px] pt-1.5 pb-[24px]"
 					// className="flex flex-1 flex-col px-[16px] pb-[100px]"
 				>
@@ -447,7 +460,7 @@ const AfterPartyCreatePage = () => {
 			</Form>
 
 			{/* 하단 CTA 버튼 */}
-			<div className="before:-top-[24px] relative shrink-0 bg-white px-[16px] pt-[12px] pb-[calc(12px+env(safe-area-inset-bottom))] before:pointer-events-none before:absolute before:right-0 before:left-0 before:h-[24px] before:bg-gradient-to-t before:from-white before:to-transparent">
+			<div className="before:-top-[24px] relative shrink-0 bg-white px-[16px] pt-[12px] pb-3 before:pointer-events-none before:absolute before:right-0 before:left-0 before:h-[24px] before:bg-gradient-to-t before:from-white before:to-transparent">
 				<ReviewBottomSheet
 					data={{
 						title: form.watch('title'),

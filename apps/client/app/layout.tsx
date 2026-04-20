@@ -88,6 +88,7 @@ export default async function RootLayout({
 						style={{
 							display: 'flex',
 							justifyContent: 'center',
+							marginTop: 'var(--safe-area-inset-top)',
 						}}
 						toastOptions={{
 							duration: 3_000,

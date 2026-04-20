@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import {
@@ -20,7 +21,13 @@ import {
 	toast,
 } from '@dpm-core/shared';
 
-import { patchAssignmentStatusMutationOptions } from '@/remotes/mutations/announcement';
+import { cohort } from '@/constants/cohort';
+import { getMemberPartLabel } from '@/lib/member/part';
+import { isExistPart } from '@/lib/utils';
+import {
+	patchAssignmentStatusMutationOptions,
+	remindNotificationToMembersMutationOptions,
+} from '@/remotes/mutations/announcement';
 import {
 	getAnnouncementAssignmentStatusQuery,
 	getAnnouncementDetailQuery,
@@ -35,6 +42,9 @@ import {
 	toServerSubmitStatus,
 } from '../../types';
 
+const getPartLabel = (part: string) =>
+	isExistPart(part) ? getMemberPartLabel(part) : '파트 미배정';
+
 interface SubmissionStatusTabProps {
 	announcementId: number;
 	members: Member[];
@@ -44,6 +54,9 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 	const queryClient = useQueryClient();
 	const { mutate: patchAssignmentStatus } = useMutation(
 		patchAssignmentStatusMutationOptions(announcementId),
+	);
+	const { mutate: remindNotificationToMembers } = useMutation(
+		remindNotificationToMembersMutationOptions(announcementId),
 	);
 
 	const invalidateAssignmentQueries = () => {
@@ -107,7 +120,7 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 
 	// enrichedMembers 데이터에서 팀 목록 동적 추출
 	const teamTabs = useMemo(() => {
-		const teamIds = [...new Set(enrichedMembers.map((m) => m.teamId))].sort((a, b) => a - b);
+		const teamIds = [...new Set(enrichedMembers.map((m) => m.teamNumber))].sort((a, b) => a - b);
 		return [
 			{ id: 'all', label: '전체' },
 			...teamIds.map((id) => ({ id: String(id), label: `${id}팀` })),
@@ -120,12 +133,12 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 
 		// 내 팀만 보기
 		if (showMyTeamOnly) {
-			result = result.filter((m) => m.teamId === myInfo.teamNumber);
+			result = result.filter((m) => m.teamNumber === myInfo.teamNumber);
 		}
 
 		// 팀 탭 필터
 		if (activeTeamTab !== 'all') {
-			result = result.filter((m) => String(m.teamId) === activeTeamTab);
+			result = result.filter((m) => String(m.teamNumber) === activeTeamTab);
 		}
 
 		// 검색 필터
@@ -208,10 +221,19 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 	const hasLinkFilter = (filters.링크별 || []).length > 0;
 
 	const handleSubmissionRequest = () => {
-		// TODO: 제출 요청 API 호출
+		const memberIds = Array.from(selectedMembers).map(Number);
 
-		// API 구현 전까지 임시 처리
-		toast.light('제출 요청 기능이 준비 중이에요.');
+		remindNotificationToMembers(
+			{ memberIds },
+			{
+				onSuccess: () => {
+					toast.light('제출 요청 알림을 보냈어요.');
+				},
+				onError: () => {
+					toast.error('제출 요청 알림 전송에 실패했어요.');
+				},
+			},
+		);
 	};
 
 	const handleStatusModalSave = () => {
@@ -387,7 +409,7 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 						</tr>
 					</thead>
 					<tbody>
-						{filteredMembers.map(({ id, name, team, role, submitStatus }) => (
+						{filteredMembers.map(({ id, name, team, role, submitStatus, isAdmin }) => (
 							<tr key={id} className="h-17.5 border-line-subtle border-b bg-background-normal">
 								<td className="px-3">
 									<TableCheckbox
@@ -397,13 +419,23 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 								</td>
 								<td className="px-3">
 									<div className="flex items-center gap-2.5">
-										<div className="size-10 shrink-0 rounded-full bg-gray-200" />
+										<Image
+											src={isExistPart(role) ? cohort[role] : cohort.ETC}
+											alt={`${role} 파트 프로필 이미지`}
+											className="size-10 shrink-0 rounded-full bg-gray-200"
+										/>
 										<div className="flex flex-col gap-0.75">
 											<p className="font-semibold text-body1 text-label-normal">{name}</p>
-											<div className="flex items-center gap-1.5 text-body2 text-label-assistive">
+											<div className="flex items-center gap-1.5 font-medium text-caption1 text-label-assistive">
+												{isAdmin && (
+													<>
+														<span>운영진</span>
+														<div className="h-3.5 w-px bg-line-subtle" />
+													</>
+												)}
 												<span>{team}</span>
-												<div className="h-4 w-px bg-gray-400" />
-												<span>{role}</span>
+												<div className="h-3.5 w-px bg-line-subtle" />
+												<span>{getPartLabel(role)}</span>
 											</div>
 										</div>
 									</div>

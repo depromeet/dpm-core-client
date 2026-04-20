@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
@@ -210,6 +210,17 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 		}
 	}, [canEdit, router]);
 
+	// 모바일 키보드 닫힐 때 스크롤 위치 복원
+	const formRef = useRef<HTMLFormElement>(null);
+	const handleFocusOut = useCallback((e: React.FocusEvent) => {
+		const target = e.target as HTMLElement;
+		if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+			requestAnimationFrame(() => {
+				window.scrollTo(0, 0);
+			});
+		}
+	}, []);
+
 	const titleValue = form.watch('title');
 	const descriptionValue = form.watch('description') ?? '';
 	const scheduledAtValue = form.watch('scheduledAt');
@@ -263,7 +274,9 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 
 			<Form {...form}>
 				<form
+					ref={formRef}
 					onSubmit={form.handleSubmit(handleSubmit)}
+					onBlurCapture={handleFocusOut}
 					className="flex flex-1 flex-col overflow-y-auto px-4 pt-1.5 pb-6"
 				>
 					<section className="space-y-6">
@@ -511,7 +524,7 @@ const AfterPartyUpdateForm = ({ afterPartyId }: AfterPartyUpdateFormProps) => {
 				</form>
 			</Form>
 
-			<div className="relative shrink-0 bg-white px-4 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))]">
+			<div className="relative shrink-0 bg-white px-4 pt-3 pb-3">
 				<Button
 					type="button"
 					variant="secondary"

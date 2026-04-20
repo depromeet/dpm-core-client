@@ -47,6 +47,34 @@ export type PatchAssignmentStatusVariables = {
 	memberIds: number[];
 };
 
+export const remindNotificationMutationOptions = (
+	announcementId: number,
+	options?: MutationOptions<unknown, Error, void>,
+) =>
+	mutationOptions<unknown, Error, void>({
+		...options,
+		mutationKey: ['remindNotification', announcementId],
+		mutationFn: async () => {
+			await announcement.remindNotification(announcementId);
+		},
+	});
+
+export type RemindNotificationToMembersVariables = {
+	memberIds: number[];
+};
+
+export const remindNotificationToMembersMutationOptions = (
+	announcementId: number,
+	options?: MutationOptions<unknown, Error, RemindNotificationToMembersVariables>,
+) =>
+	mutationOptions<unknown, Error, RemindNotificationToMembersVariables>({
+		...options,
+		mutationKey: ['remindNotificationToMembers', announcementId],
+		mutationFn: async ({ memberIds }) => {
+			await announcement.remindNotificationToMembers(announcementId, { memberIds });
+		},
+	});
+
 export const patchAssignmentStatusMutationOptions = (
 	announcementId: number,
 	options?: MutationOptions<unknown, Error, PatchAssignmentStatusVariables>,

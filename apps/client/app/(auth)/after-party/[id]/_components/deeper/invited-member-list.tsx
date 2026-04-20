@@ -34,7 +34,7 @@ export const InvitedMemberList = ({ afterPartyId, isClosed }: InvitedMemberListP
 
 	const applyTeamFilter = (list: AfterPartyInvitedMember[]) => {
 		if (myTeamOnly && user?.teamNumber) {
-			return list.filter((m) => m.team === user.teamNumber);
+			return list.filter((m) => m.teamNumber === user.teamNumber);
 		}
 		return list;
 	};
@@ -142,7 +142,7 @@ const MemberListContent = ({ members }: { members: AfterPartyInvitedMember[] }) 
 					size={40}
 					key={member.memberId}
 					name={member.name}
-					teamNumber={member.team}
+					teamNumber={member.teamNumber}
 					part={member.part}
 				/>
 			))}
