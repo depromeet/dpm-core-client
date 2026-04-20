@@ -2,7 +2,7 @@
 const config = {
 	name: 'Depromeet',
 	slug: 'depromeet-core',
-	version: '1.0.0',
+	version: '1.1.0',
 	orientation: 'portrait',
 	icon: './assets/images/icon.png',
 	scheme: 'native',
@@ -71,7 +71,7 @@ const config = {
 	extra: {
 		router: {},
 		eas: {
-			projectId: 'edf6cb70-d20c-4c1c-ae76-d2b322f00597',
+			projectId: '036040bf-3e75-4d0e-877c-cb579653f8e8',
 		},
 	},
 };
