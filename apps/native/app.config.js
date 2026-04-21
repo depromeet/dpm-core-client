@@ -2,7 +2,7 @@
 const config = {
 	name: 'Depromeet',
 	slug: 'depromeet-core',
-	version: '1.0.0',
+	version: '1.1.0',
 	orientation: 'portrait',
 	icon: './assets/images/icon.png',
 	scheme: 'native',
@@ -13,6 +13,9 @@ const config = {
 		bundleIdentifier: 'com.depromeet.core.app',
 		infoPlist: {
 			ITSAppUsesNonExemptEncryption: false,
+			NSAppTransportSecurity: {
+				NSAllowsArbitraryLoads: true,
+			},
 		},
 	},
 	android: {
