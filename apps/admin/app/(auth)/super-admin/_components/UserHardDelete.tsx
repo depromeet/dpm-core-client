@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { MemberOverviewItem } from '@dpm-core/api';
 import {
 	Button,
@@ -23,6 +23,7 @@ import {
 	toast,
 } from '@dpm-core/shared';
 
+import { hardDeleteMemberMutationOptions } from '@/remotes/mutations/member';
 import { getMembersOverviewQuery } from '@/remotes/queries/member';
 
 const statusBadgeStatus = (status: string) => {
@@ -41,12 +42,27 @@ const statusBadgeStatus = (status: string) => {
 };
 
 export const UserHardDelete = () => {
+	const queryClient = useQueryClient();
 	const { data: membersData } = useQuery(getMembersOverviewQuery());
 	const members = membersData?.data.members ?? [];
 
 	const [searchQuery, setSearchQuery] = useState('');
 	const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 	const [targetMember, setTargetMember] = useState<MemberOverviewItem | null>(null);
+
+	const { mutate: hardDeleteMember, isPending } = useMutation(
+		hardDeleteMemberMutationOptions({
+			onSuccess: () => {
+				toast.success('멤버가 삭제되었습니다.');
+				queryClient.invalidateQueries({ queryKey: ['members-overview'] });
+				setConfirmDialogOpen(false);
+				setTargetMember(null);
+			},
+			onError: (error) => {
+				toast.error(error.message || '멤버 삭제에 실패했습니다.');
+			},
+		}),
+	);
 
 	const searchResults = useMemo(() => {
 		const query = searchQuery.trim().toLowerCase();
@@ -66,10 +82,8 @@ export const UserHardDelete = () => {
 	};
 
 	const handleConfirmDelete = () => {
-		// TODO: 하드 딜리트 API 연동
-		toast.info('유저 삭제 API 연동 후 구현 예정');
-		setConfirmDialogOpen(false);
-		setTargetMember(null);
+		if (!targetMember) return;
+		hardDeleteMember(targetMember.memberId);
 	};
 
 	return (
@@ -161,8 +175,8 @@ export const UserHardDelete = () => {
 						<DialogClose asChild>
 							<Button variant="assistive">취소</Button>
 						</DialogClose>
-						<Button variant="secondary" onClick={handleConfirmDelete}>
-							삭제
+						<Button variant="secondary" onClick={handleConfirmDelete} disabled={isPending}>
+							{isPending ? '삭제 중...' : '삭제'}
 						</Button>
 					</DialogFooter>
 				</DialogContent>
