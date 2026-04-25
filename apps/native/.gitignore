@@ -47,3 +47,7 @@ GoogleService-Info.plist
 
 expo-env.d.ts
 # @end expo-cli
+# EAS credentials
+credentials.json
+upload_key.pem
+credentials/

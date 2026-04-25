@@ -9,7 +9,10 @@
 			"distribution": "internal"
 		},
 		"preview": {
-			"distribution": "internal"
+			"distribution": "internal",
+			"android": {
+				"buildType": "app-bundle"
+			}
 		},
 		"staging": {
 			"distribution": "store",
