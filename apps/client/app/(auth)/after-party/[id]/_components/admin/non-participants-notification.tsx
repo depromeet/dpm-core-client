@@ -20,7 +20,11 @@ import {
 	FormLabel,
 	FormMessage,
 	Input,
+	toast,
 } from '@dpm-core/shared';
+import { useMutation } from '@tanstack/react-query';
+
+import { sendUnmarkedRsvpNotificationMutationOptions } from '@/remotes/mutations/after-party';
 
 const notificationSchema = z.object({
 	title: z
@@ -41,17 +45,30 @@ export type NotificationSchema = z.infer<typeof notificationSchema>;
 
 interface NonParticipantsNotificationProps {
 	size: ButtonProps['size'];
+	afterPartyId: number;
 }
 
 export const NonParticipantsNotification = (props: NonParticipantsNotificationProps) => {
-	const { size } = props;
+	const { size, afterPartyId } = props;
 	const form = useForm<NotificationSchema>({
 		resolver: zodResolver(notificationSchema),
 		defaultValues: { title: '', content: '' },
 	});
 
+	const { mutate: sendNotification, isPending } = useMutation(
+		sendUnmarkedRsvpNotificationMutationOptions(afterPartyId, {
+			onSuccess: () => {
+				toast.success('알림이 발송되었어요.');
+				form.reset();
+			},
+			onError: () => {
+				toast.error('알림 발송에 실패했어요.');
+			},
+		}),
+	);
+
 	const handleNonParticipationNotification = (formData: NotificationSchema) => {
-		console.log(formData);
+		sendNotification(formData);
 	};
 
 	const title = form.watch('title');
@@ -129,7 +146,14 @@ export const NonParticipantsNotification = (props: NonParticipantsNotificationPr
 						>
 							<RotateCw className="size-5 text-gray-400" />
 						</Button>
-						<Button form={FORM_ID} type="submit" variant="secondary" size="lg" className="flex-1">
+						<Button
+							form={FORM_ID}
+							type="submit"
+							variant="secondary"
+							size="lg"
+							className="flex-1"
+							disabled={isPending}
+						>
 							보내기
 						</Button>
 					</DrawerFooter>
