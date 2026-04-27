@@ -5,6 +5,8 @@ import type {
 	ApproveWhitelistResponse,
 	InitCohortMemberParams,
 	Member,
+	MemberRoleListResponse,
+	MemberRoleResponse,
 	MembersOverviewResponse,
 	UpdateMemberRoleRequest,
 	UpdateMemberStatusRequest,
@@ -52,6 +54,20 @@ export const member = {
 	approveWhitelist: async (params: ApproveWhitelistRequest) => {
 		const res = await http.patch<ApproveWhitelistResponse>('v1/members/whitelist', {
 			json: params,
+		});
+		return res;
+	},
+
+	/** GET /v1/roles/members/{memberId} - 멤버 기수별 역할 목록 조회 */
+	getMemberRoles: async (memberId: number) => {
+		const res = await http.get<MemberRoleResponse>(`v1/roles/members/${memberId}`);
+		return res;
+	},
+
+	/** GET /v1/roles/members?memberIds=... - 복수 멤버 기수별 역할 목록 조회 */
+	getMembersRoles: async (memberIds: number[]) => {
+		const res = await http.get<MemberRoleListResponse>('v1/roles/members', {
+			searchParams: { memberIds: memberIds.join(',') },
 		});
 		return res;
 	},
