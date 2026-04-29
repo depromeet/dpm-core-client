@@ -29,3 +29,11 @@ export const getMyMemberInfoQuery = queryOptions({
 	retry: false,
 	refetchInterval: false,
 });
+
+/** GET /v1/roles/members?memberIds=... - 멤버 기수별 역할 목록 조회 */
+export const getMembersRolesQuery = (memberIds: number[]) =>
+	queryOptions({
+		queryKey: ['members-roles', [...memberIds].sort((a, b) => a - b)] as const,
+		queryFn: () => member.getMembersRoles(memberIds),
+		enabled: memberIds.length > 0,
+	});

@@ -106,8 +106,7 @@ export const updateMemberStatusMutationOptions = (
 ) =>
 	mutationOptions({
 		mutationKey: ['members', 'status'],
-		mutationFn: (params: UpdateMemberStatusRequest) =>
-			member.updateMemberStatus(params),
+		mutationFn: (params: UpdateMemberStatusRequest) => member.updateMemberStatus(params),
 		...options,
 	});
 
@@ -121,7 +120,16 @@ export const initCohortMemberMutationOptions = (
 ) =>
 	mutationOptions({
 		mutationKey: ['members', 'authority', 'cohort', 'init'],
-		mutationFn: (params: InitCohortMemberParams) =>
-			member.initCohortMember(params),
+		mutationFn: (params: InitCohortMemberParams) => member.initCohortMember(params),
+		...options,
+	});
+
+/** DELETE /v1/members/{memberId}/hard-delete - 멤버 하드 삭제 */
+export const hardDeleteMemberMutationOptions = (
+	options?: MutationOptions<Awaited<ReturnType<typeof member.hardDeleteMember>>, Error, number>,
+) =>
+	mutationOptions({
+		mutationKey: ['members', 'hard-delete'],
+		mutationFn: (memberId: number) => member.hardDeleteMember(memberId),
 		...options,
 	});

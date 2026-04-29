@@ -18,7 +18,11 @@ export const HomeCheckAttendanceBanner = () => {
 
 	if (
 		!attendanceSession ||
-		!showAttendanceBanner(attendanceSession.attendanceStart, attendanceSession.lateStart)
+		!showAttendanceBanner(
+			attendanceSession.attendanceStart,
+			attendanceSession.lateStart,
+			attendanceSession.absentStart,
+		)
 	) {
 		return null;
 	}

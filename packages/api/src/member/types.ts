@@ -88,3 +88,14 @@ export interface InitCohortMemberParams {
 	cohortId: number;
 	memberId: number;
 }
+
+/** GET /v1/roles/members/{memberId} - 멤버 역할 조회 */
+export interface MemberRoleResponse {
+	memberId: number;
+	roles: string[];
+}
+
+/** GET /v1/roles/members?memberIds=... - 멤버 목록 역할 조회 */
+export interface MemberRoleListResponse {
+	members: MemberRoleResponse[];
+}

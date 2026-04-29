@@ -5,6 +5,8 @@ import type {
 	ApproveWhitelistResponse,
 	InitCohortMemberParams,
 	Member,
+	MemberRoleListResponse,
+	MemberRoleResponse,
 	MembersOverviewResponse,
 	UpdateMemberRoleRequest,
 	UpdateMemberStatusRequest,
@@ -20,8 +22,7 @@ export const member = {
 
 	/** GET /v1/members/overview - latest 파라미터 (이번 기수만 보기, false면 미전송) */
 	getMembersOverview: async (params?: { latest?: boolean }) => {
-		const searchParams =
-			params?.latest === true ? { latest: 'true' } : undefined;
+		const searchParams = params?.latest === true ? { latest: 'true' } : undefined;
 		const res = await http.get<MembersOverviewResponse>('v1/members/overview', {
 			searchParams,
 		});
@@ -57,6 +58,20 @@ export const member = {
 		return res;
 	},
 
+	/** GET /v1/roles/members/{memberId} - 멤버 기수별 역할 목록 조회 */
+	getMemberRoles: async (memberId: number) => {
+		const res = await http.get<MemberRoleResponse>(`v1/roles/members/${memberId}`);
+		return res;
+	},
+
+	/** GET /v1/roles/members?memberIds=... - 복수 멤버 기수별 역할 목록 조회 */
+	getMembersRoles: async (memberIds: number[]) => {
+		const res = await http.get<MemberRoleListResponse>('v1/roles/members', {
+			searchParams: { memberIds: memberIds.join(',') },
+		});
+		return res;
+	},
+
 	/** PATCH /v1/roles/members/{memberId} - 멤버 기수별 역할 변경 (isAdmin: true=ORGANIZER, false=DEEPER) */
 	updateMemberRole: async (memberId: number, params: UpdateMemberRoleRequest) => {
 		const res = await http.patch(`v1/roles/members/${memberId}`, {
@@ -78,6 +93,12 @@ export const member = {
 		const res = await http.post(
 			`v1/members/authority/cohort/init/${params.cohortId}/${params.memberId}`,
 		);
+		return res;
+	},
+
+	/** DELETE /v1/members/{memberId}/hard-delete - 멤버 하드 삭제 */
+	hardDeleteMember: async (memberId: number) => {
+		const res = await http.delete(`v1/members/${memberId}/hard-delete`);
 		return res;
 	},
 };
