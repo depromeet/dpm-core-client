@@ -86,6 +86,13 @@ export const MemberList = () => {
 			return member?.status === 'PENDING';
 		});
 
+	const isEditEnabled =
+		selectedIds.size > 0 &&
+		Array.from(selectedIds).every((id) => {
+			const member = members.find((m) => m.id === id);
+			return member != null && member.status !== 'PENDING';
+		});
+
 	const handleSelectAll = (checked: boolean) => {
 		if (checked) {
 			setSelectedIds(new Set(filteredMembers.map((m) => m.id)));
@@ -155,12 +162,10 @@ export const MemberList = () => {
 		setEditModalOpen(true);
 	};
 
-	const { mutate: updateMembers, isPending: isUpdatePending } = useMutation(
+	const { mutate: updatePartMembers, isPending: isPartUpdatePending } = useMutation(
 		updateMembersInitMutationOptions({
 			onSuccess: () => {
-				setSelectedIds(new Set());
 				queryClient.invalidateQueries({ queryKey: ['members-overview'] });
-				setEditModalOpen(false);
 				toast.success('수정 완료했습니다.');
 			},
 			onError: () => {
@@ -169,11 +174,34 @@ export const MemberList = () => {
 		}),
 	);
 
-	const handleEditSubmit = (part: import('@dpm-core/api').Part, teamNumber: number) => {
-		updateMembers({
+	const { mutate: updateTeamMembers, isPending: isTeamUpdatePending } = useMutation(
+		updateMembersInitMutationOptions({
+			onSuccess: () => {
+				queryClient.invalidateQueries({ queryKey: ['members-overview'] });
+				toast.success('수정 완료했습니다.');
+			},
+			onError: () => {
+				toast.error('수정에 실패했습니다.');
+			},
+		}),
+	);
+
+	const handleEditPartSubmit = (part: import('@dpm-core/api').Part) => {
+		updatePartMembers({
 			members: membersToEdit.map((m) => ({
 				memberId: m.id,
 				memberPart: part,
+				team: String(m.teamNumber),
+				status: m.status,
+			})),
+		});
+	};
+
+	const handleEditTeamSubmit = (teamNumber: number) => {
+		updateTeamMembers({
+			members: membersToEdit.map((m) => ({
+				memberId: m.id,
+				memberPart: m.part,
 				team: String(teamNumber),
 				status: m.status,
 			})),
@@ -209,10 +237,27 @@ export const MemberList = () => {
 				</div>
 
 				{/* Multi Action Toolbar */}
-				<div className="flex w-full flex-row items-center gap-4 border-line-subtle border-t py-3">
-					<span className="flex-1 font-medium text-body1 text-label-subtle">
-						전체 {filteredMembers.length}명
-					</span>
+				<div className="flex w-full flex-row items-center justify-between gap-4 border-line-subtle border-t py-3">
+					{selectedIds.size === 0 ? (
+						<span className="flex-1 font-medium text-body1 text-label-subtle">
+							전체 {filteredMembers.length}명
+						</span>
+					) : (
+						<div className="flex gap-2">
+							<span className="flex-1 font-medium text-body1 text-label-subtle">
+								<strong className="font-medium text-body1 text-primary-strong after:content-['명']">
+									{selectedIds.size}
+								</strong>{' '}
+								선택됨
+							</span>
+							{!isApproveEnabled && !isEditEnabled && (
+								<span className="font-medium text-body1 text-red-500">
+									승인 상태가 동일한 사용자만 선택해 주세요.
+								</span>
+							)}
+						</div>
+					)}
+
 					<div className="flex flex-row items-center gap-2">
 						<button
 							type="button"
@@ -225,7 +270,7 @@ export const MemberList = () => {
 						<button
 							type="button"
 							className="flex h-10 cursor-pointer items-center justify-center rounded-lg bg-background-inverse px-4 py-3 font-semibold text-body2 text-label-inverse transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
-							disabled={selectedIds.size === 0}
+							disabled={!isEditEnabled}
 							onClick={handleEditClick}
 						>
 							수정하기
@@ -308,8 +353,10 @@ export const MemberList = () => {
 				open={editModalOpen}
 				onOpenChange={setEditModalOpen}
 				members={membersToEdit}
-				onSubmit={handleEditSubmit}
-				isPending={isUpdatePending}
+				onPartSubmit={handleEditPartSubmit}
+				onTeamSubmit={handleEditTeamSubmit}
+				isPartPending={isPartUpdatePending}
+				isTeamPending={isTeamUpdatePending}
 			/>
 		</div>
 	);
