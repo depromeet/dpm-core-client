@@ -1,5 +1,6 @@
 import type { AfterPartyDetail } from '@dpm-core/api';
 import { formatKoreanDate, formatKoreanDateWithTime } from '@dpm-core/shared';
+import { parseAfterPartyDateTime } from '../../../_utils/datetime';
 
 interface AfterPartyInfoProps {
 	afterPartyDetail: AfterPartyDetail;
@@ -14,13 +15,13 @@ export const AfterPartyInfo = ({ afterPartyDetail }: AfterPartyInfoProps) => {
 				<div className="flex gap-4">
 					<div className="font-semibold text-body2 text-gray-400">회식 날짜</div>
 					<div className="font-medium text-body2 text-gray-600">
-						{formatKoreanDate(afterPartyDetail.scheduledAt)}
+						{formatKoreanDate(parseAfterPartyDateTime(afterPartyDetail.scheduledAt))}
 					</div>
 				</div>
 				<div className="flex gap-4">
 					<div className="font-semibold text-body2 text-gray-400">조사 기한</div>
 					<div className="font-medium text-body2 text-gray-600">
-						{formatKoreanDateWithTime(afterPartyDetail.closedAt)}
+						{formatKoreanDateWithTime(parseAfterPartyDateTime(afterPartyDetail.closedAt))}
 					</div>
 				</div>
 				<div className="flex gap-4">

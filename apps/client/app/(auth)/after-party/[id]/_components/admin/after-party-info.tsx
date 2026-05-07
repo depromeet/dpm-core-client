@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { AfterPartyDetail } from '@dpm-core/api';
 import { Button, formatKoreanDate, formatKoreanDateWithTime } from '@dpm-core/shared';
+import { parseAfterPartyDateTime } from '../../../_utils/datetime';
 
 export interface InviteTag {
 	cohortId: number;
@@ -25,11 +26,15 @@ export const AfterPartyInfo = (props: AfterPartyDetail) => {
 				<div className="flex flex-col gap-3">
 					<div className="flex items-center gap-4 text-body2">
 						<p className="w-17.5 shrink-0 font-semibold text-label-assistive">회식 날짜</p>
-						<p className="font-medium text-label-subtle">{formatKoreanDate(scheduledAt)}</p>
+						<p className="font-medium text-label-subtle">
+							{formatKoreanDate(parseAfterPartyDateTime(scheduledAt))}
+						</p>
 					</div>
 					<div className="flex items-center gap-4 text-body2">
 						<p className="w-17.5 shrink-0 font-semibold text-label-assistive">조사 기한</p>
-						<p className="font-medium text-label-subtle">{formatKoreanDateWithTime(closedAt)}</p>
+						<p className="font-medium text-label-subtle">
+							{formatKoreanDateWithTime(parseAfterPartyDateTime(closedAt))}
+						</p>
 					</div>
 					<div className="flex items-center gap-4 text-body2">
 						<p className="w-17.5 shrink-0 font-semibold text-label-assistive">초대 범위</p>
