@@ -1,12 +1,13 @@
 'use client';
 
+import Link from 'next/link';
 import { Suspense } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
 import type { Session } from '@dpm-core/api';
-import { Aesterisk, Calender, Clock, formatDotFullDate, toast } from '@dpm-core/shared';
+import { Aesterisk, Button, Calender, Clock, formatDotFullDate } from '@dpm-core/shared';
 
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
 import { ErrorBox } from '@/components/error-box';
@@ -41,30 +42,33 @@ const SessionListContainer = () => {
 };
 
 function SessionItem({ session }: { session: Session }) {
-	const handleClick = () => {
-		toast.error('세션 상세 정보는 운영진만 접근 가능합니다.');
-	};
-
 	return (
-		<button type="button" className="w-full cursor-pointer px-4 text-left" onClick={handleClick}>
-			<div className="flex flex-col border-line-subtle border-b px-3 py-4">
-				<p className="mb-0.5 font-medium text-caption1 text-label-assistive">
-					{formatSessionWeekString(session.week)}
-				</p>
-				<h3 className="mb-1.5 font-semibold text-body1 text-label-normal">{session.name}</h3>
-				<div className="flex items-center gap-x-1">
-					<Calender />
-					<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
-						{formatDotFullDate(session.date)}
+		<Button
+			size="none"
+			variant="none"
+			className="block w-full cursor-pointer px-4 text-left"
+			asChild
+		>
+			<Link href={`session/${session.id}`}>
+				<div className="flex flex-col border-line-subtle border-b px-3 py-4">
+					<p className="mb-0.5 font-medium text-caption1 text-label-assistive">
+						{formatSessionWeekString(session.week)}
 					</p>
+					<h3 className="mb-1.5 font-semibold text-body1 text-label-normal">{session.name}</h3>
+					<div className="flex items-center gap-x-1">
+						<Calender />
+						<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
+							{formatDotFullDate(session.date)}
+						</p>
 
-					<Clock className="ml-2" />
-					<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
-						{formatISOStringHHMM(session.date)}
-					</p>
+						<Clock className="ml-2" />
+						<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
+							{formatISOStringHHMM(session.date)}
+						</p>
+					</div>
 				</div>
-			</div>
-		</button>
+			</Link>
+		</Button>
 	);
 }
 

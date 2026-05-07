@@ -14,6 +14,14 @@ export const getSessionCurrentOptions = () =>
 		},
 	});
 
+export const getSessionDetailQuery = (sessionId: number) =>
+	queryOptions({
+		queryKey: ['session-detail', sessionId],
+		queryFn: async () => {
+			return session.getSessionById(sessionId);
+		},
+	});
+
 export const getSessionAttendanceTimeOptions = (sessionId: number) =>
 	queryOptions({
 		queryKey: ['sessions', 'attendance-time'],
