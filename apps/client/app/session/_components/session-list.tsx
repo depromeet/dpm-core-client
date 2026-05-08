@@ -42,7 +42,7 @@ const SessionListContainer = () => {
 
 function SessionItem({ session }: { session: Session }) {
 	const handleClick = () => {
-		toast.error('세션 상세 정보는 운영진만 접근 가능합니다.');
+		toast.error('세션 상세 정보는 준비 중입니다.');
 	};
 
 	return (
