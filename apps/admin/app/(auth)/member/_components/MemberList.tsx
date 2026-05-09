@@ -27,6 +27,7 @@ import { mapMemberOverviewToListItem } from '../_lib/map-overview-to-list-item';
 import type { MemberListItem } from '../_types';
 import { ApproveMemberModal } from './ApproveMemberModal';
 import { EditMemberModal } from './EditMemberModal';
+import { MemberEmptyView } from './MemberEmptyView';
 import { MemberFilter, type MemberFilterValues } from './MemberFilter';
 import { MemberStatusLabel } from './MemberStatusLabel';
 
@@ -211,10 +212,10 @@ export const MemberList = () => {
 	if (isLoading) return <LoadingBox />;
 
 	return (
-		<div className="mx-auto flex w-full max-w-[1200px] flex-col items-start gap-10 bg-background-normal px-4 pt-8 md:px-10">
-			<div className="flex w-full max-w-[1120px] flex-col items-start">
+		<div className="mx-auto flex w-full max-w-300 flex-col items-start gap-10 bg-background-normal px-4 pt-0 md:px-10 md:pt-8">
+			<div className="flex w-full max-w-280 flex-col items-start">
 				{/* 멤버 승인 섹션 */}
-				<div className="mb-[10px] flex w-full items-start">
+				<div className="mb-2.5 hidden w-full items-start md:flex">
 					<div className="flex h-10 flex-row items-center gap-2">
 						<span className="font-bold text-label-normal text-title1 tracking-[-0.01em]">
 							멤버 승인
@@ -224,39 +225,50 @@ export const MemberList = () => {
 				</div>
 
 				{/* Search & Filter */}
-				<div className="mb-4.5 flex w-full flex-row items-center justify-between">
-					<div className="min-w-0 shrink basis-67.5">
+				<div className="mb-0 flex w-full flex-col items-center justify-between md:mb-4.5 md:flex-row">
+					<div className="w-full min-w-0 shrink md:basis-67.5">
 						<SearchInputOutlined
 							placeholder="디퍼 검색"
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
-							className="h-10 w-full"
+							className="h-12 w-full bg-background-strong max-md:border-0 md:h-10 md:bg-white"
 						/>
 					</div>
 					<MemberFilter values={filterValues} onChange={setFilterValues} />
 				</div>
 
 				{/* Multi Action Toolbar */}
-				<div className="flex w-full flex-row items-center justify-between gap-4 border-line-subtle border-t py-3">
-					{selectedIds.size === 0 ? (
-						<span className="flex-1 font-medium text-body1 text-label-subtle">
-							전체 {filteredMembers.length}명
-						</span>
-					) : (
-						<div className="flex gap-2">
-							<span className="flex-1 font-medium text-body1 text-label-subtle">
-								<strong className="font-medium text-body1 text-primary-strong after:content-['명']">
-									{selectedIds.size}
-								</strong>{' '}
-								선택됨
-							</span>
-							{!isApproveEnabled && !isEditEnabled && (
-								<span className="font-medium text-body1 text-red-500">
-									승인 상태가 동일한 사용자만 선택해 주세요.
-								</span>
-							)}
+				<div className="flex w-full flex-row flex-wrap items-center justify-between border-line-subtle py-3 md:border-t">
+					<div className="flex min-w-0 items-center gap-1.5">
+						<div className="md:hidden">
+							<TableCheckbox
+								className="disabled:bg-background-dimmer"
+								disabled={filteredMembers.length === 0}
+								checked={isAllSelected}
+								onCheckedChange={(checked) => handleSelectAll(checked === true)}
+								aria-label="전체 선택"
+							/>
 						</div>
-					)}
+						{selectedIds.size === 0 ? (
+							<span className="font-medium text-body1 text-label-subtle">
+								전체 {filteredMembers.length}명
+							</span>
+						) : (
+							<div className="flex min-w-0 items-center gap-2">
+								<span className="shrink-0 font-medium text-body1 text-label-subtle">
+									<strong className="font-medium text-body1 text-primary-strong after:content-['명']">
+										{selectedIds.size}
+									</strong>{' '}
+									선택됨
+								</span>
+								{!isApproveEnabled && !isEditEnabled && (
+									<span className="min-w-0 truncate font-medium text-body1 text-red-500">
+										승인 상태가 동일한 사용자만 선택해 주세요.
+									</span>
+								)}
+							</div>
+						)}
+					</div>
 
 					<div className="flex flex-row items-center gap-2">
 						<button
@@ -278,14 +290,53 @@ export const MemberList = () => {
 					</div>
 				</div>
 
-				{/* Table */}
-				<div className="flex w-full flex-col items-start">
+				{/* Mobile view (< 768px) */}
+				<div className="w-full md:hidden">
 					{filteredMembers.length === 0 ? (
-						<div className="flex min-h-[200px] w-full items-center justify-center py-12">
-							<p className="font-medium text-body1 text-label-assistive">
-								조건에 맞는 디퍼를 찾을 수 없어요
-							</p>
-						</div>
+						<MemberEmptyView className="min-h-50" />
+					) : (
+						<Table className="w-full table-fixed">
+							<TableBody>
+								{filteredMembers.map((member) => (
+									<TableRow
+										key={member.id}
+										className={`flex h-17.5 cursor-pointer items-center border-0 ${member.status === 'PENDING' ? 'bg-background-pending hover:bg-background-pending-hover' : 'bg-background-normal'}`}
+										onClick={() => handleSelectOne(member.id, !selectedIds.has(member.id))}
+									>
+										<TableCell
+											className="[&:has([role=checkbox])]:p-0"
+											onClick={(e) => e.stopPropagation()}
+										>
+											<TableCheckbox
+												className="cursor-pointer"
+												checked={selectedIds.has(member.id)}
+												onCheckedChange={(checked) => handleSelectOne(member.id, checked === true)}
+												aria-label={`${member.name} 선택`}
+											/>
+										</TableCell>
+										<TableCell className="flex-1 p-3">
+											<Profile
+												size={40}
+												name={member.name}
+												teamNumber={member.teamNumber}
+												part={member.part}
+												isAdmin={member.isAdmin}
+											/>
+										</TableCell>
+										<TableCell className="px-3">
+											<MemberStatusLabel status={member.status} />
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					)}
+				</div>
+
+				{/* Desktop view (>= 768px) */}
+				<div className="hidden w-full flex-col justify-center md:flex">
+					{filteredMembers.length === 0 ? (
+						<MemberEmptyView className="min-h-50" />
 					) : (
 						<Table className="w-full table-fixed">
 							<TableHeader>
@@ -300,7 +351,7 @@ export const MemberList = () => {
 									<TableHead className="px-3 font-medium text-body2 text-label-subtle">
 										멤버 정보
 									</TableHead>
-									<TableHead className="w-[200px] px-3 font-medium text-body2 text-label-subtle">
+									<TableHead className="w-50 px-3 font-medium text-body2 text-label-subtle">
 										활동 상태
 									</TableHead>
 								</TableRow>
@@ -309,7 +360,7 @@ export const MemberList = () => {
 								{filteredMembers.map((member) => (
 									<TableRow
 										key={member.id}
-										className={`h-[70px] cursor-pointer border-line-subtle ${member.status === 'PENDING' ? 'bg-background-pending hover:bg-background-pending-hover' : 'bg-background-normal'}`}
+										className={`h-17.5 cursor-pointer border-line-subtle ${member.status === 'PENDING' ? 'bg-background-pending hover:bg-background-pending-hover' : 'bg-background-normal'}`}
 										onClick={() => handleSelectOne(member.id, !selectedIds.has(member.id))}
 									>
 										<TableCell
@@ -331,7 +382,7 @@ export const MemberList = () => {
 												isAdmin={member.isAdmin}
 											/>
 										</TableCell>
-										<TableCell className="w-[200px] px-3">
+										<TableCell className="w-50 px-3">
 											<MemberStatusLabel status={member.status} />
 										</TableCell>
 									</TableRow>
