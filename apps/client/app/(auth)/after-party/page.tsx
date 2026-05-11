@@ -21,7 +21,7 @@ const AfterPartyPage = () => {
 			className="relative h-dvh overflow-hidden bg-background-normal"
 		>
 			<GAPageTracker type="after-party" />
-			<AppHeader title="회식" className="mb-1.5" />
+			<AppHeader hideBackButton title="회식" className="mb-1.5" />
 			<AfterPartyStatusFilter />
 			<AfterPartyBannerContainer Banner={<AfterPartyBanner />} />
 			<AfterPartyList />

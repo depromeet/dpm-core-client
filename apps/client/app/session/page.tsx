@@ -12,7 +12,7 @@ export default function SessionPage() {
 		<SafeAreaAppLayout hasBottomTabBar className="h-dvh bg-background-normal">
 			<GAPageTracker type="session" />
 			<SessionPageTracker />
-			<AppHeader title="세션" className="mb-1.5" />
+			<AppHeader hideBackButton title="세션" className="mb-1.5" />
 			<SessionList />
 			<BottomTabBar />
 		</SafeAreaAppLayout>

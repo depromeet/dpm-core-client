@@ -100,7 +100,7 @@ const NoticePage = () => {
 
 	return (
 		<SafeAreaAppLayout hasBottomTabBar className="h-dvh bg-background-normal">
-			<AppHeader title="공지" className="mb-0 py-0" />
+			<AppHeader hideBackButton title="공지" className="mb-0 py-0" />
 
 			<TeamTabBar
 				tabs={[...NOTICE_TABS]}
