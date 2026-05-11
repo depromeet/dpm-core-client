@@ -249,7 +249,7 @@ export const MemberFilter = ({ values, onChange }: MemberFilterProps) => {
 					</div>
 					<div className="flex items-center gap-1.5">
 						<Checkbox
-							id="lastest"
+							id="latest"
 							checked={values.latest}
 							onClick={() => onChange({ ...values, latest: !values.latest })}
 							onKeyDown={(e) => {
@@ -261,7 +261,7 @@ export const MemberFilter = ({ values, onChange }: MemberFilterProps) => {
 							className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 						/>
 						<Label
-							htmlFor="lastest"
+							htmlFor="latest"
 							className="cursor-pointer font-normal text-body2 text-label-assistive"
 						>
 							이번 기수만 보기
