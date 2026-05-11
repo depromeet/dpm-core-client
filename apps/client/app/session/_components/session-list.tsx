@@ -49,7 +49,7 @@ function SessionItem({ session }: { session: Session }) {
 			className="block w-full cursor-pointer px-4 text-left"
 			asChild
 		>
-			<Link href={`session/${session.id}`}>
+			<Link href={`/session/${session.id}`}>
 				<div className="flex flex-col border-line-subtle border-b px-3 py-4">
 					<p className="mb-0.5 font-medium text-caption1 text-label-assistive">
 						{formatSessionWeekString(session.week)}
