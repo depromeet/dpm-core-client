@@ -81,22 +81,24 @@ export const InvitedMemberList = ({ afterPartyId, isClosed }: InvitedMemberListP
 							</TabsTrigger>
 						</TabsList>
 					)}
-					<div className="flex items-center gap-1.5">
-						<Checkbox
-							className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
-							id="my-team-only"
-							checked={myTeamOnly}
-							onCheckedChange={(checked: boolean | 'indeterminate') =>
-								setMyTeamOnly(checked === true)
-							}
-						/>
-						<Label
-							htmlFor="my-team-only"
-							className="cursor-pointer font-medium text-body2 text-label-assistive"
-						>
-							내 팀만 보기
-						</Label>
-					</div>
+					{user?.teamNumber ? (
+						<div className="flex items-center gap-1.5">
+							<Checkbox
+								className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
+								id="my-team-only"
+								checked={myTeamOnly}
+								onCheckedChange={(checked: boolean | 'indeterminate') =>
+									setMyTeamOnly(checked === true)
+								}
+							/>
+							<Label
+								htmlFor="my-team-only"
+								className="cursor-pointer font-medium text-body2 text-label-assistive"
+							>
+								내 팀만 보기
+							</Label>
+						</div>
+					) : null}
 				</div>
 
 				{isClosed ? (
