@@ -33,7 +33,7 @@ export const InvitedMemberList = ({ afterPartyId, isClosed }: InvitedMemberListP
 	const members = invitedMembersData.data;
 
 	const applyTeamFilter = (list: AfterPartyInvitedMember[]) => {
-		if (myTeamOnly && user?.teamNumber) {
+		if (myTeamOnly && user) {
 			return list.filter((m) => m.teamNumber === user.teamNumber);
 		}
 		return list;
