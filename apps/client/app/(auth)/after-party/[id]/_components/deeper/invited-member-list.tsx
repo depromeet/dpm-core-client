@@ -33,7 +33,7 @@ export const InvitedMemberList = ({ afterPartyId, isClosed }: InvitedMemberListP
 	const members = invitedMembersData.data;
 
 	const applyTeamFilter = (list: AfterPartyInvitedMember[]) => {
-		if (myTeamOnly && user?.teamNumber) {
+		if (myTeamOnly && user) {
 			return list.filter((m) => m.teamNumber === user.teamNumber);
 		}
 		return list;
@@ -81,24 +81,22 @@ export const InvitedMemberList = ({ afterPartyId, isClosed }: InvitedMemberListP
 							</TabsTrigger>
 						</TabsList>
 					)}
-					{user?.teamNumber ? (
-						<div className="flex items-center gap-1.5">
-							<Checkbox
-								className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
-								id="my-team-only"
-								checked={myTeamOnly}
-								onCheckedChange={(checked: boolean | 'indeterminate') =>
-									setMyTeamOnly(checked === true)
-								}
-							/>
-							<Label
-								htmlFor="my-team-only"
-								className="cursor-pointer font-medium text-body2 text-label-assistive"
-							>
-								내 팀만 보기
-							</Label>
-						</div>
-					) : null}
+					<div className="flex items-center gap-1.5">
+						<Checkbox
+							className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
+							id="my-team-only"
+							checked={myTeamOnly}
+							onCheckedChange={(checked: boolean | 'indeterminate') =>
+								setMyTeamOnly(checked === true)
+							}
+						/>
+						<Label
+							htmlFor="my-team-only"
+							className="cursor-pointer font-medium text-body2 text-label-assistive"
+						>
+							내 팀만 보기
+						</Label>
+					</div>
 				</div>
 
 				{isClosed ? (
