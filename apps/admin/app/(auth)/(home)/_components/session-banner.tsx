@@ -35,7 +35,7 @@ const SessionBannerContainer = () => {
 				...fadeInOutVariatns.variants,
 				initial: { ...fadeInOutVariatns.variants.initial, y: -20 },
 			}}
-			className="mx-auto max-w-[1200px] md:mt-8! md:flex md:items-center md:justify-start md:gap-5 md:px-10"
+			className="mx-auto max-w-300 md:mt-8! md:flex md:items-center md:justify-start md:gap-5 md:px-10"
 		>
 			{showAttendanceCodeBanner(currentWeekSession.date) && (
 				<AttendanceCodeBanner
@@ -84,7 +84,7 @@ const AttendanceCodeBanner = (props: AttendanceBannerProps) => {
 	return (
 		<Pressable
 			variant="none"
-			className="flex items-center justify-between rounded-none bg-primary-normal px-4 py-3 md:h-[134px] md:flex-1 md:items-start md:rounded-[10px] md:p-5"
+			className="flex items-center justify-between rounded-none bg-primary-normal px-4 py-3 md:h-33.5 md:flex-1 md:items-start md:rounded-[10px] md:p-5"
 			asChild
 		>
 			<Link href={`/session/${sessionId}`} className="relative">
@@ -125,7 +125,7 @@ const CurrentSessionBanner = (props: CurrentSessionBannerProps) => {
 		// biome-ignore lint/a11y/noStaticElementInteractions: <explanation>
 		<div
 			onClick={() => handleGoToAttendance(sessionId)}
-			className="relative mx-4 mt-3 mb-8 block rounded-[10px] bg-background-inverse px-4 pt-5 pb-7.5 md:m-0 md:h-[134px] md:flex-1 md:cursor-pointer md:p-5"
+			className="relative mx-4 mt-3 mb-8 block rounded-[10px] bg-background-inverse px-4 pt-5 pb-7.5 md:m-0 md:h-33.5 md:flex-1 md:cursor-pointer md:p-5"
 		>
 			<div>
 				<p className="font-semibold text-caption1 text-label-assistive">

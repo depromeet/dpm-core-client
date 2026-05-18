@@ -14,13 +14,34 @@ import { getAnnouncementDetailQuery } from '@/remotes/queries/announcement';
 
 import { NoticeForm } from '../../_components/notice-form';
 
-/** ISO date-time 문자열에서 HHMM 4자리 추출 */
+/** 서버가 Z 없이 UTC 문자열을 반환하므로 Z를 붙여 UTC로 강제 파싱 */
+function toUTCDate(isoString: string): Date {
+	// Z나 타임존 오프셋(+XX:XX, -XX:XX)이 없는 경우에만 Z 추가
+	const hasTimezone = /Z|[+-]\d{2}:\d{2}$/.test(isoString);
+
+	return new Date(hasTimezone ? isoString : `${isoString}Z`);
+}
+
+/** ISO date-time 문자열에서 HHMM 4자리 추출 (서버 UTC → KST 변환 후 표시) */
 function extractTimeHHMM(isoString?: string): string {
 	if (!isoString) return '';
-	const date = new Date(isoString);
-	const hours = String(date.getHours()).padStart(2, '0');
-	const minutes = String(date.getMinutes()).padStart(2, '0');
+
+	const date = toUTCDate(isoString);
+	// UTC 시간에 9시간 더해서 KST로 변환
+	const kstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+
+	const hours = String(kstDate.getUTCHours()).padStart(2, '0');
+	const minutes = String(kstDate.getUTCMinutes()).padStart(2, '0');
+
 	return `${hours}${minutes}`;
+}
+
+/** ISO date-time 문자열에서 Calendar용 로컬 Date 생성 (UTC 파싱 후 KST 날짜 기준) */
+function extractCalendarDate(isoString: string): Date {
+	const d = toUTCDate(isoString);
+	// UTC에 9시간 더해서 KST 날짜 추출
+	const kstDate = new Date(d.getTime() + 9 * 60 * 60 * 1000);
+	return new Date(kstDate.getUTCFullYear(), kstDate.getUTCMonth(), kstDate.getUTCDate());
 }
 
 /** 서버 응답을 폼 초기값으로 변환 */
@@ -42,7 +63,7 @@ function toFormDefaults(detail: AnnouncementDetail): Partial<NoticeSchema> {
 	};
 
 	if (detail.scheduledAt) {
-		defaults.scheduledDate = new Date(detail.scheduledAt);
+		defaults.scheduledDate = extractCalendarDate(detail.scheduledAt);
 		defaults.scheduledTime = extractTimeHHMM(detail.scheduledAt);
 	}
 
@@ -51,11 +72,11 @@ function toFormDefaults(detail: AnnouncementDetail): Partial<NoticeSchema> {
 		defaults.submissionLink = detail.assignment.submitLink ?? '';
 
 		if (detail.assignment.startAt) {
-			defaults.submissionStartDate = new Date(detail.assignment.startAt);
+			defaults.submissionStartDate = extractCalendarDate(detail.assignment.startAt);
 			defaults.submissionStartTime = extractTimeHHMM(detail.assignment.startAt);
 		}
 		if (detail.assignment.dueAt) {
-			defaults.submissionEndDate = new Date(detail.assignment.dueAt);
+			defaults.submissionEndDate = extractCalendarDate(detail.assignment.dueAt);
 			defaults.submissionEndTime = extractTimeHHMM(detail.assignment.dueAt);
 		}
 	}
@@ -81,12 +102,7 @@ const EditNoticeContent = ({ announcementId }: EditNoticeContentProps) => {
 	});
 
 	return (
-		<NoticeForm
-			mode="edit"
-			form={form}
-			onSubmit={handleSubmit}
-			isSubmitPending={isSubmitPending}
-		/>
+		<NoticeForm mode="edit" form={form} onSubmit={handleSubmit} isSubmitPending={isSubmitPending} />
 	);
 };
 
