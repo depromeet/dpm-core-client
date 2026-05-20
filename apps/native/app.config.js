@@ -62,6 +62,14 @@ const config = {
 				color: '#ffffff',
 			},
 		],
+		[
+			'@react-native-kakao/core',
+			{
+				nativeAppKey: process.env.KAKAO_NATIVE_APP_KEY,
+				android: { authCodeHandlerActivity: true },
+				ios: { handleKakaoOpenUrl: true },
+			},
+		],
 	],
 	experiments: {
 		typedRoutes: true,
@@ -73,6 +81,7 @@ const config = {
 		eas: {
 			projectId: '036040bf-3e75-4d0e-877c-cb579653f8e8',
 		},
+		kakaoNativeAppKey: process.env.KAKAO_NATIVE_APP_KEY,
 	},
 };
 

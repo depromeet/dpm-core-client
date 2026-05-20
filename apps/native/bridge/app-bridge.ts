@@ -1,3 +1,4 @@
+import { login as kakaoLoginNative } from '@react-native-kakao/user';
 import { bridge } from '@webview-bridge/react-native';
 import * as WebBrowser from 'expo-web-browser';
 
@@ -16,6 +17,15 @@ export const appBridge = bridge({
 			return { success: true as const, token };
 		} catch (error) {
 			const message = error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
+			return { success: false as const, error: message };
+		}
+	},
+	async kakaoLogin() {
+		try {
+			const result = await kakaoLoginNative();
+			return { success: true as const, accessToken: result.accessToken };
+		} catch (error) {
+			const message = error instanceof Error ? error.message : '카카오 로그인에 실패했습니다.';
 			return { success: false as const, error: message };
 		}
 	},
