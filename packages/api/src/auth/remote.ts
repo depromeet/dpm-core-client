@@ -16,8 +16,8 @@ export const auth = {
 		const res = await http.post('login/email', { json: params });
 		return res;
 	},
-	kakaoLogin: async (params: { accessToken: string }) => {
-		const res = await http.post('login/auth/kakao', { json: params });
+	kakaoLogin: async (params: { accessToken: string; refreshToken: string }) => {
+		const res = await http.post('login/auth/kakao/tokens', { json: params });
 		return res;
 	},
 	logout: async () => {

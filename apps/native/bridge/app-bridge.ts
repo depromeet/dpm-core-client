@@ -23,7 +23,11 @@ export const appBridge = bridge({
 	async kakaoLogin() {
 		try {
 			const result = await kakaoLoginNative();
-			return { success: true as const, accessToken: result.accessToken };
+			return {
+				success: true as const,
+				accessToken: result.accessToken,
+				refreshToken: result.refreshToken,
+			};
 		} catch (error) {
 			const message = error instanceof Error ? error.message : '카카오 로그인에 실패했습니다.';
 			return { success: false as const, error: message };

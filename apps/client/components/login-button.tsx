@@ -48,7 +48,10 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 					return;
 				}
 
-				await auth.kakaoLogin({ accessToken: result.accessToken });
+				await auth.kakaoLogin({
+					accessToken: result.accessToken,
+					refreshToken: result.refreshToken,
+				});
 				router.replace('/');
 			} catch {
 				toast.error('카카오 로그인에 실패했습니다.');
