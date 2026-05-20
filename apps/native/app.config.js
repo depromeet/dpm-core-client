@@ -1,3 +1,14 @@
+const kakaoNativeAppKey = process.env.KAKAO_NATIVE_APP_KEY;
+const isProductionBuild = process.env.EAS_BUILD_PROFILE === 'production';
+
+if (!kakaoNativeAppKey && isProductionBuild) {
+	throw new Error('KAKAO_NATIVE_APP_KEY is required for production builds');
+}
+
+if (!kakaoNativeAppKey) {
+	console.warn('⚠️ KAKAO_NATIVE_APP_KEY is not set. Kakao login will be disabled.');
+}
+
 /** @type {import('expo/config').ExpoConfig} */
 const config = {
 	name: 'Depromeet',
@@ -65,7 +76,7 @@ const config = {
 		[
 			'@react-native-kakao/core',
 			{
-				nativeAppKey: process.env.KAKAO_NATIVE_APP_KEY,
+				nativeAppKey: kakaoNativeAppKey,
 				android: { authCodeHandlerActivity: true },
 				ios: { handleKakaoOpenUrl: true },
 			},
@@ -81,7 +92,7 @@ const config = {
 		eas: {
 			projectId: '036040bf-3e75-4d0e-877c-cb579653f8e8',
 		},
-		kakaoNativeAppKey: process.env.KAKAO_NATIVE_APP_KEY,
+		kakaoNativeAppKey,
 	},
 };
 

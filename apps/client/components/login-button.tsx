@@ -18,7 +18,7 @@ interface LoginButtonProps {
 }
 
 const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
-	({ variant, size, className }, ref) => {
+	({ href, variant, size, className }, ref) => {
 		const router = useRouter();
 		const { isApp } = useAppConfig();
 		const { isWebViewBridgeAvailable, isNativeMethodAvailable } = useBridgeStatus();
@@ -63,7 +63,7 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 		return (
 			<Pressable ref={ref} variant={variant} size={size} className={className} asChild>
 				<a
-					href={webFallbackUrl}
+					href={href ?? webFallbackUrl}
 					onClick={handleClick}
 					className="flex items-center gap-2 font-medium text-sm"
 				>
