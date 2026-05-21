@@ -17,7 +17,8 @@ export const auth = {
 		return res;
 	},
 	kakaoLogin: async (params: { accessToken: string; refreshToken: string }) => {
-		const res = await http.post('login/auth/kakao/tokens', { json: params });
+		// TODO: 백엔드 body 버전 배포되면 { json: params } 로 복원
+		const res = await http.post('login/auth/kakao/tokens', { searchParams: params });
 		return res;
 	},
 	logout: async () => {

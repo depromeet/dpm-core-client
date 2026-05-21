@@ -6,7 +6,10 @@ import { SplashScreen, Stack } from 'expo-router';
 const kakaoNativeAppKey = Constants.expoConfig?.extra?.kakaoNativeAppKey as string | undefined;
 
 if (kakaoNativeAppKey) {
+	console.log('[KakaoSDK] Initializing with key:', `${kakaoNativeAppKey.slice(0, 6)}...`);
 	initializeKakaoSDK(kakaoNativeAppKey);
+} else {
+	console.warn('[KakaoSDK] NATIVE_APP_KEY missing in Constants.expoConfig.extra');
 }
 
 // 앱이 포그라운드일 때 수신된 알림 표시 방식 설정

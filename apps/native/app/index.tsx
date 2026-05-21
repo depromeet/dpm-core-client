@@ -75,6 +75,7 @@ function WebViewContainer() {
 					bounces={false}
 					sharedCookiesEnabled={true}
 					allowsBackForwardNavigationGestures={true}
+					webviewDebuggingEnabled={__DEV__}
 				/>
 				<StatusBar style="dark" />
 			</KeyboardAvoidingView>

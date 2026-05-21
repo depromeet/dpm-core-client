@@ -73,7 +73,10 @@ const config = {
 				color: '#ffffff',
 			},
 		],
-		[
+		// KAKAO_NATIVE_APP_KEY가 주입된 환경에서만 plugin 등록.
+		// EAS CLI는 클라우드 시크릿 주입 전에 로컬에서 config를 평가하므로,
+		// plugin이 missing 시 throw하면 모든 명령이 막힘. GOOGLE_SERVICES_JSON 패턴 따름.
+		kakaoNativeAppKey && [
 			'@react-native-kakao/core',
 			{
 				nativeAppKey: kakaoNativeAppKey,
@@ -81,7 +84,7 @@ const config = {
 				ios: { handleKakaoOpenUrl: true },
 			},
 		],
-	],
+	].filter(Boolean),
 	experiments: {
 		typedRoutes: true,
 		reactCompiler: true,

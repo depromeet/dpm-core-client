@@ -35,16 +35,26 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 		})();
 
 		const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
-			if (!canUseNativeKakao) return;
+			console.log('[LoginButton] click', { canUseNativeKakao, isPending });
+			if (!canUseNativeKakao) {
+				console.log('[LoginButton] -> fallback to web OAuth (<a href>)');
+				return;
+			}
 
 			e.preventDefault();
-			if (isPending) return;
+			if (isPending) {
+				console.log('[LoginButton] -> skip, already pending');
+				return;
+			}
 
 			setIsPending(true);
 			try {
 				const result = await kakaoLogin();
+
 				if (!result.success) {
-					toast.error(result.error);
+					if (!result.cancelled) {
+						toast.error(result.error);
+					}
 					return;
 				}
 

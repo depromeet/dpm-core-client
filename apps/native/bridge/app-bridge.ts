@@ -29,8 +29,15 @@ export const appBridge = bridge({
 				refreshToken: result.refreshToken,
 			};
 		} catch (error) {
-			const message = error instanceof Error ? error.message : '카카오 로그인에 실패했습니다.';
-			return { success: false as const, error: message };
+			const code = (error as { code?: string })?.code;
+			if (code === 'Cancelled') {
+				return { success: false as const, cancelled: true as const };
+			}
+			return {
+				success: false as const,
+				cancelled: false as const,
+				error: '카카오 로그인에 실패했습니다.',
+			};
 		}
 	},
 });
