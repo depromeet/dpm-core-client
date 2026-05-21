@@ -53,7 +53,7 @@ export const AfterPartyParticipantsFilter = () => {
 					제출
 				</ToggleGroupItem>
 			</ToggleGroup>
-			{user?.teamNumber && (
+			{user && (
 				<div className="flex items-center gap-1.5">
 					<Checkbox
 						id="isMyTeam"

@@ -8,6 +8,7 @@ interface AppHeaderProps {
 	title: string;
 	backHref?: string;
 	className?: string;
+	hideBackButton?: boolean;
 	leftIcon?: React.ReactNode;
 	rightIcon?: React.ReactNode;
 }
@@ -16,23 +17,27 @@ const AppHeader = ({
 	title,
 	backHref,
 	className,
+	hideBackButton = false,
 	rightIcon = <></>,
 	leftIcon: leftIconProp,
 }: AppHeaderProps) => {
 	const router = useRouter();
-	const leftIcon = leftIconProp ?? (
-		<Link
-			href={backHref ?? '#'}
-			onClick={(event: React.MouseEvent<HTMLAnchorElement>) => {
-				if (backHref) return;
-				event.preventDefault();
-				router.back();
-			}}
-			className="absolute left-4"
-		>
-			<ChevronLeft />
-		</Link>
-	);
+	const leftIcon =
+		leftIconProp ??
+		(!hideBackButton && (
+			<Link
+				href={backHref ?? '#'}
+				onClick={(event: React.MouseEvent<HTMLAnchorElement>) => {
+					if (backHref) return;
+					event.preventDefault();
+					router.back();
+				}}
+				className="absolute left-4"
+			>
+				<ChevronLeft />
+			</Link>
+		));
+
 	return (
 		<header
 			className={cn('relative mb-5 flex h-12 items-center justify-center px-4 py-3', className)}

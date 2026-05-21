@@ -2,13 +2,13 @@ import type { CreateAnnouncementRequest } from '@dpm-core/api';
 
 import type { NoticeSchema } from '../_schemas/notice-schema';
 
-/** Date + HHMM(4자리) → ISO date-time 문자열 */
+/** Date + HHMM(4자리) → ISO date-time 문자열 (입력한 시:분을 UTC 기준으로 직접 사용) */
 function toISOAt(date: Date, timeHHMM: string): string {
 	const hours = Number.parseInt(timeHHMM.slice(0, 2), 10);
 	const minutes = Number.parseInt(timeHHMM.slice(2, 4), 10);
-	const d = new Date(date);
-	d.setHours(hours, minutes, 0, 0);
-	return d.toISOString();
+	return new Date(
+		Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), hours, minutes, 0, 0),
+	).toISOString();
 }
 
 /** 폼 데이터를 공지 등록 API body로 변환 */

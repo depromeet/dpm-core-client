@@ -1,10 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { XIcon } from 'lucide-react';
 import type { Part } from '@dpm-core/api';
 import {
+	Button,
 	Dialog,
 	DialogClose,
 	DialogContent,
@@ -55,40 +56,69 @@ interface EditMemberModalProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	members: MemberListItem[];
-	onSubmit: (part: Part, teamNumber: number) => void;
-	isPending?: boolean;
+	onPartSubmit: (part: Part) => void;
+	onTeamSubmit: (teamNumber: number) => void;
+	isTeamPending?: boolean;
+	isPartPending?: boolean;
 }
 
 export const EditMemberModal = ({
 	open,
 	onOpenChange,
 	members,
-	onSubmit,
-	isPending = false,
+	onPartSubmit,
+	onTeamSubmit,
+	isTeamPending = false,
+	isPartPending = false,
 }: EditMemberModalProps) => {
-	const [selectedPart, setSelectedPart] = useState<Part | ''>('');
-	const [selectedTeam, setSelectedTeam] = useState<string>('');
+	const initialPart = useMemo(
+		() =>
+			members.length > 0 && members.every((m) => m.part === members[0].part) ? members[0].part : '',
+		[members],
+	);
 
-	const isFormValid = selectedPart !== '' && selectedTeam !== '';
+	const initialTeam = useMemo(
+		() =>
+			members.length > 0 && members.every((m) => m.teamNumber === members[0].teamNumber)
+				? String(members[0].teamNumber)
+				: '',
+		[members],
+	);
 
-	const handleSubmit = () => {
-		if (!isFormValid) return;
-		onSubmit(selectedPart, Number(selectedTeam));
+	const [selectedPart, setSelectedPart] = useState<Part | ''>(initialPart);
+	const [selectedTeam, setSelectedTeam] = useState<string>(initialTeam);
+
+	const isPartFormValid = selectedPart !== '' && selectedPart !== initialPart;
+	const isTeamFormValid = selectedTeam !== '' && selectedTeam !== initialTeam;
+
+	useEffect(() => {
+		setSelectedPart(initialPart);
+		setSelectedTeam(initialTeam);
+	}, [initialPart, initialTeam]);
+
+	const handlePartSubmit = () => {
+		if (!isPartFormValid) return;
+		onPartSubmit(selectedPart);
+	};
+
+	const handleTeamSubmit = () => {
+		if (!isTeamFormValid) return;
+		onTeamSubmit(Number(selectedTeam));
 	};
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent
-				className="flex w-[640px] max-w-[640px] flex-col items-start gap-0 rounded-2xl bg-white p-0 shadow-[0px_18px_33px_rgba(0,0,0,0.02),0px_8px_40px_rgba(0,0,0,0.1),0px_0px_6px_rgba(0,0,0,0.1)] sm:max-w-[640px]"
+				className="flex w-160 max-w-160 flex-col items-start gap-0 rounded-2xl bg-white p-0 shadow-[0px_18px_33px_rgba(0,0,0,0.02),0px_8px_40px_rgba(0,0,0,0.1),0px_0px_6px_rgba(0,0,0,0.1)] sm:max-w-160"
 				showCloseButton={false}
 			>
 				{/* Header - padding 32px 32px 16px, gap 12px, height 112px */}
-				<DialogHeader className="flex h-[112px] w-full flex-row items-start justify-end gap-3 self-stretch px-8 pt-8 pb-4">
+				<DialogHeader className="flex h-28 w-full flex-row items-start justify-end gap-3 self-stretch px-8 pt-8 pb-4">
 					<div className="flex flex-1 flex-col items-start gap-3">
 						<DialogTitle className="font-bold text-[#1F2937] text-[22px] leading-[136%] tracking-[-0.02em]">
 							멤버 수정하기
 						</DialogTitle>
-						<DialogDescription className="font-medium text-[#81898F] text-[14px] leading-[22px]">
+						<DialogDescription className="font-medium text-[#81898F] text-[14px] leading-5.5">
 							멤버의 정보가 변동되거나 잘못 기입된 경우에 수정해주세요
 						</DialogDescription>
 					</div>
@@ -128,12 +158,23 @@ export const EditMemberModal = ({
 				</div>
 
 				{/* Contents - padding 24px 32px, gap 24px */}
-				<div className="flex w-full flex-col gap-6 px-8 py-6">
+				<div className="flex w-full flex-col gap-12 px-8 py-6">
 					{/* Part - gap 8px, label 16px semibold #4B5563, toggle h-12 border #D1D5DB rounded-lg */}
-					<div className="flex flex-col gap-2">
-						<span className="h-6 font-semibold text-[#4B5563] text-[16px] leading-[150%]">
-							파트
-						</span>
+					<div className="flex flex-col gap-3">
+						<div className="flex justify-between">
+							<span className="h-6 font-semibold text-[#4B5563] text-[16px] leading-[150%]">
+								파트
+							</span>
+							<Button
+								variant="secondary"
+								size="sm"
+								disabled={isPartPending || !isPartFormValid}
+								onClick={handlePartSubmit}
+							>
+								{isPartPending ? '저장 중...' : '저장하기'}
+							</Button>
+						</div>
+
 						<div className="flex h-12 w-full overflow-hidden rounded-lg border border-[#D1D5DB]">
 							<ToggleGroup
 								type="single"
@@ -151,10 +192,21 @@ export const EditMemberModal = ({
 					</div>
 
 					{/* Team - gap 8px */}
-					<div className="flex flex-col gap-2">
-						<span className="h-6 font-semibold text-[#4B5563] text-[16px] leading-[150%]">
-							팀 정보 입력
-						</span>
+					<div className="flex flex-col gap-3">
+						<div className="flex justify-between">
+							<span className="h-6 font-semibold text-[#4B5563] text-[16px] leading-[150%]">
+								팀 정보 입력
+							</span>
+							<Button
+								variant="secondary"
+								size="sm"
+								disabled={isTeamPending || !isTeamFormValid}
+								onClick={handleTeamSubmit}
+							>
+								{isTeamPending ? '저장 중...' : '저장하기'}
+							</Button>
+						</div>
+
 						<div className="flex h-12 w-full overflow-hidden rounded-lg border border-[#D1D5DB]">
 							<ToggleGroup
 								type="single"
@@ -170,18 +222,6 @@ export const EditMemberModal = ({
 							</ToggleGroup>
 						</div>
 					</div>
-				</div>
-
-				{/* Footer - padding 24px 32px 32px, button h-12 rounded-lg #1F2937 */}
-				<div className="flex w-full flex-col items-center px-8 pt-6 pb-8">
-					<button
-						type="button"
-						className="flex h-12 w-full cursor-pointer items-center justify-center rounded-lg bg-[#1F2937] font-semibold text-[16px] text-white leading-[150%] disabled:cursor-not-allowed disabled:opacity-40"
-						onClick={handleSubmit}
-						disabled={isPending || !isFormValid}
-					>
-						{isPending ? '수정 중...' : '수정하기'}
-					</button>
 				</div>
 			</DialogContent>
 		</Dialog>
