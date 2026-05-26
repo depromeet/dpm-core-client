@@ -26,7 +26,6 @@ export const appBridge = bridge({
 			return {
 				success: true as const,
 				accessToken: result.accessToken,
-				refreshToken: result.refreshToken,
 			};
 		} catch (error) {
 			const code = (error as { code?: string })?.code;

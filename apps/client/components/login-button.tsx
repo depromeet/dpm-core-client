@@ -35,17 +35,10 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 		})();
 
 		const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
-			console.log('[LoginButton] click', { canUseNativeKakao, isPending });
-			if (!canUseNativeKakao) {
-				console.log('[LoginButton] -> fallback to web OAuth (<a href>)');
-				return;
-			}
+			if (!canUseNativeKakao) return;
 
 			e.preventDefault();
-			if (isPending) {
-				console.log('[LoginButton] -> skip, already pending');
-				return;
-			}
+			if (isPending) return;
 
 			setIsPending(true);
 			try {
@@ -58,10 +51,7 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 					return;
 				}
 
-				await auth.kakaoLogin({
-					accessToken: result.accessToken,
-					refreshToken: result.refreshToken,
-				});
+				await auth.kakaoLogin({ accessToken: result.accessToken });
 				router.replace('/');
 			} catch {
 				toast.error('카카오 로그인에 실패했습니다.');
