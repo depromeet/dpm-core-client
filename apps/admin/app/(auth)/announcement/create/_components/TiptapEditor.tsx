@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Emoji, { gitHubEmojis } from '@tiptap/extension-emoji';
 import type { Editor } from '@tiptap/react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import { cn } from '@dpm-core/shared';
@@ -50,7 +51,13 @@ interface UseTiptapEditorProps {
 
 export const useTiptapEditor = ({ content, onChange }: UseTiptapEditorProps) => {
 	const editor = useEditor({
-		extensions: tiptapExtensions,
+		extensions: [
+			...tiptapExtensions,
+			Emoji.configure({
+				emojis: gitHubEmojis,
+				enableEmoticons: true,
+			}),
+		],
 		content,
 		immediatelyRender: false,
 		onUpdate: ({ editor }) => {

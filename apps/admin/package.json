@@ -23,6 +23,7 @@
 		"@tanstack/react-query-devtools": "^5.83.0",
 		"@tiptap/core": "^3.18.0",
 		"@tiptap/extension-bullet-list": "^3.18.0",
+		"@tiptap/extension-emoji": "^3.23.6",
 		"@tiptap/extension-heading": "^3.18.0",
 		"@tiptap/extension-link": "^3.18.0",
 		"@tiptap/extension-placeholder": "^3.19.0",
