@@ -1,5 +1,3 @@
-import { logger } from '@dpm-core/shared';
-
 import { BASE_URL, http } from '../http';
 import type { ApiResponse } from '../type';
 import { setAuthCookies, setCookie } from './cookie';
@@ -31,7 +29,7 @@ export const auth = {
 	// 카카오 SDK accessToken을 Authorization 헤더로 전달.
 	// http 인스턴스의 beforeRequest hook이 우리 토큰으로 덮어쓰는 걸 피하려고 fetch 직접 사용.
 	kakaoLogin: async (params: { accessToken: string }) => {
-		logger.auth('kakao native login request', { kakaoAccessToken: params.accessToken });
+		console.log('[kakaoLogin] request', { kakaoAccessToken: params.accessToken });
 
 		const res = await fetch(`${BASE_URL}/v1/auth/kakao/native`, {
 			method: 'POST',
@@ -41,14 +39,14 @@ export const auth = {
 			credentials: 'include',
 		});
 
-		logger.auth('kakao native login response', { status: res.status });
+		console.log('[kakaoLogin] response status', res.status);
 
 		if (!res.ok) {
 			throw new Error(`Kakao native login failed: ${res.status}`);
 		}
 
 		const json: ApiResponse<KakaoNativeLoginResponse> = await res.json();
-		logger.auth('kakao native login tokens', {
+		console.log('[kakaoLogin] tokens', {
 			accessToken: json.data.accessToken,
 			refreshToken: json.data.refreshToken,
 			memberId: json.data.memberId,
