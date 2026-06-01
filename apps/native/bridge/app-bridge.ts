@@ -22,10 +22,13 @@ export const appBridge = bridge({
 	},
 	async kakaoLogin() {
 		try {
+			console.log('[Bridge.kakaoLogin] kakaoLoginNative() 호출');
 			const result = await kakaoLoginNative();
+			console.log('[Bridge.kakaoLogin] SDK 응답 전체:', JSON.stringify(result, null, 2));
 			return {
 				success: true as const,
 				accessToken: result.accessToken,
+				refreshToken: result.refreshToken,
 			};
 		} catch (error) {
 			const code = (error as { code?: string })?.code;
