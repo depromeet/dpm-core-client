@@ -41,6 +41,9 @@ const _AttendanceSessionDetailContent = ({
 			initialStatus: data.attendance.status,
 		});
 
+	// TODO: 백엔드 API 구현 후 아래 mock 제거 및 data.attendance.absenceReason 실제 데이터 사용
+	const mockAbsenceReason = '아파서 병원 다녀왔어요!';
+
 	return (
 		<div className="flex-1 overflow-y-auto px-10 py-6">
 			<ProfileSection
@@ -61,6 +64,7 @@ const _AttendanceSessionDetailContent = ({
 				onCancel={handleCancel}
 				onEdit={() => setIsEditMode(true)}
 				isSaveDisabled={selectedStatus === data.attendance.status}
+				absenceReason={mockAbsenceReason}
 			/>
 
 			<SessionInfoSection

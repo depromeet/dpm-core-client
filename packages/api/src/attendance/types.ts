@@ -42,7 +42,13 @@ export interface AttendanceReponse {
 
 export interface AttendanceBySessionIdReponse {
 	member: AttendanceMember;
-	attendance: { status: AttendanceStatus; attendedAt: string; updatedAt: string };
+	attendance: {
+		status: AttendanceStatus;
+		attendedAt: string;
+		updatedAt: string;
+		// TODO: 백엔드 API 구현 후 optional(?) 제거 필요
+		absenceReason?: string | null;
+	};
 	session: AttendanceSession;
 }
 
