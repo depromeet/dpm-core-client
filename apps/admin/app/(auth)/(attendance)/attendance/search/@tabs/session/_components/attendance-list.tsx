@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import type { RefObject } from 'react';
 import { useState } from 'react';
-import type { AttendanceStatus } from '@dpm-core/api';
+import type { AttendanceStatus, ExcuseDocumentStatus } from '@dpm-core/api';
 import { Checkbox } from '@dpm-core/shared';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
 import { EmptyView } from '@/components/attendance/EmptyView';
+import { ExcuseDocumentCell } from '@/components/attendance/ExcuseDocumentCell';
 import { Profile } from '@/components/attendance/profile';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 
@@ -18,7 +19,10 @@ interface AttendanceMember {
 	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER';
 	attendanceStatus: AttendanceStatus;
 	isAdmin: boolean;
+	// TODO: 백엔드 API 구현 후 optional(?) 제거 필요
+	excuseDocumentStatus?: ExcuseDocumentStatus;
 }
+
 
 interface AttendanceListProps {
 	data: AttendanceMember[];
@@ -87,8 +91,8 @@ const AttendanceList = ({
 			{/* Desktop view (>= 768px) */}
 			<section className="relative mx-auto mb-15 hidden max-w-[1200px] px-10 md:block">
 				<div className="overflow-auto">
-					<div className="flex items-center justify-between bg-gray-50 py-2.5 pl-5">
-						<div className="flex items-center gap-4">
+					<div className="flex items-center bg-gray-50 py-2.5 pl-5 pr-5">
+						<div className="flex flex-1 items-center gap-4">
 							<Checkbox
 								checked={isAllSelected}
 								onCheckedChange={onToggleAll}
@@ -97,7 +101,10 @@ const AttendanceList = ({
 							/>
 							<span className="font-medium text-body2 text-label-subtle">멤버 정보</span>
 						</div>
-						<span className="min-w-[200px] font-medium text-body2 text-label-subtle">
+						<span className="w-[120px] shrink-0 font-medium text-body2 text-label-subtle">
+							결석 사유서
+						</span>
+						<span className="w-[200px] shrink-0 font-medium text-body2 text-label-subtle">
 							출석 상태
 						</span>
 					</div>
@@ -117,9 +124,9 @@ const AttendanceList = ({
 										handleDesktopRowClick(member.id);
 									}
 								}}
-								className="flex w-full cursor-pointer items-center justify-between border-gray-200 border-b py-5 pl-5 text-left transition-colors hover:bg-gray-50"
+								className="flex w-full cursor-pointer items-center border-gray-200 border-b py-5 pl-5 pr-5 text-left transition-colors hover:bg-gray-50"
 							>
-								<div className="flex items-center gap-4">
+								<div className="flex flex-1 items-center gap-4">
 									<Checkbox
 										checked={isChecked}
 										onCheckedChange={() => onToggleItem(member.id)}
@@ -135,8 +142,12 @@ const AttendanceList = ({
 										isAdmin={member.isAdmin}
 									/>
 								</div>
+								<div className="w-[120px] shrink-0">
+									{/* TODO: 백엔드 API 구현 후 excuseDocumentStatus 실제 데이터로 대체 필요 */}
+									<ExcuseDocumentCell status={member.excuseDocumentStatus} />
+								</div>
 								<AttendanceStatusLabel
-									className="min-w-[200px] justify-items-start"
+									className="w-[200px] shrink-0 justify-items-start"
 									status={member.attendanceStatus}
 								/>
 							</div>

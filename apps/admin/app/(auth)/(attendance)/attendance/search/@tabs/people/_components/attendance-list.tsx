@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import type { RefObject } from 'react';
 import { useState } from 'react';
-import type { MemberAttendanceStatus } from '@dpm-core/api';
+import type { ExcuseDocumentStatus, MemberAttendanceStatus } from '@dpm-core/api';
 import { Badge } from '@dpm-core/shared';
 
 import { EmptyView } from '@/components/attendance/EmptyView';
+import { ExcuseDocumentCell } from '@/components/attendance/ExcuseDocumentCell';
 import { Profile } from '@/components/attendance/profile';
 import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
 
@@ -17,7 +18,10 @@ interface AttendanceMember {
 	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER';
 	attendanceStatus: MemberAttendanceStatus;
 	isAdmin: boolean;
+	// TODO: 백엔드 API 구현 후 optional(?) 제거 필요
+	excuseDocumentStatus?: ExcuseDocumentStatus;
 }
+
 
 interface AttendanceListProps {
 	data: AttendanceMember[];
@@ -73,9 +77,14 @@ export const AttendanceList = ({ data, targetRef }: AttendanceListProps) => {
 			{/* Desktop view (>= 768px) */}
 			<section className="relative mx-10 mb-15 hidden md:block">
 				<div className="overflow-auto">
-					<div className="flex items-center justify-between bg-gray-50 py-2.5 pr-[136px] pl-5">
-						<span className="font-medium text-body2 text-label-subtle">멤버 정보</span>
-						<span className="font-medium text-body2 text-label-subtle">수료 상태</span>
+					<div className="flex items-center bg-gray-50 py-2.5 pl-5 pr-5">
+						<span className="flex-1 font-medium text-body2 text-label-subtle">멤버 정보</span>
+						<span className="w-[120px] shrink-0 font-medium text-body2 text-label-subtle">
+							결석 사유서
+						</span>
+						<span className="w-[136px] shrink-0 text-right font-medium text-body2 text-label-subtle">
+							수료 상태
+						</span>
 					</div>
 
 					{data.map((member, index) => {
@@ -84,18 +93,26 @@ export const AttendanceList = ({ data, targetRef }: AttendanceListProps) => {
 								key={`${member.id}-${index}`}
 								type="button"
 								onClick={() => handleDesktopRowClick(member.id)}
-								className="flex w-full cursor-pointer items-center justify-between border-gray-200 border-b py-5 pr-[136px] pl-5 text-left transition-colors hover:bg-gray-50"
+								className="flex w-full cursor-pointer items-center border-gray-200 border-b py-5 pl-5 pr-5 text-left transition-colors hover:bg-gray-50"
 							>
-								<Profile
-									size={40}
-									name={member.name}
-									teamNumber={member.teamNumber}
-									part={member.part}
-									isAdmin={member.isAdmin}
-								/>
-								<Badge variant={member.attendanceStatus}>
-									{getAttendanceMemberStatusLabel(member.attendanceStatus)}
-								</Badge>
+								<div className="flex-1">
+									<Profile
+										size={40}
+										name={member.name}
+										teamNumber={member.teamNumber}
+										part={member.part}
+										isAdmin={member.isAdmin}
+									/>
+								</div>
+								<div className="w-[120px] shrink-0">
+									{/* TODO: 백엔드 API 구현 후 excuseDocumentStatus 실제 데이터로 대체 필요 */}
+									<ExcuseDocumentCell status={member.excuseDocumentStatus} />
+								</div>
+								<div className="flex w-[136px] shrink-0 justify-end">
+									<Badge variant={member.attendanceStatus}>
+										{getAttendanceMemberStatusLabel(member.attendanceStatus)}
+									</Badge>
+								</div>
 							</button>
 						);
 					})}

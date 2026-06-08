@@ -63,8 +63,15 @@ const AttendanceSessionContainer = () => {
 		enabled: fetchStatus !== 'fetching',
 	});
 
-	const flatData = attendanceData?.pages.flatMap((page) => page.data.members) ?? [];
+	const rawData = attendanceData?.pages.flatMap((page) => page.data.members) ?? [];
 	const totalElements = attendanceData?.pages[0]?.data.totalElements ?? 0;
+
+	// TODO: 백엔드 API 구현 후 아래 mock 제거 및 rawData → flatData 직접 사용
+	const MOCK_STATUSES = ['SUBMITTED', 'SUBMITTED', 'PENDING', null, null] as const;
+	const flatData = rawData.map((member, index) => ({
+		...member,
+		excuseDocumentStatus: MOCK_STATUSES[index % MOCK_STATUSES.length],
+	}));
 
 	const { selectedIds, toggleItem, toggleAll, isAllSelected, clearSelection } =
 		useCheckboxSelection(flatData);
