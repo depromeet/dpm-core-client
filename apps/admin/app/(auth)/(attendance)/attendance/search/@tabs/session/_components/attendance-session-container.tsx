@@ -124,12 +124,12 @@ const AttendanceSessionContainer = () => {
 			{/* Desktop view (>= 768px) */}
 			<div className="hidden w-full md:block">
 				<section className="border-gray-200 border-b bg-white">
-					<div className="mx-auto max-w-[1200px] px-10 py-4">
+					<div className="mx-auto max-w-300 px-10 py-4">
 						<WeekFilter weeks={data.sessions} />
 					</div>
 				</section>
 
-				<section className="mx-auto max-w-[1200px] bg-white px-10 py-6">
+				<section className="mx-auto max-w-300 bg-white px-10 py-6">
 					<div className="mb-4 flex items-center gap-2">
 						<h2 className="font-bold text-label-normal text-title1 tracking-[-0.2px]">
 							출석 {selectedSession?.week}주차 (
@@ -139,10 +139,10 @@ const AttendanceSessionContainer = () => {
 					</div>
 
 					<div className="flex items-center justify-between">
-						<div className="w-[270px]">
+						<div className="w-67.5">
 							<SearchInput placeholder="디퍼 검색" />
 						</div>
-						<div className="flex items-center gap-[30px]">
+						<div className="flex items-center gap-7.5">
 							{selectedIds.length > 0 && (
 								<div className="flex items-center gap-3">
 									<p className="font-medium text-body1 text-primary-normal">

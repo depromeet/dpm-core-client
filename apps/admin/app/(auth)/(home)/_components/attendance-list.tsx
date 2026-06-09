@@ -40,23 +40,23 @@ export const AttendanceList = ({ sessionId }: { sessionId: number }) => {
 
 	if (isLoading) {
 		return (
-			<div className="mx-auto h-[212px] w-[375px]">
+			<div className="mx-auto h-53 w-93.75">
 				<LoadingBox />
 			</div>
 		);
 	}
 
 	if (flatData.length === 0) {
-		return <EmptyView className="mt-10 h-[166px]" message="조건에 맞는 디퍼를 찾을 수 없어요" />;
+		return <EmptyView className="mt-10 h-41.5" message="조건에 맞는 디퍼를 찾을 수 없어요" />;
 	}
 
 	return (
-		<div className="mt-[18px]">
+		<div className="mt-4.5">
 			<Table>
 				<TableHeader className="bg-gray-50">
 					<TableRow className="border-none">
 						<TableHead>멤버</TableHead>
-						<TableHead className="w-[200px]">출석 상태</TableHead>
+						<TableHead className="w-50">출석 상태</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>

@@ -84,7 +84,7 @@ export const AttendanceSessionDetailDrawer = ({
 }: AttendanceSessionDetailDrawerProps) => {
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
-			<SheetContent side="right" className="w-full gap-0 border-none p-0 sm:max-w-[600px]">
+			<SheetContent side="right" className="w-full gap-0 border-none p-0 sm:max-w-150">
 				<AttendanceDetailHeader title="출석 상세" />
 				<ErrorBoundary
 					fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
