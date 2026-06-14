@@ -89,6 +89,37 @@ export interface InitCohortMemberParams {
 	memberId: number;
 }
 
+/**
+ * GET /v1/members/apple/hidden-email - Apple 로그인 숨김 이메일 멤버 조회
+ * 실제 응답은 `{ members: [...] }` 형태 (실 토큰 호출로 확인). 숨김 이메일 미사용 멤버는 빈 배열.
+ * NOTE: members 원소 구조는 빈 배열만 관측되어 미확정. 현재 프로필 설정 트리거에는 사용하지 않음.
+ */
+export interface AppleHiddenEmailResponse {
+	members: unknown[];
+}
+
+/**
+ * POST /v1/members/apple/profile - Apple 로그인 멤버 프로필(이름/파트) 수정
+ * Apple 초기 가입자의 이름이 식별 불가능한 id 값으로 들어오는 경우, 이름과 직군을 수정한다.
+ */
+export interface AppleMemberProfileUpdateRequest {
+	name: string;
+	part: Part;
+}
+
+/** POST /v1/members/name/hash-type/validation - 멤버 이름 해시 형식 검증 요청 */
+export interface MemberNameHashValidationRequest {
+	name: string;
+}
+
+/**
+ * POST /v1/members/name/hash-type/validation 응답
+ * isHashType === true 이면 이름이 식별 불가능한 해시(id) 형식임을 의미한다.
+ */
+export interface MemberNameHashValidationResponse {
+	isHashType: boolean;
+}
+
 /** GET /v1/roles/members/{memberId} - 멤버 역할 조회 */
 export interface MemberRoleResponse {
 	memberId: number;

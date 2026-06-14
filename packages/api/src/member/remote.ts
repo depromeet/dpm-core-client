@@ -1,10 +1,14 @@
 import { http } from '../http';
 import type {
+	AppleHiddenEmailResponse,
+	AppleMemberProfileUpdateRequest,
 	ApproveWhitelistForSignupRequest,
 	ApproveWhitelistRequest,
 	ApproveWhitelistResponse,
 	InitCohortMemberParams,
 	Member,
+	MemberNameHashValidationRequest,
+	MemberNameHashValidationResponse,
 	MemberRoleListResponse,
 	MemberRoleResponse,
 	MembersOverviewResponse,
@@ -99,6 +103,31 @@ export const member = {
 	/** DELETE /v1/members/{memberId}/hard-delete - 멤버 하드 삭제 */
 	hardDeleteMember: async (memberId: number) => {
 		const res = await http.delete(`v1/members/${memberId}/hard-delete`);
+		return res;
+	},
+
+	/** GET /v1/members/apple/hidden-email - Apple 로그인 숨김 이메일 멤버 조회 */
+	getAppleHiddenEmail: async () => {
+		const res = await http.get<AppleHiddenEmailResponse>('v1/members/apple/hidden-email');
+		return res;
+	},
+
+	/** POST /v1/members/apple/profile - Apple 로그인 멤버 프로필(이름/직군) 수정 */
+	updateAppleProfile: async (params: AppleMemberProfileUpdateRequest) => {
+		const res = await http.post('v1/members/apple/profile', {
+			json: params,
+		});
+		return res;
+	},
+
+	/** POST /v1/members/name/hash-type/validation - 멤버 이름 해시(id) 형식 검증 */
+	validateNameHashType: async (params: MemberNameHashValidationRequest) => {
+		const res = await http.post<MemberNameHashValidationResponse>(
+			'v1/members/name/hash-type/validation',
+			{
+				json: params,
+			},
+		);
 		return res;
 	},
 };
