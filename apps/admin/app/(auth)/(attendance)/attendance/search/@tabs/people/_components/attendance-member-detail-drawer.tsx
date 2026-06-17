@@ -3,7 +3,7 @@
 import { Suspense, useState } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query';
 import type { AttendanceSession } from '@dpm-core/api';
 import {
 	Badge,
@@ -27,6 +27,7 @@ import { LoadingBox } from '@/components/loading-box';
 import { useAttendanceStatusEdit } from '@/hooks/use-attendance-status-edit';
 import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
 import {
+	getAbsenceReasonsOptions,
 	getAttendanceByMemberDetailOptions,
 	getAttendanceBySessionDetailOptions,
 } from '@/remotes/queries/attendance';
@@ -170,9 +171,16 @@ const _AttendanceSessionDetailView = ({
 	memberId: number;
 	sessionId: number;
 }) => {
-	const {
-		data: { data },
-	} = useSuspenseQuery(getAttendanceBySessionDetailOptions({ memberId, sessionId }));
+	const [{ data: sessionDetail }, { data: absenceReasonsData }] = useSuspenseQueries({
+		queries: [
+			getAttendanceBySessionDetailOptions({ memberId, sessionId }),
+			getAbsenceReasonsOptions({ sessionId }),
+		],
+	});
+
+	const { data } = sessionDetail;
+	const absenceReason =
+		absenceReasonsData.data.reasons.find((r) => r.memberId === memberId)?.contents ?? null;
 
 	const { isEditMode, selectedStatus, setSelectedStatus, setIsEditMode, handleSave, handleCancel } =
 		useAttendanceStatusEdit({
@@ -180,9 +188,6 @@ const _AttendanceSessionDetailView = ({
 			memberId,
 			initialStatus: data.attendance.status,
 		});
-
-	// TODO: 백엔드 API 구현 후 아래 mock 제거 및 data.attendance.absenceReason 실제 데이터 사용
-	const mockAbsenceReason = '아파서 병원 다녀왔어요!';
 
 	return (
 		<div className="flex-1 overflow-y-auto px-10 py-6">
@@ -204,7 +209,7 @@ const _AttendanceSessionDetailView = ({
 				onCancel={handleCancel}
 				onEdit={() => setIsEditMode(true)}
 				isSaveDisabled={selectedStatus === data.attendance.status}
-				absenceReason={mockAbsenceReason}
+				absenceReason={absenceReason}
 			/>
 
 			<SessionInfoSection

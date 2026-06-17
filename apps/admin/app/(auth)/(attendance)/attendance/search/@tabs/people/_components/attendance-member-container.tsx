@@ -38,15 +38,8 @@ const AttendanceMemberContainer = () => {
 		enabled: fetchStatus !== 'fetching',
 	});
 
-	const rawData = data?.pages.flatMap((page) => page.data.members) ?? [];
+	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];
 	const totalElements = data?.pages[0]?.data.totalElements ?? 0;
-
-	// TODO: 백엔드 API 구현 후 아래 mock 제거 및 rawData → flatData 직접 사용
-	const MOCK_STATUSES = ['SUBMITTED', 'SUBMITTED', 'PENDING', null, null] as const;
-	const flatData = rawData.map((member, index) => ({
-		...member,
-		excuseDocumentStatus: MOCK_STATUSES[index % MOCK_STATUSES.length],
-	}));
 
 	// 초기 로딩만 전체 LoadingBox 표시
 	if (isLoading && !data) {

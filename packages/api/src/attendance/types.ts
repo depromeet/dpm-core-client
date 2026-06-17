@@ -46,8 +46,6 @@ export interface AttendanceBySessionIdReponse {
 		status: AttendanceStatus;
 		attendedAt: string;
 		updatedAt: string;
-		// TODO: 백엔드 API 구현 후 optional(?) 제거 필요
-		absenceReason?: string | null;
 	};
 	session: AttendanceSession;
 }
@@ -66,16 +64,33 @@ export interface AttendanceBySessionReponse {
 		isAdmin: boolean;
 		part: Exclude<Part, 'ETC'>;
 		attendanceStatus: AttendanceStatus;
-		// TODO: 백엔드 API 구현 후 optional(?) 제거 필요
-		excuseDocumentStatus?: ExcuseDocumentStatus;
 	}[];
 	hasNext: boolean;
 	nextCursorId: number | null;
 	totalElements: number;
 }
 
-// TODO: 백엔드 API 구현 후 ExcuseDocumentStatus export 제거 가능
 export type ExcuseDocumentStatus = 'SUBMITTED' | 'PENDING' | null;
+
+export interface MyAbsenceReasonResponse {
+	contents: string;
+	status: ExcuseDocumentStatus;
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface AbsenceReason {
+	memberId: number;
+	memberName: string;
+	contents: string;
+	status: ExcuseDocumentStatus;
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface AbsenceReasonsResponse {
+	reasons: AbsenceReason[];
+}
 
 export interface AttendanceByMemberReponse {
 	members: {
@@ -85,8 +100,6 @@ export interface AttendanceByMemberReponse {
 		isAdmin: boolean;
 		part: Exclude<Part, 'ETC'>;
 		attendanceStatus: MemberAttendanceStatus;
-		// TODO: 백엔드 API 구현 후 optional(?) 제거 필요
-		excuseDocumentStatus?: ExcuseDocumentStatus;
 	}[];
 	hasNext: boolean;
 	nextCursorId: number | null;

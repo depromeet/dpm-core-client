@@ -3,13 +3,16 @@
 import { Suspense } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { Sheet, SheetContent } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { useAttendanceStatusEdit } from '@/hooks/use-attendance-status-edit';
-import { getAttendanceBySessionDetailOptions } from '@/remotes/queries/attendance';
+import {
+	getAbsenceReasonsOptions,
+	getAttendanceBySessionDetailOptions,
+} from '@/remotes/queries/attendance';
 
 import { AttendanceDetailHeader } from '../../../_components/attendance-detail-header';
 import { AttendanceStatusSection } from '../../../_components/attendance-status-section';
@@ -30,9 +33,17 @@ const _AttendanceSessionDetailContent = ({
 	memberId: number;
 	sessionId: number;
 }) => {
-	const {
-		data: { data },
-	} = useSuspenseQuery(getAttendanceBySessionDetailOptions({ memberId, sessionId }));
+	const { data: sessionDetail } = useSuspenseQuery(
+		getAttendanceBySessionDetailOptions({ memberId, sessionId }),
+	);
+	const { data: absenceReasonsData } = useQuery({
+		...getAbsenceReasonsOptions({ sessionId }),
+		enabled: !!sessionId,
+	});
+
+	const { data } = sessionDetail;
+	const absenceReason =
+		absenceReasonsData?.data.reasons.find((r) => r.memberId === memberId)?.contents ?? null;
 
 	const { isEditMode, selectedStatus, setSelectedStatus, setIsEditMode, handleSave, handleCancel } =
 		useAttendanceStatusEdit({
@@ -40,9 +51,6 @@ const _AttendanceSessionDetailContent = ({
 			memberId,
 			initialStatus: data.attendance.status,
 		});
-
-	// TODO: 백엔드 API 구현 후 아래 mock 제거 및 data.attendance.absenceReason 실제 데이터 사용
-	const mockAbsenceReason = '아파서 병원 다녀왔어요!';
 
 	return (
 		<div className="flex-1 overflow-y-auto px-10 py-6">
@@ -64,7 +72,7 @@ const _AttendanceSessionDetailContent = ({
 				onCancel={handleCancel}
 				onEdit={() => setIsEditMode(true)}
 				isSaveDisabled={selectedStatus === data.attendance.status}
-				absenceReason={mockAbsenceReason}
+				absenceReason={absenceReason}
 			/>
 
 			<SessionInfoSection

@@ -16,7 +16,6 @@ interface AttendanceStatusSectionProps {
 	onCancel: () => void;
 	onEdit: () => void;
 	isSaveDisabled: boolean;
-	// TODO: 백엔드 API 구현 후 optional(?) 제거 필요
 	absenceReason?: string | null;
 }
 
@@ -93,7 +92,6 @@ export const AttendanceStatusSection = ({
 								{formatISOStringToFullDateString(attendedAt)}
 							</p>
 						</div>
-						{/* TODO: 백엔드 API 구현 후 absenceReason 실제 데이터로 대체 필요 */}
 						<div className="flex gap-4">
 							<p className="w-20 shrink-0 font-medium text-body2 text-label-assistive">결석 사유</p>
 							<p className="font-medium text-body2 text-label-normal">

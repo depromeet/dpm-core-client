@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQueries } from '@tanstack/react-query';
 import {
 	Button,
 	cn,
@@ -23,7 +23,11 @@ import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringToFullDateString } from '@/lib/date';
-import { getAttendanceMeBySessionIdOptions } from '@/remotes/queries/attendance';
+import { submitAbsenceReasonOptions } from '@/remotes/mutations/attendance';
+import {
+	getAttendanceMeBySessionIdOptions,
+	getMyAbsenceReasonOptions,
+} from '@/remotes/queries/attendance';
 
 const MAX_REASON_LENGTH = 50;
 
@@ -90,8 +94,8 @@ function AbsenceReasonDrawer({
 }: AbsenceReasonDrawerProps) {
 	const [reason, setReason] = useState('');
 	const [isError, setIsError] = useState(false);
-	// TODO: 백엔드 API 구현 후 useMutation으로 교체
-	const [isPending, setIsPending] = useState(false);
+	const queryClient = useQueryClient();
+	const { mutateAsync, isPending } = useMutation(submitAbsenceReasonOptions(sessionId));
 
 	const handleSubmit = async () => {
 		if (!reason.trim()) {
@@ -101,17 +105,13 @@ function AbsenceReasonDrawer({
 		}
 
 		setIsError(false);
-		setIsPending(true);
 
 		try {
-			// TODO: 백엔드 API 구현 후 아래 주석 해제 및 실제 API 호출로 교체
-			// await attendance.submitAbsenceReason({ sessionId, reason: reason.trim() });
-			void sessionId;
+			await mutateAsync({ contents: reason.trim() });
+			await queryClient.invalidateQueries(getMyAbsenceReasonOptions({ sessionId }));
 			onSubmitSuccess();
 		} catch {
-			// TODO: 에러 토스트 표시 (toast('결석 사유 제출에 실패했어요. 다시 시도해주세요.'))
-		} finally {
-			setIsPending(false);
+			toast.error('결석 사유 제출에 실패했어요. 다시 시도해주세요.');
 		}
 	};
 
@@ -183,7 +183,7 @@ function AbsenceReasonSubmitted() {
 	const router = useRouter();
 
 	return (
-		<div className="fixed inset-0 z-50 flex flex-col bg-background-normal">
+		<div className="absolute inset-0 z-50 flex flex-col bg-background-normal">
 			<div className="flex flex-1 flex-col items-center justify-center gap-8 px-5">
 				<SubmitCompleteIcon />
 				<div className="flex flex-col items-center gap-2">
@@ -197,7 +197,6 @@ function AbsenceReasonSubmitted() {
 				</div>
 			</div>
 			<div className="px-5 pt-3 pb-5">
-				{/* TODO: 백엔드 API 구현 후 홈 라우트 경로 확인 */}
 				<Button variant="secondary" size="lg" className="w-full" onClick={() => router.push('/')}>
 					홈으로
 				</Button>
@@ -215,16 +214,18 @@ const AttendanceSessionDetailContainer = ({
 	sessionId,
 	onSubmitSuccess,
 }: AttendanceSessionDetailContainerProps) => {
-	const {
-		data: {
-			data: { session, attendance },
-		},
-	} = useSuspenseQuery(getAttendanceMeBySessionIdOptions({ sessionId }));
+	const [{ data: attendanceData }, { data: absenceReasonData }] = useSuspenseQueries({
+		queries: [
+			getAttendanceMeBySessionIdOptions({ sessionId }),
+			getMyAbsenceReasonOptions({ sessionId }),
+		],
+	});
 
+	const { session, attendance } = attendanceData.data;
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-	// TODO: 백엔드 API 구현 후 attendance.absenceReason 값이 있으면 버튼 미표시 처리
-	const isAbsent = attendance.status === 'ABSENT';
+	const hasSubmittedAbsenceReason = Boolean(absenceReasonData.data?.status);
+	const isAbsent = attendance.status === 'ABSENT' && !hasSubmittedAbsenceReason;
 
 	return (
 		<>
