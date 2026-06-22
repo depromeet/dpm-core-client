@@ -63,6 +63,7 @@ const config = {
 			{
 				android: {
 					usesCleartextTraffic: process.env.APP_ENV !== 'production',
+					extraMavenRepos: ['https://devrepo.kakao.com/nexus/content/groups/public/'],
 				},
 			},
 		],

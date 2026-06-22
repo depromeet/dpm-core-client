@@ -75,7 +75,7 @@ function WebViewContainer() {
 					bounces={false}
 					sharedCookiesEnabled={true}
 					allowsBackForwardNavigationGestures={true}
-					webviewDebuggingEnabled={__DEV__}
+					webviewDebuggingEnabled={__DEV__ || process.env.EXPO_PUBLIC_WEBVIEW_DEBUG === 'true'}
 				/>
 				<StatusBar style="dark" />
 			</KeyboardAvoidingView>
