@@ -8,7 +8,8 @@
 			"developmentClient": true,
 			"distribution": "internal",
 			"env": {
-				"EXPO_PUBLIC_WEBVIEW_URL": "https://core.depromeet.shop"
+				"EXPO_PUBLIC_WEBVIEW_URL": "https://core.depromeet.shop",
+				"EXPO_PUBLIC_WEBVIEW_DEBUG": "true"
 			}
 		},
 		"preview": {
@@ -17,13 +18,15 @@
 				"buildType": "app-bundle"
 			},
 			"env": {
-				"EXPO_PUBLIC_WEBVIEW_URL": "https://core.depromeet.shop"
+				"EXPO_PUBLIC_WEBVIEW_URL": "https://core.depromeet.shop",
+				"EXPO_PUBLIC_WEBVIEW_DEBUG": "true"
 			}
 		},
 		"staging": {
-			"distribution": "store",
+			"autoIncrement": true,
 			"env": {
-				"APP_ENV": "staging"
+				"EXPO_PUBLIC_WEBVIEW_URL": "https://core.depromeet.shop",
+				"EXPO_PUBLIC_WEBVIEW_DEBUG": "true"
 			}
 		},
 		"production": {
