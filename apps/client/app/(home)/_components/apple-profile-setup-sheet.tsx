@@ -40,9 +40,11 @@ export const AppleProfileSetupSheet = () => {
 	const [part, setPart] = useState<Part | null>(null);
 
 	// 설정이 필요해지면 자동으로 바텀시트를 연다.
+	// 사용자가 바텀시트가 왜 떴는지 헷갈리지 않도록 안내 토스트를 함께 노출한다.
 	useEffect(() => {
 		if (isSetupRequired) {
 			setIsOpen(true);
+			toast.info('원활한 활동을 위해 이름과 직군 설정이 필요해요.');
 		}
 	}, [isSetupRequired]);
 
