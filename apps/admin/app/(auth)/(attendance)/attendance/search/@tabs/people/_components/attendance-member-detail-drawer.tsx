@@ -3,7 +3,7 @@
 import { Suspense, useState } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query';
 import type { AttendanceSession } from '@dpm-core/api';
 import {
 	Badge,
@@ -27,6 +27,7 @@ import { LoadingBox } from '@/components/loading-box';
 import { useAttendanceStatusEdit } from '@/hooks/use-attendance-status-edit';
 import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
 import {
+	getAbsenceReasonsOptions,
 	getAttendanceByMemberDetailOptions,
 	getAttendanceBySessionDetailOptions,
 } from '@/remotes/queries/attendance';
@@ -73,7 +74,7 @@ const _AttendanceMemberDetailContent = ({ memberId }: { memberId: number }) => {
 	return (
 		<>
 			{data.attendance && (
-				<ul className="flex justify-between rounded-xl bg-background-subtle px-5 py-[18px] text-body2">
+				<ul className="flex justify-between rounded-xl bg-background-subtle px-5 py-4.5 text-body2">
 					<li>
 						<span className="mr-2 font-medium text-label-assistive">출석</span>
 						<span className="font-semibold text-label-subtle">
@@ -170,9 +171,16 @@ const _AttendanceSessionDetailView = ({
 	memberId: number;
 	sessionId: number;
 }) => {
-	const {
-		data: { data },
-	} = useSuspenseQuery(getAttendanceBySessionDetailOptions({ memberId, sessionId }));
+	const [{ data: sessionDetail }, { data: absenceReasonsData }] = useSuspenseQueries({
+		queries: [
+			getAttendanceBySessionDetailOptions({ memberId, sessionId }),
+			getAbsenceReasonsOptions({ sessionId }),
+		],
+	});
+
+	const { data } = sessionDetail;
+	const absenceReason =
+		absenceReasonsData.data.reasons.find((r) => r.memberId === memberId)?.contents ?? null;
 
 	const { isEditMode, selectedStatus, setSelectedStatus, setIsEditMode, handleSave, handleCancel } =
 		useAttendanceStatusEdit({
@@ -201,6 +209,7 @@ const _AttendanceSessionDetailView = ({
 				onCancel={handleCancel}
 				onEdit={() => setIsEditMode(true)}
 				isSaveDisabled={selectedStatus === data.attendance.status}
+				absenceReason={absenceReason}
 			/>
 
 			<SessionInfoSection
@@ -241,7 +250,7 @@ export const AttendanceMemberDetailDrawer = ({
 				}
 			}}
 		>
-			<SheetContent side="right" className="w-full gap-0 border-none p-0 sm:max-w-[600px]">
+			<SheetContent side="right" className="w-full gap-0 border-none p-0 sm:max-w-150">
 				{viewMode === 'member' ? (
 					<>
 						<SheetHeader className="flex-row items-center justify-between border-gray-200 border-b px-10 py-6">

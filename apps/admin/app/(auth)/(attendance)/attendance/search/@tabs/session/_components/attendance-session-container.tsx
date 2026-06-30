@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
-import { useInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Button } from '@dpm-core/shared';
 
@@ -13,7 +13,10 @@ import { LoadingBox } from '@/components/loading-box';
 import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
-import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
+import {
+	getAbsenceReasonsOptions,
+	getAttendanceBySessionOptions,
+} from '@/remotes/queries/attendance';
 import { getSessionWeeks } from '@/remotes/queries/session';
 
 import { AttendanceFilter } from '../../_components/attendance-filter';
@@ -63,8 +66,25 @@ const AttendanceSessionContainer = () => {
 		enabled: fetchStatus !== 'fetching',
 	});
 
-	const flatData = attendanceData?.pages.flatMap((page) => page.data.members) ?? [];
+	const rawData = attendanceData?.pages.flatMap((page) => page.data.members) ?? [];
 	const totalElements = attendanceData?.pages[0]?.data.totalElements ?? 0;
+
+	// TODO: GET /v2/sessions/{sessionId}/absence-reasons 로 excuseDocumentStatus 파생
+	// 백엔드가 출석 목록 응답에 해당 필드를 추가하면 rawData 직접 사용으로 교체 가능
+	const { data: absenceReasonsData, isSuccess: isAbsenceReasonsLoaded } = useQuery({
+		...getAbsenceReasonsOptions({ sessionId: attendanceSearchParams.week }),
+		enabled: !!attendanceSearchParams.week,
+	});
+	const submittedMemberIds = new Set(absenceReasonsData?.data.reasons.map((r) => r.memberId) ?? []);
+	const flatData = rawData.map((member) => ({
+		...member,
+		excuseDocumentStatus:
+			member.attendanceStatus !== 'ABSENT' || !isAbsenceReasonsLoaded
+				? null
+				: submittedMemberIds.has(member.id)
+					? ('SUBMITTED' as const)
+					: ('PENDING' as const),
+	}));
 
 	const { selectedIds, toggleItem, toggleAll, isAllSelected, clearSelection } =
 		useCheckboxSelection(flatData);
@@ -117,12 +137,12 @@ const AttendanceSessionContainer = () => {
 			{/* Desktop view (>= 768px) */}
 			<div className="hidden w-full md:block">
 				<section className="border-gray-200 border-b bg-white">
-					<div className="mx-auto max-w-[1200px] px-10 py-4">
+					<div className="mx-auto max-w-300 px-10 py-4">
 						<WeekFilter weeks={data.sessions} />
 					</div>
 				</section>
 
-				<section className="mx-auto max-w-[1200px] bg-white px-10 py-6">
+				<section className="mx-auto max-w-300 bg-white px-10 py-6">
 					<div className="mb-4 flex items-center gap-2">
 						<h2 className="font-bold text-label-normal text-title1 tracking-[-0.2px]">
 							출석 {selectedSession?.week}주차 (
@@ -132,10 +152,10 @@ const AttendanceSessionContainer = () => {
 					</div>
 
 					<div className="flex items-center justify-between">
-						<div className="w-[270px]">
+						<div className="w-67.5">
 							<SearchInput placeholder="디퍼 검색" />
 						</div>
-						<div className="flex items-center gap-[30px]">
+						<div className="flex items-center gap-7.5">
 							{selectedIds.length > 0 && (
 								<div className="flex items-center gap-3">
 									<p className="font-medium text-body1 text-primary-normal">

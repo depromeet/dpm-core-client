@@ -1,11 +1,13 @@
 import { http } from '../http';
 import type {
+	AbsenceReasonsResponse,
 	AttendanceByMemberReponse,
 	AttendanceBySessionIdReponse,
 	AttendanceBySessionReponse,
 	AttendanceCheckReponse,
 	AttendanceReponse,
 	AttendanceStatus,
+	MyAbsenceReasonResponse,
 } from './types';
 
 export const attendance = {
@@ -148,5 +150,25 @@ export const attendance = {
 		return await http.patch(`v1/sessions/${sessionId}/attendances/bulk`, {
 			json,
 		});
+	},
+
+	// 내 결석 사유서 조회
+	getMyAbsenceReason: async (params: { sessionId: number }) => {
+		return await http.get<MyAbsenceReasonResponse | null>(
+			`v2/sessions/${params.sessionId}/absence-reasons/me`,
+		);
+	},
+
+	// 결석 사유서 제출
+	submitAbsenceReason: async (params: { sessionId: number; contents: string }) => {
+		const { sessionId, ...json } = params;
+		return await http.post(`v2/sessions/${sessionId}/absence-reasons`, { json });
+	},
+
+	// 세션 결석 사유서 목록 조회 (운영진)
+	getAbsenceReasons: async (params: { sessionId: number }) => {
+		return await http.get<AbsenceReasonsResponse>(
+			`v2/sessions/${params.sessionId}/absence-reasons`,
+		);
 	},
 };

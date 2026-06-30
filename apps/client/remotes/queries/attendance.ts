@@ -49,3 +49,10 @@ export const getAttendanceMeBySessionIdOptions = (
 		queryFn: () => attendance.getMeBySessionId(params),
 		retry: false,
 	});
+
+export const getMyAbsenceReasonOptions = (params: { sessionId: number }) =>
+	queryOptions({
+		queryKey: [QUERY_KEY, 'absence-reason', 'me', params],
+		queryFn: () => attendance.getMyAbsenceReason(params),
+		retry: false,
+	});
