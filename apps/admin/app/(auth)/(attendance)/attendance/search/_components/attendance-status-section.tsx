@@ -16,6 +16,7 @@ interface AttendanceStatusSectionProps {
 	onCancel: () => void;
 	onEdit: () => void;
 	isSaveDisabled: boolean;
+	absenceReason?: string | null;
 }
 
 export const AttendanceStatusSection = ({
@@ -29,6 +30,7 @@ export const AttendanceStatusSection = ({
 	onCancel,
 	onEdit,
 	isSaveDisabled,
+	absenceReason,
 }: AttendanceStatusSectionProps) => {
 	return (
 		<section className="mb-6">
@@ -88,6 +90,12 @@ export const AttendanceStatusSection = ({
 							<p className="w-20 font-medium text-body2 text-label-assistive">출석 시간</p>
 							<p className="font-medium text-body2 text-label-normal">
 								{formatISOStringToFullDateString(attendedAt)}
+							</p>
+						</div>
+						<div className="flex gap-4">
+							<p className="w-20 shrink-0 font-medium text-body2 text-label-assistive">결석 사유</p>
+							<p className="font-medium text-body2 text-label-normal">
+								{absenceReason ?? '-'}
 							</p>
 						</div>
 					</div>

@@ -42,7 +42,11 @@ export interface AttendanceReponse {
 
 export interface AttendanceBySessionIdReponse {
 	member: AttendanceMember;
-	attendance: { status: AttendanceStatus; attendedAt: string; updatedAt: string };
+	attendance: {
+		status: AttendanceStatus;
+		attendedAt: string;
+		updatedAt: string;
+	};
 	session: AttendanceSession;
 }
 
@@ -64,6 +68,28 @@ export interface AttendanceBySessionReponse {
 	hasNext: boolean;
 	nextCursorId: number | null;
 	totalElements: number;
+}
+
+export type ExcuseDocumentStatus = 'SUBMITTED' | 'PENDING' | null;
+
+export interface MyAbsenceReasonResponse {
+	contents: string;
+	status: ExcuseDocumentStatus;
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface AbsenceReason {
+	memberId: number;
+	memberName: string;
+	contents: string;
+	status: ExcuseDocumentStatus;
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface AbsenceReasonsResponse {
+	reasons: AbsenceReason[];
 }
 
 export interface AttendanceByMemberReponse {

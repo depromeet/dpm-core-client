@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import type { RefObject } from 'react';
 import { useState } from 'react';
-import type { AttendanceStatus } from '@dpm-core/api';
+import type { AttendanceStatus, ExcuseDocumentStatus } from '@dpm-core/api';
 import { Checkbox } from '@dpm-core/shared';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
 import { EmptyView } from '@/components/attendance/EmptyView';
+import { ExcuseDocumentCell } from '@/components/attendance/ExcuseDocumentCell';
 import { Profile } from '@/components/attendance/profile';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 
@@ -18,6 +19,7 @@ interface AttendanceMember {
 	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER';
 	attendanceStatus: AttendanceStatus;
 	isAdmin: boolean;
+	excuseDocumentStatus: ExcuseDocumentStatus;
 }
 
 interface AttendanceListProps {
@@ -53,7 +55,7 @@ const AttendanceList = ({
 
 	if (data.length === 0) {
 		return (
-			<div className="md:flex md:min-h-[400px] md:items-center md:justify-center">
+			<div className="md:flex md:min-h-100 md:items-center md:justify-center">
 				<EmptyView message="조건에 맞는 디퍼를 찾을 수 없어요" />
 			</div>
 		);
@@ -85,10 +87,10 @@ const AttendanceList = ({
 			</section>
 
 			{/* Desktop view (>= 768px) */}
-			<section className="relative mx-auto mb-15 hidden max-w-[1200px] px-10 md:block">
+			<section className="relative mx-auto mb-15 hidden max-w-300 px-10 md:block">
 				<div className="overflow-auto">
-					<div className="flex items-center justify-between bg-gray-50 py-2.5 pl-5">
-						<div className="flex items-center gap-4">
+					<div className="flex items-center bg-gray-50 py-2.5 pr-5 pl-5">
+						<div className="flex flex-1 items-center gap-4">
 							<Checkbox
 								checked={isAllSelected}
 								onCheckedChange={onToggleAll}
@@ -97,7 +99,10 @@ const AttendanceList = ({
 							/>
 							<span className="font-medium text-body2 text-label-subtle">멤버 정보</span>
 						</div>
-						<span className="min-w-[200px] font-medium text-body2 text-label-subtle">
+						<span className="w-30 shrink-0 font-medium text-body2 text-label-subtle">
+							결석 사유서
+						</span>
+						<span className="w-50 shrink-0 font-medium text-body2 text-label-subtle">
 							출석 상태
 						</span>
 					</div>
@@ -112,20 +117,24 @@ const AttendanceList = ({
 								tabIndex={0}
 								onClick={() => handleDesktopRowClick(member.id)}
 								onKeyDown={(e) => {
+									if (e.target !== e.currentTarget) {
+										return;
+									}
 									if (e.key === 'Enter' || e.key === ' ') {
 										e.preventDefault();
 										handleDesktopRowClick(member.id);
 									}
 								}}
-								className="flex w-full cursor-pointer items-center justify-between border-gray-200 border-b py-5 pl-5 text-left transition-colors hover:bg-gray-50"
+								className="flex w-full cursor-pointer items-center border-gray-200 border-b py-5 pr-5 pl-5 text-left transition-colors hover:bg-gray-50"
 							>
-								<div className="flex items-center gap-4">
+								<div className="flex flex-1 items-center gap-4">
 									<Checkbox
 										checked={isChecked}
 										onCheckedChange={() => onToggleItem(member.id)}
 										className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
 										aria-label={`${member.name} 선택`}
 										onClick={(e) => e.stopPropagation()}
+										onKeyDown={(e) => e.stopPropagation()}
 									/>
 									<Profile
 										size={40}
@@ -135,8 +144,11 @@ const AttendanceList = ({
 										isAdmin={member.isAdmin}
 									/>
 								</div>
+								<div className="w-30 shrink-0">
+									<ExcuseDocumentCell status={member.excuseDocumentStatus} />
+								</div>
 								<AttendanceStatusLabel
-									className="min-w-[200px] justify-items-start"
+									className="w-50 shrink-0 justify-items-start"
 									status={member.attendanceStatus}
 								/>
 							</div>

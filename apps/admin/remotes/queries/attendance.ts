@@ -63,3 +63,10 @@ export const getAttendanceBySessionDetailOptions = ({
 		queryFn: () => attendance.getAttendanceBySessionDetail({ memberId, sessionId }),
 		retry: false,
 	});
+
+export const getAbsenceReasonsOptions = ({ sessionId }: { sessionId: number }) =>
+	queryOptions({
+		queryKey: [ATTENDANCE_QUERY_KEY, 'absence-reasons', sessionId],
+		queryFn: () => attendance.getAbsenceReasons({ sessionId }),
+		retry: false,
+	});

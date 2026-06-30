@@ -3,13 +3,16 @@
 import { Suspense } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { Sheet, SheetContent } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { useAttendanceStatusEdit } from '@/hooks/use-attendance-status-edit';
-import { getAttendanceBySessionDetailOptions } from '@/remotes/queries/attendance';
+import {
+	getAbsenceReasonsOptions,
+	getAttendanceBySessionDetailOptions,
+} from '@/remotes/queries/attendance';
 
 import { AttendanceDetailHeader } from '../../../_components/attendance-detail-header';
 import { AttendanceStatusSection } from '../../../_components/attendance-status-section';
@@ -30,9 +33,17 @@ const _AttendanceSessionDetailContent = ({
 	memberId: number;
 	sessionId: number;
 }) => {
-	const {
-		data: { data },
-	} = useSuspenseQuery(getAttendanceBySessionDetailOptions({ memberId, sessionId }));
+	const { data: sessionDetail } = useSuspenseQuery(
+		getAttendanceBySessionDetailOptions({ memberId, sessionId }),
+	);
+	const { data: absenceReasonsData } = useQuery({
+		...getAbsenceReasonsOptions({ sessionId }),
+		enabled: !!sessionId,
+	});
+
+	const { data } = sessionDetail;
+	const absenceReason =
+		absenceReasonsData?.data.reasons.find((r) => r.memberId === memberId)?.contents ?? null;
 
 	const { isEditMode, selectedStatus, setSelectedStatus, setIsEditMode, handleSave, handleCancel } =
 		useAttendanceStatusEdit({
@@ -61,6 +72,7 @@ const _AttendanceSessionDetailContent = ({
 				onCancel={handleCancel}
 				onEdit={() => setIsEditMode(true)}
 				isSaveDisabled={selectedStatus === data.attendance.status}
+				absenceReason={absenceReason}
 			/>
 
 			<SessionInfoSection
@@ -80,7 +92,7 @@ export const AttendanceSessionDetailDrawer = ({
 }: AttendanceSessionDetailDrawerProps) => {
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
-			<SheetContent side="right" className="w-full gap-0 border-none p-0 sm:max-w-[600px]">
+			<SheetContent side="right" className="w-full gap-0 border-none p-0 sm:max-w-150">
 				<AttendanceDetailHeader title="출석 상세" />
 				<ErrorBoundary
 					fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
