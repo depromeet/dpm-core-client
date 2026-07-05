@@ -81,7 +81,8 @@ export default async function RootLayout({
 							<AppShell>{children}</AppShell>
 						</BridgeProvider>
 					</AppConfigProvider>
-					<ReactQueryDevtools />
+					{/* 앱(WebView) 환경에선 Safari Inspector 충돌 + 화면 침범 때문에 비활성화 */}
+					{!isApp && <ReactQueryDevtools />}
 					<Toaster
 						position="top-center"
 						visibleToasts={1}
