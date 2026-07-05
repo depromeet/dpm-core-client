@@ -13,7 +13,7 @@ export type TokenProvider = () => string | undefined | Promise<string | undefine
 
 class Http {
 	private instance: KyInstance;
-	private tokenProvider: TokenProvider = () => Cookies.get(COOKIE_KEYS.ACCESS_TOKEN);
+	private tokenProvider: TokenProvider = () => Cookies.get(COOKIE_KEYS.REFRESH_TOKEN);
 
 	constructor() {
 		const instance = ky.extend({
