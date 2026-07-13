@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { Suspense } from 'react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { motion } from 'motion/react';
 import { ArrowRight, Button, fadeInOutVariatns } from '@dpm-core/shared';
@@ -11,7 +13,7 @@ import { showAttendanceBanner } from '@/lib/attendance/banner';
 import { formatSessionWeekString } from '@/lib/session/format';
 import { getSessionCurrentOptions } from '@/remotes/queries/session';
 
-export const HomeCheckAttendanceBanner = () => {
+const HomeCheckAttendanceBannerContainer = () => {
 	const {
 		data: { data: attendanceSession },
 	} = useSuspenseQuery(getSessionCurrentOptions());
@@ -65,3 +67,13 @@ export const HomeCheckAttendanceBanner = () => {
 		</motion.div>
 	);
 };
+
+// 배너는 부가 요소이므로 sessions/next 실패/로딩 시 조용히 숨긴다 (홈 전체가 깨지지 않도록)
+export const HomeCheckAttendanceBanner = ErrorBoundary.with(
+	{ fallback: () => null },
+	() => (
+		<Suspense fallback={null}>
+			<HomeCheckAttendanceBannerContainer />
+		</Suspense>
+	),
+);
