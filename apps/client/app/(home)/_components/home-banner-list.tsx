@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Aesterisk, gaTrackHomeEnter } from '@dpm-core/shared';
 
@@ -10,7 +11,7 @@ import { getSessionCurrentOptions } from '@/remotes/queries/session';
 
 import { SessionCard } from './session-card';
 
-export const HomeBannerList = () => {
+const HomeBannerListContainer = () => {
 	const {
 		data: { data: currentWeekSession },
 	} = useSuspenseQuery(getSessionCurrentOptions());
@@ -41,3 +42,13 @@ export const HomeBannerList = () => {
 		</section>
 	);
 };
+
+// 배너는 부가 요소이므로 sessions/next 실패/로딩 시 조용히 숨긴다 (홈 전체가 깨지지 않도록)
+export const HomeBannerList = ErrorBoundary.with(
+	{ fallback: () => null },
+	() => (
+		<Suspense fallback={null}>
+			<HomeBannerListContainer />
+		</Suspense>
+	),
+);
