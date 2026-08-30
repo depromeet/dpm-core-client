@@ -1,4 +1,5 @@
 import '@/lib/api-setup';
+import './globals.css';
 
 import type { Metadata, Viewport } from 'next';
 import { headers } from 'next/headers';
@@ -14,13 +15,12 @@ import {
 	Toaster,
 } from '@dpm-core/shared';
 
-import { QueryProvider } from '../providers/query-provider';
-import { pretendard } from './fonts';
-
-import './globals.css';
-
 import { AppConfigProvider } from '@/providers/app-config-provider';
 import { BridgeProvider } from '@/providers/bridge-provider';
+import { ClarityProvider } from '@/providers/clarity-provider';
+
+import { QueryProvider } from '../providers/query-provider';
+import { pretendard } from './fonts';
 
 export const metadata: Metadata = {
 	title: 'Dpmcore',
@@ -77,9 +77,11 @@ export default async function RootLayout({
 						platform={platform}
 						safeAreaInsets={safeAreaInsets}
 					>
-						<BridgeProvider>
-							<AppShell>{children}</AppShell>
-						</BridgeProvider>
+						<ClarityProvider>
+							<BridgeProvider>
+								<AppShell>{children}</AppShell>
+							</BridgeProvider>
+						</ClarityProvider>
 					</AppConfigProvider>
 					{/* 앱(WebView) 환경에선 Safari Inspector 충돌 + 화면 침범 때문에 비활성화 */}
 					{!isApp && <ReactQueryDevtools />}
