@@ -1,10 +1,16 @@
+'use client';
+
 import Link from 'next/link';
+
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
+import { useClarity } from '@/providers/clarity-provider';
 
 const USER_VOC_LINK = 'https://forms.gle/yV88T98WsADu6VNc6';
 const USER_GUIDE_LINK =
 	'https://www.notion.so/depromeet/31745b4338b380e2b8e8f64767fb27f1?source=copy_link';
 
 export const UserActionList = () => {
+	const { track } = useClarity();
 	return (
 		<section className="my-2 px-4">
 			<div className="flex gap-3">
@@ -12,6 +18,7 @@ export const UserActionList = () => {
 					href={USER_VOC_LINK}
 					target="_blank"
 					className="flex basis-1/2 flex-col items-start gap-3 rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f9faff_59.35%,#eff3ff_73.36%)] p-4 shadow-[0_0_10px_rgba(0,0,0,0.04)]"
+					onClick={() => track(CLARITY_ACTION_ID.HOME.VOC_BUTTON_CLICK)}
 				>
 					<div className="flex w-full flex-wrap items-center justify-between">
 						<p className="font-semibold text-body2 text-label-subtle">

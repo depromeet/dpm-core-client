@@ -57,7 +57,9 @@ export type ClarityPageId = (typeof CLARITY_PAGE_ID)[ClarityPageKey];
  * },
  */
 export const CLARITY_ACTION_ID = {
-	HOME: {},
+	HOME: {
+		VOC_BUTTON_CLICK: 'voc_button_click',
+	},
 	LOGIN: {},
 	LOGIN_EMAIL: {},
 	AUTH: {},
