@@ -3,7 +3,7 @@
 import Link from 'next/link';
 
 import { CLARITY_ACTION_ID } from '@/constants/clarity';
-import { useClarity } from '@/providers/clarity-provider';
+import { useClarity } from '@/providers/client-clarity-adapter';
 
 const USER_VOC_LINK = 'https://forms.gle/yV88T98WsADu6VNc6';
 const USER_GUIDE_LINK =

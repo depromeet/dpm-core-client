@@ -17,7 +17,7 @@ import {
 
 import { AppConfigProvider } from '@/providers/app-config-provider';
 import { BridgeProvider } from '@/providers/bridge-provider';
-import { ClarityProvider } from '@/providers/clarity-provider';
+import { ClientClarityAdapter } from '@/providers/client-clarity-adapter';
 
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
@@ -35,6 +35,9 @@ export const viewport: Viewport = {
 	minimumScale: 1,
 	viewportFit: 'cover',
 };
+
+const CLARITY_PROJECT_ID = 'yac8zy2ime';
+
 export default async function RootLayout({
 	children,
 }: Readonly<{
@@ -77,11 +80,11 @@ export default async function RootLayout({
 						platform={platform}
 						safeAreaInsets={safeAreaInsets}
 					>
-						<ClarityProvider>
+						<ClientClarityAdapter projectId={CLARITY_PROJECT_ID}>
 							<BridgeProvider>
 								<AppShell>{children}</AppShell>
 							</BridgeProvider>
-						</ClarityProvider>
+						</ClientClarityAdapter>
 					</AppConfigProvider>
 					{/* 앱(WebView) 환경에선 Safari Inspector 충돌 + 화면 침범 때문에 비활성화 */}
 					{!isApp && <ReactQueryDevtools />}

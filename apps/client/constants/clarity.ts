@@ -1,16 +1,12 @@
-/**
- * @description app 하위에 있는 경로에 따른 Clarity 페이지 ID 목록
- *
- * 새 페이지를 추가할 때는 다음 두 곳을 함께 수정한다.
- * 1. 이 객체에 분석용 페이지 ID를 `snake_case`로 추가한다.
- * 2. `@/lib/clarity/page`에 pathname과 페이지 ID의 정적 또는 동적 매핑을 추가한다.
- *
- * 수집을 시작한 ID의 문자열 값은 기존 데이터와의 연속성을 위해 변경하지 않는다.
- *
- * @example
- * SESSION_CREATE: 'session_create'
- */
-export const CLARITY_PAGE_ID = {
+import {
+	type ClarityActionIdOf,
+	type ClarityPageIdOf,
+	defineClarityActionIds,
+	defineClarityPageIds,
+} from '@dpm-core/shared';
+
+/** client Clarity 페이지 ID */
+export const CLARITY_PAGE_ID = defineClarityPageIds({
 	UNKNOWN: 'unknown',
 	HOME: 'home', // 홈
 	LOGIN: 'login', // 로그인
@@ -35,28 +31,12 @@ export const CLARITY_PAGE_ID = {
 	ATTENDANCE_POLICY: 'attendance_policy', // 출석 규정
 	ATTENDANCE_SESSION: 'attendance_session', // 출석 체크
 	ATTENDANCE_SESSION_RESULT: 'attendance_session_result', // 출석 체크 결과
-} as const;
+});
 
-type ClarityPageKey = keyof typeof CLARITY_PAGE_ID;
+export type ClarityPageId = ClarityPageIdOf<typeof CLARITY_PAGE_ID>;
 
-export type ClarityPageId = (typeof CLARITY_PAGE_ID)[ClarityPageKey];
-
-/**
- * @description Clarity 액션 ID 목록
- *
- * 새 액션은 해당 페이지 객체 아래에 추가한다. 페이지 정보는 `track`에서 자동으로
- * 결합하므로 액션 값에는 `home_`, `login_` 같은 페이지 접두사를 넣지 않는다.
- * 수집을 시작한 액션의 문자열 값은 기존 데이터와의 연속성을 위해 변경하지 않는다.
- *
- * @example
- * HOME: {
- *   VOC_BUTTON_CLICK: 'voc_button_click',
- * },
- * LOGIN: {
- *   KAKAO_BUTTON_CLICK: 'kakao_button_click',
- * },
- */
-export const CLARITY_ACTION_ID = {
+/** client Clarity 액션 ID */
+export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 	HOME: {
 		VOC_BUTTON_CLICK: 'voc_button_click',
 	},
@@ -82,12 +62,6 @@ export const CLARITY_ACTION_ID = {
 	ATTENDANCE_POLICY: {},
 	ATTENDANCE_SESSION: {},
 	ATTENDANCE_SESSION_RESULT: {},
-} as const satisfies Record<Exclude<ClarityPageKey, 'UNKNOWN'>, Record<string, string>>;
+});
 
-type DeepValue<T> = T extends string
-	? T
-	: {
-			[K in keyof T]: DeepValue<T[K]>;
-		}[keyof T];
-
-export type ClarityActionId = DeepValue<typeof CLARITY_ACTION_ID>;
+export type ClarityActionId = ClarityActionIdOf<typeof CLARITY_ACTION_ID>;

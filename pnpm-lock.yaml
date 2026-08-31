@@ -160,9 +160,6 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.1.1
         version: 5.2.2(react-hook-form@7.71.2(react@19.1.0))
-      '@microsoft/clarity':
-        specifier: ^1.0.2
-        version: 1.0.2
       '@radix-ui/react-dialog':
         specifier: ^1.1.14
         version: 1.1.15(@types/react-dom@19.2.3(@types/react@19.1.17))(@types/react@19.1.17)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -403,6 +400,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.1.1
         version: 5.2.2(react-hook-form@7.71.2(react@19.1.0))
+      '@microsoft/clarity':
+        specifier: ^1.0.2
+        version: 1.0.2
       '@ncdai/react-wheel-picker':
         specifier: ^1.1.0
         version: 1.2.0(react@19.1.0)

@@ -17,7 +17,6 @@
 		"@dpm-core/native": "workspace:*",
 		"@dpm-core/shared": "workspace:*",
 		"@hookform/resolvers": "^5.1.1",
-		"@microsoft/clarity": "^1.0.2",
 		"@radix-ui/react-dialog": "^1.1.14",
 		"@radix-ui/react-scroll-area": "^1.2.10",
 		"@radix-ui/react-toggle-group": "^1.1.10",
