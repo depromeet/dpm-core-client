@@ -51,8 +51,6 @@
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
 		"@types/react-lottie": "^1",
-		"tailwindcss": "^4",
-		"tw-animate-css": "^1.3.4",
 		"typescript": "^5"
 	}
 }
