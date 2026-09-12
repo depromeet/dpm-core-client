@@ -1,0 +1,28 @@
+name: Check Build
+
+on: pull_request
+
+jobs:
+  fe-build:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_STAGE: development
+      NEXT_PUBLIC_API_BASE_URL: https://dev-api.depromeet.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
