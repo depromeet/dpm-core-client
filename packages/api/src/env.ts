@@ -1,17 +1,27 @@
-type Stage = 'development' | 'production';
+const stages = ['development', 'production'] as const;
+type Stage = (typeof stages)[number];
 
 const getStage = (): Stage => {
-	const stage = process.env.NEXT_PUBLIC_STAGE;
-	if (stage === 'production') return 'production';
+	const stage = process.env.NEXT_PUBLIC_STAGE as Stage | undefined;
+	if (!stage) {
+		throw new Error('NEXT_PUBLIC_STAGE is not set');
+	}
 
-	return 'development';
+	if (!stages.includes(stage)) {
+		throw new Error(`Invalid stage: ${stage}. Must be one of: ${stages.join(', ')}`);
+	}
+
+	return stage;
 };
 
 export const IS_PROD = getStage() === 'production';
 
 export const getApiBaseUrl = (): string => {
-	if (IS_PROD) {
-		return 'https://api.depromeet.com';
+	const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+	if (!baseUrl) {
+		throw new Error('NEXT_PUBLIC_API_BASE_URL is not set');
 	}
-	return 'https://api.depromeet.shop';
+
+	return baseUrl;
 };
