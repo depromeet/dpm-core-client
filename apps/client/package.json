@@ -13,8 +13,8 @@
 		"clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next"
 	},
 	"dependencies": {
-		"@dpm-core/native": "workspace:*",
 		"@dpm-core/api": "workspace:*",
+		"@dpm-core/native": "workspace:*",
 		"@dpm-core/shared": "workspace:*",
 		"@hookform/resolvers": "^5.1.1",
 		"@radix-ui/react-dialog": "^1.1.14",
@@ -31,7 +31,7 @@
 		"lottie-react": "^2.4.1",
 		"lucide-react": "^0.514.0",
 		"motion": "^12.23.0",
-		"next": "15.3.6",
+		"next": "15.5.24",
 		"react": "^19.0.1",
 		"react-dom": "^19.0.1",
 		"react-hook-form": "^7.60.0",

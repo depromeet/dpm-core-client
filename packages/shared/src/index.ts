@@ -1,3 +1,5 @@
+// Clarity
+export * from './clarity';
 // Components
 export * from './components/app-shell-provider';
 export * from './components/assignment-submit-status';

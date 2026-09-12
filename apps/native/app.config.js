@@ -13,7 +13,7 @@ if (!kakaoNativeAppKey) {
 const config = {
 	name: 'Depromeet',
 	slug: 'depromeet-core',
-	version: '1.1.1',
+	version: '1.2.0',
 	orientation: 'portrait',
 	icon: './assets/images/icon.png',
 	scheme: 'native',
