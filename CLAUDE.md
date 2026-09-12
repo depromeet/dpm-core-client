@@ -147,8 +147,8 @@ pnpm -r list
 Next.js 앱에서 `transpilePackages: ['@dpm-core/shared']`가 설정되어 있는지 확인하세요.
 
 ### 로컬 개발 환경
-- **Client**: `https://local-core.depromeet.shop:3010` (HTTPS 인증서 필요)
-- **Admin**: `https://local-admin.depromeet.shop:3020` (HTTPS 인증서 필요)
+- **Client**: `https://local-core.depromeet.com:3010` (HTTPS 인증서 필요)
+- **Admin**: `https://local-admin.depromeet.com:3020` (HTTPS 인증서 필요)
 - 루트 디렉토리에 SSL 인증서 파일 필요:
-  - `local-core.depromeet.shop.pem` / `local-core.depromeet.shop-key.pem`
-  - `local-admin.depromeet.shop.pem` / `local-admin.depromeet.shop-key.pem`
+  - `local-core.depromeet.com.pem` / `local-core.depromeet.com-key.pem`
+  - `local-admin.depromeet.com.pem` / `local-admin.depromeet.com-key.pem`

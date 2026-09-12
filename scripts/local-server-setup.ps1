@@ -2,8 +2,8 @@
 # 관리자 권한으로 실행 필요
 
 # 로컬 호스트명 설정
-$CLIENT_HOST = "local-core.depromeet.shop"
-$ADMIN_HOST = "local-admin.depromeet.shop"
+$CLIENT_HOST = "local-core.depromeet.com"
+$ADMIN_HOST = "local-admin.depromeet.com"
 # Windows hosts 파일 경로
 $HOSTS_FILE = "$env:SystemRoot\System32\drivers\etc\hosts"
 

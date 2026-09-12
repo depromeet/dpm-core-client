@@ -5,7 +5,7 @@ import { fileURLToPath, parse } from 'node:url';
 import next from 'next';
 
 const port = 3020;
-const hostname = 'local-admin.depromeet.shop';
+const hostname = 'local-admin.depromeet.com';
 const dev = process.env.NODE_ENV !== 'production';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,10 +28,10 @@ app.prepare().then(() => {
 	const localServer = createServer(
 		{
 			key: fs.readFileSync(
-				path.join(__dirname, '..', '..', '..', 'local-admin.depromeet.shop-key.pem'),
+				path.join(__dirname, '..', '..', '..', 'local-admin.depromeet.com-key.pem'),
 			),
 			cert: fs.readFileSync(
-				path.join(__dirname, '..', '..', '..', 'local-admin.depromeet.shop.pem'),
+				path.join(__dirname, '..', '..', '..', 'local-admin.depromeet.com.pem'),
 			),
 		},
 		(req, res) => {
