@@ -4,11 +4,11 @@ import { usePathname } from 'next/navigation';
 import { type PropsWithChildren, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { HTTPError } from 'ky';
+import { IS_PROD } from '@dpm-core/api';
 import { type ClarityActor, createClarity, createClarityMemberActor } from '@dpm-core/shared';
 
 import type { ClarityActionId, ClarityPageId } from '@/constants/clarity';
 import { getClarityPageId } from '@/lib/clarity/page';
-import { IS_PROD } from '@/lib/env';
 import { useAppConfig } from '@/providers/app-config-provider';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
