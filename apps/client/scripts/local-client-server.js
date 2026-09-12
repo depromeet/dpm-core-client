@@ -5,7 +5,7 @@ import { fileURLToPath, parse } from 'node:url';
 import next from 'next';
 
 const port = 3010;
-const hostname = 'local-core.depromeet.shop';
+const hostname = 'local-core.depromeet.com';
 const dev = process.env.NODE_ENV !== 'production';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,11 +28,9 @@ app.prepare().then(() => {
 	const localServer = createServer(
 		{
 			key: fs.readFileSync(
-				path.join(__dirname, '..', '..', '..', 'local-core.depromeet.shop-key.pem'),
+				path.join(__dirname, '..', '..', '..', 'local-core.depromeet.com-key.pem'),
 			),
-			cert: fs.readFileSync(
-				path.join(__dirname, '..', '..', '..', 'local-core.depromeet.shop.pem'),
-			),
+			cert: fs.readFileSync(path.join(__dirname, '..', '..', '..', 'local-core.depromeet.com.pem')),
 		},
 		(req, res) => {
 			const parsedUrl = parse(req.url, true);

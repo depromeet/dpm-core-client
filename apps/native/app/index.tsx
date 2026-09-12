@@ -15,7 +15,7 @@ export const { WebView } = createWebView({
 	debug: __DEV__,
 });
 
-const WEBVIEW_URL = process.env.EXPO_PUBLIC_WEBVIEW_URL ?? 'https://core.depromeet.shop';
+const WEBVIEW_URL = process.env.EXPO_PUBLIC_WEBVIEW_URL ?? 'https://dev.depromeet.com';
 
 function WebViewContainer() {
 	const webViewRef = useRef<NativeWebView>(null);

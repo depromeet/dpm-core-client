@@ -11,7 +11,7 @@ export const getAppleRedirectUri = (): string => {
 	if (IS_PROD) {
 		return 'https://core.depromeet.com/login/apple/callback';
 	}
-	return 'https://core.depromeet.shop/login/apple/callback';
+	return 'https://dev.depromeet.com/login/apple/callback';
 };
 
 /**
