@@ -2,11 +2,13 @@ import { logger } from '@dpm-core/shared';
 
 import { BASE_URL, http } from '../http';
 import type { ApiResponse } from '../type';
-import { setAuthCookies, setCookie } from './cookie';
+import { setAuthCookies } from './cookie';
 
 interface ReissueResponse {
 	token: string;
 	expirationTime: number;
+	refreshToken: string;
+	refreshTokenExpirationTime: number;
 }
 
 interface KakaoNativeLoginResponse {
@@ -21,7 +23,10 @@ interface KakaoNativeLoginResponse {
 export const auth = {
 	reissue: async () => {
 		const res = await http.get<ReissueResponse>('v1/reissue');
-		setCookie(res.data.token, res.data.expirationTime);
+		setAuthCookies({
+			accessToken: res.data.token,
+			refreshToken: res.data.refreshToken,
+		});
 		return res;
 	},
 	login: async (params: { email: string; password: string }) => {
