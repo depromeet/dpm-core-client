@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
 		const redirectResponse = NextResponse.redirect(new URL('/', request.url), { status: 303 });
 
-		// core.depromeet.shop → .depromeet.shop (api 서브도메인과 쿠키 공유)
+		// core.depromeet.com → .depromeet.com (api 서브도메인과 쿠키 공유)
 		const hostname = new URL(request.url).hostname;
 		const domain = hostname.substring(hostname.indexOf('.'));
 

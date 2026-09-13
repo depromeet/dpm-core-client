@@ -33,5 +33,5 @@
 		}
 	},
 	"globalDependencies": ["package.json", "yarn.lock", "turbo.json", "tsconfig.base.json"],
-	"globalEnv": ["NEXT_PUBLIC_STAGE"]
+	"globalEnv": ["NEXT_PUBLIC_STAGE", "NEXT_PUBLIC_API_BASE_URL"]
 }

@@ -2,7 +2,7 @@ import type { AfterResponseHook } from 'ky';
 import ky from 'ky';
 import { logger } from '@dpm-core/shared';
 
-import { setCookie } from '../auth/cookie';
+import { setAuthCookies } from '../auth/cookie';
 
 interface RefreshPluginOptions {
 	whitelist?: (string | RegExp)[];
@@ -66,7 +66,10 @@ export function createRefreshPlugin(options?: RefreshPluginOptions): AfterRespon
 						const data = await res.json();
 						logger.auth('refresh 성공', data);
 
-						setCookie(data.data.token, data.data.expirationTime);
+						setAuthCookies({
+							accessToken: data.data.token,
+							refreshToken: data.data.refreshToken,
+						});
 
 						request.headers.set('Authorization', `Bearer ${data.data.token}`);
 

@@ -1,13 +1,4 @@
-type Stage = 'development' | 'production';
-
-const getStage = (): Stage => {
-	const stage = process.env.NEXT_PUBLIC_STAGE;
-	if (stage === 'production') return 'production';
-
-	return 'development';
-};
-
-export const IS_PROD = getStage() === 'production';
+import { IS_PROD } from '@dpm-core/api';
 
 /**
  * Apple OAuth 관련 환경변수
@@ -20,7 +11,7 @@ export const getAppleRedirectUri = (): string => {
 	if (IS_PROD) {
 		return 'https://core.depromeet.com/login/apple/callback';
 	}
-	return 'https://core.depromeet.shop/login/apple/callback';
+	return 'https://dev.depromeet.com/login/apple/callback';
 };
 
 /**

@@ -1,5 +1,7 @@
 {
 	"extends": "@dpm-core/typescript-config/react-library.json",
-	"include": ["src"],
-	"exclude": ["dist"]
+	"include": ["src/**/*.ts"],
+	"compilerOptions": {
+		"types": ["node"]
+	}
 }
