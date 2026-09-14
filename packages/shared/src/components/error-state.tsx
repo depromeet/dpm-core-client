@@ -43,13 +43,7 @@ interface ErrorStateProps {
 
 const ErrorStateIcon = () => {
 	return (
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="33"
-			height="32"
-			viewBox="0 0 33 32"
-			fill="none"
-		>
+		<svg xmlns="http://www.w3.org/2000/svg" width="33" height="32" viewBox="0 0 33 32" fill="none">
 			<title>error</title>
 			<path
 				fillRule="evenodd"
@@ -65,7 +59,9 @@ export const ErrorState = ({ action, className, variant }: ErrorStateProps) => {
 	const content = ERROR_STATE_CONTENT[variant];
 
 	return (
-		<div className={cn('relative flex h-dvh w-full flex-col items-center justify-center', className)}>
+		<div
+			className={cn('relative flex h-dvh w-full flex-col items-center justify-center', className)}
+		>
 			<ErrorStateIcon />
 			<h1 className="mt-8 mb-4 text-center font-bold text-label-strong text-title1">
 				{content.title}

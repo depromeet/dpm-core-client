@@ -2,7 +2,7 @@
 
 import { Button, ErrorState } from '@dpm-core/shared';
 
-export default function Error({ reset }: { reset: () => void }) {
+export default function ErrorPage({ reset }: { reset: () => void }) {
 	return (
 		<ErrorState
 			variant="network"
