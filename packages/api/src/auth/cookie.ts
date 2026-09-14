@@ -2,6 +2,22 @@ import Cookies from 'js-cookie';
 
 import { COOKIE_KEYS } from '../constants';
 
+export const getSharedCookieDomain = (hostname: string) => {
+	const labels = hostname.split('.');
+	const isIpAddress = labels.every((label) => /^\d+$/.test(label));
+	if (labels.length < 2 || isIpAddress) {
+		return undefined;
+	}
+
+	return `.${labels.slice(-2).join('.')}`;
+};
+
+export const getSharedAuthCookieOptions = (hostname: string) =>
+	({
+		domain: getSharedCookieDomain(hostname),
+		path: '/',
+	}) as const;
+
 /**
  * JWT payload의 exp claim(초 단위)을 읽어 Date로 변환.
  * 디코드 실패 시 undefined → js-cookie가 세션 쿠키로 처리.
