@@ -8,15 +8,15 @@ import {
 	QueryClientProvider,
 } from '@tanstack/react-query';
 
-import { handleGlobalQueryError } from '@/lib/handle-global-query-error';
+import { handleQueryError } from '@/lib/query-error';
 
 function makeQueryClient() {
 	return new QueryClient({
 		queryCache: new QueryCache({
-			onError: handleGlobalQueryError,
+			onError: handleQueryError,
 		}),
 		mutationCache: new MutationCache({
-			onError: handleGlobalQueryError,
+			onError: handleQueryError,
 		}),
 		defaultOptions: {
 			queries: {
