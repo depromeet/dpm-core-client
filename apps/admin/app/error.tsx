@@ -1,18 +1,19 @@
-import Link from 'next/link';
+'use client';
+
 import { Button, ErrorState } from '@dpm-core/shared';
 
-export default function NotFound() {
+export default function Error({ reset }: { reset: () => void }) {
 	return (
 		<ErrorState
-			variant="notFound"
+			variant="network"
 			action={
 				<Button
 					className="fixed bottom-0 md:relative md:mt-13.5 md:w-45 md:rounded-lg"
 					variant="secondary"
 					size="full"
-					asChild
+					onClick={reset}
 				>
-					<Link href="/">홈으로 돌아가기</Link>
+					다시 시도하기
 				</Button>
 			}
 		/>
