@@ -2,16 +2,27 @@ import Cookies from 'js-cookie';
 
 import { COOKIE_KEYS } from '../constants';
 
+const SHARED_COOKIE_ROOT_DOMAIN = 'depromeet.com';
+
+/**
+ * Returns the shared auth cookie domain only for depromeet-owned hosts.
+ */
 export const getSharedCookieDomain = (hostname: string) => {
-	const labels = hostname.split('.');
-	const isIpAddress = labels.every((label) => /^\d+$/.test(label));
-	if (labels.length < 2 || isIpAddress) {
-		return undefined;
+	const normalizedHostname = hostname.toLowerCase();
+
+	if (
+		normalizedHostname === SHARED_COOKIE_ROOT_DOMAIN ||
+		normalizedHostname.endsWith(`.${SHARED_COOKIE_ROOT_DOMAIN}`)
+	) {
+		return `.${SHARED_COOKIE_ROOT_DOMAIN}`;
 	}
 
-	return `.${labels.slice(-2).join('.')}`;
+	return undefined;
 };
 
+/**
+ * Builds cookie options used by auth cookies that must be shared across depromeet subdomains.
+ */
 export const getSharedAuthCookieOptions = (hostname: string) =>
 	({
 		domain: getSharedCookieDomain(hostname),
