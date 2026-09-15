@@ -7,6 +7,7 @@ export * from './components/badge';
 export * from './components/chip-group';
 export * from './components/create-context';
 export * from './components/drag-scroll-container';
+export * from './components/error-state';
 export * from './components/filter-chip';
 export * from './components/filter-dropdown';
 export * from './components/filter-popover';

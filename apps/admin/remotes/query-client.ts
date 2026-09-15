@@ -1,8 +1,16 @@
 import { cache } from 'react';
-import { isServer, QueryClient } from '@tanstack/react-query';
+import { isServer, MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
+
+import { handleQueryError } from '@/lib/query-error';
 
 function makeQueryClient() {
 	return new QueryClient({
+		queryCache: new QueryCache({
+			onError: handleQueryError,
+		}),
+		mutationCache: new MutationCache({
+			onError: handleQueryError,
+		}),
 		defaultOptions: {
 			queries: {
 				// With SSR, we usually want to set some default staleTime

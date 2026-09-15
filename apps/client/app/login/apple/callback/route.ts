@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { BASE_URL, COOKIE_KEYS } from '@dpm-core/api';
+import { BASE_URL, COOKIE_KEYS, getSharedAuthCookieOptions } from '@dpm-core/api';
 
 export async function POST(request: NextRequest) {
 	try {
@@ -36,21 +36,19 @@ export async function POST(request: NextRequest) {
 
 		// core.depromeet.com → .depromeet.com (api 서브도메인과 쿠키 공유)
 		const hostname = new URL(request.url).hostname;
-		const domain = hostname.substring(hostname.indexOf('.'));
+		const cookieOptions = getSharedAuthCookieOptions(hostname);
 
 		redirectResponse.cookies.set(COOKIE_KEYS.ACCESS_TOKEN, accessToken, {
 			httpOnly: false,
 			secure: true,
 			sameSite: 'lax',
-			path: '/',
-			domain,
+			...cookieOptions,
 		});
 		redirectResponse.cookies.set(COOKIE_KEYS.REFRESH_TOKEN, refreshToken, {
 			httpOnly: false,
 			secure: true,
 			sameSite: 'lax',
-			path: '/',
-			domain,
+			...cookieOptions,
 		});
 
 		return redirectResponse;
