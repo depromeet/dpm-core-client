@@ -15,7 +15,7 @@
 	"dependencies": {
 		"@dpm-core/api": "workspace:*",
 		"@dpm-core/shared": "workspace:*",
-		"@hookform/resolvers": "^5.1.1",
+		"@hookform/resolvers": "^5.4.2",
 		"@radix-ui/react-radio-group": "^1.3.7",
 		"@radix-ui/react-toggle-group": "^1.1.10",
 		"@suspensive/react": "^3.3.0",
