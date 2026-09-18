@@ -23,10 +23,10 @@ import { getSessionCurrentOptions } from '@/remotes/queries/session';
 import { AttendanceCheckBottomSheet } from './attendance-check-bottom-sheet';
 
 const completedAttendanceCopy = {
-	PRESENT: { title: '출석 완료 !', buttonLabel: '출석을 완료했어요' },
-	EARLY_LEAVE: { title: '출석 완료 !', buttonLabel: '출석을 완료했어요' },
-	LATE: { title: '오늘은 지각이네요', buttonLabel: '출석을 완료했어요' },
-	ABSENT: { title: '결석 처리됐어요', buttonLabel: '출석을 마감했어요' },
+	PRESENT: { title: '출석 완료 !', buttonLabel: '출석을 완료했어요' }, // 정상 출석
+	EARLY_LEAVE: { title: '출석 완료 !', buttonLabel: '출석을 완료했어요' }, // 조퇴
+	LATE: { title: '오늘은 지각이네요', buttonLabel: '출석을 완료했어요' }, // 지각
+	ABSENT: { title: '결석 처리됐어요', buttonLabel: '출석을 마감했어요' }, // 결석
 } satisfies Record<
 	Exclude<AttendanceStatus, 'PENDING' | 'EXCUSED_ABSENT'>,
 	{ title: string; buttonLabel: string }
@@ -42,6 +42,7 @@ const HomeCheckAttendanceBannerContent = ({
 	const { status, attendedAt } = attendanceMeBySessionId.attendance;
 	const { absentStart } = attendanceSession;
 
+	// 출석체크 전
 	if (status === 'PENDING') {
 		return (
 			<>
@@ -74,6 +75,7 @@ const HomeCheckAttendanceBannerContent = ({
 		);
 	}
 
+	// 인정 결석
 	if (status === 'EXCUSED_ABSENT') {
 		return null;
 	}
