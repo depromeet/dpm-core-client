@@ -1,5 +1,6 @@
 import { http } from '../http';
 import type {
+	CurrentWeekSessionResponse,
 	Session,
 	SessionAttendanceCode,
 	SessionAttendanceStatusTime,
@@ -11,8 +12,6 @@ import type {
 type SessionListResponse = {
 	sessions: Session[];
 };
-
-type CurrentWeekSessionResponse = Session & SessionAttendanceStatusTime & SessionAttendanceCode;
 
 type SessionWeeksResponse = {
 	sessions: SessionWeek[];

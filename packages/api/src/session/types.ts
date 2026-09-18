@@ -37,3 +37,7 @@ export interface SessionUnTargeted {
 	status: AttendanceStatus;
 	updatedAt: string;
 }
+
+export type CurrentWeekSessionResponse = Session &
+	SessionAttendanceStatusTime &
+	SessionAttendanceCode;
