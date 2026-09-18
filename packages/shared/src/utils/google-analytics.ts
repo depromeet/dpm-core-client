@@ -14,13 +14,6 @@ export const gaTrackPageView = (page: string) => {
 	ReactGA.send({ hitType: 'pageview', page });
 };
 
-// 세션 시작
-export const gaTrackSessionStart = (sessionId: string) => {
-	ReactGA.event('session_start', {
-		session_id: sessionId,
-	});
-};
-
 // 세션 종료
 export const gaTrackSessionEnd = (sessionId: string, duration: number) => {
 	ReactGA.event('session_end', {
@@ -52,13 +45,6 @@ export const gaTrackMyPageEnter = () => {
 export const gaTrackMyPageEditSuccess = (editedFields: string[]) => {
 	ReactGA.event('mypage_edit_success', {
 		edited_fields: editedFields.join(','),
-	});
-};
-
-// 출석 코드 입력 페이지 진입
-export const gaTrackAttendanceEnter = (sessionId: string) => {
-	ReactGA.event('attendance_enter', {
-		session_id: sessionId,
 	});
 };
 

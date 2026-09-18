@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import z from 'zod';
 import {
 	CircleAlert,
-	cn,
 	Drawer,
 	DrawerContent,
 	DrawerFooter,
@@ -146,10 +145,7 @@ export const AttendanceCheckBottomSheet = ({
 					<form
 						onSubmit={form.handleSubmit(handleSubmitCode)}
 						id={FORM_ID}
-						className={cn(
-							'mx-auto mb-1',
-							// keyboardOpen && 'pb-56',
-						)}
+						className="mx-auto mb-1"
 					>
 						<FormField
 							control={form.control}

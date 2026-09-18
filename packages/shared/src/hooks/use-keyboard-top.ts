@@ -1,7 +1,28 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { isInput, isMobileFirefox } from '@dpm-core/shared';
+
+import { isMobileFirefox } from '../utils/browser';
+
+const nonTextInputTypes = new Set([
+	'checkbox',
+	'radio',
+	'range',
+	'color',
+	'file',
+	'image',
+	'button',
+	'submit',
+	'reset',
+]);
+
+function isInput(target: Element) {
+	return (
+		(target instanceof HTMLInputElement && !nonTextInputTypes.has(target.type)) ||
+		target instanceof HTMLTextAreaElement ||
+		(target instanceof HTMLElement && target.isContentEditable)
+	);
+}
 
 const WINDOW_TOP_OFFSET = 26;
 
