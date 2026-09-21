@@ -13,7 +13,7 @@
 		"clean": "rm -rf .turbo && rm -rf node_modules"
 	},
 	"dependencies": {
-		"@hookform/resolvers": "^5.1.1",
+		"@hookform/resolvers": "^5.4.2",
 		"@microsoft/clarity": "^1.0.2",
 		"@ncdai/react-wheel-picker": "^1.1.0",
 		"@radix-ui/react-avatar": "^1.1.10",

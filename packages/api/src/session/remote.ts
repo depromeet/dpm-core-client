@@ -1,5 +1,6 @@
 import { http } from '../http';
 import type {
+	CurrentWeekSessionResponse,
 	Session,
 	SessionAttendanceCode,
 	SessionAttendanceStatusTime,
@@ -11,8 +12,6 @@ import type {
 type SessionListResponse = {
 	sessions: Session[];
 };
-
-type CurrentWeekSessionResponse = Session & SessionAttendanceStatusTime & SessionAttendanceCode;
 
 type SessionWeeksResponse = {
 	sessions: SessionWeek[];
@@ -70,21 +69,6 @@ export const session = {
 				attendanceStartTime,
 			},
 		});
-		return res;
-	},
-
-	/**
-	 * 세션 출석 시작 시간 조회
-	 * 세션 출석 시작 시간을 조회하는 API입니다.
-	 * @param sessionId 세션 아이디
-	 * @returns 세션 출석 시작 시간
-	 */
-	getSessionAttendanceTime: async (sessionId: number) => {
-		const res = await http.get<{
-			attendanceStartTime: string;
-			attendanceLateTime: string;
-			attendanceAbsentTime: string;
-		}>(`v1/sessions/${sessionId}/attendance-time`);
 		return res;
 	},
 
