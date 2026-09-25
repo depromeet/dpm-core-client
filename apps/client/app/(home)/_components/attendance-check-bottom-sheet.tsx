@@ -85,23 +85,23 @@ export const AttendanceCheckBottomSheet = ({
 				handleClose();
 			},
 			onError: async (error) => {
-				  gaTrackAttendanceSubmit(sessionId.toString(), 'fail');
+				gaTrackAttendanceSubmit(sessionId.toString(), 'fail');
 
-				  if (error instanceof HTTPError) {
-				    const serverError = await error.response.json<ServerError>();
-				
-				    if (serverError.code === 'SESSION-400-04') {
-				      toast.error('이미 출석을 체크했습니다.');
-				    } else if (serverError.code === 'SESSION-400-02') {
-				      setIsValidationError(true);
-				    } else {
-				      toast.error('운영진에게 문의해 주세요.');
-				    }
-				
-				    return;
-				  }
-				
-				  toast.error('네트워크 상태를 확인해 주세요.');
+				if (error instanceof HTTPError) {
+					const serverError = await error.response.json();
+
+					if (serverError.code === 'SESSION-400-04') {
+						toast.error('이미 출석을 체크했습니다.');
+					} else if (serverError.code === 'SESSION-400-02') {
+						setIsValidationError(true);
+					} else {
+						toast.error('운영진에게 문의해 주세요.');
+					}
+
+					return;
+				}
+
+				toast.error('네트워크 상태를 확인해 주세요.');
 			},
 		}),
 	);
