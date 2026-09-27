@@ -61,6 +61,8 @@ export interface UpdateMembersInitResponse {
 	data: string;
 }
 
+export type LoginMethod = 'KAKAO' | 'APPLE' | 'EMAIL';
+
 export interface Member {
 	email: string;
 	name: string;
@@ -69,6 +71,7 @@ export interface Member {
 	teamNumber: number;
 	isAdmin: boolean;
 	status: MemberStatus;
+	loginMethod: LoginMethod;
 }
 
 /** PATCH /v1/roles/members/{memberId} - 멤버 기수별 역할 변경 */
