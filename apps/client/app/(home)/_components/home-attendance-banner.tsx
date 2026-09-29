@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { Suspense } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
@@ -65,22 +66,28 @@ const HomeCheckAttendanceBannerContent = ({
 						className="mt-2.5"
 					/>
 				</div>
-				<AttendanceCheckBottomSheet sessionId={attendanceSession?.id ?? 0}>
-					<Button className="mt-5 w-full" variant="primary" size="lg">
-						출석체크하기
-						<ArrowRight />
-					</Button>
-				</AttendanceCheckBottomSheet>
+				<div className="flex flex-col items-center gap-3">
+					<AttendanceCheckBottomSheet sessionId={attendanceSession?.id ?? 0}>
+						<Button className="mt-5 w-full" variant="primary" size="lg">
+							출석체크하기
+							<ArrowRight />
+						</Button>
+					</AttendanceCheckBottomSheet>
+					<Link
+						href={`/attendance/me/${attendanceSession.id}/absence-reason`}
+						className="font-medium text-body2 text-label-assistive"
+					>
+						오늘 참석이 어렵다면 &gt;
+					</Link>
+				</div>
 			</>
 		);
 	}
 
-	// 인정 결석
-	if (status === 'EXCUSED_ABSENT') {
-		return null;
-	}
-
-	const { title, buttonLabel } = completedAttendanceCopy[status];
+	const isExcusedAbsent = status === 'EXCUSED_ABSENT';
+	const { title, buttonLabel } = isExcusedAbsent
+		? { title: '인정 결석', buttonLabel: null }
+		: completedAttendanceCopy[status];
 	const timeLabel = status === 'ABSENT' ? '출석 마감' : '출석 시간';
 	const time = status === 'ABSENT' ? absentStart : attendedAt;
 
@@ -92,10 +99,16 @@ const HomeCheckAttendanceBannerContent = ({
 						{`${formatSessionWeekString(attendanceSession.week)} 출석`}
 					</p>
 					<p className="font-bold text-headline2 text-white">{title}</p>
-					<p className="mt-1 font-semibold text-caption1">
-						{timeLabel} |{' '}
-						<span className="font-normal">{formatISOStringToFullDateString(time)}</span>
-					</p>
+					{isExcusedAbsent ? (
+						<p className="mt-1 font-semibold text-caption1 text-label-assistive">
+							결석 사유서를 제출했어요.
+						</p>
+					) : (
+						<p className="mt-1 font-semibold text-caption1 text-label-assistive">
+							{timeLabel} |{' '}
+							<span className="font-normal">{formatISOStringToFullDateString(time)}</span>
+						</p>
+					)}
 				</div>
 				<Image
 					src={Iconttendance3D}
@@ -105,11 +118,13 @@ const HomeCheckAttendanceBannerContent = ({
 					className="mt-2.5"
 				/>
 			</div>
-			<Button disabled className="mt-5 w-full" variant="primary" size="lg">
-				<CircleIcon size={20} />
-				{buttonLabel}
-				<ArrowRight />
-			</Button>
+			{!isExcusedAbsent && (
+				<Button disabled className="mt-5 w-full" variant="primary" size="lg">
+					<CircleIcon size={20} />
+					{buttonLabel}
+					<ArrowRight />
+				</Button>
+			)}
 		</>
 	);
 };
@@ -136,7 +151,6 @@ const HomeCheckAttendanceBannerContainer = () => {
 		!attendanceSession ||
 		!shouldShowAttendanceBanner ||
 		!attendanceMeBySessionId ||
-		attendanceMeBySessionId.data.attendance.status === 'EXCUSED_ABSENT' ||
 		isAttendanceMeBySessionIdError;
 
 	if (hideAttendanceBanner) {
