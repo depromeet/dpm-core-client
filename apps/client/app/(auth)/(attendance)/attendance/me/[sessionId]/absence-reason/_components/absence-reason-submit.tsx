@@ -178,7 +178,7 @@ function AbsenceSubmitForm({ sessionId, defaultContents }: AbsenceSubmitFormProp
 		mutate({ contents: trimmedContents });
 	};
 
-	const isInValid = trimmedContents.length === 0;
+	const isInvalid = trimmedContents.length === 0;
 
 	return (
 		<section>
@@ -206,7 +206,7 @@ function AbsenceSubmitForm({ sessionId, defaultContents }: AbsenceSubmitFormProp
 			<div className="fixed right-0 bottom-0 left-0 z-10 mx-auto max-w-lg bg-background-normal px-5 pt-3 pb-5">
 				<Button
 					type="submit"
-					disabled={isInValid}
+					disabled={isInvalid}
 					form={FORM_ID}
 					variant="secondary"
 					size="lg"
