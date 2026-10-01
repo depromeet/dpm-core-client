@@ -233,15 +233,15 @@ export const FeedbackForm = ({ sessionId: _sessionId, sessionTitle }: FeedbackFo
 					<textarea
 						value={comment}
 						onChange={(event) => setComment(event.target.value)}
-						placeholder="자유롭게 의견을 남겨주세요. (선택)"
+						placeholder="앞에서 고른 항목의 이유나 그 밖의 의견을 자유롭게 남겨주세요. (선택)"
 						maxLength={500}
-						className="mt-5 min-h-[120px] w-full resize-none rounded-lg border border-line-normal p-4 font-medium text-body2 text-label-normal outline-none placeholder:text-label-assistive"
+						className="mt-5 h-[100px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:text-label-assistive"
 					/>
 				)}
 			</main>
 
 			<footer className="shrink-0 bg-background-normal pb-safe-area">
-				{step === 'satisfaction' && (
+				{(step === 'satisfaction' || step === 'comment') && (
 					<div className="bg-background-subtle px-4 py-4">
 						<p className="font-medium text-body2 text-label-tertiary">
 							• 이름과 팀은 운영진 결과 화면에 표시되지 않아요.
