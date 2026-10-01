@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Check, X } from 'lucide-react';
+import { Check, Minus, X } from 'lucide-react';
 import {
 	Button,
 	Dialog,
@@ -15,11 +15,17 @@ import {
 } from '@dpm-core/shared';
 
 import { SafeAreaAppLayout } from '@/components/app-layout';
+import {
+	type FeedbackSubmissionMockResult,
+	type SessionFeedbackSubmission,
+	submitSessionFeedbackMock,
+} from '@/remotes/mutations/session-feedback';
 
 interface FeedbackFormProps {
 	sessionId: number;
 	sessionTitle: string;
 	returnTo: '/' | '/session';
+	mockSubmissionResult?: FeedbackSubmissionMockResult;
 }
 
 type FeedbackStep = 'satisfaction' | 'positive' | 'improvement' | 'comment';
@@ -47,9 +53,10 @@ const POSITIVE_FEEDBACK_OPTIONS = [
 const getFeedbackStepIndex = (step: FeedbackStep) => FEEDBACK_STEPS.indexOf(step);
 
 export const FeedbackForm = ({
-	sessionId: _sessionId,
+	sessionId,
 	sessionTitle,
 	returnTo,
+	mockSubmissionResult,
 }: FeedbackFormProps) => {
 	const router = useRouter();
 	const [step, setStep] = useState<FeedbackStep>('satisfaction');
@@ -58,6 +65,8 @@ export const FeedbackForm = ({
 	const [improvementReasons, setImprovementReasons] = useState<string[]>([]);
 	const [comment, setComment] = useState('');
 	const [submitted, setSubmitted] = useState(false);
+	const [submissionFailed, setSubmissionFailed] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isExitDialogOpen, setIsExitDialogOpen] = useState(false);
 
 	const stepIndex = getFeedbackStepIndex(step);
@@ -88,6 +97,31 @@ export const FeedbackForm = ({
 		setStep(FEEDBACK_STEPS[stepIndex - 1]);
 	};
 
+	const submitFeedback = async () => {
+		if (isSubmitting) return;
+
+		const payload: SessionFeedbackSubmission = {
+			sessionId,
+			satisfaction: satisfaction ?? 0,
+			positiveReasons,
+			improvementReasons,
+			comment,
+		};
+
+		setIsSubmitting(true);
+		try {
+			if (process.env.NODE_ENV === 'development') {
+				await submitSessionFeedbackMock(payload, mockSubmissionResult ?? 'success');
+			}
+			setSubmissionFailed(false);
+			setSubmitted(true);
+		} catch {
+			setSubmissionFailed(true);
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
+
 	const goNext = () => {
 		if (!canMoveNext) return;
 		if (stepIndex < FEEDBACK_STEPS.length - 1) {
@@ -95,9 +129,38 @@ export const FeedbackForm = ({
 			return;
 		}
 
-		// TODO: API 명세 확정 후 제출 mutation을 연결합니다.
-		setSubmitted(true);
+		void submitFeedback();
 	};
+
+	if (submissionFailed) {
+		return (
+			<SafeAreaAppLayout className="h-dvh bg-background-normal">
+				<div className="flex flex-1 flex-col items-center justify-center px-4 text-center">
+					<div className="mb-6 flex size-[52px] items-center justify-center rounded-full bg-[#FEC15E]/30">
+						<span className="flex size-5 items-center justify-center rounded-full bg-[#FEC15E]">
+							<Minus className="size-3 text-white" strokeWidth={3} aria-hidden="true" />
+						</span>
+					</div>
+					<h1 className="font-bold text-[#1A1C1E] text-headline2">피드백을 제출하지 못했어요.</h1>
+					<p className="mt-3 font-medium text-body1 text-label-subtle">
+						잠시 후 다시 시도해 주세요.
+					</p>
+				</div>
+				<div className="px-4 py-4">
+					<Button
+						type="button"
+						size="full"
+						variant="secondary"
+						className="h-12 rounded-lg"
+						disabled={isSubmitting}
+						onClick={() => void submitFeedback()}
+					>
+						{isSubmitting ? '제출 중...' : '다시 시도'}
+					</Button>
+				</div>
+			</SafeAreaAppLayout>
+		);
+	}
 
 	if (submitted) {
 		return (

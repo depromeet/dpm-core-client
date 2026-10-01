@@ -5,12 +5,25 @@ export default async function SessionFeedbackPage({
 	searchParams,
 }: {
 	params: Promise<{ id: string }>;
-	searchParams: Promise<{ returnTo?: string | string[] }>;
+	searchParams: Promise<{
+		returnTo?: string | string[];
+		mockFeedbackSubmission?: string | string[];
+	}>;
 }) {
-	const [{ id }, { returnTo }] = await Promise.all([params, searchParams]);
+	const [{ id }, { returnTo, mockFeedbackSubmission }] = await Promise.all([params, searchParams]);
 	const feedbackReturnTo = returnTo === '/' ? '/' : '/session';
+	const mockSubmissionResult =
+		process.env.NODE_ENV === 'development' &&
+		(mockFeedbackSubmission === 'error' || mockFeedbackSubmission === 'success')
+			? mockFeedbackSubmission
+			: undefined;
 
 	return (
-		<FeedbackForm sessionId={Number(id)} sessionTitle="OT & 팀빌딩" returnTo={feedbackReturnTo} />
+		<FeedbackForm
+			sessionId={Number(id)}
+			sessionTitle="OT & 팀빌딩"
+			returnTo={feedbackReturnTo}
+			mockSubmissionResult={mockSubmissionResult}
+		/>
 	);
 }
