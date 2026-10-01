@@ -3,7 +3,16 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Check, X } from 'lucide-react';
-import { Button, FilterChip } from '@dpm-core/shared';
+import {
+	Button,
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	FilterChip,
+} from '@dpm-core/shared';
 
 import { SafeAreaAppLayout } from '@/components/app-layout';
 
@@ -49,6 +58,7 @@ export const FeedbackForm = ({
 	const [improvementReasons, setImprovementReasons] = useState<string[]>([]);
 	const [comment, setComment] = useState('');
 	const [submitted, setSubmitted] = useState(false);
+	const [isExitDialogOpen, setIsExitDialogOpen] = useState(false);
 
 	const stepIndex = getFeedbackStepIndex(step);
 	const canMoveNext =
@@ -126,10 +136,10 @@ export const FeedbackForm = ({
 				<button
 					type="button"
 					aria-label="피드백 닫기"
-					onClick={() => router.back()}
-					className="absolute left-4 text-label-assistive"
+					onClick={() => setIsExitDialogOpen(true)}
+					className="absolute left-4 cursor-pointer text-label-assistive"
 				>
-					<X className="size-5" aria-hidden="true" />
+					<X className="size-6" aria-hidden="true" />
 				</button>
 				<h1 className="font-semibold text-body1 text-label-normal">세션 피드백</h1>
 			</header>
@@ -308,6 +318,46 @@ export const FeedbackForm = ({
 					</div>
 				</div>
 			</footer>
+			<Dialog open={isExitDialogOpen} onOpenChange={setIsExitDialogOpen}>
+				<DialogContent
+					showCloseButton={false}
+					overlayClassName="inset-y-0 right-auto left-1/2 w-full max-w-lg -translate-x-1/2"
+					className="w-[calc(100%-2rem)] gap-5 rounded-[20px] p-5 min-[512px]:w-[480px]"
+				>
+					<DialogHeader className="gap-2 text-left">
+						<DialogTitle className="font-bold text-label-normal text-title1">
+							피드백을 그만둘까요?
+						</DialogTitle>
+						<DialogDescription className="font-medium text-body2 text-label-subtle">
+							작성중인 내용이 사라져요.
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter className="gap-2">
+						<div className="min-w-0 flex-1">
+							<Button
+								type="button"
+								size="full"
+								variant="assistive"
+								className="h-12 rounded-lg"
+								onClick={() => setIsExitDialogOpen(false)}
+							>
+								취소
+							</Button>
+						</div>
+						<div className="min-w-0 flex-1">
+							<Button
+								type="button"
+								size="full"
+								variant="secondary"
+								className="h-12 rounded-lg"
+								onClick={() => router.replace(returnTo)}
+							>
+								그만두기
+							</Button>
+						</div>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</SafeAreaAppLayout>
 	);
 };
