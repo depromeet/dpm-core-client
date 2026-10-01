@@ -10,6 +10,7 @@ import { SafeAreaAppLayout } from '@/components/app-layout';
 interface FeedbackFormProps {
 	sessionId: number;
 	sessionTitle: string;
+	returnTo: '/' | '/session';
 }
 
 type FeedbackStep = 'satisfaction' | 'positive' | 'improvement' | 'comment';
@@ -36,7 +37,11 @@ const POSITIVE_FEEDBACK_OPTIONS = [
 
 const getFeedbackStepIndex = (step: FeedbackStep) => FEEDBACK_STEPS.indexOf(step);
 
-export const FeedbackForm = ({ sessionId: _sessionId, sessionTitle }: FeedbackFormProps) => {
+export const FeedbackForm = ({
+	sessionId: _sessionId,
+	sessionTitle,
+	returnTo,
+}: FeedbackFormProps) => {
 	const router = useRouter();
 	const [step, setStep] = useState<FeedbackStep>('satisfaction');
 	const [satisfaction, setSatisfaction] = useState<number | null>(null);
@@ -88,18 +93,26 @@ export const FeedbackForm = ({ sessionId: _sessionId, sessionTitle }: FeedbackFo
 		return (
 			<SafeAreaAppLayout className="h-dvh bg-background-normal">
 				<div className="flex flex-1 flex-col items-center justify-center px-4 text-center">
-					<div className="mb-5 flex size-12 items-center justify-center rounded-full bg-primary-subtle">
-						<Check className="size-6 text-primary-normal" aria-hidden="true" />
+					<div className="mb-6 flex size-[52px] items-center justify-center rounded-full bg-primary-normal/20">
+						<span className="flex size-8 items-center justify-center rounded-full bg-primary-normal">
+							<Check className="size-4 text-label-inverse" strokeWidth={3} aria-hidden="true" />
+						</span>
 					</div>
-					<h1 className="font-bold text-headline2 text-label-normal">피드백을 제출했어요.</h1>
-					<p className="mt-2 text-body2 text-label-assistive">
+					<h1 className="font-bold text-[#1A1C1E] text-headline2">피드백을 제출했어요.</h1>
+					<p className="mt-3 font-medium text-body1 text-label-subtle">
 						소중한 의견 감사해요.
 						<br />
 						다음 세션을 준비할 때 참고할게요!
 					</p>
 				</div>
-				<div className="px-4 pb-4">
-					<Button type="button" size="full" variant="secondary" onClick={() => router.back()}>
+				<div className="px-4 py-4">
+					<Button
+						type="button"
+						size="full"
+						variant="secondary"
+						className="h-12 rounded-lg"
+						onClick={() => router.replace(returnTo)}
+					>
 						닫기
 					</Button>
 				</div>

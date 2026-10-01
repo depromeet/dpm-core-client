@@ -1,7 +1,16 @@
 import { FeedbackForm } from '../_components/feedback-form';
 
-export default async function SessionFeedbackPage({ params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
+export default async function SessionFeedbackPage({
+	params,
+	searchParams,
+}: {
+	params: Promise<{ id: string }>;
+	searchParams: Promise<{ returnTo?: string | string[] }>;
+}) {
+	const [{ id }, { returnTo }] = await Promise.all([params, searchParams]);
+	const feedbackReturnTo = returnTo === '/' ? '/' : '/session';
 
-	return <FeedbackForm sessionId={Number(id)} sessionTitle="OT & 팀빌딩" />;
+	return (
+		<FeedbackForm sessionId={Number(id)} sessionTitle="OT & 팀빌딩" returnTo={feedbackReturnTo} />
+	);
 }
