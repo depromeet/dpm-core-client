@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Check, Minus, X } from 'lucide-react';
 import {
 	Button,
@@ -20,12 +20,14 @@ import {
 	type SessionFeedbackSubmission,
 	submitSessionFeedbackMock,
 } from '@/remotes/mutations/session-feedback';
+import type { SessionFeedbackStatus } from '@/remotes/queries/session-feedback';
 
 interface FeedbackFormProps {
 	sessionId: number;
 	sessionTitle: string;
 	returnTo: '/' | '/session';
 	mockSubmissionResult?: FeedbackSubmissionMockResult;
+	feedbackStatus: SessionFeedbackStatus;
 }
 
 type FeedbackStep = 'satisfaction' | 'positive' | 'improvement' | 'comment';
@@ -50,13 +52,64 @@ const POSITIVE_FEEDBACK_OPTIONS = [
 	'특별히 없음',
 ] as const;
 
+const FEEDBACK_STATUS_CONTENT = {
+	SUBMITTED: { title: '이미 피드백을 제출했어요.', icon: 'check' },
+	EXPIRED: { title: '피드백 응답 기간이 끝났어요.', icon: 'warning' },
+	NOT_TARGET: { title: '이 세션의 피드백 대상이 아니에요.', icon: 'warning' },
+} as const;
+
 const getFeedbackStepIndex = (step: FeedbackStep) => FEEDBACK_STEPS.indexOf(step);
+
+interface FeedbackResultScreenProps {
+	icon: ReactNode;
+	title: string;
+	description?: ReactNode;
+	actionLabel: string;
+	onAction: () => void;
+	disabled?: boolean;
+}
+
+const FeedbackResultScreen = ({
+	icon,
+	title,
+	description,
+	actionLabel,
+	onAction,
+	disabled = false,
+}: FeedbackResultScreenProps) => (
+	<SafeAreaAppLayout className="h-dvh bg-background-normal">
+		<div className="flex flex-1 items-center justify-center px-4">
+			<div className="flex flex-col items-center gap-6 text-center">
+				{icon}
+				<div className="flex flex-col items-center gap-3">
+					<h1 className="font-bold text-[#1A1C1E] text-headline2">{title}</h1>
+					{description ? (
+						<p className="font-medium text-body1 text-label-subtle">{description}</p>
+					) : null}
+				</div>
+			</div>
+		</div>
+		<div className="px-4 py-4">
+			<Button
+				type="button"
+				size="full"
+				variant="secondary"
+				className="h-12 rounded-lg"
+				disabled={disabled}
+				onClick={onAction}
+			>
+				{actionLabel}
+			</Button>
+		</div>
+	</SafeAreaAppLayout>
+);
 
 export const FeedbackForm = ({
 	sessionId,
 	sessionTitle,
 	returnTo,
 	mockSubmissionResult,
+	feedbackStatus,
 }: FeedbackFormProps) => {
 	const router = useRouter();
 	const [step, setStep] = useState<FeedbackStep>('satisfaction');
@@ -132,64 +185,78 @@ export const FeedbackForm = ({
 		void submitFeedback();
 	};
 
+	if (feedbackStatus !== 'AVAILABLE') {
+		const statusContent = FEEDBACK_STATUS_CONTENT[feedbackStatus];
+		const isSubmitted = statusContent.icon === 'check';
+
+		return (
+			<FeedbackResultScreen
+				icon={
+					<div
+						className={`flex size-[52px] items-center justify-center rounded-full ${
+							isSubmitted ? 'bg-primary-normal/30' : 'bg-[#FEC15E]/30'
+						}`}
+					>
+						<span
+							className={`flex size-5 items-center justify-center rounded-full ${
+								isSubmitted ? 'bg-primary-normal' : 'bg-[#FEC15E]'
+							}`}
+						>
+							{isSubmitted ? (
+								<Check className="size-3 text-white" strokeWidth={3} aria-hidden="true" />
+							) : (
+								<Minus className="size-3 text-white" strokeWidth={3} aria-hidden="true" />
+							)}
+						</span>
+					</div>
+				}
+				title={statusContent.title}
+				actionLabel="닫기"
+				onAction={() => router.replace('/')}
+			/>
+		);
+	}
+
 	if (submissionFailed) {
 		return (
-			<SafeAreaAppLayout className="h-dvh bg-background-normal">
-				<div className="flex flex-1 flex-col items-center justify-center px-4 text-center">
-					<div className="mb-6 flex size-[52px] items-center justify-center rounded-full bg-[#FEC15E]/30">
+			<FeedbackResultScreen
+				icon={
+					<div className="flex size-[52px] items-center justify-center rounded-full bg-[#FEC15E]/30">
 						<span className="flex size-5 items-center justify-center rounded-full bg-[#FEC15E]">
 							<Minus className="size-3 text-white" strokeWidth={3} aria-hidden="true" />
 						</span>
 					</div>
-					<h1 className="font-bold text-[#1A1C1E] text-headline2">피드백을 제출하지 못했어요.</h1>
-					<p className="mt-3 font-medium text-body1 text-label-subtle">
-						잠시 후 다시 시도해 주세요.
-					</p>
-				</div>
-				<div className="px-4 py-4">
-					<Button
-						type="button"
-						size="full"
-						variant="secondary"
-						className="h-12 rounded-lg"
-						disabled={isSubmitting}
-						onClick={() => void submitFeedback()}
-					>
-						{isSubmitting ? '제출 중...' : '다시 시도'}
-					</Button>
-				</div>
-			</SafeAreaAppLayout>
+				}
+				title="피드백을 제출하지 못했어요."
+				description="잠시 후 다시 시도해 주세요."
+				actionLabel={isSubmitting ? '제출 중...' : '다시 시도'}
+				disabled={isSubmitting}
+				onAction={() => void submitFeedback()}
+			/>
 		);
 	}
 
 	if (submitted) {
 		return (
-			<SafeAreaAppLayout className="h-dvh bg-background-normal">
-				<div className="flex flex-1 flex-col items-center justify-center px-4 text-center">
-					<div className="mb-6 flex size-[52px] items-center justify-center rounded-full bg-primary-normal/20">
+			<FeedbackResultScreen
+				icon={
+					<div className="flex size-[52px] items-center justify-center rounded-full bg-primary-normal/20">
 						<span className="flex size-8 items-center justify-center rounded-full bg-primary-normal">
 							<Check className="size-4 text-label-inverse" strokeWidth={3} aria-hidden="true" />
 						</span>
 					</div>
-					<h1 className="font-bold text-[#1A1C1E] text-headline2">피드백을 제출했어요.</h1>
-					<p className="mt-3 font-medium text-body1 text-label-subtle">
+				}
+				title="피드백을 제출했어요."
+				description={
+					<>
 						소중한 의견 감사해요.
 						<br />
 						다음 세션을 준비할 때 참고할게요!
-					</p>
-				</div>
-				<div className="px-4 py-4">
-					<Button
-						type="button"
-						size="full"
-						variant="secondary"
-						className="h-12 rounded-lg"
-						onClick={() => router.replace(returnTo)}
-					>
-						닫기
-					</Button>
-				</div>
-			</SafeAreaAppLayout>
+					</>
+				}
+				actionLabel="닫기"
+				onAction={() => router.replace(returnTo)}
+			/>
 		);
 	}
 
