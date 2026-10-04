@@ -5,6 +5,7 @@ import { type ReactNode, useState } from 'react';
 import { Check, Minus, X } from 'lucide-react';
 import {
 	Button,
+	cn,
 	Dialog,
 	DialogContent,
 	DialogDescription,
@@ -197,14 +198,16 @@ export const FeedbackForm = ({
 			<FeedbackResultScreen
 				icon={
 					<div
-						className={`flex size-[52px] items-center justify-center rounded-full ${
-							isSubmitted ? 'bg-primary-normal/30' : 'bg-[#FEC15E]/30'
-						}`}
+						className={cn(
+							'flex size-[52px] items-center justify-center rounded-full',
+							isSubmitted ? 'bg-primary-normal/30' : 'bg-[#FEC15E]/30',
+						)}
 					>
 						<span
-							className={`flex size-5 items-center justify-center rounded-full ${
-								isSubmitted ? 'bg-primary-normal' : 'bg-[#FEC15E]'
-							}`}
+							className={cn(
+								'flex size-5 items-center justify-center rounded-full',
+								isSubmitted ? 'bg-primary-normal' : 'bg-[#FEC15E]',
+							)}
 						>
 							{isSubmitted ? (
 								<Check className="size-3 text-white" strokeWidth={3} aria-hidden="true" />
@@ -323,11 +326,12 @@ export const FeedbackForm = ({
 							return (
 								<label
 									key={option.value}
-									className={`flex h-12 cursor-pointer items-center justify-between rounded-lg border px-4 font-medium text-body2 transition-colors ${
+									className={cn(
+										'flex h-12 cursor-pointer items-center justify-between rounded-lg border px-4 font-medium text-body2 transition-colors',
 										selected
 											? 'border-label-normal text-label-normal'
-											: 'border-line-normal text-label-assistive'
-									}`}
+											: 'border-line-normal text-label-assistive',
+									)}
 								>
 									<input
 										type="radio"
@@ -339,11 +343,12 @@ export const FeedbackForm = ({
 									/>
 									{option.label}
 									<span
-										className={`flex size-4 shrink-0 items-center justify-center rounded-full border ${
+										className={cn(
+											'flex size-4 shrink-0 items-center justify-center rounded-full border',
 											selected
 												? 'border-label-normal bg-label-normal'
-												: 'border-line-normal bg-background-normal'
-										}`}
+												: 'border-line-normal bg-background-normal',
+										)}
 										aria-hidden="true"
 									>
 										{selected && <Check className="size-2.5 text-label-inverse" strokeWidth={3} />}
@@ -419,7 +424,10 @@ export const FeedbackForm = ({
 						{FEEDBACK_STEPS.map((feedbackStep, index) => (
 							<span
 								key={feedbackStep}
-								className={`h-0.5 flex-1 ${index <= stepIndex ? 'bg-label-normal' : 'bg-line-normal'}`}
+								className={cn(
+									'h-0.5 flex-1',
+									index <= stepIndex ? 'bg-label-normal' : 'bg-line-normal',
+								)}
 							/>
 						))}
 					</div>
