@@ -42,6 +42,8 @@ const SATISFACTION_OPTIONS = [
 	{ value: 1, label: '매우 별로였어요.' },
 ] as const;
 
+const NO_FEEDBACK_REASON = '특별히 없음';
+
 const POSITIVE_FEEDBACK_OPTIONS = [
 	'세션 내용',
 	'진행 방식·시간',
@@ -49,7 +51,7 @@ const POSITIVE_FEEDBACK_OPTIONS = [
 	'사전·현장 안내',
 	'장소·접속 환경',
 	'기타',
-	'특별히 없음',
+	NO_FEEDBACK_REASON,
 ] as const;
 
 const FEEDBACK_STATUS_CONTENT = {
@@ -136,8 +138,9 @@ export const FeedbackForm = ({
 		const setReasons = target === 'positive' ? setPositiveReasons : setImprovementReasons;
 		setReasons((current) => {
 			if (current.includes(reason)) return current.filter((item) => item !== reason);
+			if (reason === NO_FEEDBACK_REASON) return [reason];
 			if (current.length >= 2) return current;
-			return [...current, reason];
+			return [...current.filter((item) => item !== NO_FEEDBACK_REASON), reason];
 		});
 	};
 
