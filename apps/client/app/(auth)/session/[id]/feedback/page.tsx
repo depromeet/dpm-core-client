@@ -40,7 +40,6 @@ export default async function SessionFeedbackPage({
 	return (
 		<FeedbackForm
 			sessionId={sessionId}
-			sessionTitle="OT & 팀빌딩"
 			returnTo={feedbackReturnTo}
 			mockSubmissionResult={mockSubmissionResult}
 			feedbackStatus={feedbackStatus.status}

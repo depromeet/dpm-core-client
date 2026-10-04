@@ -25,7 +25,6 @@ import type { SessionFeedbackStatus } from '@/remotes/queries/session-feedback';
 
 interface FeedbackFormProps {
 	sessionId: number;
-	sessionTitle: string;
 	returnTo: '/' | '/session';
 	mockSubmissionResult?: FeedbackSubmissionMockResult;
 	feedbackStatus: SessionFeedbackStatus;
@@ -109,7 +108,6 @@ const FeedbackResultScreen = ({
 
 export const FeedbackForm = ({
 	sessionId,
-	sessionTitle,
 	returnTo,
 	mockSubmissionResult,
 	feedbackStatus,
@@ -285,7 +283,7 @@ export const FeedbackForm = ({
 				<div>
 					{step === 'satisfaction' ? (
 						<>
-							<p className="font-bold text-headline2 text-label-assistive">{sessionTitle}</p>
+							<p className="font-bold text-headline2 text-label-assistive">OT &amp; 팀빌딩</p>
 							<h2 className="mt-1 font-bold text-headline2 text-label-normal">
 								이번 세션에 얼마나 만족하셨나요? <span className="text-primary-normal">*</span>
 							</h2>
