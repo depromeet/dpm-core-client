@@ -463,7 +463,6 @@ export const FeedbackForm = ({
 			<Dialog open={isExitDialogOpen} onOpenChange={setIsExitDialogOpen}>
 				<DialogContent
 					showCloseButton={false}
-					overlayClassName="inset-y-0 right-auto left-1/2 w-full max-w-lg -translate-x-1/2"
 					className="w-[calc(100%-2rem)] gap-5 rounded-[20px] p-5 min-[512px]:w-[480px]"
 				>
 					<DialogHeader className="gap-2 text-left">
