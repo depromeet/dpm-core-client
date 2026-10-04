@@ -163,9 +163,10 @@ export const FeedbackForm = ({
 
 		setIsSubmitting(true);
 		try {
-			if (process.env.NODE_ENV === 'development') {
-				await submitSessionFeedbackMock(payload, mockSubmissionResult ?? 'success');
+			if (process.env.NEXT_PUBLIC_STAGE !== 'development') {
+				throw new Error('Session feedback submission is unavailable outside development.');
 			}
+			await submitSessionFeedbackMock(payload, mockSubmissionResult ?? 'success');
 			setSubmissionFailed(false);
 			setSubmitted(true);
 		} catch {
