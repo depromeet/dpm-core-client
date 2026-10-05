@@ -29,7 +29,7 @@ export const useKakaoLogin = () => {
 	})();
 
 	/** 네이티브 카카오 SDK 로그인. `canUseNativeKakao`가 true일 때만 호출한다. */
-	const loginWithNative = async () => {
+	const loginWithNative = async (options?: { onSuccess?: () => void }) => {
 		if (isPending) return;
 
 		setIsPending(true);
@@ -44,7 +44,8 @@ export const useKakaoLogin = () => {
 			}
 
 			await auth.kakaoLogin({ accessToken: result.accessToken });
-			router.replace('/');
+			if (options?.onSuccess) options.onSuccess();
+			else router.replace('/');
 		} catch {
 			toast.error('카카오 로그인에 실패했습니다.');
 		} finally {

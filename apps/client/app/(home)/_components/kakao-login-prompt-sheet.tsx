@@ -12,7 +12,7 @@ import {
 } from '@dpm-core/shared';
 
 import { useKakaoLogin } from '@/hooks/use-kakao-login';
-import { dismissKakaoPrompt, isKakaoPromptDismissed } from '@/lib/last-login';
+import { dismissKakaoPrompt, isKakaoPromptDismissed, markKakaoLoginToast } from '@/lib/last-login';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
 import { useAppleProfileSetup } from '../_hooks/use-apple-profile-setup';
@@ -62,11 +62,19 @@ export const KakaoLoginPromptSheet = ({ variant = 'login' }: { variant?: KakaoPr
 		if (!open) dismissKakaoPrompt();
 	};
 
+	// 카카오로 새로 로그인하면 승인 대기 홈으로 들어오므로, 회원 정보 캐시를 비우기 위해 전체 이동한다.
+	// 이동한 홈에서 '카카오톡으로 로그인했어요' 토스트를 띄운다.
 	const handleKakaoLogin = () => {
 		if (canUseNativeKakao) {
-			void loginWithNative();
+			void loginWithNative({
+				onSuccess: () => {
+					markKakaoLoginToast();
+					window.location.assign('/');
+				},
+			});
 			return;
 		}
+		markKakaoLoginToast();
 		window.location.href = webFallbackUrl;
 	};
 
