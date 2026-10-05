@@ -4,7 +4,10 @@ import { useEffect, useState } from 'react';
 
 import { getLastLoginMethod } from '@/lib/last-login';
 
-/** 카카오로 마지막 로그인한 경우에만 카카오 버튼 위에 말풍선으로 노출한다. */
+/**
+ * 카카오로 마지막 로그인한 경우에만 노출하는 말풍선.
+ * 피그마 기준으로 버튼 상단 모서리에 14px 겹치고, 가로는 버튼 중앙에서 113.5px 오른쪽에 둔다.
+ */
 export const RecentLoginBadge = () => {
 	const [isVisible, setIsVisible] = useState(false);
 
@@ -15,7 +18,7 @@ export const RecentLoginBadge = () => {
 	if (!isVisible) return null;
 
 	return (
-		<div className="pointer-events-none absolute right-4 bottom-full mb-2.5 flex items-center justify-center rounded-full bg-primary-normal px-2 py-1.5">
+		<div className="-translate-x-1/2 pointer-events-none absolute bottom-[calc(100%-14px)] left-[calc(50%+113.5px)] flex items-center justify-center rounded-full bg-primary-normal px-2 py-1.5">
 			<span className="whitespace-nowrap font-medium text-caption1 text-white">최근 로그인</span>
 			<svg
 				width="12"
