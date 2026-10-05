@@ -1,12 +1,9 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { type ComponentPropsWithoutRef, forwardRef, useState } from 'react';
-import { auth, BASE_URL } from '@dpm-core/api';
-import { type Button, KakaoLogo, toast } from '@dpm-core/shared';
+import { type ComponentPropsWithoutRef, forwardRef } from 'react';
+import { type Button, KakaoLogo } from '@dpm-core/shared';
 
-import { useAppConfig } from '@/providers/app-config-provider';
-import { useBridgeStatus, useBridgeStore } from '@/providers/bridge-provider';
+import { useKakaoLogin } from '@/hooks/use-kakao-login';
 
 import { Pressable } from './motion';
 
@@ -19,45 +16,13 @@ interface LoginButtonProps {
 
 const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 	({ href, variant, size, className }, ref) => {
-		const router = useRouter();
-		const { isApp } = useAppConfig();
-		const { isWebViewBridgeAvailable, isNativeMethodAvailable } = useBridgeStatus();
-		const kakaoLogin = useBridgeStore(({ kakaoLogin }) => kakaoLogin);
-		const [isPending, setIsPending] = useState(false);
+		const { canUseNativeKakao, loginWithNative, webFallbackUrl } = useKakaoLogin();
 
-		const canUseNativeKakao =
-			isApp && isWebViewBridgeAvailable && isNativeMethodAvailable('kakaoLogin');
-
-		const webFallbackUrl = (() => {
-			const url = new URL(BASE_URL ?? '');
-			url.pathname = '/login/kakao';
-			return url.toString();
-		})();
-
-		const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+		const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
 			if (!canUseNativeKakao) return;
 
 			e.preventDefault();
-			if (isPending) return;
-
-			setIsPending(true);
-			try {
-				const result = await kakaoLogin();
-
-				if (!result.success) {
-					if (!result.cancelled) {
-						toast.error(result.error);
-					}
-					return;
-				}
-
-				await auth.kakaoLogin({ accessToken: result.accessToken });
-				router.replace('/');
-			} catch {
-				toast.error('카카오 로그인에 실패했습니다.');
-			} finally {
-				setIsPending(false);
-			}
+			void loginWithNative();
 		};
 
 		return (
