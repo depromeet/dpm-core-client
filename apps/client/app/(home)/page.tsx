@@ -4,6 +4,7 @@ import { SafeAreaAppLayout } from '@/components/app-layout';
 import { BottomTabBar } from '@/components/bottom-tab-bar';
 
 import { AppleProfileSetupSheet } from './_components/apple-profile-setup-sheet';
+import { HomeAnnouncementBanner } from './_components/home-announcement-banner';
 import { HomeBannerList } from './_components/home-banner-list';
 import { HomeHeader } from './_components/home-header';
 import { UserActionList } from './_components/user-action-list';
@@ -14,6 +15,7 @@ export default function HomePage() {
 			<GAPageTracker type="home" />
 			<HomeHeader />
 			<main className="scrollbar-hide flex-1 overflow-auto">
+				<HomeAnnouncementBanner />
 				<HomeBannerList />
 				<UserActionList />
 			</main>
