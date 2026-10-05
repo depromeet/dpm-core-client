@@ -14,7 +14,7 @@ export const FormEmail = () => {
 				<FormItem>
 					<FormLabel>이메일</FormLabel>
 					<FormControl>
-						<Input variant="line" type="text" placeholder="이메일" {...field} />
+						<Input variant="line" type="text" placeholder="이메일을 입력해주세요" {...field} />
 					</FormControl>
 					<div className="relative min-h-4">
 						<FormMessage className="text-red-400" />
