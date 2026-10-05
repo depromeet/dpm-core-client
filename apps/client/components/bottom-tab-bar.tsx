@@ -3,7 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { cn } from '@dpm-core/shared';
+import { useQuery } from '@tanstack/react-query';
+import { cn, toast } from '@dpm-core/shared';
+
+import { getMyMemberInfoQuery } from '@/remotes/queries/member';
+
+/** 승인 대기 회원이 접근할 수 있는 탭 (그 외 탭은 토스트로 안내) */
+const PENDING_ACCESSIBLE_TABS = ['/', '/session'];
 
 const HomeIcon = () => {
 	return (
@@ -105,12 +111,18 @@ const TAB_LIST = [
 
 export const BottomTabBar = () => {
 	const pathName = usePathname();
+	const { data } = useQuery(getMyMemberInfoQuery);
+	const isPending = data?.data.status === 'PENDING';
+
 	return (
 		<nav className="sticky right-0 bottom-0 left-0 z-10 border-line-subtle border-t bg-background-normal pb-safe-area">
 			<ul className="flex items-center justify-between py-2">
 				{TAB_LIST.map((tab) => {
 					const isActive = pathName === tab.href;
-					return <BottomTabBarItem key={tab.href} {...tab} isActive={isActive} />;
+					const isBlocked = isPending && !PENDING_ACCESSIBLE_TABS.includes(tab.href);
+					return (
+						<BottomTabBarItem key={tab.href} {...tab} isActive={isActive} isBlocked={isBlocked} />
+					);
 				})}
 			</ul>
 		</nav>
@@ -122,14 +134,23 @@ interface BottomTabBarItemProps {
 	name: string;
 	icon: ReactNode;
 	isActive: boolean;
+	isBlocked: boolean;
 }
 
 const BottomTabBarItem = (props: BottomTabBarItemProps) => {
-	const { name, href, icon, isActive } = props;
+	const { name, href, icon, isActive, isBlocked } = props;
+
+	const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+		if (!isBlocked) return;
+
+		event.preventDefault();
+		toast.info('계정이 승인되어야 사용할 수 있어요');
+	};
 	return (
 		<li className="flex flex-1">
 			<Link
 				href={href}
+				onClick={handleClick}
 				className={cn(
 					'flex flex-1 flex-col items-center gap-1 text-gray-300',
 					isActive && 'text-gray-700',
