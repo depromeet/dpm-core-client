@@ -20,7 +20,8 @@ import type {
 
 export const member = {
 	getMyMemberInfo: async () => {
-		const res = await http.get<Member>('v1/members/me');
+		// v1/members/me 는 서버에서 제거되어 v3 로 이전됨 (출석 집계 필드가 추가됨)
+		const res = await http.get<Member>('v3/members/me');
 		return res;
 	},
 
