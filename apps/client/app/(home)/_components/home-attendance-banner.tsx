@@ -2,26 +2,69 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Suspense } from 'react';
-import { ErrorBoundary } from '@suspensive/react';
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { CircleIcon } from 'lucide-react';
-import { motion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type {
 	AttendanceBySessionIdReponse,
 	AttendanceStatus,
 	CurrentWeekSessionResponse,
 } from '@dpm-core/api';
-import { ArrowRight, Button, fadeInOutVariatns } from '@dpm-core/shared';
+import { ArrowRight, Button } from '@dpm-core/shared';
 
 import Iconttendance3D from '@/assets/icons/icon_attendance_3d.png';
-import { showAttendanceBanner } from '@/lib/attendance/banner';
 import { formatISOStringToFullDateString } from '@/lib/date';
 import { formatSessionWeekString } from '@/lib/session/format';
 import { getAttendanceMeBySessionIdOptions } from '@/remotes/queries/attendance';
-import { getSessionCurrentOptions } from '@/remotes/queries/session';
 
 import { AttendanceCheckBottomSheet } from './attendance-check-bottom-sheet';
+
+interface HomeCheckAttendanceBannerProps {
+	attendanceSession: CurrentWeekSessionResponse;
+	isAttendanceOpen: boolean;
+}
+
+export const HomeCheckAttendanceBanner = ({
+	attendanceSession,
+	isAttendanceOpen,
+}: HomeCheckAttendanceBannerProps) => {
+	const reduceMotion = useReducedMotion();
+	const { data } = useQuery({
+		...getAttendanceMeBySessionIdOptions({ sessionId: attendanceSession.id }),
+		enabled: isAttendanceOpen,
+	});
+	const visible = isAttendanceOpen && data;
+	const transition = { duration: reduceMotion ? 0 : 0.28, ease: 'easeOut' as const };
+
+	return (
+		<AnimatePresence>
+			{visible ? (
+				<motion.div
+					key="attendance-banner"
+					initial={{ height: 0, opacity: 0 }}
+					animate={{ height: 'auto', opacity: 1 }}
+					exit={{ height: 0, opacity: 0 }}
+					transition={transition}
+					className="overflow-hidden"
+				>
+					<motion.div
+						initial={{ y: reduceMotion ? 0 : -12 }}
+						animate={{ y: 0 }}
+						transition={transition}
+						className="pb-5"
+					>
+						<div className="rounded-[10px] bg-background-inverse p-5">
+							<HomeCheckAttendanceBannerContent
+								attendanceSession={attendanceSession}
+								attendanceMeBySessionId={data.data}
+							/>
+						</div>
+					</motion.div>
+				</motion.div>
+			) : null}
+		</AnimatePresence>
+	);
+};
 
 const completedAttendanceCopy = {
 	PRESENT: { title: '출석 완료 !', buttonLabel: '출석을 완료했어요' }, // 정상 출석
@@ -33,13 +76,15 @@ const completedAttendanceCopy = {
 	{ title: string; buttonLabel: string }
 >;
 
+interface HomeCheckAttendanceBannerContentProps {
+	attendanceSession: CurrentWeekSessionResponse;
+	attendanceMeBySessionId: AttendanceBySessionIdReponse;
+}
+
 const HomeCheckAttendanceBannerContent = ({
 	attendanceSession,
 	attendanceMeBySessionId,
-}: {
-	attendanceSession: CurrentWeekSessionResponse;
-	attendanceMeBySessionId: AttendanceBySessionIdReponse;
-}) => {
+}: HomeCheckAttendanceBannerContentProps) => {
 	const { status, attendedAt } = attendanceMeBySessionId.attendance;
 	const { absentStart } = attendanceSession;
 
@@ -50,7 +95,7 @@ const HomeCheckAttendanceBannerContent = ({
 				<div className="flex justify-between">
 					<div>
 						<p className="mb-1 font-semibold text-caption1 text-label-assistive">
-							{`${formatSessionWeekString(attendanceSession.week)} 출석`}
+							{attendanceSession.week}주차
 						</p>
 						<p className="font-bold text-headline2 text-white">
 							출석체크를
@@ -67,7 +112,7 @@ const HomeCheckAttendanceBannerContent = ({
 					/>
 				</div>
 				<div className="flex flex-col items-center gap-3">
-					<AttendanceCheckBottomSheet sessionId={attendanceSession?.id ?? 0}>
+					<AttendanceCheckBottomSheet sessionId={attendanceSession.id}>
 						<Button className="mt-5 w-full" variant="primary" size="lg">
 							출석체크하기
 							<ArrowRight />
@@ -96,7 +141,7 @@ const HomeCheckAttendanceBannerContent = ({
 			<div className="flex justify-between">
 				<div>
 					<p className="mb-1 font-semibold text-caption1 text-label-assistive">
-						{`${formatSessionWeekString(attendanceSession.week)} 출석`}
+						{formatSessionWeekString(attendanceSession.week)} 출석
 					</p>
 					<p className="font-bold text-headline2 text-white">{title}</p>
 					{isExcusedAbsent ? (
@@ -118,66 +163,13 @@ const HomeCheckAttendanceBannerContent = ({
 					className="mt-2.5"
 				/>
 			</div>
-			{!isExcusedAbsent && (
+			{!isExcusedAbsent ? (
 				<Button disabled className="mt-5 w-full" variant="primary" size="lg">
 					<CircleIcon size={20} />
 					{buttonLabel}
 					<ArrowRight />
 				</Button>
-			)}
+			) : null}
 		</>
 	);
 };
-
-const HomeCheckAttendanceBannerContainer = () => {
-	const {
-		data: { data: attendanceSession },
-	} = useSuspenseQuery(getSessionCurrentOptions());
-
-	const shouldShowAttendanceBanner = attendanceSession
-		? showAttendanceBanner(
-				attendanceSession.attendanceStart,
-				attendanceSession.lateStart,
-				attendanceSession.absentStart,
-			)
-		: false;
-
-	const { data: attendanceMeBySessionId, isError: isAttendanceMeBySessionIdError } = useQuery({
-		...getAttendanceMeBySessionIdOptions({ sessionId: attendanceSession?.id ?? 0 }),
-		enabled: attendanceSession?.id !== undefined && shouldShowAttendanceBanner,
-	});
-
-	const hideAttendanceBanner =
-		!attendanceSession ||
-		!shouldShowAttendanceBanner ||
-		!attendanceMeBySessionId ||
-		isAttendanceMeBySessionIdError;
-
-	if (hideAttendanceBanner) {
-		return null;
-	}
-
-	return (
-		<motion.div
-			variants={{
-				...fadeInOutVariatns.variants,
-				initial: { ...fadeInOutVariatns.variants.initial, y: -20 },
-			}}
-			className="px-4 pt-5 pb-7.5"
-		>
-			<div className="rounded-[10px] bg-background-inverse p-5">
-				<HomeCheckAttendanceBannerContent
-					attendanceSession={attendanceSession}
-					attendanceMeBySessionId={attendanceMeBySessionId.data}
-				/>
-			</div>
-		</motion.div>
-	);
-};
-
-// 배너는 부가 요소이므로 sessions/next 실패/로딩 시 조용히 숨긴다 (홈 전체가 깨지지 않도록)
-export const HomeCheckAttendanceBanner = ErrorBoundary.with({ fallback: () => null }, () => (
-	<Suspense fallback={null}>
-		<HomeCheckAttendanceBannerContainer />
-	</Suspense>
-));
