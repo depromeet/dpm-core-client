@@ -1,27 +1,44 @@
+import {
+	defaultShouldDehydrateQuery,
+	dehydrate,
+	HydrationBoundary,
+	QueryClient,
+} from '@tanstack/react-query';
 import { GAPageTracker } from '@dpm-core/shared';
 
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { BottomTabBar } from '@/components/bottom-tab-bar';
 import { LastLoginRecorder } from '@/components/last-login-recorder';
+import { getAnnouncementListQuery } from '@/remotes/queries/announcement';
+import { getSessionCurrentOptions } from '@/remotes/queries/session';
 
 import { AppleProfileSetupSheet } from './_components/apple-profile-setup-sheet';
-import { HomeCheckAttendanceBanner } from './_components/home-attendance-banner';
+import { HomeAnnouncementBanner } from './_components/home-announcement-banner';
 import { HomeBannerList } from './_components/home-banner-list';
-import { HomeContent } from './_components/home-content';
 import { HomeHeader } from './_components/home-header';
 import { KakaoLoginPromptSheet } from './_components/kakao-login-prompt-sheet';
 import { UserActionList } from './_components/user-action-list';
 
 export default function HomePage() {
+	const queryClient = new QueryClient();
+
+	queryClient.prefetchQuery(getAnnouncementListQuery);
+	queryClient.prefetchQuery(getSessionCurrentOptions());
+
+	const dehydratedState = dehydrate(queryClient, {
+		shouldDehydrateQuery: (query) =>
+			defaultShouldDehydrateQuery(query) || query.state.status === 'pending',
+	});
+
 	return (
 		<SafeAreaAppLayout hasBottomTabBar className="h-dvh">
 			<GAPageTracker type="home" />
 			<HomeHeader />
 			<main className="scrollbar-hide flex-1 overflow-auto">
-				<HomeContent>
-					<HomeCheckAttendanceBanner />
+				<HydrationBoundary state={dehydratedState}>
+					<HomeAnnouncementBanner />
 					<HomeBannerList />
-				</HomeContent>
+				</HydrationBoundary>
 				<UserActionList />
 			</main>
 			<BottomTabBar />
