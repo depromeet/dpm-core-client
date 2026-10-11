@@ -17,6 +17,13 @@ export interface SessionListFeedback {
 	canSubmit: boolean;
 }
 
+export interface SessionDetailFeedback {
+	status: SessionFeedbackCollectionStatus;
+	startAt: string;
+	endAt: string;
+	pushEnabled: boolean;
+}
+
 export type SessionListItem = Session & {
 	feedback: SessionListFeedback | null;
 };
@@ -30,6 +37,12 @@ export interface SessionAttendanceStatusTime {
 export interface SessionAttendanceCode {
 	attendanceCode: string;
 }
+
+export type SessionDetail = Session &
+	SessionAttendanceCode &
+	SessionAttendanceStatusTime & {
+		feedback: SessionDetailFeedback | null;
+	};
 
 export interface SessionWeek {
 	id: Session['id'];

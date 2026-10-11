@@ -1,4 +1,4 @@
-import type { Session, SessionListItem } from '@dpm-core/api';
+import type { Session, SessionDetailFeedback, SessionListItem } from '@dpm-core/api';
 
 export const MOCK_SESSIONS: Session[] = [
 	{
@@ -54,6 +54,28 @@ const MOCK_SESSION_FEEDBACK: Record<number, SessionListItem['feedback']> = {
 	38: null,
 };
 
+const MOCK_SESSION_DETAIL_FEEDBACK: Record<number, SessionDetailFeedback | null> = {
+	35: {
+		status: 'SCHEDULED',
+		startAt: '2026-10-12T18:00:00',
+		endAt: '2026-10-15T18:00:00',
+		pushEnabled: true,
+	},
+	36: {
+		status: 'IN_PROGRESS',
+		startAt: '2026-10-08T18:00:00',
+		endAt: '2026-10-14T18:00:00',
+		pushEnabled: true,
+	},
+	37: {
+		status: 'CLOSED',
+		startAt: '2026-10-05T18:00:00',
+		endAt: '2026-10-08T18:00:00',
+		pushEnabled: false,
+	},
+	38: null,
+};
+
 export const createMockSessionListResponse = () => ({
 	status: 'OK',
 	code: 'GLOBAL-200-01',
@@ -88,6 +110,7 @@ export const createMockSessionDetailResponse = (sessionId: number) => {
 		message: 'success',
 		data: {
 			...session,
+			feedback: MOCK_SESSION_DETAIL_FEEDBACK[session.id] ?? null,
 			attendanceCode: '1234',
 			attendanceStart: '2026-03-14T14:00:00+09:00',
 			lateStart: '2026-03-14T14:30:00+09:00',

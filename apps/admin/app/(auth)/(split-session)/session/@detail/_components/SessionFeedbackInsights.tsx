@@ -2,6 +2,7 @@
 
 import { type ReactNode, useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@dpm-core/shared';
 
@@ -12,8 +13,6 @@ interface SessionFeedbackInsightsProps {
 }
 
 const FEEDBACK_MOCK = {
-	collectedFrom: '2026.03.14',
-	collectedTo: '2026.03.21',
 	respondentCount: 24,
 	targetCount: 40,
 	averageSatisfaction: 4.2,
@@ -144,13 +143,24 @@ export const SessionFeedbackInsights = ({ sessionId }: SessionFeedbackInsightsPr
 	const responseRate = Math.round(
 		(FEEDBACK_MOCK.respondentCount / FEEDBACK_MOCK.targetCount) * 100,
 	);
+	const feedbackStatusLabel = sessionDetail.feedback
+		? {
+				SCHEDULED: '수집 예정',
+				IN_PROGRESS: '수집 중',
+				CLOSED: '수집 완료',
+			}[sessionDetail.feedback.status]
+		: '피드백 미설정';
+	const feedbackPeriod = sessionDetail.feedback
+		? `${dayjs(sessionDetail.feedback.startAt).format('YYYY.MM.DD')} ~ ${dayjs(sessionDetail.feedback.endAt).format('YYYY.MM.DD')}`
+		: null;
 
 	return (
 		<div className="flex flex-col gap-6 pb-8">
 			<header>
 				<h2 className="font-bold text-label-normal text-title1">{sessionDetail.name}</h2>
 				<p className="mt-1 font-medium text-caption1 text-label-assistive">
-					수집 완료 · {FEEDBACK_MOCK.collectedFrom} ~ {FEEDBACK_MOCK.collectedTo}
+					{feedbackStatusLabel}
+					{feedbackPeriod && ` · ${feedbackPeriod}`}
 				</p>
 			</header>
 

@@ -1,9 +1,8 @@
 import { http } from '../http';
 import type {
 	CurrentWeekSessionResponse,
-	Session,
-	SessionAttendanceCode,
 	SessionAttendanceStatusTime,
+	SessionDetail,
 	SessionListItem,
 	SessionTargeted,
 	SessionUnTargeted,
@@ -17,8 +16,6 @@ type SessionListResponse = {
 type SessionWeeksResponse = {
 	sessions: SessionWeek[];
 };
-
-type SessionDetailResponse = Session & SessionAttendanceCode & SessionAttendanceStatusTime;
 
 type SessionModifyPolicyResponse = {
 	targeted: SessionTargeted[];
@@ -49,7 +46,7 @@ export const session = {
 	 * @returns 세션 상세
 	 */
 	getSessionById: async (sessionId: number) => {
-		const res = await http.get<SessionDetailResponse>(`v1/sessions/${sessionId}`);
+		const res = await http.get<SessionDetail>(`v1/sessions/${sessionId}`);
 		return res;
 	},
 

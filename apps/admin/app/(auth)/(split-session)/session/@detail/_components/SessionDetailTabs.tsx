@@ -1,7 +1,10 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@dpm-core/shared';
+
+import { getSessionDetailQuery } from '@/remotes/queries/session';
 
 import { SessionDetailInfo } from './SessionDetailInfo';
 import { SessionFeedbackInsights } from './SessionFeedbackInsights';
@@ -14,9 +17,13 @@ export const SessionDetailTabs = ({ sessionId }: SessionDetailTabsProps) => {
 	const pathname = usePathname();
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const activeTab = searchParams.get('tab') === 'feedback' ? 'feedback' : 'info';
+	const { data: sessionDetailResponse } = useQuery(getSessionDetailQuery(sessionId));
+	const hasFeedback = Boolean(sessionDetailResponse?.data.feedback);
+	const activeTab = hasFeedback && searchParams.get('tab') === 'feedback' ? 'feedback' : 'info';
 
 	const handleTabChange = (tab: string) => {
+		if (tab === 'feedback' && !hasFeedback) return;
+
 		const nextSearchParams = new URLSearchParams(searchParams.toString());
 		if (tab === 'feedback') {
 			nextSearchParams.set('tab', tab);
@@ -38,16 +45,20 @@ export const SessionDetailTabs = ({ sessionId }: SessionDetailTabsProps) => {
 				<TabsTrigger value="info" className="w-[68px] flex-none px-5 text-body2">
 					정보
 				</TabsTrigger>
-				<TabsTrigger value="feedback" className="w-[82px] flex-none px-5 text-body2">
-					피드백
-				</TabsTrigger>
+				{hasFeedback && (
+					<TabsTrigger value="feedback" className="w-[82px] flex-none px-5 text-body2">
+						피드백
+					</TabsTrigger>
+				)}
 			</TabsList>
 			<TabsContent value="info" className="min-h-0 flex-1 overflow-y-auto py-5">
 				<SessionDetailInfo sessionId={sessionId} />
 			</TabsContent>
-			<TabsContent value="feedback" className="min-h-0 flex-1 overflow-y-auto px-4 py-5 md:px-10">
-				<SessionFeedbackInsights sessionId={sessionId} />
-			</TabsContent>
+			{hasFeedback && (
+				<TabsContent value="feedback" className="min-h-0 flex-1 overflow-y-auto px-4 py-5 md:px-10">
+					<SessionFeedbackInsights sessionId={sessionId} />
+				</TabsContent>
+			)}
 		</Tabs>
 	);
 };
