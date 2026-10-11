@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@dpm-core/shared';
 
+import { EmptyView } from '@/components/attendance/EmptyView';
 import { getSessionFeedbackInsightQuery } from '@/remotes/queries/session';
 
 interface SessionFeedbackInsightsProps {
@@ -186,9 +187,14 @@ export const SessionFeedbackInsights = ({ sessionId }: SessionFeedbackInsightsPr
 		...insight.satisfaction.distribution.map(({ count }) => count),
 	);
 	const hasResponses = insight.responseSummary.respondentCount > 0;
+	const emptyStateMessage = {
+		SCHEDULED: '피드백 수집 예정이에요',
+		IN_PROGRESS: '아직 받은 피드백이 없어요',
+		CLOSED: '수집된 피드백이 없어요',
+	}[insight.status];
 
 	return (
-		<div className="flex flex-col gap-10 pb-8">
+		<div className="flex min-h-full flex-col gap-10 pb-8">
 			<header className="flex flex-col gap-1">
 				<h2 className="font-bold text-label-normal text-title1">{insight.sessionName}</h2>
 				<p className="font-semibold text-body2 text-label-assistive">
@@ -197,9 +203,12 @@ export const SessionFeedbackInsights = ({ sessionId }: SessionFeedbackInsightsPr
 				</p>
 			</header>
 
-			{!hasResponses ? (
-				<div className="flex min-h-[320px] items-center justify-center rounded-lg bg-background-subtle text-body2 text-label-assistive">
-					아직 제출된 피드백이 없습니다.
+			{insight.status === 'SCHEDULED' || !hasResponses ? (
+				<div className="-translate-y-8 flex flex-1 items-center justify-center">
+					<EmptyView
+						className="h-36 w-full max-w-[360px] flex-none gap-y-4 p-6"
+						message={emptyStateMessage}
+					/>
 				</div>
 			) : (
 				<div className="flex flex-col gap-12">

@@ -33,12 +33,20 @@ export const MOCK_SESSIONS: Session[] = [
 		isOnline: true,
 		date: '2026-04-04T15:00:00+09:00',
 	},
+	{
+		id: 39,
+		week: 5,
+		name: '피드백 응답 대기 테스트',
+		place: '온라인',
+		isOnline: true,
+		date: '2026-04-11T14:00:00+09:00',
+	},
 ];
 
 const MOCK_SESSION_FEEDBACK: Record<number, SessionListItem['feedback']> = {
 	35: {
 		status: 'SCHEDULED',
-		endAt: '2026-10-14T18:00:00+09:00',
+		endAt: '2026-10-15T18:00:00+09:00',
 		canSubmit: false,
 	},
 	36: {
@@ -52,6 +60,11 @@ const MOCK_SESSION_FEEDBACK: Record<number, SessionListItem['feedback']> = {
 		canSubmit: false,
 	},
 	38: null,
+	39: {
+		status: 'IN_PROGRESS',
+		endAt: '2026-10-14T18:00:00+09:00',
+		canSubmit: false,
+	},
 };
 
 const MOCK_SESSION_DETAIL_FEEDBACK: Record<number, SessionDetailFeedback | null> = {
@@ -74,6 +87,12 @@ const MOCK_SESSION_DETAIL_FEEDBACK: Record<number, SessionDetailFeedback | null>
 		pushEnabled: false,
 	},
 	38: null,
+	39: {
+		status: 'IN_PROGRESS',
+		startAt: '2026-10-08T18:00:00',
+		endAt: '2026-10-14T18:00:00',
+		pushEnabled: true,
+	},
 };
 
 export const createMockSessionListResponse = () => ({

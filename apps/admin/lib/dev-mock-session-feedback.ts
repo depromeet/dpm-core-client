@@ -3,8 +3,8 @@ import type { ApiResponse, SessionFeedbackInsight } from '@dpm-core/api';
 import { MOCK_SESSIONS } from './dev-mock-session';
 
 const MOCK_SESSION_FEEDBACK_INSIGHT: SessionFeedbackInsight = {
-	sessionId: 35,
-	sessionName: '세션 피드백 테스트 세션',
+	sessionId: 36,
+	sessionName: '아이디어 공유/피드백',
 	status: 'IN_PROGRESS',
 	startAt: '2026-10-08T18:00:00',
 	endAt: '2026-10-14T18:00:00',
@@ -68,17 +68,75 @@ const MOCK_SESSION_FEEDBACK_INSIGHT: SessionFeedbackInsight = {
 	},
 };
 
+const createEmptyInsight = (
+	sessionId: number,
+	status: SessionFeedbackInsight['status'],
+): SessionFeedbackInsight => ({
+	...MOCK_SESSION_FEEDBACK_INSIGHT,
+	sessionId,
+	sessionName: MOCK_SESSIONS.find((session) => session.id === sessionId)?.name ?? '세션 피드백',
+	status,
+	startAt:
+		status === 'SCHEDULED'
+			? '2026-10-12T18:00:00'
+			: status === 'CLOSED'
+				? '2026-10-05T18:00:00'
+				: '2026-10-08T18:00:00',
+	endAt:
+		status === 'CLOSED'
+			? '2026-10-08T18:00:00'
+			: status === 'SCHEDULED'
+				? '2026-10-15T18:00:00'
+				: '2026-10-14T18:00:00',
+	responseSummary: {
+		respondentCount: 0,
+		targetCount: 80,
+		responseRate: 0,
+	},
+	satisfaction: {
+		average: 0,
+		maxScore: 5,
+		distribution: MOCK_SESSION_FEEDBACK_INSIGHT.satisfaction.distribution.map((item) => ({
+			...item,
+			count: 0,
+			rate: 0,
+		})),
+	},
+	likedAspects: {
+		respondentCount: 0,
+		items: MOCK_SESSION_FEEDBACK_INSIGHT.likedAspects.items.map((item) => ({
+			...item,
+			count: 0,
+			rate: 0,
+		})),
+		etcComments: [],
+	},
+	improvementAspects: {
+		respondentCount: 0,
+		items: MOCK_SESSION_FEEDBACK_INSIGHT.improvementAspects.items
+			.filter(({ code }) => code !== 'ETC')
+			.map((item) => ({ ...item, count: 0, rate: 0 })),
+		etcComments: [],
+	},
+	freeComments: { count: 0, items: [] },
+});
+
 export const createMockSessionFeedbackInsightResponse = (
 	sessionId: number,
-): ApiResponse<SessionFeedbackInsight> => ({
-	status: 'OK',
-	message: '요청에 성공했습니다',
-	code: 'GLOBAL-200-01',
-	data: {
-		...MOCK_SESSION_FEEDBACK_INSIGHT,
-		sessionId,
-		sessionName:
-			MOCK_SESSIONS.find((session) => session.id === sessionId)?.name ??
-			MOCK_SESSION_FEEDBACK_INSIGHT.sessionName,
-	},
-});
+): ApiResponse<SessionFeedbackInsight> => {
+	const insight =
+		sessionId === 35
+			? createEmptyInsight(sessionId, 'SCHEDULED')
+			: sessionId === 37
+				? createEmptyInsight(sessionId, 'CLOSED')
+				: sessionId === 39
+					? createEmptyInsight(sessionId, 'IN_PROGRESS')
+					: { ...MOCK_SESSION_FEEDBACK_INSIGHT, sessionId };
+
+	return {
+		status: 'OK',
+		message: '요청에 성공했습니다',
+		code: 'GLOBAL-200-01',
+		data: insight,
+	};
+};
