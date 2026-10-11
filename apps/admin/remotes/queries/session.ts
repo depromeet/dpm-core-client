@@ -1,14 +1,23 @@
 import { queryOptions } from '@tanstack/react-query';
 import { type SessionAttendanceStatusTime, session } from '@dpm-core/api';
 
+import { isAdminDevMockEnabled } from '@/lib/dev-mock-auth';
+import {
+	createMockCurrentWeekSessionResponse,
+	createMockSessionDetailResponse,
+	createMockSessionListResponse,
+	createMockSessionWeeksResponse,
+} from '@/lib/dev-mock-session';
+
 export const getSessionListQuery = queryOptions({
 	queryKey: ['session-list'],
-	queryFn: session.getList,
+	queryFn: () => (isAdminDevMockEnabled() ? createMockSessionListResponse() : session.getList()),
 });
 
 export const getCurrentWeekSessionQuery = queryOptions({
 	queryKey: ['session-current-week'],
 	queryFn: async () => {
+		if (isAdminDevMockEnabled()) return createMockCurrentWeekSessionResponse();
 		return session.getCurrentWeekSession();
 	},
 });
@@ -17,6 +26,7 @@ export const getSessionDetailQuery = (sessionId: number) =>
 	queryOptions({
 		queryKey: ['session-detail', sessionId],
 		queryFn: async () => {
+			if (isAdminDevMockEnabled()) return createMockSessionDetailResponse(sessionId);
 			return session.getSessionById(sessionId);
 		},
 	});
@@ -25,6 +35,7 @@ export const getSessionWeeks = () =>
 	queryOptions({
 		queryKey: ['sessions, weeks'],
 		queryFn: async () => {
+			if (isAdminDevMockEnabled()) return createMockSessionWeeksResponse();
 			return session.getSessionWeeks();
 		},
 	});

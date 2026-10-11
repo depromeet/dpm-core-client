@@ -54,13 +54,14 @@ function SessionItem({ session }: { session: SessionListItem }) {
 	const params = useParams();
 	const router = useRouter();
 
-	const handleClickSession = () => {
-		if (Number(params.id) === session.id) return;
+	const handleClickSession = (tab: 'info' | 'feedback' = 'info') => {
+		const query = tab === 'feedback' ? '?tab=feedback' : '';
+		const href = `/session/${session.id}${query}`;
 
 		if (params.id) {
-			router.replace(`/session/${session.id}`, { scroll: false });
+			router.replace(href, { scroll: false });
 		} else {
-			router.push(`/session/${session.id}`, { scroll: false });
+			router.push(href, { scroll: false });
 		}
 	};
 
@@ -69,18 +70,19 @@ function SessionItem({ session }: { session: SessionListItem }) {
 	const feedbackLabel = feedbackStatus ? FEEDBACK_STATUS_LABEL[feedbackStatus] : null;
 
 	return (
-		<Pressable
-			variant="none"
-			size="none"
-			asChild
+		<div
 			className={cn(
-				'group block h-auto w-full border-line-subtle border-b px-3 py-4 hover:bg-background-strong',
+				'group flex w-full items-center border-line-subtle border-b px-3 py-4 hover:bg-background-strong',
 				selected && 'bg-background-strong',
 			)}
-			onClick={handleClickSession}
 		>
-			<div className="flex w-full items-center justify-between">
-				<div className="flex flex-1 flex-col">
+			<Pressable
+				variant="none"
+				size="none"
+				className="flex min-w-0 flex-1 items-center justify-between self-stretch text-left"
+				onClick={() => handleClickSession('info')}
+			>
+				<div className="flex min-w-0 flex-1 flex-col">
 					<p className="mb-0.5 font-medium text-caption1 text-label-assistive">
 						{formatSessionWeekString(session.week)}
 					</p>
@@ -100,40 +102,38 @@ function SessionItem({ session }: { session: SessionListItem }) {
 						</p>
 					</div>
 				</div>
-				{feedbackLabel ? (
-					feedbackStatus === 'CLOSED' ? (
-						<div className="flex flex-none items-center gap-5">
-							<Button
-								variant="none"
-								size="none"
-								className="h-9 w-[116px] flex-none justify-center rounded-md bg-primary-extralight px-2 font-medium text-body2 text-primary-normal hover:bg-primary-light hover:text-primary-strong"
-								onClick={(event) => {
-									event.stopPropagation();
-									handleClickSession();
-								}}
-							>
-								{feedbackLabel}
-							</Button>
-							<ChevronRight className="size-4 flex-none text-icon-noraml" />
-						</div>
-					) : (
-						<div className="flex flex-none items-center gap-5">
-							<span
-								className={cn(
-									'inline-flex h-9 flex-none items-center justify-center rounded-md bg-background-strong font-medium text-body2 text-label-assistive transition-colors group-hover:bg-background-heavy group-hover:text-label-subtle',
-									feedbackStatus === 'SCHEDULED' ? 'w-[116px]' : 'w-[104px]',
-								)}
-							>
-								{feedbackLabel}
-							</span>
-							<ChevronRight className="size-4 text-icon-noraml" />
-						</div>
-					)
-				) : (
-					<ChevronRight className="size-4 flex-none text-icon-noraml" />
-				)}
-			</div>
-		</Pressable>
+				{!feedbackLabel && <ChevronRight className="size-4 flex-none text-icon-noraml" />}
+			</Pressable>
+			{feedbackLabel ? (
+				<Button
+					variant="none"
+					size="none"
+					className={cn(
+						'ml-5 h-9 flex-none cursor-pointer justify-center rounded-md px-2 font-medium text-body2',
+						feedbackStatus === 'CLOSED'
+							? 'w-[116px] bg-primary-extralight text-primary-normal hover:bg-primary-light hover:text-primary-strong'
+							: 'bg-background-strong text-label-assistive hover:bg-background-heavy hover:text-label-subtle',
+						feedbackStatus === 'CLOSED' || feedbackStatus === 'SCHEDULED'
+							? 'w-[116px]'
+							: 'w-[104px]',
+					)}
+					onClick={() => handleClickSession('feedback')}
+				>
+					{feedbackLabel}
+				</Button>
+			) : null}
+			{feedbackLabel ? (
+				<Pressable
+					variant="none"
+					size="none"
+					className="ml-5 flex size-4 flex-none cursor-pointer items-center justify-center"
+					aria-label={`${session.name} 정보 보기`}
+					onClick={() => handleClickSession('info')}
+				>
+					<ChevronRight className="size-4 text-icon-noraml" />
+				</Pressable>
+			) : null}
+		</div>
 	);
 }
 
