@@ -3,6 +3,7 @@ import type {
 	CurrentWeekSessionResponse,
 	SessionAttendanceStatusTime,
 	SessionDetail,
+	SessionFeedbackInsight,
 	SessionListItem,
 	SessionTargeted,
 	SessionUnTargeted,
@@ -47,6 +48,17 @@ export const session = {
 	 */
 	getSessionById: async (sessionId: number) => {
 		const res = await http.get<SessionDetail>(`v1/sessions/${sessionId}`);
+		return res;
+	},
+
+	/**
+	 * 세션 피드백 인사이트 조회
+	 * 응답 현황, 만족도, 항목별 집계와 자유 의견을 조회합니다.
+	 */
+	getFeedbackInsight: async (sessionId: number) => {
+		const res = await http.get<SessionFeedbackInsight>(
+			`v1/sessions/${sessionId}/feedbacks/insight`,
+		);
 		return res;
 	},
 

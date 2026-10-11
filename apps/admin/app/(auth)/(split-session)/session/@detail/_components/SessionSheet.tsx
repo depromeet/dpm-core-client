@@ -19,7 +19,7 @@ export const SessionSheet = (props: SessionSheetProps) => {
 		<Sheet modal={false} open={isOpen}>
 			<SheetContent
 				onEscapeKeyDown={() => router.back()}
-				className="w-full min-w-full gap-0 border-line-normal shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)] outline-none max-md:data-[state=closed]:animate-none max-md:data-[state=open]:animate-none md:w-[600px] md:min-w-[600px]"
+				className="min-h-0 w-full min-w-full gap-0 overflow-hidden border-line-normal shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)] outline-none max-md:data-[state=closed]:animate-none max-md:data-[state=open]:animate-none md:w-[600px] md:min-w-[600px]"
 			>
 				{children}
 			</SheetContent>

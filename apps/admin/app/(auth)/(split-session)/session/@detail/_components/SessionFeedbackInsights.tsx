@@ -1,263 +1,312 @@
 'use client';
 
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useLayoutEffect, useRef, useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@dpm-core/shared';
 
-import { getSessionDetailQuery } from '@/remotes/queries/session';
+import { getSessionFeedbackInsightQuery } from '@/remotes/queries/session';
 
 interface SessionFeedbackInsightsProps {
 	sessionId: number;
 }
 
-const FEEDBACK_MOCK = {
-	respondentCount: 24,
-	targetCount: 40,
-	averageSatisfaction: 4.2,
-	satisfaction: [
-		{ label: '매우 만족', count: 12 },
-		{ label: '만족', count: 7 },
-		{ label: '보통', count: 3 },
-		{ label: '불만족', count: 1 },
-		{ label: '매우 불만족', count: 1 },
-	],
-	positiveReasons: ['세션 내용', '진행 속도', '참여·교류 기회'],
-	improvementReasons: ['사전 안내', '장소·접속 환경', '기타'],
-	comments: [
-		{
-			id: 1,
-			text: '활동 방향을 이해하는 데 도움이 되었어요. 다른 팀과 이야기할 시간이 조금 더 있으면 좋겠어요.',
-		},
-		{
-			id: 2,
-			text: '세션 내용이 유익했고 진행도 좋았습니다. 다음에는 질의응답 시간이 조금 더 길면 좋겠습니다.',
-		},
-		{
-			id: 3,
-			text: '팀원들과 자연스럽게 교류할 수 있어서 좋았어요. 안내 내용도 사전에 확인하기 쉬웠습니다.',
-		},
-		{
-			id: 4,
-			text: '세션에서 다룬 주제가 흥미로웠고 실제 활동 방향을 잡는 데 도움이 됐습니다.',
-		},
-		{
-			id: 5,
-			text: '진행 속도가 적당해서 내용을 따라가기 좋았습니다. 다음 세션도 기대돼요.',
-		},
-		{
-			id: 6,
-			text: '현장 안내를 조금 더 일찍 공유해주시면 처음 참석하는 사람에게 도움이 될 것 같습니다.',
-		},
-		{
-			id: 7,
-			text: '다른 직군의 디퍼들과 이야기할 수 있는 시간이 인상적이었습니다.',
-		},
-		{
-			id: 8,
-			text: '장소를 찾는 데 시간이 걸려서 위치 안내가 조금 더 자세하면 좋겠습니다.',
-		},
-		{
-			id: 9,
-			text: '전체적으로 만족스러웠고 다음에는 소그룹 대화 시간이 조금 더 길면 좋겠어요.',
-		},
-	],
-} as const;
-
-const MAX_SATISFACTION_COUNT = Math.max(...FEEDBACK_MOCK.satisfaction.map(({ count }) => count));
-
 const FeedbackSectionTitle = ({ children }: { children: ReactNode }) => (
-	<h3 className="font-semibold text-body2 text-label-normal">{children}</h3>
+	<h3 className="font-semibold text-body1 text-label-normal">{children}</h3>
 );
 
 const ReasonGroup = ({
 	title,
-	reasons,
+	items,
+	respondentCount,
+	etcComments,
 	variant,
 }: {
 	title: string;
-	reasons: readonly string[];
+	items: readonly { code: string; label: string; count: number; rate: number }[];
+	respondentCount: number;
+	etcComments: readonly string[];
 	variant: 'positive' | 'improvement';
-}) => (
-	<div>
-		<p className="font-medium text-body2 text-label-subtle">
-			{title} <span className="text-label-assistive">(top 3)</span>
-		</p>
-		<ul className="mt-3 flex flex-wrap gap-2">
-			{reasons.map((reason) => (
-				<li
-					key={reason}
-					className={
-						variant === 'positive'
-							? 'rounded-full border border-blue-100 bg-blue-50 px-3 py-2 font-medium text-blue-500 text-body2'
-							: 'rounded-full border border-red-100 bg-red-50 px-3 py-2 font-medium text-body2 text-red-500'
-					}
+}) => {
+	const [isEtcExpanded, setIsEtcExpanded] = useState(false);
+	const rankedItems = [...items]
+		.filter(({ code, count }) => code !== 'ETC' || count > 0)
+		.sort((a, b) => b.count - a.count);
+	const topItems = rankedItems.slice(0, 3);
+	const otherItems = rankedItems.slice(3);
+	const getRate = (count: number) =>
+		respondentCount > 0 ? Math.round((count / respondentCount) * 100) : 0;
+
+	return (
+		<div className="flex flex-col gap-5 rounded-lg border border-line-subtle p-5">
+			<div className="flex flex-col gap-3">
+				<p className="font-medium text-body2 text-label-subtle">{title}</p>
+				<p className="text-caption1 text-label-assistive">총 {respondentCount}건 · 복수 선택</p>
+				<ul className="flex flex-wrap gap-2">
+					{topItems.map(({ code, label, count }) => {
+						const isEtc = code === 'ETC' && etcComments.length > 0;
+						const chipClassName = `whitespace-nowrap rounded-full px-3 py-2 text-center font-medium text-body2 ${variant === 'positive' ? 'bg-primary-extralight text-primary-normal' : 'bg-red-50 text-red-500'}`;
+
+						return (
+							<li key={code} className={chipClassName}>
+								{isEtc ? (
+									<button
+										type="button"
+										className="flex w-full cursor-pointer items-center justify-center gap-1 whitespace-nowrap"
+										aria-expanded={isEtcExpanded}
+										aria-controls={`feedback-etc-${variant}`}
+										onClick={() => setIsEtcExpanded((expanded) => !expanded)}
+									>
+										{label} {count}명 ({getRate(count)}%)
+										{isEtcExpanded ? (
+											<ChevronUp aria-hidden="true" size={14} />
+										) : (
+											<ChevronDown aria-hidden="true" size={14} />
+										)}
+									</button>
+								) : (
+									<>
+										{label} {count}명 ({getRate(count)}%)
+									</>
+								)}
+							</li>
+						);
+					})}
+				</ul>
+				<ul className="flex flex-wrap gap-2">
+					{otherItems.map(({ code, label, count }) => {
+						const isEtc = code === 'ETC' && etcComments.length > 0;
+
+						return (
+							<li key={code}>
+								{isEtc ? (
+									<button
+										type="button"
+										className="flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-full bg-background-subtle px-3 py-2 font-medium text-body2 text-label-tertiary"
+										aria-expanded={isEtcExpanded}
+										aria-controls={`feedback-etc-${variant}`}
+										onClick={() => setIsEtcExpanded((expanded) => !expanded)}
+									>
+										{label} {count}명 ({getRate(count)}%)
+										{isEtcExpanded ? (
+											<ChevronUp aria-hidden="true" size={14} />
+										) : (
+											<ChevronDown aria-hidden="true" size={14} />
+										)}
+									</button>
+								) : (
+									<span className="block whitespace-nowrap rounded-full bg-background-subtle px-3 py-2 font-medium text-body2 text-label-tertiary">
+										{label} {count}명 ({getRate(count)}%)
+									</span>
+								)}
+							</li>
+						);
+					})}
+				</ul>
+			</div>
+			{etcComments.length > 0 && (
+				<ul
+					id={`feedback-etc-${variant}`}
+					aria-hidden={!isEtcExpanded}
+					className={`${isEtcExpanded ? 'flex' : 'hidden'} list-disc flex-col gap-2 rounded-lg bg-background-subtle px-8 py-3 text-body2 text-label-subtle`}
 				>
-					{reason}
-				</li>
-			))}
-		</ul>
-	</div>
-);
+					{etcComments.map((comment, index) => (
+						// biome-ignore lint/suspicious/noArrayIndexKey: The API returns anonymous comment text without IDs.
+						<li key={index}>{comment}</li>
+					))}
+				</ul>
+			)}
+		</div>
+	);
+};
 
 const FreeComment = ({ id, text }: { id: number; text: string }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [hasMore, setHasMore] = useState(false);
+	const contentRef = useRef<HTMLParagraphElement>(null);
+
+	useLayoutEffect(() => {
+		const element = contentRef.current;
+		if (isExpanded || !element) return;
+
+		const updateHasMore = () => {
+			const range = document.createRange();
+			range.selectNodeContents(element);
+			setHasMore(range.getClientRects().length > 5);
+		};
+
+		updateHasMore();
+		const resizeObserver = new ResizeObserver(updateHasMore);
+		resizeObserver.observe(element);
+		return () => resizeObserver.disconnect();
+	}, [isExpanded]);
 
 	return (
-		<li className="flex items-start justify-between gap-4 border-line-subtle border-b py-4 last:border-b-0">
+		<li className="flex flex-col items-start gap-1 rounded-lg bg-background-subtle p-4">
 			<p
+				ref={contentRef}
 				id={`feedback-comment-${id}`}
 				className={
 					isExpanded
 						? 'min-w-0 flex-1 text-body2 text-label-subtle'
-						: 'min-w-0 flex-1 truncate text-body2 text-label-subtle'
+						: 'line-clamp-5 min-w-0 flex-1 text-body2 text-label-subtle'
 				}
 			>
 				{text}
 			</p>
-			<Button
-				type="button"
-				variant="text"
-				size="none"
-				className="gap-1 text-caption1"
-				aria-expanded={isExpanded}
-				aria-controls={`feedback-comment-${id}`}
-				onClick={() => setIsExpanded((expanded) => !expanded)}
-			>
-				{isExpanded ? '접기' : '전문 보기'}
-				{isExpanded ? (
-					<ChevronUp aria-hidden="true" size={14} />
-				) : (
-					<ChevronDown aria-hidden="true" size={14} />
-				)}
-			</Button>
+			{hasMore && (
+				<Button
+					type="button"
+					variant="text"
+					size="none"
+					className="text-caption1 text-label-assistive"
+					aria-expanded={isExpanded}
+					aria-controls={`feedback-comment-${id}`}
+					onClick={() => setIsExpanded((expanded) => !expanded)}
+				>
+					{isExpanded ? '접기' : '더보기'}
+				</Button>
+			)}
 		</li>
 	);
 };
 
 export const SessionFeedbackInsights = ({ sessionId }: SessionFeedbackInsightsProps) => {
 	const {
-		data: { data: sessionDetail },
-	} = useSuspenseQuery(getSessionDetailQuery(sessionId));
-	const responseRate = Math.round(
-		(FEEDBACK_MOCK.respondentCount / FEEDBACK_MOCK.targetCount) * 100,
+		data: { data: insight },
+	} = useSuspenseQuery(getSessionFeedbackInsightQuery(sessionId));
+	const feedbackStatusLabel = {
+		SCHEDULED: '수집 예정',
+		IN_PROGRESS: '수집 중',
+		CLOSED: '수집 완료',
+	}[insight.status];
+	const feedbackPeriod = `${dayjs(insight.startAt).format('YYYY.MM.DD')} ~ ${dayjs(insight.endAt).format('YYYY.MM.DD')}`;
+	const highestSatisfactionCount = Math.max(
+		...insight.satisfaction.distribution.map(({ count }) => count),
 	);
-	const feedbackStatusLabel = sessionDetail.feedback
-		? {
-				SCHEDULED: '수집 예정',
-				IN_PROGRESS: '수집 중',
-				CLOSED: '수집 완료',
-			}[sessionDetail.feedback.status]
-		: '피드백 미설정';
-	const feedbackPeriod = sessionDetail.feedback
-		? `${dayjs(sessionDetail.feedback.startAt).format('YYYY.MM.DD')} ~ ${dayjs(sessionDetail.feedback.endAt).format('YYYY.MM.DD')}`
-		: null;
+	const hasResponses = insight.responseSummary.respondentCount > 0;
 
 	return (
-		<div className="flex flex-col gap-6 pb-8">
-			<header>
-				<h2 className="font-bold text-label-normal text-title1">{sessionDetail.name}</h2>
-				<p className="mt-1 font-medium text-caption1 text-label-assistive">
+		<div className="flex flex-col gap-10 pb-8">
+			<header className="flex flex-col gap-1">
+				<h2 className="font-bold text-label-normal text-title1">{insight.sessionName}</h2>
+				<p className="font-semibold text-body2 text-label-assistive">
 					{feedbackStatusLabel}
-					{feedbackPeriod && ` · ${feedbackPeriod}`}
+					{` · ${feedbackPeriod}`}
 				</p>
 			</header>
 
-			<section aria-labelledby="feedback-response-heading" className="flex flex-col gap-3">
-				<FeedbackSectionTitle>
-					<span id="feedback-response-heading">응답 현황</span>
-				</FeedbackSectionTitle>
-				<div className="grid grid-cols-2 gap-3">
-					<div className="rounded-lg bg-background-subtle p-4">
-						<p className="font-medium text-caption1 text-label-subtle">응답률</p>
-						<p className="mt-1 font-semibold text-label-normal text-title2">
-							{responseRate}% · {FEEDBACK_MOCK.respondentCount}/{FEEDBACK_MOCK.targetCount}명
-						</p>
-					</div>
-					<div className="rounded-lg bg-background-subtle p-4">
-						<p className="font-medium text-caption1 text-label-subtle">평균 만족도</p>
-						<p className="mt-1 font-semibold text-label-normal text-title2">
-							{FEEDBACK_MOCK.averageSatisfaction}점 / 5점
-						</p>
-					</div>
+			{!hasResponses ? (
+				<div className="flex min-h-[320px] items-center justify-center rounded-lg bg-background-subtle text-body2 text-label-assistive">
+					아직 제출된 피드백이 없습니다.
 				</div>
-			</section>
-
-			<section
-				aria-labelledby="feedback-distribution-heading"
-				className="rounded-lg border border-line-subtle p-4"
-			>
-				<FeedbackSectionTitle>
-					<span id="feedback-distribution-heading">만족도 분포</span>
-				</FeedbackSectionTitle>
-				<ul className="mt-4 flex flex-col gap-3">
-					{FEEDBACK_MOCK.satisfaction.map(({ label, count }) => {
-						const percentage = Math.round((count / FEEDBACK_MOCK.respondentCount) * 100);
-
-						return (
-							<li
-								key={label}
-								className="grid grid-cols-[72px_minmax(0,1fr)_72px] items-center gap-3"
-							>
-								<span className="truncate font-medium text-caption1 text-label-assistive">
-									{label}
-								</span>
-								<div
-									role="img"
-									aria-label={`${label}: ${count}명, ${percentage}%`}
-									className="h-3 overflow-hidden rounded-sm bg-background-subtle"
-								>
-									<div
-										className="h-full rounded-sm bg-blue-300"
-										style={{ width: `${(count / MAX_SATISFACTION_COUNT) * 100}%` }}
-									/>
+			) : (
+				<div className="flex flex-col gap-12">
+					<div className="flex flex-col gap-3">
+						<section aria-labelledby="feedback-response-heading" className="flex flex-col gap-3">
+							<FeedbackSectionTitle>
+								<span id="feedback-response-heading">응답 현황</span>
+							</FeedbackSectionTitle>
+							<div className="grid grid-cols-2 gap-3">
+								<div className="flex h-[92px] flex-col justify-center gap-2.5 rounded-lg bg-background-subtle p-5">
+									<p className="font-semibold text-caption1 text-label-subtle">응답률</p>
+									<p className="font-semibold text-headline1 text-label-normal">
+										{insight.responseSummary.responseRate}% ·{' '}
+										{insight.responseSummary.respondentCount}/{insight.responseSummary.targetCount}
+										명
+									</p>
 								</div>
-								<span className="text-right font-medium text-caption1 text-label-assistive">
-									{count}명 | {percentage}%
-								</span>
-							</li>
-						);
-					})}
-				</ul>
-			</section>
+								<div className="flex h-[92px] flex-col justify-center gap-2.5 rounded-lg bg-background-subtle p-5">
+									<p className="font-semibold text-caption1 text-label-subtle">평균 만족도</p>
+									<p className="font-semibold text-headline1 text-label-normal">
+										{insight.satisfaction.average}점 / {insight.satisfaction.maxScore}점
+									</p>
+								</div>
+							</div>
+						</section>
 
-			<section
-				aria-labelledby="feedback-reasons-heading"
-				className="rounded-lg border border-line-subtle p-4"
-			>
-				<FeedbackSectionTitle>
-					<span id="feedback-reasons-heading">보완 요청 항목</span>
-				</FeedbackSectionTitle>
-				<div className="mt-5 flex flex-col gap-8">
-					<ReasonGroup
-						title="이런 점이 좋았어요"
-						reasons={FEEDBACK_MOCK.positiveReasons}
-						variant="positive"
-					/>
-					<ReasonGroup
-						title="이런 점이 별로였어요"
-						reasons={FEEDBACK_MOCK.improvementReasons}
-						variant="improvement"
-					/>
-				</div>
-			</section>
+						<section
+							aria-labelledby="feedback-distribution-heading"
+							className="flex h-[232px] flex-col gap-5 rounded-lg border border-line-subtle p-5"
+						>
+							<h3
+								id="feedback-distribution-heading"
+								className="font-semibold text-body2 text-label-subtle"
+							>
+								만족도 분포
+							</h3>
+							<ul className="flex flex-col gap-2">
+								{insight.satisfaction.distribution.map(({ code, label, count, rate }) => {
+									return (
+										<li
+											key={code}
+											className="grid grid-cols-[80px_minmax(0,1fr)_70px] items-center gap-3"
+										>
+											<span className="truncate font-semibold text-caption1 text-label-assistive">
+												{label}
+											</span>
+											<div
+												role="img"
+												aria-label={`${label}: ${count}명, ${rate}%`}
+												className="h-6 overflow-hidden rounded-md bg-background-subtle"
+											>
+												<div
+													className={`h-full rounded-md ${highestSatisfactionCount > 0 && count === highestSatisfactionCount ? 'bg-primary-normal' : 'bg-primary-light'}`}
+													style={{ width: `${rate}%` }}
+												/>
+											</div>
+											<span className="text-right font-semibold text-caption1 text-label-subtle">
+												{count}명 <span className="text-label-assistive">· {rate}%</span>
+											</span>
+										</li>
+									);
+								})}
+							</ul>
+						</section>
+					</div>
 
-			<section aria-labelledby="feedback-comments-heading" className="flex flex-col gap-3">
-				<FeedbackSectionTitle>
-					<span id="feedback-comments-heading">자유 의견</span>
-				</FeedbackSectionTitle>
-				<div className="rounded-lg border border-line-subtle px-4">
-					<h4 className="border-line-subtle border-b py-4 font-semibold text-caption1 text-label-subtle">
-						세션 자유 의견 <span className="text-primary-strong">9건</span>
-					</h4>
-					<ul aria-label="익명 세션 자유 의견">
-						{FEEDBACK_MOCK.comments.map((comment) => (
-							<FreeComment key={comment.id} {...comment} />
-						))}
-					</ul>
+					<section aria-labelledby="feedback-reasons-heading" className="flex flex-col gap-5">
+						<FeedbackSectionTitle>
+							<span id="feedback-reasons-heading">피드백 항목</span>
+						</FeedbackSectionTitle>
+						<div className="flex flex-col gap-3">
+							<ReasonGroup
+								title="이런 점이 좋았어요"
+								items={insight.likedAspects.items}
+								respondentCount={insight.likedAspects.respondentCount}
+								etcComments={insight.likedAspects.etcComments}
+								variant="positive"
+							/>
+							<ReasonGroup
+								title="이런 점이 별로였어요"
+								items={insight.improvementAspects.items}
+								respondentCount={insight.improvementAspects.respondentCount}
+								etcComments={insight.improvementAspects.etcComments}
+								variant="improvement"
+							/>
+						</div>
+					</section>
+
+					<section aria-labelledby="feedback-comments-heading" className="flex flex-col gap-3">
+						<FeedbackSectionTitle>
+							<span id="feedback-comments-heading">자유 의견</span>
+						</FeedbackSectionTitle>
+						<div className="rounded-lg border border-line-subtle px-4">
+							<h4 className="border-line-subtle border-b py-4 font-semibold text-caption1 text-label-subtle">
+								세션 자유 의견{' '}
+								<span className="text-primary-strong">{insight.freeComments.count}건</span>
+							</h4>
+							<ul aria-label="익명 세션 자유 의견" className="flex flex-col gap-2 py-4">
+								{insight.freeComments.items.map((text, index) => (
+									// biome-ignore lint/suspicious/noArrayIndexKey: The API returns ordered anonymous comments without IDs.
+									<FreeComment key={index} id={index} text={text} />
+								))}
+							</ul>
+						</div>
+					</section>
 				</div>
-			</section>
+			)}
 		</div>
 	);
 };

@@ -28,9 +28,9 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 	const isMobile = useIsMobile();
 
 	return (
-		<div className="flex flex-col gap-y-5 px-4 md:px-10">
+		<div className="flex flex-col gap-y-5">
 			<GAPageTracker type="session-detail" sessionId={String(sessionId)} />
-			<div className="flex items-center justify-between md:mt-6">
+			<div className="flex items-center justify-between">
 				<h3 className="font-semibold text-headline2 text-label-normal md:font-bold md:text-title1">
 					{sessionDetail.name}
 				</h3>

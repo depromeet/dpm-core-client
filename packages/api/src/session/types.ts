@@ -11,6 +11,22 @@ export interface Session {
 
 export type SessionFeedbackCollectionStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'CLOSED';
 
+export type SessionFeedbackSatisfaction =
+	| 'VERY_SATISFIED'
+	| 'SATISFIED'
+	| 'NEUTRAL'
+	| 'DISSATISFIED'
+	| 'VERY_DISSATISFIED';
+
+export type SessionFeedbackAspect =
+	| 'SESSION_CONTENT'
+	| 'PROGRESS_AND_TIME'
+	| 'NETWORKING'
+	| 'GUIDANCE'
+	| 'PLACE_AND_ACCESS'
+	| 'ETC'
+	| 'NOTHING';
+
 export interface SessionListFeedback {
 	status: SessionFeedbackCollectionStatus;
 	endAt: string;
@@ -22,6 +38,46 @@ export interface SessionDetailFeedback {
 	startAt: string;
 	endAt: string;
 	pushEnabled: boolean;
+}
+
+export interface SessionFeedbackInsight {
+	sessionId: number;
+	sessionName: string;
+	status: SessionFeedbackCollectionStatus;
+	startAt: string;
+	endAt: string;
+	responseSummary: {
+		respondentCount: number;
+		targetCount: number;
+		responseRate: number;
+	};
+	satisfaction: {
+		average: number;
+		maxScore: number;
+		distribution: {
+			code: SessionFeedbackSatisfaction;
+			label: string;
+			count: number;
+			rate: number;
+		}[];
+	};
+	likedAspects: SessionFeedbackAspectSummary;
+	improvementAspects: SessionFeedbackAspectSummary;
+	freeComments: {
+		count: number;
+		items: string[];
+	};
+}
+
+interface SessionFeedbackAspectSummary {
+	respondentCount: number;
+	items: {
+		code: SessionFeedbackAspect;
+		label: string;
+		count: number;
+		rate: number;
+	}[];
+	etcComments: string[];
 }
 
 export type SessionListItem = Session & {

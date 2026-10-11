@@ -51,7 +51,7 @@ export const SessionDetailTabs = ({ sessionId }: SessionDetailTabsProps) => {
 					</TabsTrigger>
 				)}
 			</TabsList>
-			<TabsContent value="info" className="min-h-0 flex-1 overflow-y-auto py-5">
+			<TabsContent value="info" className="min-h-0 flex-1 overflow-y-auto px-4 py-5 md:px-10">
 				<SessionDetailInfo sessionId={sessionId} />
 			</TabsContent>
 			{hasFeedback && (

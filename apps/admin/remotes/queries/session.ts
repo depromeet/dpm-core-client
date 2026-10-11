@@ -8,6 +8,7 @@ import {
 	createMockSessionListResponse,
 	createMockSessionWeeksResponse,
 } from '@/lib/dev-mock-session';
+import { createMockSessionFeedbackInsightResponse } from '@/lib/dev-mock-session-feedback';
 
 export const getSessionListQuery = queryOptions({
 	queryKey: ['session-list'],
@@ -29,6 +30,16 @@ export const getSessionDetailQuery = (sessionId: number) =>
 			if (isAdminDevMockEnabled()) return createMockSessionDetailResponse(sessionId);
 			return session.getSessionById(sessionId);
 		},
+	});
+
+export const getSessionFeedbackInsightQuery = (sessionId: number) =>
+	queryOptions({
+		queryKey: ['session-feedback-insight', sessionId],
+		queryFn: () =>
+			isAdminDevMockEnabled()
+				? createMockSessionFeedbackInsightResponse(sessionId)
+				: session.getFeedbackInsight(sessionId),
+		refetchInterval: (query) => (query.state.data?.data.status === 'IN_PROGRESS' ? 5_000 : false),
 	});
 
 export const getSessionWeeks = () =>
