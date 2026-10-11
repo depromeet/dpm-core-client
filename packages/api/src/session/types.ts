@@ -9,6 +9,18 @@ export interface Session {
 	date: string;
 }
 
+export type SessionFeedbackCollectionStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'CLOSED';
+
+export interface SessionListFeedback {
+	status: SessionFeedbackCollectionStatus;
+	endAt: string;
+	canSubmit: boolean;
+}
+
+export type SessionListItem = Session & {
+	feedback: SessionListFeedback | null;
+};
+
 export interface SessionAttendanceStatusTime {
 	attendanceStart: string;
 	lateStart: string;

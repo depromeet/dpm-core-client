@@ -4,13 +4,14 @@ import type {
 	Session,
 	SessionAttendanceCode,
 	SessionAttendanceStatusTime,
+	SessionListItem,
 	SessionTargeted,
 	SessionUnTargeted,
 	SessionWeek,
 } from './types';
 
 type SessionListResponse = {
-	sessions: Session[];
+	sessions: SessionListItem[];
 };
 
 type SessionWeeksResponse = {
