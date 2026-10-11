@@ -7,7 +7,7 @@ import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
-import type { Session } from '@dpm-core/api';
+import type { SessionListItem } from '@dpm-core/api';
 import { Button, Calender, ChevronRight, Clock, cn, formatDotFullDate } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
@@ -16,6 +16,12 @@ import { Pressable } from '@/components/motion';
 import { formatISOStringHHMM } from '@/lib/date';
 import { formatSessionWeekString } from '@/lib/session/format';
 import { getSessionListQuery } from '@/remotes/queries/session';
+
+const FEEDBACK_STATUS_LABEL = {
+	SCHEDULED: '피드백 수집 예정',
+	IN_PROGRESS: '피드백 수집 중',
+	CLOSED: '피드백 결과 보기',
+} as const;
 
 const SessionListContainer = () => {
 	const {
@@ -44,7 +50,7 @@ const SessionListContainer = () => {
 	);
 };
 
-function SessionItem({ session }: { session: Session }) {
+function SessionItem({ session }: { session: SessionListItem }) {
 	const params = useParams();
 	const router = useRouter();
 
@@ -59,6 +65,8 @@ function SessionItem({ session }: { session: Session }) {
 	};
 
 	const selected = Number(params.id) === session.id;
+	const feedbackStatus = session.feedback?.status;
+	const feedbackLabel = feedbackStatus ? FEEDBACK_STATUS_LABEL[feedbackStatus] : null;
 
 	return (
 		<Pressable
@@ -66,7 +74,7 @@ function SessionItem({ session }: { session: Session }) {
 			size="none"
 			asChild
 			className={cn(
-				'block h-auto w-full border-line-subtle border-b px-3 py-4 hover:bg-background-strong',
+				'group block h-auto w-full border-line-subtle border-b px-3 py-4 hover:bg-background-strong',
 				selected && 'bg-background-strong',
 			)}
 			onClick={handleClickSession}
@@ -76,7 +84,9 @@ function SessionItem({ session }: { session: Session }) {
 					<p className="mb-0.5 font-medium text-caption1 text-label-assistive">
 						{formatSessionWeekString(session.week)}
 					</p>
-					<h3 className="mb-1.5 font-semibold text-body1 text-label-normal">{session.name}</h3>
+					<h3 className="mb-1.5 truncate font-semibold text-body1 text-label-normal">
+						{session.name}
+					</h3>
 					<div className="flex items-center gap-x-1">
 						<Calender />
 						<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
@@ -90,7 +100,38 @@ function SessionItem({ session }: { session: Session }) {
 						</p>
 					</div>
 				</div>
-				<ChevronRight className="text-icon-noraml" />
+				{feedbackLabel ? (
+					feedbackStatus === 'CLOSED' ? (
+						<div className="flex flex-none items-center gap-5">
+							<Button
+								variant="none"
+								size="none"
+								className="h-9 w-[116px] flex-none justify-center rounded-md bg-primary-extralight px-2 font-medium text-body2 text-primary-normal hover:bg-primary-light hover:text-primary-strong"
+								onClick={(event) => {
+									event.stopPropagation();
+									handleClickSession();
+								}}
+							>
+								{feedbackLabel}
+							</Button>
+							<ChevronRight className="size-4 flex-none text-icon-noraml" />
+						</div>
+					) : (
+						<div className="flex flex-none items-center gap-5">
+							<span
+								className={cn(
+									'inline-flex h-9 flex-none items-center justify-center rounded-md bg-background-strong font-medium text-body2 text-label-assistive transition-colors group-hover:bg-background-heavy group-hover:text-label-subtle',
+									feedbackStatus === 'SCHEDULED' ? 'w-[116px]' : 'w-[104px]',
+								)}
+							>
+								{feedbackLabel}
+							</span>
+							<ChevronRight className="size-4 text-icon-noraml" />
+						</div>
+					)
+				) : (
+					<ChevronRight className="size-4 flex-none text-icon-noraml" />
+				)}
 			</div>
 		</Pressable>
 	);
