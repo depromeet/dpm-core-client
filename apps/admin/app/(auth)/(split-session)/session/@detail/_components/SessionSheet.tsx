@@ -12,11 +12,15 @@ export const SessionSheet = (props: SessionSheetProps) => {
 	const { children } = props;
 
 	const params = useParams<{ id: string }>();
+	const router = useRouter();
 	const isOpen = !!params.id;
 
 	return (
 		<Sheet modal={false} open={isOpen}>
-			<SheetContent className="w-full min-w-full gap-0 border-line-normal shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)] outline-none max-md:data-[state=closed]:animate-none max-md:data-[state=open]:animate-none md:w-[600px] md:min-w-[600px]">
+			<SheetContent
+				onEscapeKeyDown={() => router.back()}
+				className="w-full min-w-full gap-0 border-line-normal shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)] outline-none max-md:data-[state=closed]:animate-none max-md:data-[state=open]:animate-none md:w-[600px] md:min-w-[600px]"
+			>
 				{children}
 			</SheetContent>
 		</Sheet>
