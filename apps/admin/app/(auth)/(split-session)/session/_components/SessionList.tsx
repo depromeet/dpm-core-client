@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { Plus } from 'lucide-react';
 import { Virtuoso } from 'react-virtuoso';
 import type { SessionListItem } from '@dpm-core/api';
 import { Button, Calender, ChevronRight, Clock, cn, formatDotFullDate } from '@dpm-core/shared';
@@ -36,8 +37,11 @@ const SessionListContainer = () => {
 					<span className="text-primary-normal">{sessionResponse.sessions.length}</span>
 				</h3>
 				<div className="flex gap-4">
-					<Button asChild size="md" variant="secondary">
-						<Link href="/session/create">세션 추가</Link>
+					<Button asChild size="md" variant="secondary" className="w-[106px] gap-3 rounded-lg px-2">
+						<Link href="/session/create">
+							<Plus className="size-4 shrink-0" aria-hidden="true" />
+							<span>세션 추가</span>
+						</Link>
 					</Button>
 				</div>
 			</div>
