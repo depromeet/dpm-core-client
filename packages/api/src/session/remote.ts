@@ -5,6 +5,7 @@ import type {
 	SessionDetail,
 	SessionFeedbackInsight,
 	SessionFeedbackMeResponse,
+	SessionFeedbackPending,
 	SessionFeedbackSubmissionRequest,
 	SessionListItem,
 	SessionTargeted,
@@ -67,6 +68,11 @@ export const session = {
 	/** 디퍼의 세션 피드백 작성 가능 상태 조회 */
 	getMyFeedbackStatus: async (sessionId: number) => {
 		return await http.get<SessionFeedbackMeResponse>(`v1/sessions/${sessionId}/feedbacks/me`);
+	},
+
+	/** 디퍼가 작성 가능한 세션 피드백 조회 */
+	getMyPendingFeedback: async () => {
+		return await http.get<SessionFeedbackPending | undefined>('v1/sessions/feedbacks/me/pending');
 	},
 
 	/** 디퍼의 세션 피드백 제출 */

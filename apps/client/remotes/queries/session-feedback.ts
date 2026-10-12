@@ -1,11 +1,13 @@
 import { queryOptions } from '@tanstack/react-query';
 import {
 	type ApiResponse,
+	http,
 	type SessionFeedbackMeResponse,
 	type SessionFeedbackMyStatus,
 	session,
 } from '@dpm-core/api';
 
+import { MOCK_SESSION_FEEDBACK_PENDING } from '../mocks/session-feedback-pending';
 import { MOCK_SESSION_LIST_RESPONSE } from '../mocks/session-list';
 
 export const SESSION_FEEDBACK_STATUSES: SessionFeedbackMyStatus[] = [
@@ -19,6 +21,10 @@ export const SESSION_FEEDBACK_STATUSES: SessionFeedbackMyStatus[] = [
 const isSessionFeedbackStatusMockEnabled =
 	process.env.NODE_ENV === 'development' &&
 	process.env.NEXT_PUBLIC_USE_MOCK_SESSION_FEEDBACK_STATUS !== 'false';
+
+const isSessionFeedbackPendingMockEnabled =
+	process.env.NODE_ENV === 'development' &&
+	process.env.NEXT_PUBLIC_USE_MOCK_SESSION_FEEDBACK_PENDING !== 'false';
 
 export const getSessionFeedbackMeMock = (
 	sessionId: number,
@@ -52,3 +58,13 @@ export const getSessionFeedbackMeQuery = (
 		retry: false,
 		staleTime: 0,
 	});
+
+export const getMyPendingSessionFeedbackQuery = queryOptions({
+	queryKey: ['session-feedback-pending'],
+	queryFn: () =>
+		isSessionFeedbackPendingMockEnabled
+			? MOCK_SESSION_FEEDBACK_PENDING
+			: session.getMyPendingFeedback(),
+	enabled: isSessionFeedbackPendingMockEnabled || Boolean(http.getDefaultToken()),
+	retry: false,
+});

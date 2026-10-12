@@ -24,6 +24,13 @@ export interface SessionFeedbackMeResponse {
 	startAt: string | null;
 }
 
+export interface SessionFeedbackPending {
+	sessionId: number;
+	week: number;
+	sessionName: string;
+	endAt: string;
+}
+
 export interface SessionFeedbackSubmissionRequest {
 	satisfaction: SessionFeedbackSatisfaction;
 	likedAspects: SessionFeedbackAspect[];
