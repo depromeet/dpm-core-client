@@ -6,7 +6,8 @@ import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Virtuoso } from 'react-virtuoso';
-import type { Session } from '@dpm-core/api';
+import dayjs from 'dayjs';
+import type { SessionListItem } from '@dpm-core/api';
 import { Aesterisk, Button, Calender, Clock, formatDotFullDate } from '@dpm-core/shared';
 
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
@@ -41,34 +42,58 @@ const SessionListContainer = () => {
 	);
 };
 
-function SessionItem({ session }: { session: Session }) {
-	return (
-		<Button
-			size="none"
-			variant="none"
-			className="block w-full cursor-pointer px-4 text-left"
-			asChild
-		>
-			<Link href={`/session/${session.id}`}>
-				<div className="flex flex-col border-line-subtle border-b px-3 py-4">
-					<p className="mb-0.5 font-medium text-caption1 text-label-assistive">
-						{formatSessionWeekString(session.week)}
-					</p>
-					<h3 className="mb-1.5 font-semibold text-body1 text-label-normal">{session.name}</h3>
-					<div className="flex items-center gap-x-1">
-						<Calender />
-						<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
-							{formatDotFullDate(session.date)}
-						</p>
+function SessionItem({ session }: { session: SessionListItem }) {
+	const feedbackDaysRemaining = session.feedback
+		? Math.max(0, dayjs(session.feedback.endAt).startOf('day').diff(dayjs().startOf('day'), 'day'))
+		: null;
 
-						<Clock className="ml-2" />
-						<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
-							{formatISOStringHHMM(session.date)}
-						</p>
-					</div>
-				</div>
-			</Link>
-		</Button>
+	return (
+		<div className="px-4">
+			<div className="flex flex-col gap-2.5 border-line-subtle border-b px-3 py-4">
+				<Button
+					size="none"
+					variant="none"
+					className="flex w-full cursor-pointer flex-col items-start text-left"
+					asChild
+				>
+					<Link href={`/session/${session.id}`}>
+						<div className="flex w-full flex-col gap-1.5">
+							<div className="flex flex-col gap-0.5">
+								<p className="font-medium text-caption1 text-label-assistive">
+									{formatSessionWeekString(session.week)}
+								</p>
+								<h3 className="font-semibold text-body1 text-label-normal">
+									{session.name}
+								</h3>
+							</div>
+							<div className="flex items-center gap-x-1">
+								<Calender />
+								<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
+									{formatDotFullDate(session.date)}
+								</p>
+
+								<Clock className="ml-2" />
+								<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
+									{formatISOStringHHMM(session.date)}
+								</p>
+							</div>
+						</div>
+					</Link>
+				</Button>
+				{session.feedback?.canSubmit && (
+					<Button
+						variant="none"
+						size="none"
+						className="h-9 w-full rounded-lg border border-primary-normal bg-background-normal font-semibold text-caption1 text-primary-normal hover:bg-primary-extralight"
+						asChild
+					>
+						<Link href={`/session/${session.id}/feedback?returnTo=%2Fsession`}>
+							피드백 남기기 (D-{feedbackDaysRemaining})
+						</Link>
+					</Button>
+				)}
+			</div>
+		</div>
 	);
 }
 
