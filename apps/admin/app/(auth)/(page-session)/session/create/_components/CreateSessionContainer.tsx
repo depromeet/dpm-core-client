@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@dpm-core/shared';
 
@@ -8,18 +9,23 @@ import { SessionProivder } from '@/app/(auth)/(home)/_components/session-provide
 import { createSessionMutationOptions } from '@/remotes/mutations/session';
 import { getCurrentWeekSessionQuery, getSessionListQuery } from '@/remotes/queries/session';
 
-import { buildCreateSessionPayload, SessionForm, type SessionSchema } from './SessionForm';
+import { SessionExitConfirmModal } from '../../_components/SessionExitConfirmModal';
+import { SessionSaveConfirmModal } from '../../_components/SessionSaveConfirmModal';
+import { useSessionExitGuard } from '../../_components/useSessionExitGuard';
+import { buildSessionPayload, SessionForm, type SessionSchema } from './SessionForm';
 
 export const CreateSessionContainer = () => {
 	const queryClient = useQueryClient();
+	const [formDataToCreate, setFormDataToCreate] = useState<SessionSchema | null>(null);
+	const [isDirty, setIsDirty] = useState(false);
+	const exitGuard = useSessionExitGuard(isDirty);
 
 	const router = useRouter();
-	const { mutate: createSession } = useMutation(
+	const { mutate: createSession, isPending } = useMutation(
 		createSessionMutationOptions({
 			onSuccess: () => {
 				queryClient.invalidateQueries(getSessionListQuery);
 				queryClient.invalidateQueries(getCurrentWeekSessionQuery);
-				toast.success('세션을 추가하였습니다.');
 				router.replace('/session');
 			},
 			onError: () => {
@@ -28,15 +34,32 @@ export const CreateSessionContainer = () => {
 		}),
 	);
 
-	const handleCreateSession = async (formData: SessionSchema) => {
-		const params = buildCreateSessionPayload(formData);
+	const handleCreateSession = (formData: SessionSchema) => {
+		setFormDataToCreate(formData);
+	};
 
-		createSession(params);
+	const handleConfirmCreateSession = () => {
+		if (!formDataToCreate) return;
+
+		createSession(buildSessionPayload(formDataToCreate));
 	};
 
 	return (
 		<SessionProivder>
-			<SessionForm onSubmit={handleCreateSession} showFeedbackSettings />
+			<SessionForm onSubmit={handleCreateSession} onDirtyChange={setIsDirty} showFeedbackSettings />
+			<SessionSaveConfirmModal
+				open={formDataToCreate !== null}
+				onOpenChange={(open) => {
+					if (!open && !isPending) setFormDataToCreate(null);
+				}}
+				onSubmit={handleConfirmCreateSession}
+				isPending={isPending}
+			/>
+			<SessionExitConfirmModal
+				open={exitGuard.isExitConfirmOpen}
+				onOpenChange={exitGuard.handleOpenChange}
+				onExit={exitGuard.confirmExit}
+			/>
 		</SessionProivder>
 	);
 };

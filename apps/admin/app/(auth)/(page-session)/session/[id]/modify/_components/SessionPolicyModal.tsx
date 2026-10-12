@@ -20,11 +20,12 @@ import {
 	getSessionModifyPolicyQuery,
 } from '@/remotes/queries/session';
 
+import { SessionSaveConfirmModal } from '../../../_components/SessionSaveConfirmModal';
 import {
 	buildServerDatePayload,
+	buildSessionPayload,
 	type SessionSchema,
 } from '../../../create/_components/SessionForm';
-import { SessionModifyConfirmModal } from './SessionModifyConfirmModal';
 
 interface SessionPolicyModalProps {
 	sessionId: number;
@@ -69,7 +70,7 @@ export const SessionPolicyModal = (props: SessionPolicyModalProps) => {
 	const handleModifySession = () => {
 		const payload = {
 			sessionId,
-			...buildServerDatePayload(formData),
+			...buildSessionPayload(formData),
 		};
 		modifySession(payload);
 	};
@@ -158,10 +159,11 @@ export const SessionPolicyModal = (props: SessionPolicyModalProps) => {
 	}
 
 	return (
-		<SessionModifyConfirmModal
+		<SessionSaveConfirmModal
 			open={open}
 			onOpenChange={onOpenChange}
 			onSubmit={handleModifySession}
+			isPending={isPending}
 		/>
 	);
 };

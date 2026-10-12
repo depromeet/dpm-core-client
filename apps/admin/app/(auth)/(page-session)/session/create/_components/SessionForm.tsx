@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
@@ -46,7 +47,7 @@ export const buildServerDatePayload = (formData: SessionSchema) => {
 	};
 };
 
-export const buildCreateSessionPayload = (formData: SessionSchema) => {
+export const buildSessionPayload = (formData: SessionSchema) => {
 	const payload = {
 		...buildServerDatePayload(formData),
 		feedbackEnabled: formData.feedbackEnabled,
@@ -68,134 +69,144 @@ export const buildCreateSessionPayload = (formData: SessionSchema) => {
 	};
 };
 
-const sessionSchema = z
-	.object({
-		cohortId: z.number(),
-		name: z.string().min(1, '필수 입력 값입니다.'),
-		sessionDate: z.object({
-			date: z.date(),
-			time: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
-		}),
-		week: z
-			.string()
-			.min(1, '필수 입력 값입니다.')
-			.regex(/^[1-9]\d*$/, '올바른 주차 형식이어야 합니다.'),
-		isOnline: z.enum(['online', 'offline']),
-		place: z.string(),
-		attendancePresentTime: z.object({
-			start: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
-			end: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
-		}),
-		attendanceLateTime: z.object({
-			start: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
-			end: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
-		}),
-		feedbackEnabled: z.boolean(),
-		feedbackPushEnabled: z.boolean(),
-		feedbackStartAt: z.object({
-			date: z.date().nullable(),
-			time: z.string(),
-		}),
-	})
-	.superRefine(
-		(
-			{
-				isOnline,
-				place,
-				attendancePresentTime,
-				attendanceLateTime,
-				feedbackEnabled,
-				feedbackStartAt,
-			},
-			ctx,
-		) => {
-			if (isOnline === 'offline' && place.trim().length <= 0) {
-				ctx.addIssue({
-					code: 'custom',
-					path: ['place'],
-					message: '필수 입력 값입니다.',
-				});
-			}
-
-			const toMinutes = (value: string) => {
-				if (value.length !== 4) return NaN;
-
-				const h = Number(value.slice(0, 2));
-				const m = Number(value.slice(2, 4));
-
-				return h * 60 + m;
-			};
-
-			const presentStart = toMinutes(attendancePresentTime.start);
-			const presentEnd = toMinutes(attendancePresentTime.end);
-			const LateStart = toMinutes(attendanceLateTime.start);
-			const LateEnd = toMinutes(attendanceLateTime.end);
-
-			if (presentEnd <= presentStart) {
-				ctx.addIssue({
-					code: 'custom',
-					path: ['attendancePresentTime.end'],
-					message: '종료 시간은 시작 시간보다 이후여야합니다.',
-				});
-			}
-
-			if (LateEnd <= LateStart) {
-				ctx.addIssue({
-					code: 'custom',
-					path: ['attendanceLateTime.end'],
-					message: '종료 시간은 시작 시간보다 이후여야합니다.',
-				});
-			}
-
-			if (feedbackEnabled) {
-				if (!feedbackStartAt.date) {
+const createSessionSchema = (initialFeedbackStartAt?: string) =>
+	z
+		.object({
+			cohortId: z.number(),
+			name: z.string().min(1, '필수 입력 값입니다.'),
+			sessionDate: z.object({
+				date: z.date(),
+				time: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
+			}),
+			week: z
+				.string()
+				.min(1, '필수 입력 값입니다.')
+				.regex(/^[1-9]\d*$/, '올바른 주차 형식이어야 합니다.'),
+			isOnline: z.enum(['online', 'offline']),
+			place: z.string(),
+			attendancePresentTime: z.object({
+				start: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
+				end: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
+			}),
+			attendanceLateTime: z.object({
+				start: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
+				end: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
+			}),
+			feedbackEnabled: z.boolean(),
+			feedbackPushEnabled: z.boolean(),
+			feedbackStartAt: z.object({
+				date: z.date().nullable(),
+				time: z.string(),
+			}),
+		})
+		.superRefine(
+			(
+				{
+					isOnline,
+					place,
+					attendancePresentTime,
+					attendanceLateTime,
+					feedbackEnabled,
+					feedbackStartAt,
+				},
+				ctx,
+			) => {
+				if (isOnline === 'offline' && place.trim().length <= 0) {
 					ctx.addIssue({
 						code: 'custom',
-						path: ['feedbackStartAt.date'],
-						message: '피드백 시작 시간을 입력해주세요.',
+						path: ['place'],
+						message: '필수 입력 값입니다.',
 					});
 				}
 
-				if (!REGEXP_HHMM.test(feedbackStartAt.time)) {
+				const toMinutes = (value: string) => {
+					if (value.length !== 4) return NaN;
+
+					const h = Number(value.slice(0, 2));
+					const m = Number(value.slice(2, 4));
+
+					return h * 60 + m;
+				};
+
+				const presentStart = toMinutes(attendancePresentTime.start);
+				const presentEnd = toMinutes(attendancePresentTime.end);
+				const LateStart = toMinutes(attendanceLateTime.start);
+				const LateEnd = toMinutes(attendanceLateTime.end);
+
+				if (presentEnd <= presentStart) {
 					ctx.addIssue({
 						code: 'custom',
-						path: ['feedbackStartAt.time'],
-						message: '피드백 시작 시간을 입력해주세요.',
+						path: ['attendancePresentTime.end'],
+						message: '종료 시간은 시작 시간보다 이후여야합니다.',
 					});
 				}
 
-				if (feedbackStartAt.date && REGEXP_HHMM.test(feedbackStartAt.time)) {
-					const feedbackStartAtDate = dayjs(feedbackStartAt.date)
-						.hour(Number(feedbackStartAt.time.slice(0, 2)))
-						.minute(Number(feedbackStartAt.time.slice(2, 4)));
+				if (LateEnd <= LateStart) {
+					ctx.addIssue({
+						code: 'custom',
+						path: ['attendanceLateTime.end'],
+						message: '종료 시간은 시작 시간보다 이후여야합니다.',
+					});
+				}
 
-					if (!feedbackStartAtDate.isAfter(dayjs())) {
+				if (feedbackEnabled) {
+					if (!feedbackStartAt.date) {
+						ctx.addIssue({
+							code: 'custom',
+							path: ['feedbackStartAt.date'],
+							message: '피드백 시작 시간을 입력해주세요.',
+						});
+					}
+
+					if (!REGEXP_HHMM.test(feedbackStartAt.time)) {
 						ctx.addIssue({
 							code: 'custom',
 							path: ['feedbackStartAt.time'],
-							message: '피드백 시작 시간은 현재 이후여야 합니다.',
+							message: '피드백 시작 시간을 입력해주세요.',
 						});
 					}
-				}
-			}
-		},
-	);
 
-export type SessionSchema = z.infer<typeof sessionSchema>;
+					if (feedbackStartAt.date && REGEXP_HHMM.test(feedbackStartAt.time)) {
+						const feedbackStartAtDate = dayjs(feedbackStartAt.date)
+							.hour(Number(feedbackStartAt.time.slice(0, 2)))
+							.minute(Number(feedbackStartAt.time.slice(2, 4)));
+
+						const isUnchangedInitialStart =
+							initialFeedbackStartAt &&
+							feedbackStartAtDate.format('YYYY-MM-DDTHH:mm:ss') ===
+								dayjs(initialFeedbackStartAt).format('YYYY-MM-DDTHH:mm:ss');
+
+						if (!feedbackStartAtDate.isAfter(dayjs()) && !isUnchangedInitialStart) {
+							ctx.addIssue({
+								code: 'custom',
+								path: ['feedbackStartAt.time'],
+								message: '피드백 시작 시간은 현재 이후여야 합니다.',
+							});
+						}
+					}
+				}
+			},
+		);
+
+export type SessionSchema = z.infer<ReturnType<typeof createSessionSchema>>;
 
 export const FORM_ID = 'session-form';
 
 export const SessionForm = ({
 	defaultValues,
 	showFeedbackSettings = false,
+	feedbackStartAtInitialValue,
+	onDirtyChange,
 	onSubmit,
 }: Readonly<{
 	onSubmit: (formData: SessionSchema) => void;
+	onDirtyChange?: (isDirty: boolean) => void;
 	defaultValues?: Partial<SessionSchema>;
 	showFeedbackSettings?: boolean;
+	feedbackStartAtInitialValue?: string | null;
 }>) => {
 	const form = useForm<SessionSchema>({
-		resolver: zodResolver(sessionSchema),
+		resolver: zodResolver(createSessionSchema(feedbackStartAtInitialValue ?? undefined)),
 		defaultValues: {
 			cohortId: 1,
 			name: '',
@@ -223,6 +234,11 @@ export const SessionForm = ({
 			},
 		},
 	});
+	const { isDirty } = form.formState;
+
+	useEffect(() => {
+		onDirtyChange?.(isDirty);
+	}, [isDirty, onDirtyChange]);
 
 	return (
 		<Form {...form}>

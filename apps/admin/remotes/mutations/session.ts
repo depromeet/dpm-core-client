@@ -35,7 +35,9 @@ interface CreateSessionParams extends SessionParams {
 	feedbackPushEnabled: boolean;
 }
 
-interface ModifySessionParams extends SessionParams {
+interface ModifySessionParams
+	extends SessionParams,
+		Pick<CreateSessionParams, 'feedbackEnabled' | 'feedbackStartAt' | 'feedbackPushEnabled'> {
 	sessionId: number;
 }
 

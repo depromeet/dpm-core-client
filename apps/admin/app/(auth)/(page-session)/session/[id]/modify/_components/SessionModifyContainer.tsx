@@ -36,6 +36,8 @@ export const SessionModifyContainer = (props: SessionModifyContainerProps) => {
 		<SessionProivder>
 			<SessionForm
 				onSubmit={handleOpenSessionPolicyModal}
+				showFeedbackSettings
+				feedbackStartAtInitialValue={sessionDetail.feedback?.startAt}
 				defaultValues={{
 					cohortId: 1,
 					name: sessionDetail.name,
@@ -53,6 +55,12 @@ export const SessionModifyContainer = (props: SessionModifyContainerProps) => {
 					attendanceLateTime: {
 						start: formatTimeToCode(sessionDetail.lateStart),
 						end: subtractOneMinute(formatTimeToCode(sessionDetail.absentStart)),
+					},
+					feedbackEnabled: sessionDetail.feedback !== null,
+					feedbackPushEnabled: sessionDetail.feedback?.pushEnabled ?? true,
+					feedbackStartAt: {
+						date: sessionDetail.feedback ? new Date(sessionDetail.feedback.startAt) : null,
+						time: sessionDetail.feedback ? formatTimeToCode(sessionDetail.feedback.startAt) : '',
 					},
 				}}
 			/>
