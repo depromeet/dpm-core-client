@@ -62,6 +62,9 @@ const POSITIVE_FEEDBACK_OPTIONS = [
 	{ value: NO_FEEDBACK_REASON, label: '특별히 없음' },
 ] as const;
 
+const FEEDBACK_CHIP_CLASSNAME =
+	'h-10 w-fit rounded-full border-line-subtle px-3 py-0 font-medium text-body2 tracking-normal data-[state=checked]:border-[1.5px] data-[state=checked]:border-label-normal data-[state=checked]:bg-transparent data-[state=checked]:font-medium data-[state=checked]:text-label-normal';
+
 const FEEDBACK_STATUS_BY_ERROR_CODE: Record<string, SessionFeedbackMyStatus> = {
 	'SESSION_FEEDBACK-400-03': 'NOT_TARGET',
 	'SESSION_FEEDBACK-403-01': 'NOT_TARGET',
@@ -365,8 +368,15 @@ export const FeedbackForm = ({
 				<h1 className="font-semibold text-body1 text-label-normal">세션 피드백</h1>
 			</header>
 
-			<main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pt-5">
-				<div>
+			<main
+				className={cn(
+					'flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pt-5',
+					step === 'satisfaction' ? 'gap-6' : 'gap-5',
+				)}
+			>
+				<div
+					className={cn((step === 'positive' || step === 'improvement') && 'flex flex-col gap-2')}
+				>
 					{step === 'satisfaction' ? (
 						<>
 							<p className="font-bold text-headline2 text-label-assistive">
@@ -382,9 +392,7 @@ export const FeedbackForm = ({
 								이번 세션에서 특히 좋았던 부분이 있었나요?{' '}
 								<span className="text-primary-normal">*</span>
 							</h2>
-							<p className="mt-2 font-medium text-body1 text-label-subtle">
-								최대 2개까지 선택해주세요.
-							</p>
+							<p className="font-medium text-body1 text-label-subtle">최대 2개까지 선택해주세요.</p>
 						</>
 					) : step === 'improvement' ? (
 						<>
@@ -392,9 +400,7 @@ export const FeedbackForm = ({
 								이번 세션에서 개선이 필요한 부분이 있었나요?{' '}
 								<span className="text-primary-normal">*</span>
 							</h2>
-							<p className="mt-2 font-medium text-body1 text-label-subtle">
-								최대 2개까지 선택해주세요.
-							</p>
+							<p className="font-medium text-body1 text-label-subtle">최대 2개까지 선택해주세요.</p>
 						</>
 					) : (
 						<h2 className="font-bold text-headline2 text-label-normal">
@@ -404,7 +410,7 @@ export const FeedbackForm = ({
 				</div>
 
 				{step === 'satisfaction' && (
-					<fieldset className="mt-6 flex flex-col gap-2">
+					<fieldset className="flex flex-col gap-2">
 						<legend className="sr-only">만족도</legend>
 						{SATISFACTION_OPTIONS.map((option) => {
 							const selected = satisfaction === option.value;
@@ -446,8 +452,8 @@ export const FeedbackForm = ({
 				)}
 
 				{step === 'positive' && (
-					<>
-						<fieldset className="mt-5 flex flex-wrap gap-2">
+					<div className="flex flex-col gap-10">
+						<fieldset className="flex flex-wrap gap-2">
 							<legend className="sr-only">좋았던 부분</legend>
 							{POSITIVE_FEEDBACK_OPTIONS.map(({ value, label }) => (
 								<FilterChip
@@ -455,17 +461,15 @@ export const FeedbackForm = ({
 									id={`positive-${value}`}
 									checked={positiveReasons.includes(value)}
 									onCheckedChange={() => toggleReason(value, 'positive')}
+									className={FEEDBACK_CHIP_CLASSNAME}
 								>
 									{label}
 								</FilterChip>
 							))}
 						</fieldset>
 						{positiveReasons.includes('ETC') && (
-							<div className="mt-6">
-								<label
-									htmlFor="positive-etc"
-									className="font-semibold text-body2 text-label-normal"
-								>
+							<div className="flex flex-col gap-3">
+								<label htmlFor="positive-etc" className="font-bold text-label-normal text-title2">
 									기타 의견 <span className="text-primary-normal">*</span>
 								</label>
 								<textarea
@@ -474,16 +478,16 @@ export const FeedbackForm = ({
 									onChange={(event) => setPositiveEtc(event.target.value)}
 									placeholder="어떤 부분이 좋았는지 적어주세요."
 									maxLength={100}
-									className="mt-3 h-[120px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:text-label-assistive"
+									className="h-[120px] w-full resize-none rounded-lg border border-line-normal bg-background-normal p-4 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
 								/>
 							</div>
 						)}
-					</>
+					</div>
 				)}
 
 				{step === 'improvement' && (
-					<>
-						<fieldset className="mt-5 flex flex-wrap gap-2">
+					<div className="flex flex-col gap-10">
+						<fieldset className="flex flex-wrap gap-2">
 							<legend className="sr-only">개선이 필요한 부분</legend>
 							{POSITIVE_FEEDBACK_OPTIONS.map(({ value, label }) => (
 								<FilterChip
@@ -491,16 +495,17 @@ export const FeedbackForm = ({
 									id={`improvement-${value}`}
 									checked={improvementReasons.includes(value)}
 									onCheckedChange={() => toggleReason(value, 'improvement')}
+									className={FEEDBACK_CHIP_CLASSNAME}
 								>
 									{label}
 								</FilterChip>
 							))}
 						</fieldset>
 						{improvementReasons.includes('ETC') && (
-							<div className="mt-6">
+							<div className="flex flex-col gap-3">
 								<label
 									htmlFor="improvement-etc"
-									className="font-semibold text-body2 text-label-normal"
+									className="font-bold text-label-normal text-title2"
 								>
 									기타 의견 <span className="text-primary-normal">*</span>
 								</label>
@@ -508,13 +513,13 @@ export const FeedbackForm = ({
 									id="improvement-etc"
 									value={improvementEtc}
 									onChange={(event) => setImprovementEtc(event.target.value)}
-									placeholder="어떤 부분을 개선하면 좋을지 적어주세요."
+									placeholder="어떤 부분의 개선이 필요한지 적어주세요."
 									maxLength={100}
-									className="mt-3 h-[120px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:text-label-assistive"
+									className="h-[120px] w-full resize-none rounded-lg border border-line-normal bg-background-normal p-4 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
 								/>
 							</div>
 						)}
-					</>
+					</div>
 				)}
 
 				{step === 'comment' && (
@@ -523,7 +528,7 @@ export const FeedbackForm = ({
 						onChange={(event) => setComment(event.target.value)}
 						placeholder="앞에서 고른 항목의 이유나 그 밖의 의견을 자유롭게 남겨주세요. (선택)"
 						maxLength={1000}
-						className="mt-5 h-[100px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:text-label-assistive"
+						className="h-[100px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
 					/>
 				)}
 			</main>
@@ -574,10 +579,10 @@ export const FeedbackForm = ({
 						<div className="min-w-0 flex-1">
 							<Button
 								type="button"
-								size="full"
+								size="lg"
 								variant="secondary"
 								disabled={!canMoveNext || isSubmitting}
-								className="rounded-lg disabled:bg-background-strong disabled:text-label-assistive disabled:opacity-100"
+								className="w-full rounded-lg"
 								onClick={goNext}
 							>
 								{isSubmitting ? '제출 중...' : step === 'comment' ? '제출하기' : '다음'}
