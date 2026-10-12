@@ -88,13 +88,10 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 };
 
 const getSessionFeedbackUrl = (sessionId: number) => {
-	const hostname = window.location.hostname;
 	const clientOrigin =
-		hostname === 'local-admin.depromeet.com'
-			? 'https://local-core.depromeet.com:3010'
-			: process.env.NEXT_PUBLIC_STAGE === 'production'
-				? 'https://core.depromeet.com'
-				: 'https://dev.depromeet.com';
+		process.env.NEXT_PUBLIC_STAGE === 'production'
+			? 'https://core.depromeet.com'
+			: 'https://dev.depromeet.com';
 
 	return `${clientOrigin}/session/${sessionId}/feedback`;
 };
