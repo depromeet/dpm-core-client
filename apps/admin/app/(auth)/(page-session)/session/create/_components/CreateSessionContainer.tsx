@@ -8,7 +8,7 @@ import { SessionProivder } from '@/app/(auth)/(home)/_components/session-provide
 import { createSessionMutationOptions } from '@/remotes/mutations/session';
 import { getCurrentWeekSessionQuery, getSessionListQuery } from '@/remotes/queries/session';
 
-import { buildServerDatePayload, SessionForm, type SessionSchema } from './SessionForm';
+import { buildCreateSessionPayload, SessionForm, type SessionSchema } from './SessionForm';
 
 export const CreateSessionContainer = () => {
 	const queryClient = useQueryClient();
@@ -29,14 +29,14 @@ export const CreateSessionContainer = () => {
 	);
 
 	const handleCreateSession = async (formData: SessionSchema) => {
-		const params = buildServerDatePayload(formData);
+		const params = buildCreateSessionPayload(formData);
 
 		createSession(params);
 	};
 
 	return (
 		<SessionProivder>
-			<SessionForm onSubmit={handleCreateSession} />
+			<SessionForm onSubmit={handleCreateSession} showFeedbackSettings />
 		</SessionProivder>
 	);
 };

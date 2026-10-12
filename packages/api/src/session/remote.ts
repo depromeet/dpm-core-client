@@ -104,6 +104,9 @@ export const session = {
 		attendanceStart: string;
 		lateStart: string;
 		absentStart: string;
+		feedbackEnabled: boolean;
+		feedbackStartAt?: string;
+		feedbackPushEnabled: boolean;
 	}) => {
 		return await http.post(`v1/sessions`, { json: params });
 	},
