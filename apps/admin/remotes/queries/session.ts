@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { type SessionAttendanceStatusTime, session } from '@dpm-core/api';
+import { session } from '@dpm-core/api';
 
 import { isAdminDevMockEnabled } from '@/lib/dev-mock-auth';
 import {
@@ -50,12 +50,3 @@ export const getSessionWeeks = () =>
 			return session.getSessionWeeks();
 		},
 	});
-
-export const getSessionModifyPolicyQuery = (
-	params: { sessionId: number } & SessionAttendanceStatusTime,
-) => {
-	return queryOptions({
-		queryKey: ['session-policy', params],
-		queryFn: async () => session.getSessionModifyPolicy(params),
-	});
-};
