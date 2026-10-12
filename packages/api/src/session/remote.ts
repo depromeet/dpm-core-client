@@ -5,6 +5,7 @@ import type {
 	SessionDetail,
 	SessionFeedbackInsight,
 	SessionFeedbackMeResponse,
+	SessionFeedbackSubmissionRequest,
 	SessionListItem,
 	SessionTargeted,
 	SessionUnTargeted,
@@ -66,6 +67,11 @@ export const session = {
 	/** 디퍼의 세션 피드백 작성 가능 상태 조회 */
 	getMyFeedbackStatus: async (sessionId: number) => {
 		return await http.get<SessionFeedbackMeResponse>(`v1/sessions/${sessionId}/feedbacks/me`);
+	},
+
+	/** 디퍼의 세션 피드백 제출 */
+	submitFeedback: async (sessionId: number, params: SessionFeedbackSubmissionRequest) => {
+		return await http.post(`v1/sessions/${sessionId}/feedbacks`, { json: params });
 	},
 
 	/**

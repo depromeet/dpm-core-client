@@ -24,6 +24,15 @@ export interface SessionFeedbackMeResponse {
 	startAt: string | null;
 }
 
+export interface SessionFeedbackSubmissionRequest {
+	satisfaction: SessionFeedbackSatisfaction;
+	likedAspects: SessionFeedbackAspect[];
+	likedEtc: string | null;
+	improvementAspects: SessionFeedbackAspect[];
+	improvementEtc: string | null;
+	freeComment: string | null;
+}
+
 export type SessionFeedbackSatisfaction =
 	| 'VERY_SATISFIED'
 	| 'SATISFIED'

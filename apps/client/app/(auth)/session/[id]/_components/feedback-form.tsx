@@ -2,10 +2,16 @@
 
 import { useRouter } from 'next/navigation';
 import { type ReactNode, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
+import { HTTPError } from 'ky';
 import { Check, Minus, X } from 'lucide-react';
-import type { SessionFeedbackMyStatus } from '@dpm-core/api';
+import type {
+	SessionFeedbackAspect,
+	SessionFeedbackMyStatus,
+	SessionFeedbackSatisfaction,
+	SessionFeedbackSubmissionRequest,
+} from '@dpm-core/api';
 import {
 	Button,
 	cn,
@@ -21,8 +27,7 @@ import {
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import {
 	type FeedbackSubmissionMockResult,
-	type SessionFeedbackSubmission,
-	submitSessionFeedbackMock,
+	submitSessionFeedbackOptions,
 } from '@/remotes/mutations/session-feedback';
 import { getSessionFeedbackMeQuery } from '@/remotes/queries/session-feedback';
 
@@ -38,24 +43,43 @@ type FeedbackStep = 'satisfaction' | 'positive' | 'improvement' | 'comment';
 const FEEDBACK_STEPS: FeedbackStep[] = ['satisfaction', 'positive', 'improvement', 'comment'];
 
 const SATISFACTION_OPTIONS = [
-	{ value: 5, label: '매우 만족했어요.' },
-	{ value: 4, label: '만족했어요.' },
-	{ value: 3, label: '보통이었어요.' },
-	{ value: 2, label: '별로였어요.' },
-	{ value: 1, label: '매우 별로였어요.' },
+	{ value: 'VERY_SATISFIED', label: '매우 만족했어요.' },
+	{ value: 'SATISFIED', label: '만족했어요.' },
+	{ value: 'NEUTRAL', label: '보통이었어요.' },
+	{ value: 'DISSATISFIED', label: '별로였어요.' },
+	{ value: 'VERY_DISSATISFIED', label: '매우 별로였어요.' },
 ] as const;
 
-const NO_FEEDBACK_REASON = '특별히 없음';
+const NO_FEEDBACK_REASON: SessionFeedbackAspect = 'NOTHING';
 
 const POSITIVE_FEEDBACK_OPTIONS = [
-	'세션 내용',
-	'진행 방식·시간',
-	'교류 기회',
-	'사전·현장 안내',
-	'장소·접속 환경',
-	'기타',
-	NO_FEEDBACK_REASON,
+	{ value: 'SESSION_CONTENT', label: '세션 내용' },
+	{ value: 'PROGRESS_AND_TIME', label: '진행 방식·시간' },
+	{ value: 'NETWORKING', label: '교류 기회' },
+	{ value: 'GUIDANCE', label: '사전·현장 안내' },
+	{ value: 'PLACE_AND_ACCESS', label: '장소·접속 환경' },
+	{ value: 'ETC', label: '기타' },
+	{ value: NO_FEEDBACK_REASON, label: '특별히 없음' },
 ] as const;
+
+const FEEDBACK_STATUS_BY_ERROR_CODE: Record<string, SessionFeedbackMyStatus> = {
+	'SESSION_FEEDBACK-400-03': 'NOT_TARGET',
+	'SESSION_FEEDBACK-403-01': 'NOT_TARGET',
+	'SESSION_FEEDBACK-409-01': 'SUBMITTED',
+	'SESSION_FEEDBACK-400-04': 'BEFORE_START',
+	'SESSION_FEEDBACK-400-05': 'EXPIRED',
+};
+
+const getErrorCode = async (error: unknown) => {
+	if (!(error instanceof HTTPError)) return undefined;
+
+	try {
+		const body = (await error.response.clone().json()) as { code?: unknown };
+		return typeof body.code === 'string' ? body.code : undefined;
+	} catch {
+		return undefined;
+	}
+};
 
 const FEEDBACK_STATUS_CONTENT = {
 	BEFORE_START: { title: '아직 피드백 응답 기간이 아니에요.', icon: 'warning' },
@@ -117,15 +141,22 @@ export const FeedbackForm = ({
 	mockFeedbackStatus,
 }: FeedbackFormProps) => {
 	const router = useRouter();
+	const queryClient = useQueryClient();
 	const feedbackQuery = useQuery(getSessionFeedbackMeQuery(sessionId, mockFeedbackStatus));
 	const feedbackInfo = feedbackQuery.data?.data;
+	const submitFeedbackMutation = useMutation(
+		submitSessionFeedbackOptions(sessionId, mockSubmissionResult),
+	);
 	const [step, setStep] = useState<FeedbackStep>('satisfaction');
-	const [satisfaction, setSatisfaction] = useState<number | null>(null);
-	const [positiveReasons, setPositiveReasons] = useState<string[]>([]);
-	const [improvementReasons, setImprovementReasons] = useState<string[]>([]);
+	const [satisfaction, setSatisfaction] = useState<SessionFeedbackSatisfaction | null>(null);
+	const [positiveReasons, setPositiveReasons] = useState<SessionFeedbackAspect[]>([]);
+	const [positiveEtc, setPositiveEtc] = useState('');
+	const [improvementReasons, setImprovementReasons] = useState<SessionFeedbackAspect[]>([]);
+	const [improvementEtc, setImprovementEtc] = useState('');
 	const [comment, setComment] = useState('');
 	const [submitted, setSubmitted] = useState(false);
 	const [submissionFailed, setSubmissionFailed] = useState(false);
+	const [submissionStatus, setSubmissionStatus] = useState<SessionFeedbackMyStatus | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isExitDialogOpen, setIsExitDialogOpen] = useState(false);
 
@@ -134,12 +165,14 @@ export const FeedbackForm = ({
 		step === 'satisfaction'
 			? satisfaction !== null
 			: step === 'positive'
-				? positiveReasons.length > 0
+				? positiveReasons.length > 0 &&
+					(!positiveReasons.includes('ETC') || positiveEtc.trim().length > 0)
 				: step === 'improvement'
-					? improvementReasons.length > 0
+					? improvementReasons.length > 0 &&
+						(!improvementReasons.includes('ETC') || improvementEtc.trim().length > 0)
 					: true;
 
-	const toggleReason = (reason: string, target: 'positive' | 'improvement') => {
+	const toggleReason = (reason: SessionFeedbackAspect, target: 'positive' | 'improvement') => {
 		const setReasons = target === 'positive' ? setPositiveReasons : setImprovementReasons;
 		setReasons((current) => {
 			if (current.includes(reason)) return current.filter((item) => item !== reason);
@@ -159,25 +192,34 @@ export const FeedbackForm = ({
 	};
 
 	const submitFeedback = async () => {
-		if (isSubmitting) return;
+		if (isSubmitting || satisfaction === null) return;
 
-		const payload: SessionFeedbackSubmission = {
-			sessionId,
-			satisfaction: satisfaction ?? 0,
-			positiveReasons,
-			improvementReasons,
-			comment,
+		const payload: SessionFeedbackSubmissionRequest = {
+			satisfaction,
+			likedAspects: positiveReasons,
+			likedEtc: positiveReasons.includes('ETC') ? positiveEtc.trim() : null,
+			improvementAspects: improvementReasons,
+			improvementEtc: improvementReasons.includes('ETC') ? improvementEtc.trim() : null,
+			freeComment: comment.trim() || null,
 		};
 
 		setIsSubmitting(true);
 		try {
-			if (process.env.NEXT_PUBLIC_STAGE !== 'development') {
-				throw new Error('Session feedback submission is unavailable outside development.');
-			}
-			await submitSessionFeedbackMock(payload, mockSubmissionResult ?? 'success');
+			await submitFeedbackMutation.mutateAsync(payload);
+			void queryClient.invalidateQueries({ queryKey: ['session-list'] });
 			setSubmissionFailed(false);
 			setSubmitted(true);
-		} catch {
+		} catch (error) {
+			if (error instanceof HTTPError && error.response.status === 401) return;
+
+			const errorCode = await getErrorCode(error);
+			const nextStatus = errorCode ? FEEDBACK_STATUS_BY_ERROR_CODE[errorCode] : undefined;
+			if (nextStatus) {
+				setSubmissionStatus(nextStatus);
+				setSubmissionFailed(false);
+				return;
+			}
+
 			setSubmissionFailed(true);
 		} finally {
 			setIsSubmitting(false);
@@ -222,8 +264,10 @@ export const FeedbackForm = ({
 		);
 	}
 
-	if (feedbackInfo.myStatus !== 'AVAILABLE') {
-		const statusContent = FEEDBACK_STATUS_CONTENT[feedbackInfo.myStatus];
+	const currentFeedbackStatus = submissionStatus ?? feedbackInfo.myStatus;
+
+	if (currentFeedbackStatus !== 'AVAILABLE') {
+		const statusContent = FEEDBACK_STATUS_CONTENT[currentFeedbackStatus];
 		const isSubmitted = statusContent.icon === 'check';
 		const startDateTime = feedbackInfo.startAt
 			? dayjs(feedbackInfo.startAt).format('M월 D일 HH:mm')
@@ -254,7 +298,7 @@ export const FeedbackForm = ({
 				}
 				title={statusContent.title}
 				description={
-					feedbackInfo.myStatus === 'BEFORE_START'
+					currentFeedbackStatus === 'BEFORE_START'
 						? `${startDateTime ?? '안내된 시작 시각'}부터 작성할 수 있어요.`
 						: undefined
 				}
@@ -402,35 +446,75 @@ export const FeedbackForm = ({
 				)}
 
 				{step === 'positive' && (
-					<fieldset className="mt-5 flex flex-wrap gap-2">
-						<legend className="sr-only">좋았던 부분</legend>
-						{POSITIVE_FEEDBACK_OPTIONS.map((reason) => (
-							<FilterChip
-								key={reason}
-								id={`positive-${reason}`}
-								checked={positiveReasons.includes(reason)}
-								onCheckedChange={() => toggleReason(reason, 'positive')}
-							>
-								{reason}
-							</FilterChip>
-						))}
-					</fieldset>
+					<>
+						<fieldset className="mt-5 flex flex-wrap gap-2">
+							<legend className="sr-only">좋았던 부분</legend>
+							{POSITIVE_FEEDBACK_OPTIONS.map(({ value, label }) => (
+								<FilterChip
+									key={value}
+									id={`positive-${value}`}
+									checked={positiveReasons.includes(value)}
+									onCheckedChange={() => toggleReason(value, 'positive')}
+								>
+									{label}
+								</FilterChip>
+							))}
+						</fieldset>
+						{positiveReasons.includes('ETC') && (
+							<div className="mt-6">
+								<label
+									htmlFor="positive-etc"
+									className="font-semibold text-body2 text-label-normal"
+								>
+									기타 의견 <span className="text-primary-normal">*</span>
+								</label>
+								<textarea
+									id="positive-etc"
+									value={positiveEtc}
+									onChange={(event) => setPositiveEtc(event.target.value)}
+									placeholder="어떤 부분이 좋았는지 적어주세요."
+									maxLength={100}
+									className="mt-3 h-[120px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:text-label-assistive"
+								/>
+							</div>
+						)}
+					</>
 				)}
 
 				{step === 'improvement' && (
-					<fieldset className="mt-5 flex flex-wrap gap-2">
-						<legend className="sr-only">개선이 필요한 부분</legend>
-						{POSITIVE_FEEDBACK_OPTIONS.map((reason) => (
-							<FilterChip
-								key={reason}
-								id={`improvement-${reason}`}
-								checked={improvementReasons.includes(reason)}
-								onCheckedChange={() => toggleReason(reason, 'improvement')}
-							>
-								{reason}
-							</FilterChip>
-						))}
-					</fieldset>
+					<>
+						<fieldset className="mt-5 flex flex-wrap gap-2">
+							<legend className="sr-only">개선이 필요한 부분</legend>
+							{POSITIVE_FEEDBACK_OPTIONS.map(({ value, label }) => (
+								<FilterChip
+									key={value}
+									id={`improvement-${value}`}
+									checked={improvementReasons.includes(value)}
+									onCheckedChange={() => toggleReason(value, 'improvement')}
+								>
+									{label}
+								</FilterChip>
+							))}
+						</fieldset>
+						{improvementReasons.includes('ETC') && (
+							<div className="mt-6">
+								<label
+									htmlFor="improvement-etc"
+									className="font-semibold text-body2 text-label-normal"
+								>
+									기타 의견 <span className="text-primary-normal">*</span>
+								</label>
+								<textarea
+									id="improvement-etc"
+									value={improvementEtc}
+									onChange={(event) => setImprovementEtc(event.target.value)}
+									placeholder="어떤 부분을 개선하면 좋을지 적어주세요."
+									maxLength={100}
+									className="mt-3 h-[120px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:text-label-assistive"
+								/>
+							</div>
+						)}
+					</>
 				)}
 
 				{step === 'comment' && (
@@ -438,7 +522,7 @@ export const FeedbackForm = ({
 						value={comment}
 						onChange={(event) => setComment(event.target.value)}
 						placeholder="앞에서 고른 항목의 이유나 그 밖의 의견을 자유롭게 남겨주세요. (선택)"
-						maxLength={500}
+						maxLength={1000}
 						className="mt-5 h-[100px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:text-label-assistive"
 					/>
 				)}
@@ -492,11 +576,11 @@ export const FeedbackForm = ({
 								type="button"
 								size="full"
 								variant="secondary"
-								disabled={!canMoveNext}
+								disabled={!canMoveNext || isSubmitting}
 								className="rounded-lg disabled:bg-background-strong disabled:text-label-assistive disabled:opacity-100"
 								onClick={goNext}
 							>
-								{step === 'comment' ? '제출하기' : '다음'}
+								{isSubmitting ? '제출 중...' : step === 'comment' ? '제출하기' : '다음'}
 							</Button>
 						</div>
 					</div>
