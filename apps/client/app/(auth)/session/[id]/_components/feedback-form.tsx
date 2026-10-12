@@ -415,8 +415,8 @@ export const FeedbackForm = ({
 									className={cn(
 										'flex h-12 cursor-pointer items-center justify-between rounded-lg border px-4 font-medium text-body2 transition-colors',
 										selected
-											? 'border-label-normal text-label-normal'
-											: 'border-line-normal text-label-assistive',
+											? 'border-[1.5px] border-label-normal text-label-normal'
+											: 'border-line-normal text-label-assistive hover:border-line-subtle hover:bg-background-subtle',
 									)}
 								>
 									<input
