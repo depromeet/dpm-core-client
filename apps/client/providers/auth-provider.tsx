@@ -28,12 +28,24 @@ const [AuthProviderContext, useAuth] = createContext<AuthContextType>('Auth', {
 const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [user, setUser] = useState<Member | null>(null);
+	const [isMockAuthenticated, setIsMockAuthenticated] = useState(false);
+	const [isAuthRouteResolved, setIsAuthRouteResolved] = useState(false);
 
 	const pushRegistered = useRef(false);
 
 	const pathname = usePathname();
 	const { requestAndRegister } = usePushNotification();
 	const queryClient = useQueryClient();
+
+	useEffect(() => {
+		const supportsMockAuth = pathname === '/session' || /^\/session\/\d+\/feedback$/.test(pathname);
+		const mockAuthRequested = new URLSearchParams(window.location.search).get('mockAuthenticated');
+
+		setIsMockAuthenticated(
+			process.env.NODE_ENV === 'development' && supportsMockAuth && mockAuthRequested === 'true',
+		);
+		setIsAuthRouteResolved(true);
+	}, [pathname]);
 
 	const {
 		data: { data: memberInfo } = {},
@@ -48,6 +60,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			return memberInfo;
 		},
 		retry: false,
+		enabled: isAuthRouteResolved && !isMockAuthenticated,
 	});
 
 	useEffect(() => {
@@ -65,7 +78,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	}, [memberInfo, requestAndRegister]);
 
 	// 미로그인 인 경우, 접속 하자마자 홈으로 진입으로 변경, 로그인 페이지로 바로 진입아님
-	if (error && pathname !== '/login') {
+	if (error && pathname !== '/login' && !isMockAuthenticated) {
 		return <UnauthenticatedLayout />;
 	}
 
@@ -82,12 +95,12 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		}
 	}
 
-	if (isLoading) {
+	if (!isAuthRouteResolved || (isLoading && !isMockAuthenticated)) {
 		return null;
 	}
 
 	return (
-		<AuthProviderContext isAuthenticated={isAuthenticated} user={user}>
+		<AuthProviderContext isAuthenticated={isAuthenticated || isMockAuthenticated} user={user}>
 			{children}
 		</AuthProviderContext>
 	);

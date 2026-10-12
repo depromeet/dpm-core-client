@@ -1,8 +1,6 @@
-import {
-	getSessionFeedbackStatusMock,
-	SESSION_FEEDBACK_STATUSES,
-	type SessionFeedbackStatus,
-} from '@/remotes/queries/session-feedback';
+import type { SessionFeedbackMyStatus } from '@dpm-core/api';
+
+import { SESSION_FEEDBACK_STATUSES } from '@/remotes/queries/session-feedback';
 
 import { FeedbackForm } from '../_components/feedback-form';
 
@@ -32,17 +30,16 @@ export default async function SessionFeedbackPage({
 		typeof mockFeedbackStatus === 'string' ? mockFeedbackStatus.toUpperCase() : undefined;
 	const requestedStatus =
 		process.env.NODE_ENV === 'development' &&
-		SESSION_FEEDBACK_STATUSES.includes(normalizedMockFeedbackStatus as SessionFeedbackStatus)
-			? (normalizedMockFeedbackStatus as SessionFeedbackStatus)
-			: 'AVAILABLE';
-	const feedbackStatus = await getSessionFeedbackStatusMock(sessionId, requestedStatus);
+		SESSION_FEEDBACK_STATUSES.includes(normalizedMockFeedbackStatus as SessionFeedbackMyStatus)
+			? (normalizedMockFeedbackStatus as SessionFeedbackMyStatus)
+			: undefined;
 
 	return (
 		<FeedbackForm
 			sessionId={sessionId}
 			returnTo={feedbackReturnTo}
 			mockSubmissionResult={mockSubmissionResult}
-			feedbackStatus={feedbackStatus.status}
+			mockFeedbackStatus={requestedStatus}
 		/>
 	);
 }

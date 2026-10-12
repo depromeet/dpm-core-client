@@ -2,7 +2,10 @@
 
 import { useRouter } from 'next/navigation';
 import { type ReactNode, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import { Check, Minus, X } from 'lucide-react';
+import type { SessionFeedbackMyStatus } from '@dpm-core/api';
 import {
 	Button,
 	cn,
@@ -21,13 +24,13 @@ import {
 	type SessionFeedbackSubmission,
 	submitSessionFeedbackMock,
 } from '@/remotes/mutations/session-feedback';
-import type { SessionFeedbackStatus } from '@/remotes/queries/session-feedback';
+import { getSessionFeedbackMeQuery } from '@/remotes/queries/session-feedback';
 
 interface FeedbackFormProps {
 	sessionId: number;
 	returnTo: '/' | '/session';
 	mockSubmissionResult?: FeedbackSubmissionMockResult;
-	feedbackStatus: SessionFeedbackStatus;
+	mockFeedbackStatus?: SessionFeedbackMyStatus;
 }
 
 type FeedbackStep = 'satisfaction' | 'positive' | 'improvement' | 'comment';
@@ -55,6 +58,7 @@ const POSITIVE_FEEDBACK_OPTIONS = [
 ] as const;
 
 const FEEDBACK_STATUS_CONTENT = {
+	BEFORE_START: { title: '아직 피드백 응답 기간이 아니에요.', icon: 'warning' },
 	SUBMITTED: { title: '이미 피드백을 제출했어요.', icon: 'check' },
 	EXPIRED: { title: '피드백 응답 기간이 끝났어요.', icon: 'warning' },
 	NOT_TARGET: { title: '이 세션의 피드백 대상이 아니에요.', icon: 'warning' },
@@ -110,9 +114,11 @@ export const FeedbackForm = ({
 	sessionId,
 	returnTo,
 	mockSubmissionResult,
-	feedbackStatus,
+	mockFeedbackStatus,
 }: FeedbackFormProps) => {
 	const router = useRouter();
+	const feedbackQuery = useQuery(getSessionFeedbackMeQuery(sessionId, mockFeedbackStatus));
+	const feedbackInfo = feedbackQuery.data?.data;
 	const [step, setStep] = useState<FeedbackStep>('satisfaction');
 	const [satisfaction, setSatisfaction] = useState<number | null>(null);
 	const [positiveReasons, setPositiveReasons] = useState<string[]>([]);
@@ -188,9 +194,40 @@ export const FeedbackForm = ({
 		void submitFeedback();
 	};
 
-	if (feedbackStatus !== 'AVAILABLE') {
-		const statusContent = FEEDBACK_STATUS_CONTENT[feedbackStatus];
+	if (feedbackQuery.isPending || feedbackQuery.isFetching) {
+		return (
+			<SafeAreaAppLayout className="h-dvh bg-background-normal">
+				<div className="flex flex-1 items-center justify-center font-medium text-body2 text-label-subtle">
+					피드백 정보를 불러오고 있어요.
+				</div>
+			</SafeAreaAppLayout>
+		);
+	}
+
+	if (feedbackQuery.isError || !feedbackInfo) {
+		return (
+			<FeedbackResultScreen
+				icon={
+					<div className="flex size-[52px] items-center justify-center rounded-full bg-[#FEC15E]/30">
+						<span className="flex size-5 items-center justify-center rounded-full bg-[#FEC15E]">
+							<Minus className="size-3 text-white" strokeWidth={3} aria-hidden="true" />
+						</span>
+					</div>
+				}
+				title="피드백 정보를 불러오지 못했어요."
+				description="잠시 후 다시 시도해 주세요."
+				actionLabel="다시 시도"
+				onAction={() => void feedbackQuery.refetch()}
+			/>
+		);
+	}
+
+	if (feedbackInfo.myStatus !== 'AVAILABLE') {
+		const statusContent = FEEDBACK_STATUS_CONTENT[feedbackInfo.myStatus];
 		const isSubmitted = statusContent.icon === 'check';
+		const startDateTime = feedbackInfo.startAt
+			? dayjs(feedbackInfo.startAt).format('M월 D일 HH:mm')
+			: null;
 
 		return (
 			<FeedbackResultScreen
@@ -216,6 +253,11 @@ export const FeedbackForm = ({
 					</div>
 				}
 				title={statusContent.title}
+				description={
+					feedbackInfo.myStatus === 'BEFORE_START'
+						? `${startDateTime ?? '안내된 시작 시각'}부터 작성할 수 있어요.`
+						: undefined
+				}
 				actionLabel="닫기"
 				onAction={() => router.replace('/')}
 			/>
@@ -283,7 +325,9 @@ export const FeedbackForm = ({
 				<div>
 					{step === 'satisfaction' ? (
 						<>
-							<p className="font-bold text-headline2 text-label-assistive">OT &amp; 팀빌딩</p>
+							<p className="font-bold text-headline2 text-label-assistive">
+								{feedbackInfo.sessionName}
+							</p>
 							<h2 className="mt-1 font-bold text-headline2 text-label-normal">
 								이번 세션에 얼마나 만족하셨나요? <span className="text-primary-normal">*</span>
 							</h2>

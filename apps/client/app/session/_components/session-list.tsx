@@ -46,6 +46,10 @@ function SessionItem({ session }: { session: SessionListItem }) {
 	const feedbackDaysRemaining = session.feedback
 		? Math.max(0, dayjs(session.feedback.endAt).startOf('day').diff(dayjs().startOf('day'), 'day'))
 		: null;
+	const feedbackSearchParams =
+		process.env.NODE_ENV === 'development'
+			? '?mockAuthenticated=true&returnTo=%2Fsession'
+			: '?returnTo=%2Fsession';
 
 	return (
 		<div className="px-4">
@@ -87,7 +91,7 @@ function SessionItem({ session }: { session: SessionListItem }) {
 						className="h-9 w-full rounded-lg border border-primary-normal bg-background-normal font-semibold text-caption1 text-primary-normal hover:bg-primary-extralight"
 						asChild
 					>
-						<Link href={`/session/${session.id}/feedback?returnTo=%2Fsession`}>
+						<Link href={`/session/${session.id}/feedback${feedbackSearchParams}`}>
 							피드백 남기기 (D-{feedbackDaysRemaining})
 						</Link>
 					</Button>

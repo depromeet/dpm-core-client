@@ -4,6 +4,7 @@ import type {
 	SessionAttendanceStatusTime,
 	SessionDetail,
 	SessionFeedbackInsight,
+	SessionFeedbackMeResponse,
 	SessionListItem,
 	SessionTargeted,
 	SessionUnTargeted,
@@ -60,6 +61,11 @@ export const session = {
 			`v1/sessions/${sessionId}/feedbacks/insight`,
 		);
 		return res;
+	},
+
+	/** 디퍼의 세션 피드백 작성 가능 상태 조회 */
+	getMyFeedbackStatus: async (sessionId: number) => {
+		return await http.get<SessionFeedbackMeResponse>(`v1/sessions/${sessionId}/feedbacks/me`);
 	},
 
 	/**

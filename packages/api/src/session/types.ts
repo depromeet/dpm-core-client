@@ -11,6 +11,19 @@ export interface Session {
 
 export type SessionFeedbackCollectionStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'CLOSED';
 
+export type SessionFeedbackMyStatus =
+	| 'AVAILABLE'
+	| 'BEFORE_START'
+	| 'SUBMITTED'
+	| 'EXPIRED'
+	| 'NOT_TARGET';
+
+export interface SessionFeedbackMeResponse {
+	sessionName: string;
+	myStatus: SessionFeedbackMyStatus;
+	startAt: string | null;
+}
+
 export type SessionFeedbackSatisfaction =
 	| 'VERY_SATISFIED'
 	| 'SATISFIED'
