@@ -20,10 +20,7 @@ export const HomeFeedbackCard = ({ isAttendanceOpen }: HomeFeedbackCardProps) =>
 		0,
 		Math.ceil(dayjs(pendingFeedback.endAt).diff(dayjs(), 'hour', true) / 24),
 	);
-	const searchParams =
-		process.env.NODE_ENV === 'development'
-			? '?mockAuthenticated=true&returnTo=%2F'
-			: '?returnTo=%2F';
+	const searchParams = '?returnTo=%2F';
 
 	return (
 		<div className="flex h-[150px] flex-col gap-4 rounded-[10px] border border-white bg-background-normal p-4 shadow-[0_0_10px_rgba(0,0,0,0.04)]">

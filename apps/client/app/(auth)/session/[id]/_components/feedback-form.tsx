@@ -25,17 +25,12 @@ import {
 } from '@dpm-core/shared';
 
 import { SafeAreaAppLayout } from '@/components/app-layout';
-import {
-	type FeedbackSubmissionMockResult,
-	submitSessionFeedbackOptions,
-} from '@/remotes/mutations/session-feedback';
+import { submitSessionFeedbackOptions } from '@/remotes/mutations/session-feedback';
 import { getSessionFeedbackMeQuery } from '@/remotes/queries/session-feedback';
 
 interface FeedbackFormProps {
 	sessionId: number;
 	returnTo: '/' | '/session';
-	mockSubmissionResult?: FeedbackSubmissionMockResult;
-	mockFeedbackStatus?: SessionFeedbackMyStatus;
 }
 
 type FeedbackStep = 'satisfaction' | 'positive' | 'improvement' | 'comment';
@@ -137,19 +132,12 @@ const FeedbackResultScreen = ({
 	</SafeAreaAppLayout>
 );
 
-export const FeedbackForm = ({
-	sessionId,
-	returnTo,
-	mockSubmissionResult,
-	mockFeedbackStatus,
-}: FeedbackFormProps) => {
+export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 	const router = useRouter();
 	const queryClient = useQueryClient();
-	const feedbackQuery = useQuery(getSessionFeedbackMeQuery(sessionId, mockFeedbackStatus));
+	const feedbackQuery = useQuery(getSessionFeedbackMeQuery(sessionId));
 	const feedbackInfo = feedbackQuery.data?.data;
-	const submitFeedbackMutation = useMutation(
-		submitSessionFeedbackOptions(sessionId, mockSubmissionResult),
-	);
+	const submitFeedbackMutation = useMutation(submitSessionFeedbackOptions(sessionId));
 	const [step, setStep] = useState<FeedbackStep>('satisfaction');
 	const [satisfaction, setSatisfaction] = useState<SessionFeedbackSatisfaction | null>(null);
 	const [positiveReasons, setPositiveReasons] = useState<SessionFeedbackAspect[]>([]);

@@ -1,70 +1,17 @@
 import { queryOptions } from '@tanstack/react-query';
-import {
-	type ApiResponse,
-	http,
-	type SessionFeedbackMeResponse,
-	type SessionFeedbackMyStatus,
-	session,
-} from '@dpm-core/api';
+import { http, session } from '@dpm-core/api';
 
-import { MOCK_SESSION_FEEDBACK_PENDING } from '../mocks/session-feedback-pending';
-import { MOCK_SESSION_LIST_RESPONSE } from '../mocks/session-list';
-
-export const SESSION_FEEDBACK_STATUSES: SessionFeedbackMyStatus[] = [
-	'AVAILABLE',
-	'BEFORE_START',
-	'SUBMITTED',
-	'EXPIRED',
-	'NOT_TARGET',
-];
-
-const isSessionFeedbackStatusMockEnabled =
-	process.env.NODE_ENV === 'development' &&
-	process.env.NEXT_PUBLIC_USE_MOCK_SESSION_FEEDBACK_STATUS !== 'false';
-
-const isSessionFeedbackPendingMockEnabled =
-	process.env.NODE_ENV === 'development' &&
-	process.env.NEXT_PUBLIC_USE_MOCK_SESSION_FEEDBACK_PENDING !== 'false';
-
-export const getSessionFeedbackMeMock = (
-	sessionId: number,
-	myStatus: SessionFeedbackMyStatus = 'AVAILABLE',
-): ApiResponse<SessionFeedbackMeResponse> => {
-	const sessionName =
-		MOCK_SESSION_LIST_RESPONSE.data.sessions.find((item) => item.id === sessionId)?.name ?? '세션';
-
-	return {
-		status: 'OK',
-		code: 'GLOBAL-200-01',
-		message: '요청에 성공했습니다',
-		data: {
-			sessionName,
-			myStatus,
-			startAt: myStatus === 'BEFORE_START' ? '2026-10-10T18:00:00' : null,
-		},
-	};
-};
-
-export const getSessionFeedbackMeQuery = (
-	sessionId: number,
-	mockStatus?: SessionFeedbackMyStatus,
-) =>
+export const getSessionFeedbackMeQuery = (sessionId: number) =>
 	queryOptions({
-		queryKey: ['session-feedback-me', sessionId, mockStatus],
-		queryFn: () =>
-			isSessionFeedbackStatusMockEnabled
-				? getSessionFeedbackMeMock(sessionId, mockStatus)
-				: session.getMyFeedbackStatus(sessionId),
+		queryKey: ['session-feedback-me', sessionId],
+		queryFn: () => session.getMyFeedbackStatus(sessionId),
 		retry: false,
 		staleTime: 0,
 	});
 
 export const getMyPendingSessionFeedbackQuery = queryOptions({
 	queryKey: ['session-feedback-pending'],
-	queryFn: () =>
-		isSessionFeedbackPendingMockEnabled
-			? MOCK_SESSION_FEEDBACK_PENDING
-			: session.getMyPendingFeedback(),
-	enabled: isSessionFeedbackPendingMockEnabled || Boolean(http.getDefaultToken()),
+	queryFn: () => session.getMyPendingFeedback(),
+	enabled: Boolean(http.getDefaultToken()),
 	retry: false,
 });

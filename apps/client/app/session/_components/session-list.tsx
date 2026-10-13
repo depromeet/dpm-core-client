@@ -5,8 +5,8 @@ import { Suspense } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Virtuoso } from 'react-virtuoso';
 import dayjs from 'dayjs';
+import { Virtuoso } from 'react-virtuoso';
 import type { SessionListItem } from '@dpm-core/api';
 import { Aesterisk, Button, Calender, Clock, formatDotFullDate } from '@dpm-core/shared';
 
@@ -46,10 +46,7 @@ function SessionItem({ session }: { session: SessionListItem }) {
 	const feedbackDaysRemaining = session.feedback
 		? Math.max(0, dayjs(session.feedback.endAt).startOf('day').diff(dayjs().startOf('day'), 'day'))
 		: null;
-	const feedbackSearchParams =
-		process.env.NODE_ENV === 'development'
-			? '?mockAuthenticated=true&returnTo=%2Fsession'
-			: '?returnTo=%2Fsession';
+	const feedbackSearchParams = '?returnTo=%2Fsession';
 
 	return (
 		<div className="px-4">
@@ -66,9 +63,7 @@ function SessionItem({ session }: { session: SessionListItem }) {
 								<p className="font-medium text-caption1 text-label-assistive">
 									{formatSessionWeekString(session.week)}
 								</p>
-								<h3 className="font-semibold text-body1 text-label-normal">
-									{session.name}
-								</h3>
+								<h3 className="font-semibold text-body1 text-label-normal">{session.name}</h3>
 							</div>
 							<div className="flex items-center gap-x-1">
 								<Calender />

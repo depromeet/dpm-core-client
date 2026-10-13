@@ -28,8 +28,7 @@ const [AuthProviderContext, useAuth] = createContext<AuthContextType>('Auth', {
 const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [user, setUser] = useState<Member | null>(null);
-	const [isMockAuthenticated, setIsMockAuthenticated] = useState(false);
-	const [isAuthRouteResolved, setIsAuthRouteResolved] = useState(false);
+	const [isAuthReady, setIsAuthReady] = useState(false);
 
 	const pushRegistered = useRef(false);
 
@@ -38,14 +37,8 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	const queryClient = useQueryClient();
 
 	useEffect(() => {
-		const supportsMockAuth = pathname === '/session' || /^\/session\/\d+\/feedback$/.test(pathname);
-		const mockAuthRequested = new URLSearchParams(window.location.search).get('mockAuthenticated');
-
-		setIsMockAuthenticated(
-			process.env.NODE_ENV === 'development' && supportsMockAuth && mockAuthRequested === 'true',
-		);
-		setIsAuthRouteResolved(true);
-	}, [pathname]);
+		setIsAuthReady(true);
+	}, []);
 
 	const {
 		data: { data: memberInfo } = {},
@@ -60,7 +53,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			return memberInfo;
 		},
 		retry: false,
-		enabled: isAuthRouteResolved && !isMockAuthenticated,
+		enabled: isAuthReady,
 	});
 
 	useEffect(() => {
@@ -78,7 +71,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	}, [memberInfo, requestAndRegister]);
 
 	// 미로그인 인 경우, 접속 하자마자 홈으로 진입으로 변경, 로그인 페이지로 바로 진입아님
-	if (error && pathname !== '/login' && !isMockAuthenticated) {
+	if (error && pathname !== '/login') {
 		return <UnauthenticatedLayout />;
 	}
 
@@ -95,12 +88,12 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		}
 	}
 
-	if (!isAuthRouteResolved || (isLoading && !isMockAuthenticated)) {
+	if (!isAuthReady || isLoading) {
 		return null;
 	}
 
 	return (
-		<AuthProviderContext isAuthenticated={isAuthenticated || isMockAuthenticated} user={user}>
+		<AuthProviderContext isAuthenticated={isAuthenticated} user={user}>
 			{children}
 		</AuthProviderContext>
 	);
