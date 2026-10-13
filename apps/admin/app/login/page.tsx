@@ -1,6 +1,5 @@
 import { DpmText } from '@dpm-core/shared';
 
-import { DevMockLoginButton } from '@/components/dev-mock-login-button';
 import { LoginButton } from '@/components/login-button';
 import { CoreLogo } from '@/components/lotties/core-logo';
 
@@ -28,7 +27,6 @@ const LoginPage = () => {
 					variant="none"
 					className="h-auto rounded-xl bg-[#FEE500] px-[15px] py-3.5 font-medium leading-1"
 				/>
-				<DevMockLoginButton />
 			</div>
 		</section>
 	);

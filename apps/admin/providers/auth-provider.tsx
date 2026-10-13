@@ -7,7 +7,6 @@ import { auth, type Member } from '@dpm-core/api';
 import { createContext } from '@dpm-core/shared';
 
 import { UnauthenticatedLayout } from '@/components/unauthenticated-layout';
-import { disableAdminDevMock, isAdminDevMockEnabled, MOCK_ADMIN_MEMBER } from '@/lib/dev-mock-auth';
 import { logoutMutationOptions } from '@/remotes/mutations/auth';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
@@ -30,7 +29,6 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [user, setUser] = useState<Member | null>(null);
 	const [isReady, setIsReady] = useState(false);
-	const [isMockAuth, setIsMockAuth] = useState(false);
 	const pathname = usePathname();
 
 	const queryClient = useQueryClient();
@@ -48,18 +46,17 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			return memberInfo;
 		},
 		retry: false,
-		enabled: isReady && !isMockAuth,
+		enabled: isReady,
 	});
 
 	const { mutate: logoutMutate } = useMutation(logoutMutationOptions());
 
 	useEffect(() => {
-		setIsMockAuth(isAdminDevMockEnabled());
 		setIsReady(true);
 	}, []);
 
 	useEffect(() => {
-		if (!isMockAuth && memberInfo) {
+		if (memberInfo) {
 			if (!memberInfo.isAdmin) {
 				logoutMutate();
 				redirect('/login');
@@ -67,13 +64,13 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			setIsAuthenticated(true);
 			setUser(memberInfo);
 		}
-	}, [isMockAuth, memberInfo, logoutMutate]);
+	}, [memberInfo, logoutMutate]);
 
-	if (isReady && !isMockAuth && error && pathname !== '/login') {
+	if (isReady && error && pathname !== '/login') {
 		return <UnauthenticatedLayout />;
 	}
 
-	if (!isReady || (!isMockAuth && isLoading)) {
+	if (!isReady || isLoading) {
 		// return (
 		// 	<div className="flex flex-col items-center justify-center h-dvh">
 		// 		<Loading />
@@ -81,27 +78,6 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		// );
 
 		return null;
-	}
-
-	if (isMockAuth) {
-		return (
-			<AuthProviderContext isAuthenticated user={MOCK_ADMIN_MEMBER}>
-				<div className="fixed right-2 bottom-2 z-[100] flex items-center gap-2 rounded-md bg-amber-100 px-3 py-2 text-amber-950 text-xs shadow">
-					개발용 Mock 로그인
-					<button
-						type="button"
-						className="cursor-pointer underline"
-						onClick={() => {
-							disableAdminDevMock();
-							window.location.assign('/login');
-						}}
-					>
-						종료
-					</button>
-				</div>
-				{children}
-			</AuthProviderContext>
-		);
 	}
 
 	return (
