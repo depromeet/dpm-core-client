@@ -76,7 +76,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			return redirect('/');
 		}
 
-		if (pathname !== '/my-page') {
+		if (pathname !== '/my-page' && pathname !== '/profile') {
 			toast.error('승인 대기 중입니다. 관리자에게 문의해주세요.');
 			return redirect('/');
 		}

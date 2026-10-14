@@ -1,40 +1,40 @@
-import { DpmText } from '@dpm-core/shared';
+import Image from 'next/image';
 
-import { AppHeader } from '@/components/app-header';
+import dpmLogo from '@/assets/images/dpm-logo.svg';
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { AppleLoginButton } from '@/components/apple-login-button';
 import { EmailLoginButton } from '@/components/email-login-button';
 import { LoginButton } from '@/components/login-button';
-import { CoreLogo } from '@/components/lotties/core-logo';
+import { RecentLoginBadge } from '@/components/recent-login-badge';
 
 const LoginPage = () => {
 	return (
 		<SafeAreaAppLayout className="h-dvh bg-background-subtle">
-			<AppHeader title="" backHref="/" className="mb-0" />
-			<div className="mx-auto flex flex-1 flex-col justify-center gap-y-10 text-center">
-				<div className="flex flex-col items-center gap-y-4">
-					<CoreLogo />
-					<div className="mx-auto flex items-start gap-x-2.5 font-semibold text-headline1 text-label-normal uppercase">
-						<DpmText className="w-fit text-gray-800" />
-					</div>
-				</div>
-				<p className="font-medium text-label-subtle">
-					출석부터 회식까지
+			<div className="flex flex-col gap-y-4.5 px-4 pt-20">
+				<Image src={dpmLogo} alt="DPM" priority className="h-auto w-31" />
+				<p className="font-normal text-body1 text-label-subtle">
+					출석부터 회식까지,
 					<br />
 					디프만을 더 쉽게
 				</p>
-				<div className="flex flex-col items-center gap-3">
-					<AppleLoginButton
-						variant="none"
-						size="full"
-						className="h-auto min-w-65 justify-between rounded-xl bg-black px-4 py-3.5 font-medium text-white leading-1"
-					/>
+			</div>
+			{/* TODO: 대표 그래픽 또는 온보딩 영역 (디자인 확정 후 반영) */}
+			<div className="flex-1" />
+			<div className="flex flex-col items-center gap-y-5 bg-linear-to-b from-white/0 to-18% to-white px-4 py-8">
+				<div className="relative w-full">
 					<LoginButton
 						size="full"
 						variant="none"
-						className="h-auto min-w-65 justify-between rounded-xl bg-[#FEE500] px-4 py-3.5 font-medium leading-1"
+						className="h-12.5 justify-center rounded-xl bg-[#FEE500] px-3.75 py-3.5 font-medium text-body1 leading-1"
 					/>
-					<EmailLoginButton />
+					<RecentLoginBadge />
+				</div>
+				<div className="flex flex-col items-center gap-y-3">
+					<p className="font-medium text-black/40 text-caption1">다른 방법으로 시작하기</p>
+					<div className="flex items-center gap-x-6">
+						<AppleLoginButton />
+						<EmailLoginButton />
+					</div>
 				</div>
 			</div>
 		</SafeAreaAppLayout>

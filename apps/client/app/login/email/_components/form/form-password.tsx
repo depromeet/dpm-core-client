@@ -14,7 +14,12 @@ export const FormPassword = () => {
 				<FormItem>
 					<FormLabel>비밀번호</FormLabel>
 					<FormControl>
-						<Input variant="line" type="password" placeholder="비밀번호" {...field} />
+						<Input
+							variant="line"
+							type="password"
+							placeholder="비밀번호를 입력해주세요"
+							{...field}
+						/>
 					</FormControl>
 					<div className="relative min-h-4">
 						<FormMessage className="text-red-400" />
