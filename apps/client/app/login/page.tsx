@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { Suspense } from 'react';
 
 import dpmLogo from '@/assets/images/dpm-logo.svg';
 import bgEllipse from '@/assets/images/login-bg-ellipse.svg';
@@ -7,6 +8,7 @@ import { SafeAreaAppLayout } from '@/components/app-layout';
 import { AppleLoginButton } from '@/components/apple-login-button';
 import { EmailLoginButton } from '@/components/email-login-button';
 import { LoginButton } from '@/components/login-button';
+import { LoginErrorToast } from '@/components/login-error-toast';
 import { RecentLoginBadge } from '@/components/recent-login-badge';
 
 const LoginPage = () => {
@@ -15,6 +17,9 @@ const LoginPage = () => {
 			hasBottomTabBar
 			className="relative h-dvh overflow-hidden bg-[linear-gradient(150.15deg,#FFFFFF_5.91%,#CFD9FF_42.11%,#E6F9FF_70.04%)] bg-gray-50"
 		>
+			<Suspense>
+				<LoginErrorToast />
+			</Suspense>
 			<div aria-hidden className="pointer-events-none absolute inset-0">
 				<Image
 					src={bgEllipse}
