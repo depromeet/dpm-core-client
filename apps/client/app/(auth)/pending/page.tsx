@@ -31,7 +31,7 @@ export default function PendingPage() {
 			</main>
 			<div className="flex flex-col gap-2 px-4 pb-4">
 				<Button variant="secondary" size="full" className="h-12 rounded-lg" asChild>
-					<Link href="/profile">개인정보 수정하기</Link>
+					<Link href="/my-page">마이페이지</Link>
 				</Button>
 			</div>
 		</SafeAreaAppLayout>
