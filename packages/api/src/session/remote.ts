@@ -1,6 +1,6 @@
 import { http } from '../http';
 import type {
-	CurrentWeekSessionResponse,
+	NextSessionHomeResponse,
 	SessionAttendanceStatusTime,
 	SessionDetail,
 	SessionFeedbackInsight,
@@ -87,7 +87,7 @@ export const session = {
 	 * @returns 이번주 세션 정보
 	 */
 	getCurrentWeekSession: async () => {
-		const res = await http.get<CurrentWeekSessionResponse | null>('v1/sessions/next');
+		const res = await http.get<NextSessionHomeResponse>('v1/sessions/next');
 		return res;
 	},
 

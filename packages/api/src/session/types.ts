@@ -151,3 +151,11 @@ export interface SessionUnTargeted {
 export type CurrentWeekSessionResponse = Session &
 	SessionAttendanceStatusTime &
 	SessionAttendanceCode;
+
+export type NextSessionHomeStatus = 'AVAILABLE' | 'NOT_REGISTERED' | 'COHORT_ENDED';
+
+export interface NextSessionHomeResponse {
+	status: NextSessionHomeStatus;
+	cohortValue: string;
+	session?: CurrentWeekSessionResponse | null;
+}

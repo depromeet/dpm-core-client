@@ -23,14 +23,19 @@ const SessionProivder = ({
 			data: { data: sessions },
 		},
 		{
-			data: { data: currentSessionWeek },
+			data: {
+				data: { session: currentSessionWeek },
+			},
 		},
 	] = useSuspenseQueries({
 		queries: [getSessionListQuery, getCurrentWeekSessionQuery],
 	});
 
 	return (
-		<SessionProviderContext sessions={sessions.sessions} currentSessionWeek={currentSessionWeek}>
+		<SessionProviderContext
+			sessions={sessions.sessions}
+			currentSessionWeek={currentSessionWeek ?? null}
+		>
 			{children}
 		</SessionProviderContext>
 	);
