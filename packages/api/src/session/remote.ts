@@ -30,16 +30,10 @@ export const session = {
 	/**
 	 * 세션 목록 조회
 	 * 전체 세션을 확인할 수 있는 세션 리스트 조회 API입니다
-	 * @TODO 기수 아이디는 어디서 받아오지?
-	 * @param cohortId 기수 아이디
 	 * @returns 세션 목록
 	 */
 	getList: async () => {
-		const res = await http.get<SessionListResponse>('v1/sessions', {
-			searchParams: {
-				cohortId: 1,
-			},
-		});
+		const res = await http.get<SessionListResponse>('v1/sessions');
 		return res;
 	},
 
