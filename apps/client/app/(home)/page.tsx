@@ -16,7 +16,6 @@ import { AppleProfileSetupSheet } from './_components/apple-profile-setup-sheet'
 import { HomeAnnouncementBanner } from './_components/home-announcement-banner';
 import { HomeBannerList } from './_components/home-banner-list';
 import { HomeHeader } from './_components/home-header';
-import { KakaoLoginPromptSheet } from './_components/kakao-login-prompt-sheet';
 import { MemberStatusRedirect } from './_components/member-status-redirect';
 import { UserActionList } from './_components/user-action-list';
 
@@ -44,7 +43,6 @@ export default function HomePage() {
 			</main>
 			<BottomTabBar />
 			<AppleProfileSetupSheet />
-			<KakaoLoginPromptSheet />
 			<LastLoginRecorder />
 			<MemberStatusRedirect />
 		</SafeAreaAppLayout>
