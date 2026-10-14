@@ -29,7 +29,11 @@ import { formatDateWithDay } from '@/lib/date';
 
 import type { SessionSchema } from '../SessionForm';
 
-export const FormFeedbackSettings = () => {
+export const FormFeedbackSettings = ({
+	feedbackSettingsLocked = false,
+}: {
+	feedbackSettingsLocked?: boolean;
+}) => {
 	const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 	const form = useFormContext<SessionSchema>();
 	const feedbackEnabled = useWatch({ control: form.control, name: 'feedbackEnabled' });
@@ -57,10 +61,16 @@ export const FormFeedbackSettings = () => {
 								<Switch
 									checked={field.value}
 									onCheckedChange={field.onChange}
+									disabled={feedbackSettingsLocked}
 									className="h-[22px] w-[42px] rounded-[12px] border-0 bg-background-heavy p-[2px] data-[state=checked]:bg-background-inverse data-[state=unchecked]:bg-background-heavy [&>span]:size-[18px] [&>span]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
 								/>
 							</FormControl>
 						</div>
+						{feedbackSettingsLocked && (
+							<p className="text-caption1 text-label-assistive">
+								피드백 수집이 시작되어 수집 여부와 시작 시간은 변경할 수 없어요.
+							</p>
+						)}
 					</FormItem>
 				)}
 			/>
@@ -81,6 +91,7 @@ export const FormFeedbackSettings = () => {
 													variant="none"
 													className="h-12 w-full justify-between border border-line-normal bg-background-normal p-4 font-medium text-body2"
 													aria-label="피드백 시작 날짜 선택"
+													disabled={feedbackSettingsLocked}
 												>
 													{field.value ? formatDateWithDay(field.value) : '날짜를 선택해주세요'}
 													<CalendarIcon size={20} className="text-icon-noraml" />
@@ -116,6 +127,7 @@ export const FormFeedbackSettings = () => {
 										<FormControl>
 											<InputOTP
 												pattern={REGEXP_ONLY_DIGITS}
+												disabled={feedbackSettingsLocked}
 												containerClassName="h-12 rounded-lg border border-line-normal px-4 has-focus:border-gray-900 focus:border-gray-900 has-aria-invalid:border-red-400"
 												maxLength={4}
 												inputMode="numeric"

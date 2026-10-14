@@ -195,6 +195,7 @@ export const FORM_ID = 'session-form';
 export const SessionForm = ({
 	defaultValues,
 	showFeedbackSettings = false,
+	feedbackSettingsLocked = false,
 	feedbackStartAtInitialValue,
 	onDirtyChange,
 	onSubmit,
@@ -203,6 +204,7 @@ export const SessionForm = ({
 	onDirtyChange?: (isDirty: boolean) => void;
 	defaultValues?: Partial<SessionSchema>;
 	showFeedbackSettings?: boolean;
+	feedbackSettingsLocked?: boolean;
 	feedbackStartAtInitialValue?: string | null;
 }>) => {
 	const form = useForm<SessionSchema>({
@@ -259,7 +261,9 @@ export const SessionForm = ({
 						<FormAttendanceLateTime />
 					</div>
 				</section>
-				{showFeedbackSettings && <FormFeedbackSettings />}
+				{showFeedbackSettings && (
+					<FormFeedbackSettings feedbackSettingsLocked={feedbackSettingsLocked} />
+				)}
 			</form>
 		</Form>
 	);

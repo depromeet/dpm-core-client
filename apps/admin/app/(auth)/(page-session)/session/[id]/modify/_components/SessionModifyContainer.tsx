@@ -36,6 +36,10 @@ export const SessionModifyContainer = (props: SessionModifyContainerProps) => {
 			<SessionForm
 				onSubmit={handleOpenModifyConfirmModal}
 				showFeedbackSettings
+				feedbackSettingsLocked={
+					sessionDetail.feedback?.status === 'IN_PROGRESS' ||
+					sessionDetail.feedback?.status === 'CLOSED'
+				}
 				feedbackStartAtInitialValue={sessionDetail.feedback?.startAt}
 				defaultValues={{
 					cohortId: 1,
