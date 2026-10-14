@@ -50,7 +50,7 @@ const NO_FEEDBACK_REASON: SessionFeedbackAspect = 'NOTHING';
 const POSITIVE_FEEDBACK_OPTIONS = [
 	{ value: 'SESSION_CONTENT', label: '세션 내용' },
 	{ value: 'PROGRESS_AND_TIME', label: '진행 방식·시간' },
-	{ value: 'NETWORKING', label: '교류 기회' },
+	{ value: 'NETWORKING', label: '네트워킹' },
 	{ value: 'GUIDANCE', label: '사전·현장 안내' },
 	{ value: 'PLACE_AND_ACCESS', label: '장소·접속 환경' },
 	{ value: 'ETC', label: '기타' },

@@ -17,6 +17,9 @@ const FeedbackSectionTitle = ({ children }: { children: ReactNode }) => (
 	<h3 className="font-semibold text-body1 text-label-normal">{children}</h3>
 );
 
+const getAspectLabel = (code: string, label: string) =>
+	code === 'NETWORKING' ? '네트워킹' : label;
+
 const ReasonGroup = ({
 	title,
 	items,
@@ -45,7 +48,8 @@ const ReasonGroup = ({
 				<p className="font-medium text-body2 text-label-subtle">{title}</p>
 				<p className="text-caption1 text-label-assistive">총 {respondentCount}건 · 복수 선택</p>
 				<ul className="flex flex-wrap gap-2">
-					{topItems.map(({ code, label, count }) => {
+					{topItems.map(({ code, label: responseLabel, count }) => {
+						const label = getAspectLabel(code, responseLabel);
 						const isEtc = code === 'ETC' && etcComments.length > 0;
 						const chipClassName = `whitespace-nowrap rounded-full px-3 py-2 text-center font-medium text-body2 ${variant === 'positive' ? 'bg-primary-extralight text-primary-normal' : 'bg-red-50 text-red-500'}`;
 
@@ -76,7 +80,8 @@ const ReasonGroup = ({
 					})}
 				</ul>
 				<ul className="flex flex-wrap gap-2">
-					{otherItems.map(({ code, label, count }) => {
+					{otherItems.map(({ code, label: responseLabel, count }) => {
+						const label = getAspectLabel(code, responseLabel);
 						const isEtc = code === 'ETC' && etcComments.length > 0;
 
 						return (
