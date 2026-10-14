@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import type { Part } from '@dpm-core/api';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@dpm-core/shared';
 
@@ -10,7 +10,7 @@ import { EmptyView } from '@/components/attendance/EmptyView';
 import { LoadingBox } from '@/components/loading-box';
 import { cohort } from '@/constants/cohort';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
-import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { filterAttendanceMembers } from '@/lib/attendance/filterAttendanceMembers';
 import { getMemberPartLabel } from '@/lib/member/part';
 import { isExistPart } from '@/lib/utils';
 import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
@@ -19,24 +19,14 @@ export const AttendanceList = ({ sessionId }: { sessionId: number }) => {
 	const customSearchParams = useCustomSearchParams();
 	const searchParams = customSearchParams.getAll();
 
-	const attendanceSearchParams = {
-		week: sessionId,
+	const attendanceFilters = {
 		statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
 		teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
 		name: searchParams.name,
 	};
 
-	const { data, fetchNextPage, hasNextPage, fetchStatus, isLoading } = useInfiniteQuery(
-		getAttendanceBySessionOptions(attendanceSearchParams),
-	);
-
-	const { targetRef } = useInfiniteScroll({
-		callback: fetchNextPage,
-		canObserve: hasNextPage,
-		enabled: fetchStatus !== 'fetching',
-	});
-
-	const flatData = data?.pages.flatMap((page) => page.data.members) ?? [];
+	const { data, isLoading } = useQuery(getAttendanceBySessionOptions({ sessionId }));
+	const flatData = filterAttendanceMembers(data?.data.members ?? [], attendanceFilters);
 
 	if (isLoading) {
 		return (
@@ -67,7 +57,7 @@ export const AttendanceList = ({ sessionId }: { sessionId: number }) => {
 									<TableProfile
 										size={40}
 										name={member.name}
-										teamNumber={member.teamNumber}
+										teamNumber={member.teamNumber ?? 0}
 										part={member.part}
 										isAdmin={member.isAdmin}
 									/>
@@ -80,7 +70,6 @@ export const AttendanceList = ({ sessionId }: { sessionId: number }) => {
 					})}
 				</TableBody>
 			</Table>
-			<div ref={targetRef} />
 		</div>
 	);
 };

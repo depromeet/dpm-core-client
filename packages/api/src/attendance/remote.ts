@@ -3,12 +3,12 @@ import type {
 	AbsenceReasonsResponse,
 	AttendanceByMemberReponse,
 	AttendanceBySessionIdReponse,
-	AttendanceBySessionReponse,
+	AttendanceBySessionResponse,
 	AttendanceCheckReponse,
 	AttendanceReponse,
 	AttendanceStatus,
-	MyAttendanceBySessionIdResponse,
 	MyAbsenceReasonResponse,
+	MyAttendanceBySessionIdResponse,
 } from './types';
 
 export const attendance = {
@@ -38,41 +38,11 @@ export const attendance = {
 
 	// 세션별 출석 리스트 조회
 	getAttendanceBySession: async (params: {
-		week: number;
-		statuses?: string[];
-		teams?: number[];
-		name?: string;
-		cursorId: number;
-		size?: number;
+		sessionId: number;
 	}) => {
-		const { week, statuses, teams, name, cursorId, size } = params;
-		const searchParams = new URLSearchParams();
-
-		if (statuses && statuses.length > 0) {
-			statuses.forEach((status) => {
-				searchParams.append('statuses', status);
-			});
-		}
-
-		if (teams && teams.length > 0) {
-			teams.forEach((team) => {
-				searchParams.append('teams', team.toString());
-			});
-		}
-
-		if (name) {
-			searchParams.set('name', name);
-		}
-
-		searchParams.set('cursorId', cursorId.toString());
-
-		if (size) {
-			searchParams.set('size', size.toString());
-		}
-
-		const res = await http.get<AttendanceBySessionReponse>(`v1/sessions/${week}/attendances`, {
-			searchParams,
-		});
+		const res = await http.get<AttendanceBySessionResponse>(
+			`v3/sessions/${params.sessionId}/attendances`,
+		);
 		return res;
 	},
 

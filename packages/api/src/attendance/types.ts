@@ -68,18 +68,22 @@ export interface AttendanceCheckReponse {
 	attendedAt: string;
 }
 
-// 세션별 출석 조회 타입
-export interface AttendanceBySessionReponse {
-	members: {
-		id: number;
-		name: string;
-		teamNumber: number;
-		isAdmin: boolean;
-		part: Exclude<Part, 'ETC'>;
-		attendanceStatus: AttendanceStatus;
-	}[];
-	hasNext: boolean;
-	nextCursorId: number | null;
+export interface AttendanceBySessionMember {
+	id: number;
+	name: string;
+	teamNumber: number | null;
+	isAdmin: boolean;
+	part: Exclude<Part, 'ETC'>;
+	attendanceStatus: AttendanceStatus;
+	attendedAt: string | null;
+	isManuallyUpdated: boolean;
+	absenceReason: string | null;
+}
+
+// GET /v3/sessions/{sessionId}/attendances
+export interface AttendanceBySessionResponse {
+	members: AttendanceBySessionMember[];
+	myTeamNumber: number | null;
 	totalElements: number;
 }
 
