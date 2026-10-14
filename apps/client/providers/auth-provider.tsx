@@ -15,7 +15,7 @@ interface AuthContextType {
 	user: Member | null;
 }
 
-const PENDING_ACCESSIBLE_PATHS = ['/pending', '/profile'];
+const PENDING_ACCESSIBLE_PATHS = ['/pending', '/profile', '/my-page'];
 
 const [AuthProviderContext, useAuth] = createContext<AuthContextType>('Auth', {
 	isAuthenticated: false,
@@ -66,9 +66,9 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
 			if (!pushRegistered.current) {
 				pushRegistered.current = true;
-				void requestAndRegister().then((success) => {
-					if (!success) pushRegistered.current = false;
-				});
+				// 실패해도 다시 시도하지 않는다. (등록 mutation 상태 변화로 리렌더될 때마다 재시도되어
+				// 요청이 반복되는 것을 막는다.)
+				void requestAndRegister();
 			}
 		}
 	}, [memberInfo, requestAndRegister]);
@@ -78,7 +78,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		return <UnauthenticatedLayout />;
 	}
 
-	// 승인 대기 회원은 검토중 화면과 가입정보 수정 화면만 이용할 수 있다.
+	// 승인 대기 회원은 검토중 화면, 가입정보 화면, 마이페이지(로그아웃·탈퇴)만 이용할 수 있다.
 	if (isPending) {
 		if (isProfileLoading) return null;
 
