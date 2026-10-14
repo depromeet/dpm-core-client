@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@dpm-core/shared';
 
@@ -25,6 +26,7 @@ export const SessionModifyConfirmModal = ({
 	onOpenChange,
 }: SessionModifyConfirmModalProps) => {
 	const queryClient = useQueryClient();
+	const router = useRouter();
 
 	const { mutate: modifySession, isPending } = useMutation(
 		modifySessionMutationOptions({
@@ -34,6 +36,7 @@ export const SessionModifyConfirmModal = ({
 				queryClient.invalidateQueries(getSessionDetailQuery(sessionId));
 				toast.success('세션을 수정했습니다.');
 				onOpenChange(false);
+				router.replace('/session');
 			},
 			onError: () => {
 				toast.error('세션 수정에 실패했습니다.');
