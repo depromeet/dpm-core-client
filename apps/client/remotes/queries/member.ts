@@ -20,15 +20,12 @@ export const getAppleHiddenEmailQuery = queryOptions({
 	refetchInterval: false,
 });
 
-/** 멤버 이름이 식별 불가능한 해시(id) 형식인지 검증 */
-export const getNameHashTypeValidationQuery = (name: string) =>
-	queryOptions({
-		queryKey: ['name-hash-type-validation', name],
-		queryFn: () => {
-			return member.validateNameHashType({ name });
-		},
-		enabled: name.length > 0,
-		staleTime: Number.POSITIVE_INFINITY,
-		retry: false,
-		refetchInterval: false,
-	});
+/** 본인 프로필(이름/파트) 최초 입력 필요 여부 조회 */
+export const getMyProfileQuery = queryOptions({
+	queryKey: ['get-my-profile'],
+	queryFn: () => {
+		return member.getMyProfile();
+	},
+	retry: false,
+	refetchInterval: false,
+});
