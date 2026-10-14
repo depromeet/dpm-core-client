@@ -1,6 +1,6 @@
 'use client';
 
-import { redirect, usePathname } from 'next/navigation';
+import { redirect, usePathname, useRouter } from 'next/navigation';
 import { type PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { auth, type Member } from '@dpm-core/api';
@@ -8,6 +8,7 @@ import { createContext, toast } from '@dpm-core/shared';
 
 import { UnauthenticatedLayout } from '@/components/unauthenticated-layout';
 import { usePushNotification } from '@/hooks/use-push-notification';
+import { consumeLoginReturnTo, getSafeFeedbackReturnTo } from '@/lib/login-return-to';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
 interface AuthContextType {
@@ -33,6 +34,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	const pushRegistered = useRef(false);
 
 	const pathname = usePathname();
+	const router = useRouter();
 	const { requestAndRegister } = usePushNotification();
 	const queryClient = useQueryClient();
 
@@ -70,9 +72,20 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		}
 	}, [memberInfo, requestAndRegister]);
 
+	useEffect(() => {
+		if (!memberInfo) return;
+
+		const returnTo = consumeLoginReturnTo();
+		if (!returnTo || memberInfo.status === 'PENDING') return;
+
+		const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+		if (returnTo !== currentPath) router.replace(returnTo);
+	}, [memberInfo, router]);
+
 	// 미로그인 인 경우, 접속 하자마자 홈으로 진입으로 변경, 로그인 페이지로 바로 진입아님
 	if (error && pathname !== '/login') {
-		return <UnauthenticatedLayout />;
+		const currentPath = `${pathname}${typeof window === 'undefined' ? '' : window.location.search}`;
+		return <UnauthenticatedLayout returnTo={getSafeFeedbackReturnTo(currentPath)} />;
 	}
 
 	// 로그인인데, 홈과 세션탭이 아닌경우

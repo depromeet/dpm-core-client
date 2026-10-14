@@ -5,11 +5,21 @@ import { SafeAreaAppLayout } from '@/components/app-layout';
 import { AppleLoginButton } from '@/components/apple-login-button';
 import { EmailLoginButton } from '@/components/email-login-button';
 import { LoginButton } from '@/components/login-button';
+import { LoginReturnTo } from '@/components/login-return-to';
 import { CoreLogo } from '@/components/lotties/core-logo';
 
-const LoginPage = () => {
+const LoginPage = async ({
+	searchParams,
+}: {
+	searchParams: Promise<{ returnTo?: string | string[]; error?: string | string[] }>;
+}) => {
+	const { returnTo, error } = await searchParams;
+	const returnToValue = Array.isArray(returnTo) ? returnTo[0] : returnTo;
+	const hasError = Array.isArray(error) ? error.length > 0 : Boolean(error);
+
 	return (
 		<SafeAreaAppLayout className="h-dvh bg-background-subtle">
+			<LoginReturnTo returnTo={returnToValue} preserveExisting={hasError} />
 			<AppHeader title="" backHref="/" className="mb-0" />
 			<div className="mx-auto flex flex-1 flex-col justify-center gap-y-10 text-center">
 				<div className="flex flex-col items-center gap-y-4">
