@@ -43,8 +43,10 @@ const HomeSessionSkeleton = () => (
 
 const HomeBannerListContainer = () => {
 	const {
-		data: { data: currentWeekSession },
+		data: { data: nextSessionHome },
 	} = useSuspenseQuery(getSessionCurrentOptions());
+	const currentWeekSession =
+		nextSessionHome.status === 'AVAILABLE' ? (nextSessionHome.session ?? null) : null;
 
 	useEffect(() => {
 		const sessionId = currentWeekSession?.id?.toString() || 'home';
@@ -77,8 +79,8 @@ const HomeBannerListContainer = () => {
 				attendanceSession={currentWeekSession}
 				isAttendanceOpen={isAttendanceOpen}
 			/>
-			<HomeFeedbackCard isAttendanceOpen={isAttendanceOpen} />
 			<SessionCard session={currentWeekSession} isAttendanceOpen={isAttendanceOpen} />
+			<HomeFeedbackCard isAttendanceOpen={isAttendanceOpen} />
 		</section>
 	);
 };
