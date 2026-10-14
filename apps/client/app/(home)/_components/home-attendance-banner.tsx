@@ -6,9 +6,9 @@ import { useQuery } from '@tanstack/react-query';
 import { CircleIcon } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type {
-	AttendanceBySessionIdReponse,
 	AttendanceStatus,
 	CurrentWeekSessionResponse,
+	MyAttendanceBySessionIdResponse,
 } from '@dpm-core/api';
 import { ArrowRight, Button } from '@dpm-core/shared';
 
@@ -78,7 +78,7 @@ const completedAttendanceCopy = {
 
 interface HomeCheckAttendanceBannerContentProps {
 	attendanceSession: CurrentWeekSessionResponse;
-	attendanceMeBySessionId: AttendanceBySessionIdReponse;
+	attendanceMeBySessionId: MyAttendanceBySessionIdResponse;
 }
 
 const HomeCheckAttendanceBannerContent = ({

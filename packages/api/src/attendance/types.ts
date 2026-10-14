@@ -50,6 +50,19 @@ export interface AttendanceBySessionIdReponse {
 	session: AttendanceSession;
 }
 
+export interface MyAttendanceBySessionIdResponse {
+	attendance: {
+		status: AttendanceStatus;
+		attendedAt: string;
+	};
+	session: {
+		week: number;
+		eventName: string;
+		date: string;
+		place: string | null;
+	};
+}
+
 export interface AttendanceCheckReponse {
 	attendanceStatus: AttendanceStatus;
 	attendedAt: string;

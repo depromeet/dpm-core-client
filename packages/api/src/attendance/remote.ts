@@ -7,6 +7,7 @@ import type {
 	AttendanceCheckReponse,
 	AttendanceReponse,
 	AttendanceStatus,
+	MyAttendanceBySessionIdResponse,
 	MyAbsenceReasonResponse,
 } from './types';
 
@@ -29,8 +30,8 @@ export const attendance = {
 	// 내 출석 세션별 정보 조회
 	getMeBySessionId: async (params: { sessionId: number }) => {
 		const { sessionId } = params;
-		const res = await http.get<AttendanceBySessionIdReponse>(
-			`v1/sessions/${sessionId}/attendances/me`,
+		const res = await http.get<MyAttendanceBySessionIdResponse>(
+			`v3/sessions/${sessionId}/attendances/me`,
 		);
 		return res;
 	},
