@@ -23,6 +23,15 @@ export const setLastLoginMethod = (method: LoginMethod) => {
 	}
 };
 
+/** 탈퇴 등으로 이 기기의 로그인 기록을 지울 때 사용한다. */
+export const clearLastLoginMethod = () => {
+	try {
+		window.localStorage.removeItem(LAST_LOGIN_METHOD_KEY);
+	} catch {
+		// 저장소 접근이 막힌 환경에서는 지울 기록도 없다.
+	}
+};
+
 export const isKakaoPromptDismissed = (): boolean => {
 	try {
 		return window.sessionStorage.getItem(KAKAO_PROMPT_DISMISSED_KEY) === 'true';
