@@ -228,7 +228,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 		void submitFeedback();
 	};
 
-	if (feedbackQuery.isPending || feedbackQuery.isFetching) {
+	if (feedbackQuery.isPending) {
 		return (
 			<SafeAreaAppLayout className="h-dvh bg-background-normal">
 				<div className="flex flex-1 items-center justify-center font-medium text-body2 text-label-subtle">
