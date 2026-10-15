@@ -4,16 +4,18 @@ import { redirect, usePathname } from 'next/navigation';
 import { type PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { auth, type Member } from '@dpm-core/api';
-import { createContext, toast } from '@dpm-core/shared';
+import { createContext } from '@dpm-core/shared';
 
 import { UnauthenticatedLayout } from '@/components/unauthenticated-layout';
 import { usePushNotification } from '@/hooks/use-push-notification';
-import { getMyMemberInfoQuery } from '@/remotes/queries/member';
+import { getMyMemberInfoQuery, getMyProfileQuery } from '@/remotes/queries/member';
 
 interface AuthContextType {
 	isAuthenticated: boolean;
 	user: Member | null;
 }
+
+const PENDING_ACCESSIBLE_PATHS = ['/pending', '/profile', '/my-page'];
 
 const [AuthProviderContext, useAuth] = createContext<AuthContextType>('Auth', {
 	isAuthenticated: false,
@@ -50,6 +52,13 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		retry: false,
 	});
 
+	// 승인 대기 회원이 이름·직군을 아직 입력하지 않았다면 검토중 화면 대신 가입정보 입력으로 보낸다.
+	const isPending = memberInfo?.status === 'PENDING';
+	const { data: { data: profile } = {}, isLoading: isProfileLoading } = useQuery({
+		...getMyProfileQuery,
+		enabled: isPending,
+	});
+
 	useEffect(() => {
 		if (memberInfo) {
 			setIsAuthenticated(true);
@@ -57,9 +66,9 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
 			if (!pushRegistered.current) {
 				pushRegistered.current = true;
-				void requestAndRegister().then((success) => {
-					if (!success) pushRegistered.current = false;
-				});
+				// 실패해도 다시 시도하지 않는다. (등록 mutation 상태 변화로 리렌더될 때마다 재시도되어
+				// 요청이 반복되는 것을 막는다.)
+				void requestAndRegister();
 			}
 		}
 	}, [memberInfo, requestAndRegister]);
@@ -69,17 +78,21 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		return <UnauthenticatedLayout />;
 	}
 
-	// 로그인인데, 홈과 세션탭이 아닌경우
-	if (memberInfo?.status === 'PENDING' && pathname !== '/' && pathname !== '/session') {
-		if (pathname === '/auth') {
-			toast.light('로그인 완료 되었습니다. 운영진이 회원 정보를 검토하고 있어요.');
-			return redirect('/');
-		}
+	// 승인 대기 회원은 검토중 화면, 가입정보 화면, 마이페이지(로그아웃·탈퇴)만 이용할 수 있다.
+	if (isPending) {
+		if (isProfileLoading) return null;
 
-		if (pathname !== '/my-page') {
-			toast.error('승인 대기 중입니다. 관리자에게 문의해주세요.');
-			return redirect('/');
+		const pendingPath = profile?.profileCompletionRequired ? '/profile' : '/pending';
+		if (
+			pathname !== pendingPath &&
+			(pathname === '/pending' || !PENDING_ACCESSIBLE_PATHS.includes(pathname))
+		) {
+			return redirect(pendingPath);
 		}
+	}
+
+	if (memberInfo && memberInfo.status !== 'PENDING' && pathname === '/pending') {
+		return redirect('/');
 	}
 
 	if (isLoading) {
