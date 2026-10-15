@@ -2,6 +2,33 @@ import Cookies from 'js-cookie';
 
 import { COOKIE_KEYS } from '../constants';
 
+const SHARED_COOKIE_ROOT_DOMAIN = 'depromeet.com';
+
+/**
+ * Returns the shared auth cookie domain only for depromeet-owned hosts.
+ */
+export const getSharedCookieDomain = (hostname: string) => {
+	const normalizedHostname = hostname.toLowerCase();
+
+	if (
+		normalizedHostname === SHARED_COOKIE_ROOT_DOMAIN ||
+		normalizedHostname.endsWith(`.${SHARED_COOKIE_ROOT_DOMAIN}`)
+	) {
+		return `.${SHARED_COOKIE_ROOT_DOMAIN}`;
+	}
+
+	return undefined;
+};
+
+/**
+ * Builds cookie options used by auth cookies that must be shared across depromeet subdomains.
+ */
+export const getSharedAuthCookieOptions = (hostname: string) =>
+	({
+		domain: getSharedCookieDomain(hostname),
+		path: '/',
+	}) as const;
+
 /**
  * JWT payload의 exp claim(초 단위)을 읽어 Date로 변환.
  * 디코드 실패 시 undefined → js-cookie가 세션 쿠키로 처리.

@@ -22,7 +22,7 @@ export const attendance = {
 
 	// 내 출석 정보 조회
 	getMe: async () => {
-		const res = await http.get<AttendanceReponse>(`v1/members/me/attendances`);
+		const res = await http.get<AttendanceReponse>(`v3/members/me/attendances`);
 		return res;
 	},
 

@@ -9,7 +9,7 @@ export const getAttendanceMeOptions = () =>
 		queryFn: async () => {
 			try {
 				const response = await attendance.getMe();
-				return { ...response, isError: false };
+				return { ...response, isError: false as const };
 			} catch (error) {
 				// FIXME: 출석 이력이 없는 경우 처리
 				if (
@@ -26,7 +26,7 @@ export const getAttendanceMeOptions = () =>
 					};
 					if (errorResponse.code === 'ATTENDANCE-404-01') {
 						return {
-							isError: true,
+							isError: true as const,
 							...errorResponse,
 						};
 					}

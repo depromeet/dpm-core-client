@@ -14,6 +14,7 @@ const buttonVariants = cva(
 				secondary: 'bg-background-inverse text-label-inverse hover:bg-gray-700',
 				assistive: 'bg-background-strong text-label-normal hover:bg-background-heavy',
 				text: 'text-label-assistive disabled:text-label-subtle',
+				danger: 'bg-red-100 text-red-500',
 			},
 			size: {
 				none: 'h-auto',
@@ -39,7 +40,7 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps extends React.ComponentProps<'button'> {
-	variant?: 'primary' | 'secondary' | 'assistive' | 'text' | 'none';
+	variant?: 'primary' | 'secondary' | 'assistive' | 'text' | 'danger' | 'none';
 	size?: 'xs' | 'sm' | 'md' | 'lg' | 'full' | 'none';
 	asChild?: boolean;
 	loading?: boolean;

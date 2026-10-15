@@ -61,6 +61,8 @@ export interface UpdateMembersInitResponse {
 	data: string;
 }
 
+export type LoginMethod = 'KAKAO' | 'APPLE' | 'EMAIL';
+
 export interface Member {
 	email: string;
 	name: string;
@@ -69,6 +71,7 @@ export interface Member {
 	teamNumber: number;
 	isAdmin: boolean;
 	status: MemberStatus;
+	loginMethod: LoginMethod;
 }
 
 /** PATCH /v1/roles/members/{memberId} - 멤버 기수별 역할 변경 */
@@ -118,6 +121,22 @@ export interface MemberNameHashValidationRequest {
  */
 export interface MemberNameHashValidationResponse {
 	isHashType: boolean;
+}
+
+/**
+ * GET/PATCH /v3/members/me/profile 응답
+ * profileCompletionRequired === true 이면 이름·파트 최초 입력이 필요하다.
+ */
+export interface MemberProfile {
+	name: string;
+	part?: Part | 'UNASSIGNED';
+	profileCompletionRequired: boolean;
+}
+
+/** PATCH /v3/members/me/profile - 본인 이름과 파트 최초 입력 (완료 후 다른 값은 409) */
+export interface MemberProfileUpdateRequest {
+	name: string;
+	part: Exclude<Part, 'ETC'>;
 }
 
 /** GET /v1/roles/members/{memberId} - 멤버 역할 조회 */

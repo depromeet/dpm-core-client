@@ -20,12 +20,12 @@ interface PartSelectorProps {
 
 export const PartSelector = ({ value, onChange, name }: PartSelectorProps) => {
 	return (
-		<div className="flex flex-col" role="radiogroup" aria-label="파트 선택">
+		<div className="flex flex-col gap-2" role="radiogroup" aria-label="파트 선택">
 			{PART_OPTIONS.map(({ value: partValue, label }) => {
 				const isSelected = value === partValue;
 
 				return (
-					<label key={partValue} className="flex cursor-pointer items-center gap-3 py-2.5">
+					<label key={partValue} className="flex cursor-pointer items-center gap-3">
 						<input
 							type="radio"
 							name={name}
@@ -36,13 +36,13 @@ export const PartSelector = ({ value, onChange, name }: PartSelectorProps) => {
 						/>
 						<span
 							className={cn(
-								'flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
-								isSelected ? 'border-primary-normal' : 'border-line-normal',
+								'flex size-4 shrink-0 items-center justify-center rounded-full transition-colors',
+								isSelected ? 'bg-primary-normal' : 'border border-line-normal bg-background-normal',
 							)}
 						>
-							{isSelected && <span className="size-2.5 rounded-full bg-primary-normal" />}
+							{isSelected && <span className="size-1.5 rounded-full bg-background-normal" />}
 						</span>
-						<span className="font-medium text-body1 text-label-normal">{label}</span>
+						<span className="font-medium text-body2 text-label-normal">{label}</span>
 					</label>
 				);
 			})}

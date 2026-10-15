@@ -1,5 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { BASE_URL, COOKIE_KEYS } from '@dpm-core/api';
+import { BASE_URL, COOKIE_KEYS, getSharedAuthCookieOptions } from '@dpm-core/api';
+
+import { getAppleRedirectUri } from '@/lib/env';
 
 export async function POST(request: NextRequest) {
 	try {
@@ -19,7 +21,8 @@ export async function POST(request: NextRequest) {
 				'Content-Type': 'application/json',
 			},
 			credentials: 'include',
-			body: JSON.stringify({ authorizationCode: code }),
+			// 서버가 Apple 토큰 교환 시 인증 요청과 같은 redirect_uri 를 써야 하므로 함께 보낸다.
+			body: JSON.stringify({ authorizationCode: code, redirectUri: getAppleRedirectUri() }),
 		});
 
 		if (!response.ok) {
@@ -36,21 +39,19 @@ export async function POST(request: NextRequest) {
 
 		// core.depromeet.com → .depromeet.com (api 서브도메인과 쿠키 공유)
 		const hostname = new URL(request.url).hostname;
-		const domain = hostname.substring(hostname.indexOf('.'));
+		const cookieOptions = getSharedAuthCookieOptions(hostname);
 
 		redirectResponse.cookies.set(COOKIE_KEYS.ACCESS_TOKEN, accessToken, {
 			httpOnly: false,
 			secure: true,
 			sameSite: 'lax',
-			path: '/',
-			domain,
+			...cookieOptions,
 		});
 		redirectResponse.cookies.set(COOKIE_KEYS.REFRESH_TOKEN, refreshToken, {
 			httpOnly: false,
 			secure: true,
 			sameSite: 'lax',
-			path: '/',
-			domain,
+			...cookieOptions,
 		});
 
 		return redirectResponse;

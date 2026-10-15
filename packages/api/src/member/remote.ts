@@ -9,6 +9,8 @@ import type {
 	Member,
 	MemberNameHashValidationRequest,
 	MemberNameHashValidationResponse,
+	MemberProfile,
+	MemberProfileUpdateRequest,
 	MemberRoleListResponse,
 	MemberRoleResponse,
 	MembersOverviewResponse,
@@ -20,7 +22,20 @@ import type {
 
 export const member = {
 	getMyMemberInfo: async () => {
-		const res = await http.get<Member>('v1/members/me');
+		// v1/members/me 는 서버에서 제거되어 v3 로 이전됨 (출석 집계 필드가 추가됨)
+		const res = await http.get<Member>('v3/members/me');
+		return res;
+	},
+
+	/** GET /v3/members/me/profile - 본인 프로필 입력 상태 조회 */
+	getMyProfile: async () => {
+		const res = await http.get<MemberProfile>('v3/members/me/profile');
+		return res;
+	},
+
+	/** PATCH /v3/members/me/profile - 본인 이름과 파트 최초 입력 */
+	updateMyProfile: async (params: MemberProfileUpdateRequest) => {
+		const res = await http.patch<MemberProfile>('v3/members/me/profile', { json: params });
 		return res;
 	},
 

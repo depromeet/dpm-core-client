@@ -2,7 +2,7 @@ import { login as kakaoLoginNative } from '@react-native-kakao/user';
 import { bridge } from '@webview-bridge/react-native';
 import * as WebBrowser from 'expo-web-browser';
 
-import { requestPushNotificationPermission } from '@/lib/push-notification-permission';
+import { requestPushNotificationPermission } from '../lib/push-notification-permission';
 
 export const appBridge = bridge({
 	async getTriggerWeb() {

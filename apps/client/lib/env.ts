@@ -8,6 +8,10 @@ export const getAppleClientId = (): string => {
 };
 
 export const getAppleRedirectUri = (): string => {
+	// 로컬 등에서 별도 콜백을 쓰고 싶을 때 .env.local 로 덮어쓴다.
+	if (process.env.NEXT_PUBLIC_APPLE_REDIRECT_URI) {
+		return process.env.NEXT_PUBLIC_APPLE_REDIRECT_URI;
+	}
 	if (IS_PROD) {
 		return 'https://core.depromeet.com/login/apple/callback';
 	}
