@@ -17,7 +17,7 @@ export default async function SessionModifyPage({ params }: { params: Promise<{ 
 				title="세션 수정"
 				rightIcon={
 					<Button variant="secondary" size="md" type="submit" form={FORM_ID}>
-						수정하기
+						저장하기
 					</Button>
 				}
 			/>

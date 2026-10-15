@@ -28,6 +28,7 @@ const [AuthProviderContext, useAuth] = createContext<AuthContextType>('Auth', {
 const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [user, setUser] = useState<Member | null>(null);
+	const [isReady, setIsReady] = useState(false);
 	const pathname = usePathname();
 
 	const queryClient = useQueryClient();
@@ -45,9 +46,14 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			return memberInfo;
 		},
 		retry: false,
+		enabled: isReady,
 	});
 
 	const { mutate: logoutMutate } = useMutation(logoutMutationOptions());
+
+	useEffect(() => {
+		setIsReady(true);
+	}, []);
 
 	useEffect(() => {
 		if (memberInfo) {
@@ -60,11 +66,11 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		}
 	}, [memberInfo, logoutMutate]);
 
-	if (error && pathname !== '/login') {
+	if (isReady && error && pathname !== '/login') {
 		return <UnauthenticatedLayout />;
 	}
 
-	if (isLoading) {
+	if (!isReady || isLoading) {
 		// return (
 		// 	<div className="flex flex-col items-center justify-center h-dvh">
 		// 		<Loading />

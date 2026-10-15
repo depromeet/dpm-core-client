@@ -1,22 +1,32 @@
 import Image from 'next/image';
 import { Suspense } from 'react';
-
 import bgEllipse from '@/assets/images/login-bg-ellipse.svg';
 import bgGraphic from '@/assets/images/login-bg-graphic.svg';
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { AppleLoginButton } from '@/components/apple-login-button';
 import { EmailLoginButton } from '@/components/email-login-button';
 import { LoginButton } from '@/components/login-button';
+import { LoginReturnTo } from '@/components/login-return-to';
+import { CoreLogo } from '@/components/lotties/core-logo';
 import { LoginErrorToast } from '@/components/login-error-toast';
 import { RecentLoginBadge } from '@/components/recent-login-badge';
 import { ReviewLoginLogo } from '@/components/review-login-logo';
 
-const LoginPage = () => {
+const LoginPage = async ({
+	searchParams,
+}: {
+	searchParams: Promise<{ returnTo?: string | string[]; error?: string | string[] }>;
+}) => {
+	const { returnTo, error } = await searchParams;
+	const returnToValue = Array.isArray(returnTo) ? returnTo[0] : returnTo;
+	const hasError = Array.isArray(error) ? error.length > 0 : Boolean(error);
+
 	return (
 		<SafeAreaAppLayout
 			hasBottomTabBar
 			className="relative h-dvh overflow-hidden bg-[linear-gradient(150.15deg,#FFFFFF_5.91%,#CFD9FF_42.11%,#E6F9FF_70.04%)] bg-gray-50"
 		>
+      <LoginReturnTo returnTo={returnToValue} preserveExisting={hasError} />
 			<Suspense>
 				<LoginErrorToast />
 			</Suspense>

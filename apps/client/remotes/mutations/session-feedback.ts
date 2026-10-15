@@ -1,20 +1,9 @@
-export interface SessionFeedbackSubmission {
-	sessionId: number;
-	satisfaction: number;
-	positiveReasons: string[];
-	improvementReasons: string[];
-	comment: string;
-}
+import { mutationOptions } from '@tanstack/react-query';
+import { type SessionFeedbackSubmissionRequest, session } from '@dpm-core/api';
 
-export type FeedbackSubmissionMockResult = 'success' | 'error';
-
-export const submitSessionFeedbackMock = async (
-	_payload: SessionFeedbackSubmission,
-	result: FeedbackSubmissionMockResult = 'success',
-) => {
-	await new Promise((resolve) => window.setTimeout(resolve, 400));
-
-	if (result === 'error') {
-		throw new Error('Mock feedback submission failed');
-	}
-};
+export const submitSessionFeedbackOptions = (sessionId: number) =>
+	mutationOptions({
+		mutationKey: ['session-feedback-submit', sessionId],
+		mutationFn: (params: SessionFeedbackSubmissionRequest) =>
+			session.submitFeedback(sessionId, params),
+	});

@@ -8,6 +8,7 @@ import { GAPageTracker } from '@dpm-core/shared';
 
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { BottomTabBar } from '@/components/bottom-tab-bar';
+import { LoginReturnToRedirect } from '@/components/login-return-to-redirect';
 import { LastLoginRecorder } from '@/components/last-login-recorder';
 import { getAnnouncementListQuery } from '@/remotes/queries/announcement';
 import { getSessionCurrentOptions } from '@/remotes/queries/session';
@@ -32,6 +33,7 @@ export default function HomePage() {
 
 	return (
 		<SafeAreaAppLayout hasBottomTabBar className="h-dvh">
+			<LoginReturnToRedirect />
 			<GAPageTracker type="home" />
 			<HomeHeader />
 			<main className="scrollbar-hide flex-1 overflow-auto">

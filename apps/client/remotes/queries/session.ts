@@ -3,7 +3,7 @@ import { session } from '@dpm-core/api';
 
 export const getSessionListQuery = queryOptions({
 	queryKey: ['session-list'],
-	queryFn: session.getList,
+	queryFn: () => session.getList(),
 });
 
 export const getSessionCurrentOptions = () =>
