@@ -11,7 +11,7 @@ interface HomeFeedbackCardProps {
 }
 
 export const HomeFeedbackCard = ({ isAttendanceOpen }: HomeFeedbackCardProps) => {
-	const { data } = useQuery(getMyPendingSessionFeedbackQuery);
+	const { data } = useQuery(getMyPendingSessionFeedbackQuery());
 	const pendingFeedback = data?.data;
 
 	if (!pendingFeedback || isAttendanceOpen) return null;

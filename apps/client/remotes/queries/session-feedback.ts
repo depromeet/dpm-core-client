@@ -9,9 +9,10 @@ export const getSessionFeedbackMeQuery = (sessionId: number) =>
 		staleTime: 0,
 	});
 
-export const getMyPendingSessionFeedbackQuery = queryOptions({
-	queryKey: ['session-feedback-pending'],
-	queryFn: () => session.getMyPendingFeedback(),
-	enabled: Boolean(http.getDefaultToken()),
-	retry: false,
-});
+export const getMyPendingSessionFeedbackQuery = () =>
+	queryOptions({
+		queryKey: ['session-feedback-pending'],
+		queryFn: () => session.getMyPendingFeedback(),
+		enabled: Boolean(http.getDefaultToken()),
+		retry: false,
+	});
