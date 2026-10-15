@@ -198,6 +198,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 		try {
 			await submitFeedbackMutation.mutateAsync(payload);
 			void queryClient.invalidateQueries({ queryKey: ['session-list'] });
+			void queryClient.invalidateQueries({ queryKey: ['session-feedback-pending'] });
 			setSubmissionFailed(false);
 			setSubmitted(true);
 		} catch (error) {
