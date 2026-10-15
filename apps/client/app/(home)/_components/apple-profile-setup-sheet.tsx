@@ -15,8 +15,8 @@ import {
 	useAppShell,
 } from '@dpm-core/shared';
 
-import { updateAppleProfileMutationOptions } from '@/remotes/mutations/member';
-import { getMyMemberInfoQuery, getNameHashTypeValidationQuery } from '@/remotes/queries/member';
+import { updateMyProfileMutationOptions } from '@/remotes/mutations/member';
+import { getMyMemberInfoQuery, getMyProfileQuery } from '@/remotes/queries/member';
 
 import { useAppleProfileSetup } from '../_hooks/use-apple-profile-setup';
 import { PartSelector } from './part-selector';
@@ -24,21 +24,21 @@ import { PartSelector } from './part-selector';
 const MAX_NAME_LENGTH = 20;
 
 /**
- * Apple 초기 가입자 프로필(이름/직군) 설정 바텀시트
+ * 프로필(이름/직군) 최초 입력 바텀시트
  *
- * Apple 로그인 가입자의 name이 자동 생성값(이메일 local-part 또는 해시)인 경우,
+ * 서버가 이름·직군 최초 입력이 필요하다고 알려주면(`profileCompletionRequired`),
  * 홈(`/`) 진입 시 자동으로 노출되어 이름과 직군을 입력받는다.
  * 운영진/멤버가 식별할 수 있도록 필수 설정이므로 외부 클릭/스와이프로 닫히지 않는다.
  */
 export const AppleProfileSetupSheet = () => {
-	const { isSetupRequired, memberName } = useAppleProfileSetup();
+	const { isSetupRequired } = useAppleProfileSetup();
 	const { ref } = useAppShell();
 	const queryClient = useQueryClient();
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [name, setName] = useState('');
 	const [part, setPart] = useState<Part | null>(null);
-	// 모바일에서 키보드가 올라오면 저장/취소 버튼이 키보드에 밀려 어색하게 겹쳐 보이고,
+	// 모바일에서 키보드가 올라오면 저장 버튼이 키보드에 밀려 어색하게 겹쳐 보이고,
 	// 콘텐츠(제목+이름+파트)가 키보드 위 공간보다 커서 상단(입력창)이 잘리거나 가려진다.
 	// → 키보드가 뜨면 버튼을 숨기고, 드로어를 키보드 위 가용 공간에 꽉 채운 뒤 내부 스크롤로
 	//   포커스된 입력창이 항상 보이게 한다.
@@ -87,27 +87,21 @@ export const AppleProfileSetupSheet = () => {
 		}
 	}, [isSetupRequired]);
 
-	const { mutate: updateProfile, isPending } = useMutation(updateAppleProfileMutationOptions());
+	const { mutate: updateProfile, isPending } = useMutation(updateMyProfileMutationOptions());
 
 	const trimmedName = name.trim();
 	const isValid = trimmedName.length > 0 && part !== null;
 
-	const handleCancel = () => {
-		setIsOpen(false);
-	};
-
 	const handleSubmit = () => {
-		if (!isValid || part === null) return;
+		if (!isValid || part === null || part === 'ETC') return;
 
 		updateProfile(
 			{ name: trimmedName, part },
 			{
 				onSuccess: () => {
-					// 이름/해시 검증 캐시를 무효화해 시트 재노출을 방지한다.
+					// 입력 필요 여부 캐시를 무효화해 시트 재노출을 방지한다.
 					queryClient.invalidateQueries({ queryKey: getMyMemberInfoQuery.queryKey });
-					queryClient.invalidateQueries({
-						queryKey: getNameHashTypeValidationQuery(memberName).queryKey,
-					});
+					queryClient.invalidateQueries({ queryKey: getMyProfileQuery.queryKey });
 					setIsOpen(false);
 					toast.success('프로필이 설정되었어요.');
 				},
@@ -140,20 +134,24 @@ export const AppleProfileSetupSheet = () => {
 						: {}),
 				}}
 			>
-				<DrawerHeader showCloseButton={false}>
-					<DrawerTitle className="font-semibold text-label-normal text-title2">
+				<DrawerHeader showCloseButton={false} className="gap-4 px-5 pt-3 pb-0">
+					<div aria-hidden className="mx-auto h-1 w-12 rounded-full bg-background-heavy" />
+					<DrawerTitle className="text-left font-semibold text-label-normal text-title1 tracking-[-0.2px]">
 						활동에 필요한 정보를 입력해주세요.
 					</DrawerTitle>
 				</DrawerHeader>
 
-				<div className="flex flex-col gap-6 px-6 py-4">
+				<div className="flex flex-col gap-5 px-5 pt-4">
 					<div className="flex flex-col gap-2">
 						<div className="flex flex-col gap-1">
-							<span className="font-semibold text-body1 text-label-normal">이름</span>
-							<span className="text-body2 text-label-assistive">본명을 입력해주세요.</span>
+							<span className="font-semibold text-body2 text-label-subtle">이름</span>
+							<span className="font-medium text-caption1 text-label-assistive">
+								한글 본명으로 입력해주세요.
+							</span>
 						</div>
 						<Input
 							variant="line"
+							className="h-10"
 							value={name}
 							onChange={(event) => setName(event.target.value)}
 							placeholder="이름을 입력해주세요"
@@ -163,8 +161,8 @@ export const AppleProfileSetupSheet = () => {
 
 					<div className="flex flex-col gap-2">
 						<div className="flex flex-col gap-1">
-							<span className="font-semibold text-body1 text-label-normal">파트</span>
-							<span className="text-body2 text-label-assistive">
+							<span className="font-semibold text-body2 text-label-subtle">파트</span>
+							<span className="font-medium text-caption1 text-label-assistive">
 								디프만에서 활동 중인 파트를 선택해주세요.
 							</span>
 						</div>
@@ -173,24 +171,15 @@ export const AppleProfileSetupSheet = () => {
 				</div>
 
 				{!isKeyboardOpen && (
-					<DrawerFooter>
+					<DrawerFooter className="px-5 pt-5 pb-5">
 						<Button
 							variant="secondary"
 							size="full"
-							className="h-14 rounded-lg"
+							className="h-12 rounded-lg"
 							onClick={handleSubmit}
 							disabled={!isValid || isPending}
 						>
-							{isPending ? '저장 중...' : '저장'}
-						</Button>
-						<Button
-							variant="assistive"
-							size="full"
-							className="h-14 rounded-lg"
-							onClick={handleCancel}
-							disabled={isPending}
-						>
-							취소
+							{isPending ? '저장 중...' : '저장하기'}
 						</Button>
 					</DrawerFooter>
 				)}

@@ -13,6 +13,8 @@ import {
 } from '@dpm-core/shared';
 
 import { Pressable } from '@/components/motion';
+import { clearAwaitingApproval } from '@/lib/approval-welcome';
+import { clearLastLoginMethod } from '@/lib/last-login';
 import { deleteToken } from '@/lib/utils';
 import { withdrawMutationOptions } from '@/remotes/mutations/member';
 
@@ -32,6 +34,8 @@ const WithdrawModal = ({ children }: PropsWithChildren) => {
 		withdrawMutationOptions({
 			onSuccess: () => {
 				deleteToken();
+				clearLastLoginMethod();
+				clearAwaitingApproval();
 				handleClose();
 				redirectToHome();
 			},

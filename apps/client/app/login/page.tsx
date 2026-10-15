@@ -1,12 +1,16 @@
-import { DpmText } from '@dpm-core/shared';
-
-import { AppHeader } from '@/components/app-header';
+import Image from 'next/image';
+import { Suspense } from 'react';
+import bgEllipse from '@/assets/images/login-bg-ellipse.svg';
+import bgGraphic from '@/assets/images/login-bg-graphic.svg';
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { AppleLoginButton } from '@/components/apple-login-button';
 import { EmailLoginButton } from '@/components/email-login-button';
 import { LoginButton } from '@/components/login-button';
 import { LoginReturnTo } from '@/components/login-return-to';
 import { CoreLogo } from '@/components/lotties/core-logo';
+import { LoginErrorToast } from '@/components/login-error-toast';
+import { RecentLoginBadge } from '@/components/recent-login-badge';
+import { ReviewLoginLogo } from '@/components/review-login-logo';
 
 const LoginPage = async ({
 	searchParams,
@@ -18,33 +22,50 @@ const LoginPage = async ({
 	const hasError = Array.isArray(error) ? error.length > 0 : Boolean(error);
 
 	return (
-		<SafeAreaAppLayout className="h-dvh bg-background-subtle">
-			<LoginReturnTo returnTo={returnToValue} preserveExisting={hasError} />
-			<AppHeader title="" backHref="/" className="mb-0" />
-			<div className="mx-auto flex flex-1 flex-col justify-center gap-y-10 text-center">
-				<div className="flex flex-col items-center gap-y-4">
-					<CoreLogo />
-					<div className="mx-auto flex items-start gap-x-2.5 font-semibold text-headline1 text-label-normal uppercase">
-						<DpmText className="w-fit text-gray-800" />
-					</div>
-				</div>
-				<p className="font-medium text-label-subtle">
-					출석부터 회식까지
+		<SafeAreaAppLayout
+			hasBottomTabBar
+			className="relative h-dvh overflow-hidden bg-[linear-gradient(150.15deg,#FFFFFF_5.91%,#CFD9FF_42.11%,#E6F9FF_70.04%)] bg-gray-50"
+		>
+      <LoginReturnTo returnTo={returnToValue} preserveExisting={hasError} />
+			<Suspense>
+				<LoginErrorToast />
+			</Suspense>
+			<div aria-hidden className="pointer-events-none absolute inset-0">
+				<Image
+					src={bgEllipse}
+					alt=""
+					className="-scale-y-100 absolute top-[-127.36px] left-[-162.55px] max-w-none rotate-[-154.44deg]"
+				/>
+				<Image
+					src={bgGraphic}
+					alt=""
+					className="absolute top-[310.7px] left-[133.85px] max-w-none rotate-[11.03deg] mix-blend-color-dodge"
+				/>
+			</div>
+			<div className="relative flex flex-col gap-y-4.5 px-4 pt-20">
+				<ReviewLoginLogo />
+				<p className="font-normal text-body1 text-label-strong">
+					출석부터 공지 확인까지,
 					<br />
 					디프만을 더 쉽게
 				</p>
-				<div className="flex flex-col items-center gap-3">
-					<AppleLoginButton
-						variant="none"
-						size="full"
-						className="h-auto min-w-65 justify-between rounded-xl bg-black px-4 py-3.5 font-medium text-white leading-1"
-					/>
+			</div>
+			<div className="flex-1" />
+			<div className="relative flex flex-col items-center gap-y-5 bg-linear-to-b from-white/0 to-16% to-white px-4 pt-8 pb-[calc(var(--safe-area-inset-bottom)+2rem)]">
+				<div className="relative w-full">
 					<LoginButton
 						size="full"
 						variant="none"
-						className="h-auto min-w-65 justify-between rounded-xl bg-[#FEE500] px-4 py-3.5 font-medium leading-1"
+						className="h-12.5 justify-center rounded-xl bg-[#FEE500] px-3.75 py-3.5 font-medium text-body1 leading-1"
 					/>
-					<EmailLoginButton />
+					<RecentLoginBadge />
+				</div>
+				<div className="flex flex-col items-center gap-y-3">
+					<p className="font-medium text-black/40 text-caption1">다른 방법으로 시작하기</p>
+					<div className="flex items-center gap-x-6">
+						<AppleLoginButton />
+						<EmailLoginButton />
+					</div>
 				</div>
 			</div>
 		</SafeAreaAppLayout>

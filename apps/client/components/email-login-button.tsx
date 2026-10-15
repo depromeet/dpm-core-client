@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Button } from '@dpm-core/shared';
+import { MailIcon } from 'lucide-react';
 
 export const EmailLoginButton = () => {
 	const router = useRouter();
@@ -11,8 +11,13 @@ export const EmailLoginButton = () => {
 	};
 
 	return (
-		<Button variant="text" size="md" onClick={handleLoginEmail}>
-			이메일로 로그인
-		</Button>
+		<button
+			type="button"
+			aria-label="이메일로 로그인"
+			onClick={handleLoginEmail}
+			className="flex size-12 items-center justify-center rounded-full border border-black/12 bg-white text-gray-400"
+		>
+			<MailIcon className="size-6.5" strokeWidth={1.25} />
+		</button>
 	);
 };
