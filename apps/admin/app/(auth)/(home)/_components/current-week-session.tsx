@@ -16,7 +16,9 @@ import { useSession } from './session-provider';
 
 const CurrentWeekSessionContainer = () => {
 	const {
-		data: { data: currentWeekSession },
+		data: {
+			data: { session: currentWeekSession },
+		},
 	} = useSuspenseQuery(getCurrentWeekSessionQuery);
 	const { sessions } = useSession();
 

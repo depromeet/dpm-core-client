@@ -13,7 +13,7 @@ if (!kakaoNativeAppKey) {
 const config = {
 	name: 'Depromeet',
 	slug: 'depromeet-core',
-	version: '1.2.0',
+	version: '1.2.1',
 	orientation: 'portrait',
 	icon: './assets/images/icon.png',
 	scheme: 'native',
@@ -22,6 +22,7 @@ const config = {
 	ios: {
 		supportsTablet: true,
 		bundleIdentifier: 'com.depromeet.core.app',
+		associatedDomains: isProductionBuild ? ['applinks:core.depromeet.com'] : [],
 		infoPlist: {
 			ITSAppUsesNonExemptEncryption: false,
 			NSAppTransportSecurity: {
@@ -38,6 +39,18 @@ const config = {
 		edgeToEdgeEnabled: true,
 		predictiveBackGestureEnabled: false,
 		package: 'com.depromeet.core.app',
+		intentFilters: isProductionBuild
+			? [
+					{
+						action: 'VIEW',
+						autoVerify: true,
+						data: [
+							{ scheme: 'https', host: 'core.depromeet.com', pathPattern: '/session/.*/feedback' },
+						],
+						category: ['BROWSABLE', 'DEFAULT'],
+					},
+				]
+			: [],
 	},
 	web: {
 		output: 'static',

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import type { RefObject } from 'react';
 import { useState } from 'react';
 import type { AttendanceStatus, ExcuseDocumentStatus } from '@dpm-core/api';
 import { Checkbox } from '@dpm-core/shared';
@@ -24,7 +23,6 @@ interface AttendanceMember {
 
 interface AttendanceListProps {
 	data: AttendanceMember[];
-	targetRef: RefObject<HTMLDivElement | null>;
 	selectedIds: number[];
 	onToggleItem: (id: number) => void;
 	onToggleAll: () => void;
@@ -33,7 +31,6 @@ interface AttendanceListProps {
 
 const AttendanceList = ({
 	data,
-	targetRef,
 	selectedIds,
 	onToggleItem,
 	onToggleAll,
@@ -75,7 +72,7 @@ const AttendanceList = ({
 							<Profile
 								size={40}
 								name={member.name}
-								teamNumber={member.teamNumber}
+								teamNumber={member.teamNumber ?? 0}
 								part={member.part}
 								isAdmin={member.isAdmin}
 							/>
@@ -83,7 +80,6 @@ const AttendanceList = ({
 						</Link>
 					);
 				})}
-				<div ref={targetRef} />
 			</section>
 
 			{/* Desktop view (>= 768px) */}
@@ -155,8 +151,6 @@ const AttendanceList = ({
 						);
 					})}
 				</div>
-				<div ref={targetRef} />
-
 				{selectedMember && (
 					<AttendanceSessionDetailDrawer
 						memberId={selectedMember.memberId}

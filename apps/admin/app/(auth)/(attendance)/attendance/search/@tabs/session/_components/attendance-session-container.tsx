@@ -1,9 +1,9 @@
 'use client';
 
-import { Suspense, useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
-import { useInfiniteQuery, useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Button } from '@dpm-core/shared';
 
@@ -12,7 +12,7 @@ import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
-import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { filterAttendanceMembers } from '@/lib/attendance/filterAttendanceMembers';
 import {
 	getAbsenceReasonsOptions,
 	getAttendanceBySessionOptions,
@@ -44,40 +44,41 @@ const AttendanceSessionContainer = () => {
 	const searchParams = customSearchParams.getAll();
 	const attendanceSearchParams = useMemo(
 		() => ({
-			week: Number(searchParams.week),
+			sessionId: Number(searchParams.week),
 			statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
 			teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
 			name: searchParams.name,
 		}),
 		[searchParams],
 	);
+	const selectionFilterKey = JSON.stringify({
+		sessionId: attendanceSearchParams.sessionId,
+		statuses: attendanceSearchParams.statuses,
+		teams: attendanceSearchParams.teams,
+		name: attendanceSearchParams.name,
+	});
+	const previousSelectionFilterKey = useRef(selectionFilterKey);
 
 	const {
 		data: attendanceData,
-		fetchNextPage,
-		hasNextPage,
-		fetchStatus,
 		isLoading,
-	} = useInfiniteQuery(getAttendanceBySessionOptions(attendanceSearchParams));
-
-	const { targetRef } = useInfiniteScroll({
-		callback: fetchNextPage,
-		canObserve: hasNextPage,
-		enabled: fetchStatus !== 'fetching',
+	} = useQuery({
+		...getAttendanceBySessionOptions({ sessionId: attendanceSearchParams.sessionId }),
+		enabled: !!attendanceSearchParams.sessionId,
 	});
 
-	const rawData = attendanceData?.pages.flatMap((page) => page.data.members) ?? [];
-	const totalElements = attendanceData?.pages[0]?.data.totalElements ?? 0;
+	const rawData = filterAttendanceMembers(attendanceData?.data.members ?? [], attendanceSearchParams);
+	const totalElements = rawData.length;
 
-	// TODO: GET /v2/sessions/{sessionId}/absence-reasons 로 excuseDocumentStatus 파생
-	// 백엔드가 출석 목록 응답에 해당 필드를 추가하면 rawData 직접 사용으로 교체 가능
+	// 출석 응답은 결석 사유 본문만 제공하므로 제출 상태는 사유서 목록으로 판별
 	const { data: absenceReasonsData, isSuccess: isAbsenceReasonsLoaded } = useQuery({
-		...getAbsenceReasonsOptions({ sessionId: attendanceSearchParams.week }),
-		enabled: !!attendanceSearchParams.week,
+		...getAbsenceReasonsOptions({ sessionId: attendanceSearchParams.sessionId }),
+		enabled: !!attendanceSearchParams.sessionId,
 	});
 	const submittedMemberIds = new Set(absenceReasonsData?.data.reasons.map((r) => r.memberId) ?? []);
 	const flatData = rawData.map((member) => ({
 		...member,
+		teamNumber: member.teamNumber ?? 0,
 		excuseDocumentStatus:
 			member.attendanceStatus !== 'ABSENT' || !isAbsenceReasonsLoaded
 				? null
@@ -90,10 +91,11 @@ const AttendanceSessionContainer = () => {
 		useCheckboxSelection(flatData);
 
 	useEffect(() => {
-		if (attendanceSearchParams.week) {
+		if (previousSelectionFilterKey.current !== selectionFilterKey) {
+			previousSelectionFilterKey.current = selectionFilterKey;
 			clearSelection();
 		}
-	}, [attendanceSearchParams.week, clearSelection]);
+	}, [selectionFilterKey, clearSelection]);
 
 	const selectedMembers = useMemo(
 		() => flatData.filter((member) => selectedIds.includes(member.id)),
@@ -126,7 +128,6 @@ const AttendanceSessionContainer = () => {
 				</section>
 				<AttendanceList
 					data={flatData}
-					targetRef={targetRef}
 					selectedIds={selectedIds}
 					onToggleItem={toggleItem}
 					onToggleAll={toggleAll}
@@ -178,7 +179,6 @@ const AttendanceSessionContainer = () => {
 
 				<AttendanceList
 					data={flatData}
-					targetRef={targetRef}
 					selectedIds={selectedIds}
 					onToggleItem={toggleItem}
 					onToggleAll={toggleAll}
@@ -186,7 +186,7 @@ const AttendanceSessionContainer = () => {
 				/>
 
 				<AttendanceBulkModifyModal
-					sessionId={Number(searchParams.week)}
+					sessionId={attendanceSearchParams.sessionId}
 					selectedMembers={selectedMembers}
 					open={isBulkModifyModalOpen}
 					onOpenChange={setIsBulkModifyModalOpen}

@@ -1,39 +1,63 @@
+import { useRouter } from 'next/navigation';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from '@dpm-core/shared';
+
+import { modifySessionMutationOptions } from '@/remotes/mutations/session';
 import {
-	Button,
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from '@dpm-core/shared';
+	getCurrentWeekSessionQuery,
+	getSessionDetailQuery,
+	getSessionListQuery,
+} from '@/remotes/queries/session';
+
+import { SessionSaveConfirmModal } from '../../../_components/SessionSaveConfirmModal';
+import { buildSessionPayload, type SessionSchema } from '../../../create/_components/SessionForm';
 
 interface SessionModifyConfirmModalProps {
+	sessionId: number;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	onSubmit: () => void;
+	formData: SessionSchema;
 }
 
-export const SessionModifyConfirmModal = (props: SessionModifyConfirmModalProps) => {
-	const { open, onOpenChange, onSubmit } = props;
+export const SessionModifyConfirmModal = ({
+	formData,
+	sessionId,
+	open,
+	onOpenChange,
+}: SessionModifyConfirmModalProps) => {
+	const queryClient = useQueryClient();
+	const router = useRouter();
+
+	const { mutate: modifySession, isPending } = useMutation(
+		modifySessionMutationOptions({
+			onSuccess: () => {
+				queryClient.invalidateQueries(getSessionListQuery);
+				queryClient.invalidateQueries(getCurrentWeekSessionQuery);
+				queryClient.invalidateQueries(getSessionDetailQuery(sessionId));
+				toast.success('세션을 수정했습니다.');
+				onOpenChange(false);
+				router.replace('/session');
+			},
+			onError: () => {
+				toast.error('세션 수정에 실패했습니다.');
+			},
+		}),
+	);
+
+	const handleModifySession = () => {
+		modifySession({
+			sessionId,
+			...buildSessionPayload(formData),
+		});
+	};
 
 	return (
-		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="sm:max-w-[640px]" showCloseButton={false}>
-				<DialogHeader className="text-left">
-					<DialogTitle>세션 정보를 저장할까요?</DialogTitle>
-				</DialogHeader>
-				<DialogFooter>
-					<DialogClose asChild>
-						<Button variant="assistive" size="lg" className="flex-1">
-							취소
-						</Button>
-					</DialogClose>
-					<Button variant="secondary" size="lg" className="flex-1" onClick={onSubmit}>
-						저장
-					</Button>
-				</DialogFooter>
-			</DialogContent>
-		</Dialog>
+		<SessionSaveConfirmModal
+			open={open}
+			onOpenChange={onOpenChange}
+			onSubmit={handleModifySession}
+			title="세션 정보를 수정할까요?"
+			isPending={isPending}
+		/>
 	);
 };

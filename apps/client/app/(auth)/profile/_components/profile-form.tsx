@@ -40,15 +40,17 @@ export const ProfileForm = () => {
 	const savedPart =
 		profile.part && profile.part !== 'UNASSIGNED' && profile.part !== 'ETC' ? profile.part : null;
 
-	return <ProfileFields initialName={profile.name} initialPart={savedPart} />;
+	return <ProfileFields initialName={profile.name} initialPart={savedPart} isReadOnly />;
 };
 
 interface ProfileFieldsProps {
 	initialName: string;
 	initialPart: SelectablePart | null;
+	/** 이미 입력을 마친 회원은 서버가 변경을 받지 않으므로(409) 값을 고칠 수 없게 한다. */
+	isReadOnly?: boolean;
 }
 
-const ProfileFields = ({ initialName, initialPart }: ProfileFieldsProps) => {
+const ProfileFields = ({ initialName, initialPart, isReadOnly = false }: ProfileFieldsProps) => {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 	const [name, setName] = useState(initialName);
@@ -61,7 +63,7 @@ const ProfileFields = ({ initialName, initialPart }: ProfileFieldsProps) => {
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		if (!isValid || part === null) return;
+		if (isReadOnly || !isValid || part === null) return;
 
 		updateProfile(
 			{ name: trimmedName, part },
@@ -98,6 +100,7 @@ const ProfileFields = ({ initialName, initialPart }: ProfileFieldsProps) => {
 						onChange={(event) => setName(event.target.value)}
 						placeholder="이름을 입력해주세요"
 						maxLength={MAX_NAME_LENGTH}
+						readOnly={isReadOnly}
 					/>
 				</div>
 
@@ -112,6 +115,7 @@ const ProfileFields = ({ initialName, initialPart }: ProfileFieldsProps) => {
 									key={value}
 									type="button"
 									aria-pressed={isSelected}
+									disabled={isReadOnly}
 									onClick={() => setPart(value)}
 									className={cn(
 										'rounded-full border px-3 py-1 text-body2',
@@ -129,15 +133,21 @@ const ProfileFields = ({ initialName, initialPart }: ProfileFieldsProps) => {
 			</div>
 
 			<div className="mt-auto px-4 pb-4">
-				<Button
-					type="submit"
-					variant="secondary"
-					size="full"
-					className="h-12 rounded-lg"
-					disabled={!isValid || isPending}
-				>
-					완료
-				</Button>
+				{isReadOnly ? (
+					<p className="text-center font-medium text-body2 text-label-assistive">
+						이름과 직군은 변경할 수 없어요. 변경이 필요하면 운영진에게 문의해주세요.
+					</p>
+				) : (
+					<Button
+						type="submit"
+						variant="secondary"
+						size="full"
+						className="h-12 rounded-lg"
+						disabled={!isValid || isPending}
+					>
+						완료
+					</Button>
+				)}
 			</div>
 		</form>
 	);
