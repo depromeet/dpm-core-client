@@ -7,8 +7,19 @@ import type {
 	ApproveWhitelistResponse,
 	InitCohortMemberParams,
 	Member,
+	MemberApprovalRequest,
+	MemberBadgeAcknowledgeRequest,
+	MemberBadgeCard,
+	MemberBadgesResponse,
+	MemberBulkDeleteRequest,
+	MemberManagementBulkUpdateRequest,
+	MemberManagementRequest,
+	MemberManagementResponse,
+	MemberManagementUpdateRequest,
+	MemberMergeRequest,
 	MemberNameHashValidationRequest,
 	MemberNameHashValidationResponse,
+	MemberPartsResponse,
 	MemberProfile,
 	MemberProfileUpdateRequest,
 	MemberRoleListResponse,
@@ -19,6 +30,33 @@ import type {
 	UpdateMembersInitRequest,
 	UpdateMembersInitResponse,
 } from './types';
+
+/**
+ * 배열 필터는 같은 키를 반복해서 전달한다 (parts=WEB&parts=IOS).
+ * 빈 배열·undefined 는 필터 미적용이므로 아예 보내지 않는다.
+ */
+function toMemberManagementSearchParams(params: MemberManagementRequest) {
+	const searchParams = new URLSearchParams();
+
+	searchParams.set('approvalStatus', params.approvalStatus);
+	searchParams.set('excludeStaff', String(params.excludeStaff));
+	searchParams.set('missingInformationOnly', String(params.missingInformationOnly));
+	searchParams.set('page', String(params.page));
+	searchParams.set('size', String(params.size));
+
+	const search = params.search?.trim();
+	if (search) searchParams.set('search', search);
+
+	for (const part of params.parts ?? []) searchParams.append('parts', part);
+	for (const teamNumber of params.teamNumbers ?? [])
+		searchParams.append('teamNumbers', String(teamNumber));
+	for (const status of params.activityStatuses ?? [])
+		searchParams.append('activityStatuses', status);
+	for (const status of params.graduationStatuses ?? [])
+		searchParams.append('graduationStatuses', status);
+
+	return searchParams;
+}
 
 export const member = {
 	getMyMemberInfo: async () => {
@@ -91,7 +129,7 @@ export const member = {
 		return res;
 	},
 
-	/** PATCH /v1/roles/members/{memberId} - 멤버 기수별 역할 변경 (isAdmin: true=ORGANIZER, false=DEEPER) */
+	/** PATCH /v1/roles/members/{memberId} - 멤버 기수별 역할 변경 (roleType: 'ORGANIZER' | 'DEEPER') */
 	updateMemberRole: async (memberId: number, params: UpdateMemberRoleRequest) => {
 		const res = await http.patch(`v1/roles/members/${memberId}`, {
 			json: params,
@@ -143,6 +181,78 @@ export const member = {
 				json: params,
 			},
 		);
+		return res;
+	},
+
+	/* --------------------------------------------------------------------- *
+	 * 멤버 관리 (v3)
+	 * --------------------------------------------------------------------- */
+
+	/** GET /v3/members/overview - 멤버 관리 목록 및 요약 조회 */
+	getMemberManagement: async (params: MemberManagementRequest) => {
+		const res = await http.get<MemberManagementResponse>('v3/members/overview', {
+			searchParams: toMemberManagementSearchParams(params),
+		});
+		return res;
+	},
+
+	/** GET /v3/members/badges - 요약 카드 NEW 조회 */
+	getMemberBadges: async () => {
+		const res = await http.get<MemberBadgesResponse>('v3/members/badges');
+		return res;
+	},
+
+	/** POST /v3/members/badges/{card}/acknowledgement - 요약 카드 NEW 확인 */
+	acknowledgeMemberBadge: async (card: MemberBadgeCard, params: MemberBadgeAcknowledgeRequest) => {
+		const res = await http.post(`v3/members/badges/${card}/acknowledgement`, { json: params });
+		return res;
+	},
+
+	/** PATCH /v3/members/whitelist - 가입 대기 멤버 단건 및 일괄 승인 */
+	approveMembers: async (params: MemberApprovalRequest) => {
+		const res = await http.patch('v3/members/whitelist', { json: params });
+		return res;
+	},
+
+	/** POST /v3/members/merge - 미승인 계정 통합 및 승인 */
+	mergeMembers: async (params: MemberMergeRequest) => {
+		const res = await http.post('v3/members/merge', { json: params });
+		return res;
+	},
+
+	/** POST /v3/members/{memberId}/rejection - 가입 반려 */
+	rejectMember: async (memberId: number) => {
+		const res = await http.post(`v3/members/${memberId}/rejection`);
+		return res;
+	},
+
+	/** PATCH /v3/members/{memberId} - 승인된 멤버 정보 수정 */
+	updateManagedMember: async (memberId: number, params: MemberManagementUpdateRequest) => {
+		const res = await http.patch(`v3/members/${memberId}`, { json: params });
+		return res;
+	},
+
+	/** PATCH /v3/members/bulk - 승인된 멤버 정보 컬럼별 일괄 수정 */
+	bulkUpdateManagedMembers: async (params: MemberManagementBulkUpdateRequest) => {
+		const res = await http.patch('v3/members/bulk', { json: params });
+		return res;
+	},
+
+	/** DELETE /v3/members/{memberId} - 멤버 소프트 삭제 */
+	deleteMember: async (memberId: number) => {
+		const res = await http.delete(`v3/members/${memberId}`);
+		return res;
+	},
+
+	/** DELETE /v3/members/bulk - 멤버 일괄 소프트 삭제 */
+	bulkDeleteMembers: async (params: MemberBulkDeleteRequest) => {
+		const res = await http.delete('v3/members/bulk', { json: params });
+		return res;
+	},
+
+	/** GET /v3/members/parts - 파트 선택지 조회 */
+	getMemberParts: async () => {
+		const res = await http.get<MemberPartsResponse>('v3/members/parts');
 		return res;
 	},
 

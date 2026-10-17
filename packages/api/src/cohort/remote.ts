@@ -2,6 +2,7 @@ import { http } from '../http';
 import type {
 	CohortItem,
 	CohortListResponse,
+	CohortTeamListResponse,
 	CreateCohortRequest,
 	UpdateCohortRequest,
 } from './types';
@@ -39,6 +40,12 @@ export const cohort = {
 	/** DELETE /v1/cohorts/{cohortId} - 기수 삭제 */
 	delete: async (cohortId: number) => {
 		const res = await http.delete(`v1/cohorts/${cohortId}`);
+		return res;
+	},
+
+	/** GET /v3/cohorts/current/teams - 현재 활성 기수의 팀 목록 조회 */
+	getCurrentCohortTeams: async () => {
+		const res = await http.get<CohortTeamListResponse>('v3/cohorts/current/teams');
 		return res;
 	},
 };

@@ -1,4 +1,5 @@
-import { queryOptions } from '@tanstack/react-query';
+import { infiniteQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
+import type { MemberManagementRequest } from '@dpm-core/api';
 import { member } from '@dpm-core/api';
 
 const MEMBERS_OVERVIEW_QUERY_KEY = ['members-overview'] as const;
@@ -37,3 +38,44 @@ export const getMembersRolesQuery = (memberIds: number[]) =>
 		queryFn: () => member.getMembersRoles(memberIds),
 		enabled: memberIds.length > 0,
 	});
+
+/* -------------------------------------------------------------------------- *
+ * 멤버 관리 (v3)
+ * -------------------------------------------------------------------------- */
+
+export const MEMBER_MANAGEMENT_QUERY_KEY = ['member-management'] as const;
+export const MEMBER_BADGES_QUERY_KEY = ['member-badges'] as const;
+
+/** 페이지마다 달라지는 page 를 뺀 나머지 조회 조건. 쿼리 키로도 쓴다. */
+export type MemberManagementFilterParams = Omit<MemberManagementRequest, 'page'>;
+
+/**
+ * GET /v3/members/overview - 멤버 관리 목록 (무한 스크롤)
+ * 요약과 lastUpdatedAt 은 매 페이지에 함께 오므로 첫 페이지 값을 쓴다.
+ */
+export const getMemberManagementInfiniteQuery = (params: MemberManagementFilterParams) =>
+	infiniteQueryOptions({
+		queryKey: [...MEMBER_MANAGEMENT_QUERY_KEY, params] as const,
+		queryFn: ({ pageParam }) => member.getMemberManagement({ ...params, page: pageParam }),
+		initialPageParam: 1,
+		getNextPageParam: (lastPage) => {
+			const { page, size, totalElements } = lastPage.data;
+			return page * size < totalElements ? page + 1 : undefined;
+		},
+		placeholderData: keepPreviousData,
+	});
+
+/** GET /v3/members/badges - 요약 카드 NEW 표시 */
+export const getMemberBadgesQuery = queryOptions({
+	queryKey: MEMBER_BADGES_QUERY_KEY,
+	queryFn: () => member.getMemberBadges(),
+	select: (data) => data.data,
+});
+
+/** GET /v3/members/parts - 파트 선택지 */
+export const getMemberPartsQuery = queryOptions({
+	queryKey: ['member-parts'],
+	queryFn: () => member.getMemberParts(),
+	select: (data) => data.data.parts,
+	staleTime: 5 * 60 * 1000,
+});

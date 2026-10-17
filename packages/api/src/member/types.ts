@@ -74,10 +74,12 @@ export interface Member {
 	loginMethod: LoginMethod;
 }
 
+export type MemberRoleType = 'ORGANIZER' | 'DEEPER';
+
 /** PATCH /v1/roles/members/{memberId} - 멤버 기수별 역할 변경 */
 export interface UpdateMemberRoleRequest {
-	isAdmin: boolean;
-	cohort: string;
+	roleType: MemberRoleType;
+	cohortId: number;
 }
 
 /** PATCH /v1/members/status - 멤버 상태 변경 */
@@ -148,4 +150,152 @@ export interface MemberRoleResponse {
 /** GET /v1/roles/members?memberIds=... - 멤버 목록 역할 조회 */
 export interface MemberRoleListResponse {
 	members: MemberRoleResponse[];
+}
+
+/* ------------------------------------------------------------------------- *
+ * 멤버 관리 (v3)
+ * 어드민 멤버 관리 화면 전용 타입. v1 overview 계열과 파트/상태 표현이 다르다.
+ * ------------------------------------------------------------------------- */
+
+/** 멤버 관리 목록의 파트. UNASSIGNED = 미배정 */
+export type ManagedMemberPart = 'WEB' | 'SERVER' | 'DESIGN' | 'IOS' | 'ANDROID' | 'UNASSIGNED';
+
+/** 멤버 타입. 내부 MASTER 권한은 응답에 노출되지 않는다. */
+export type ManagedMemberType = 'DEEPER' | 'ORGANIZER' | 'CORE' | 'UNASSIGNED';
+
+/** 멤버 관리 목록의 승인 상태 */
+export type ManagedMemberStatus = 'PENDING' | 'REJECTED' | 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN';
+
+/** 승인 탭. APPROVED 는 ACTIVE/INACTIVE 를 포함한다. */
+export type MemberApprovalStatus = 'PENDING' | 'APPROVED';
+
+/** 활동 상태 필터. NORMAL=활동 중, AT_RISK=수료 위험·불가, INACTIVE=정지·기수 종료 */
+export type MemberActivityStatus = 'NORMAL' | 'AT_RISK' | 'INACTIVE';
+
+/** 수료 상태. 미승인·기수 미소속 멤버는 null */
+export type MemberGraduationStatus = 'NORMAL' | 'AT_RISK' | 'IMPOSSIBLE' | 'COMPLETED';
+
+/** GET /v3/members/overview 요청 */
+export interface MemberManagementRequest {
+	approvalStatus: MemberApprovalStatus;
+	/** 닉네임 또는 표시 이메일 부분 검색 */
+	search?: string;
+	parts?: ManagedMemberPart[];
+	/** 팀 번호. 미배정은 0 */
+	teamNumbers?: number[];
+	activityStatuses?: MemberActivityStatus[];
+	/** 운영진·코어 제외. 기본 true */
+	excludeStaff: boolean;
+	/** 파트·팀·타입 중 하나라도 미배정인 멤버만 조회 */
+	missingInformationOnly: boolean;
+	graduationStatuses?: MemberGraduationStatus[];
+	/** 1부터 시작 */
+	page: number;
+	size: number;
+}
+
+/** 검색·필터와 무관한 현재 기수 현황 */
+export interface MemberManagementTotals {
+	/** 현재 기수 승인 회원 수 (가입 대기자 제외) */
+	totalMemberCount: number;
+	deeperCount: number;
+	organizerCount: number;
+	coreCount: number;
+	pendingCount: number;
+	missingInformationCount: number;
+	/** AT_RISK + IMPOSSIBLE 합계 */
+	graduationRiskCount: number;
+}
+
+export interface MemberManagementSummary {
+	memberId: number;
+	cohortId?: number;
+	name: string;
+	/** 표시 이메일. 카카오 우선, 없으면 null */
+	email?: string | null;
+	part: ManagedMemberPart;
+	memberType: ManagedMemberType;
+	/** 팀 번호. 미배정은 0 */
+	teamNumber: number;
+	status: ManagedMemberStatus;
+	missingInformation: boolean;
+	graduationStatus?: MemberGraduationStatus | null;
+	/** 닉네임과 파트가 같은 다른 회원 존재 여부 */
+	duplicateSuspected: boolean;
+	updatedAt?: string;
+}
+
+export interface MemberManagementResponse {
+	cohortId: number;
+	summary: MemberManagementTotals;
+	/** 검색·필터 적용 후 목록 전체 수 */
+	totalElements: number;
+	page: number;
+	size: number;
+	/** 회원 기본정보 변경/생성 시각 중 최댓값 */
+	lastUpdatedAt?: string;
+	members: MemberManagementSummary[];
+}
+
+/** 요약 대시보드 NEW 뱃지 카드 종류 */
+export type MemberBadgeCard = 'PENDING' | 'INCOMPLETE' | 'AT_RISK';
+
+export interface MemberBadge {
+	card: MemberBadgeCard;
+	/** 운영진 공통 미확인 여부 */
+	hasNew: boolean;
+	/** 신규 진입마다 증가. 확인 요청에 그대로 전달 */
+	version: number;
+}
+
+export interface MemberBadgesResponse {
+	cohortId: number;
+	cards: MemberBadge[];
+}
+
+/** POST /v3/members/badges/{card}/acknowledgement */
+export interface MemberBadgeAcknowledgeRequest {
+	cohortId: number;
+	version: number;
+}
+
+/** PATCH /v3/members/whitelist - 가입 승인 (단건도 배열로 전달) */
+export interface MemberApprovalRequest {
+	members: number[];
+}
+
+/** POST /v3/members/merge - 중복 계정 통합 및 승인 */
+export interface MemberMergeRequest {
+	/** 통합 후 유지하고 승인할 멤버 ID */
+	retainedMemberId: number;
+	/** 로그인 수단을 옮긴 뒤 정리할 멤버 ID */
+	sourceMemberId: number;
+}
+
+/**
+ * PATCH /v3/members/{memberId} - 승인 멤버 정보 수정
+ * 생략하거나 null 인 컬럼은 기존 값을 유지한다. 수료 위험은 서버가 계산하므로 수정 대상이 아니다.
+ */
+export interface MemberManagementUpdateRequest {
+	part?: ManagedMemberPart;
+	/** 현재 기수 팀 ID. 0 은 미배정 (목록의 teamNumber 와 다른 값) */
+	teamId?: number;
+	memberType?: ManagedMemberType;
+	status?: Extract<ManagedMemberStatus, 'ACTIVE' | 'INACTIVE'>;
+}
+
+/** PATCH /v3/members/bulk - changes 에는 한 컬럼만 지정한다. */
+export interface MemberManagementBulkUpdateRequest {
+	memberIds: number[];
+	changes: MemberManagementUpdateRequest;
+}
+
+/** DELETE /v3/members/bulk */
+export interface MemberBulkDeleteRequest {
+	memberIds: number[];
+}
+
+/** GET /v3/members/parts */
+export interface MemberPartsResponse {
+	parts: ManagedMemberPart[];
 }
