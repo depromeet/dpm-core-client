@@ -145,4 +145,10 @@ export const member = {
 		);
 		return res;
 	},
+
+	/** POST /v3/members/me/reapplication - 본인 가입 재신청 (반려 회원 전용) */
+	reapplyMembership: async () => {
+		const res = await http.post('v3/members/me/reapplication');
+		return res;
+	},
 };

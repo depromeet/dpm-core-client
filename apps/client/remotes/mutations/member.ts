@@ -47,3 +47,13 @@ export const updateMyProfileMutationOptions = (options?: UpdateMyProfileOptions)
 		mutationFn: (params: MemberProfileUpdateRequest) => member.updateMyProfile(params),
 		...options,
 	});
+
+type ReapplyMembershipOptions = MutationOptions<unknown, HTTPError<ApiErrorReponse>, void, unknown>;
+
+/** 반려 회원 본인 재신청 (PENDING으로 전환) */
+export const reapplyMembershipMutationOptions = (options?: ReapplyMembershipOptions) =>
+	mutationOptions({
+		mutationKey: ['member-reapply'],
+		mutationFn: () => member.reapplyMembership(),
+		...options,
+	});
