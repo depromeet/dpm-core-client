@@ -82,7 +82,7 @@ export const approveWhitelistMutationOptions = (
 export interface UpdateMemberRoleParams {
 	memberId: number;
 	isAdmin: boolean;
-	cohort: string;
+	cohortId: number;
 }
 
 export const updateMemberRoleMutationOptions = (
@@ -96,8 +96,8 @@ export const updateMemberRoleMutationOptions = (
 		mutationKey: ['members', 'role'],
 		mutationFn: (params: UpdateMemberRoleParams) =>
 			member.updateMemberRole(params.memberId, {
-				isAdmin: params.isAdmin,
-				cohort: params.cohort,
+				roleType: params.isAdmin ? 'ORGANIZER' : 'DEEPER',
+				cohortId: params.cohortId,
 			}),
 		...options,
 	});

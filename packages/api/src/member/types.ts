@@ -74,10 +74,12 @@ export interface Member {
 	loginMethod: LoginMethod;
 }
 
+export type MemberRoleType = 'ORGANIZER' | 'DEEPER';
+
 /** PATCH /v1/roles/members/{memberId} - 멤버 기수별 역할 변경 */
 export interface UpdateMemberRoleRequest {
-	isAdmin: boolean;
-	cohort: string;
+	roleType: MemberRoleType;
+	cohortId: number;
 }
 
 /** PATCH /v1/members/status - 멤버 상태 변경 */

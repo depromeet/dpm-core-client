@@ -129,7 +129,7 @@ export const member = {
 		return res;
 	},
 
-	/** PATCH /v1/roles/members/{memberId} - 멤버 기수별 역할 변경 (isAdmin: true=ORGANIZER, false=DEEPER) */
+	/** PATCH /v1/roles/members/{memberId} - 멤버 기수별 역할 변경 (roleType: 'ORGANIZER' | 'DEEPER') */
 	updateMemberRole: async (memberId: number, params: UpdateMemberRoleRequest) => {
 		const res = await http.patch(`v1/roles/members/${memberId}`, {
 			json: params,
