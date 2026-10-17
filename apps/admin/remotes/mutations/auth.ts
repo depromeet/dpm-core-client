@@ -9,3 +9,16 @@ export const logoutMutationOptions = (options: LogoutMutationOptions = {}) =>
 		mutationKey: ['logout'],
 		mutationFn: auth.logout,
 	});
+
+export const loginMutationOptions = (
+	options?: MutationOptions<
+		Awaited<ReturnType<typeof auth.login>>,
+		Error,
+		Parameters<typeof auth.login>[0]
+	>,
+) =>
+	mutationOptions({
+		mutationKey: ['login'],
+		mutationFn: auth.login,
+		...options,
+	});
