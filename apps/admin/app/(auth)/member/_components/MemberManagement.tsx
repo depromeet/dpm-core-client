@@ -6,6 +6,7 @@ import type { MemberBadgeCard, MemberManagementUpdateRequest } from '@dpm-core/a
 import { Button, toast } from '@dpm-core/shared';
 
 import { LoadingBox } from '@/components/loading-box';
+import { usePreventPageExit } from '@/hooks/use-prevent-page-exit';
 import { useDebounce } from '@/hooks/useDebounce';
 import {
 	acknowledgeMemberBadgeMutationOptions,
@@ -51,7 +52,7 @@ type DialogState =
 	| { type: 'approve'; targets: MemberRow[]; plan: ApprovalPlan }
 	| { type: 'reject'; targets: MemberRow[] }
 	| { type: 'delete'; targets: MemberRow[] }
-	| { type: 'merge-required' }
+	| { type: 'merge-required'; hasOversizedGroup: boolean }
 	| null;
 
 /** 멤버 관리 화면의 조립 지점. 훅에서 받은 상태를 각 UI 조각에 나눠준다. */
@@ -80,6 +81,8 @@ export const MemberManagement = () => {
 		isLoading,
 		loadMoreRef,
 		isFetchingNextPage,
+		isLoadingAllForSelection,
+		loadAllAndGetIds,
 	} = useMemberList(queryParams);
 
 	const { data: cohortNumber } = useQuery(getCurrentCohortQuery);
@@ -92,6 +95,20 @@ export const MemberManagement = () => {
 		() => rows.filter((row) => selection.selectedIds.has(row.id)),
 		[rows, selection.selectedIds],
 	);
+
+	/**
+	 * "전체 선택" 은 지금까지 불러온 행만으로는 부족하다. 더 불러올 페이지가 남아 있으면
+	 * (예: 미승인 33명인데 30명만 로드된 상태) 먼저 나머지를 전부 불러온 뒤 선택해야,
+	 * 체크박스가 "전체 선택됨"으로 보이는 동안 실제로는 일부만 선택된 상태를 막을 수 있다.
+	 */
+	const handleToggleAllSelection = useCallback(async () => {
+		if (selection.isAllSelected) {
+			selection.clear();
+			return;
+		}
+		const allIds = await loadAllAndGetIds();
+		selection.selectIds(allIds);
+	}, [selection, loadAllAndGetIds]);
 
 	const [dialog, setDialog] = useState<DialogState>(null);
 	const closeDialog = useCallback(() => setDialog(null), []);
@@ -165,9 +182,9 @@ export const MemberManagement = () => {
 		if (targets.length === 0) return;
 
 		const plan = planApproval(targets, rows);
-		// 중복 의심 계정은 짝을 함께 골라야 병합 후 승인할 수 있다.
+		// 중복 의심 계정은 정확히 짝(2명)을 함께 골라야 병합 후 승인할 수 있다.
 		if (plan.unpaired.length > 0) {
-			setDialog({ type: 'merge-required' });
+			setDialog({ type: 'merge-required', hasOversizedGroup: plan.hasOversizedGroup });
 			return;
 		}
 		setDialog({ type: 'approve', targets, plan });
@@ -192,6 +209,11 @@ export const MemberManagement = () => {
 	const inlineEdit = useInlineMemberEdit();
 	const closeInlineEdit = inlineEdit.close;
 
+	// 탭을 닫거나 브라우저 뒤로가기로 나가려 하면 네이티브 확인창으로 막는다.
+	// (사이드바로 다른 메뉴 이동은 Next.js App Router 에 내비게이션을 가로채는 공식 방법이
+	// 없어 범위에서 제외했다 — 멤버관리-개편.md 의 알려진 한계 참고)
+	usePreventPageExit(inlineEdit.isDirty);
+
 	const { mutate: updateMember, isPending: isUpdating } = useMutation(
 		updateManagedMemberMutationOptions({
 			onSuccess: () => {
@@ -207,7 +229,12 @@ export const MemberManagement = () => {
 		const { editingRow, draft } = inlineEdit;
 		if (!editingRow || !draft) return;
 
-		const changes = buildMemberChanges(editingRow, draft, teams ?? []);
+		const { changes, teamLookupFailed } = buildMemberChanges(editingRow, draft, teams ?? []);
+		if (teamLookupFailed) {
+			// 수정 상태는 유지해 사용자가 값을 그대로 두고 다시 저장을 시도할 수 있게 한다.
+			toast.error('팀 정보를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.');
+			return;
+		}
 		// 아무것도 바뀌지 않았으면 요청 없이 수정 상태만 닫는다.
 		if (!hasChanges(changes)) {
 			inlineEdit.close();
@@ -330,34 +357,44 @@ export const MemberManagement = () => {
 			</div>
 
 			<div className="px-10">
-				{isLoading ? (
-					<LoadingBox />
-				) : isPendingTab ? (
-					<PendingMemberTable
-						rows={rows}
-						isSelected={selection.isSelected}
-						isAllSelected={selection.isAllSelected}
-						onToggle={selection.toggle}
-						onToggleAll={selection.toggleAll}
-						onApprove={(row) => openApproveDialog([row])}
-						onReject={(row) => setDialog({ type: 'reject', targets: [row] })}
-					/>
-				) : (
-					<ApprovedMemberTable
-						rows={rows}
-						isSelected={selection.isSelected}
-						isAllSelected={selection.isAllSelected}
-						onToggle={selection.toggle}
-						onToggleAll={selection.toggleAll}
-						editingId={inlineEdit.editingId}
-						draft={inlineEdit.draft}
-						onChange={inlineEdit.change}
-						onStartEdit={inlineEdit.start}
-						onCancelEdit={inlineEdit.cancel}
-						onSaveEdit={handleInlineSave}
-						isSaving={isUpdating}
-					/>
-				)}
+				{/*
+				 * Figma 는 1440px 데스크톱 화면만 제공해 1024~1440px 사이 폭은 별도로 설계되지
+				 * 않았다. 테이블 컬럼 너비(table-fixed)가 고정돼 있어 창이 좁아지면 전체 페이지가
+				 * 깨지는 대신, 테이블만 가로 스크롤되도록 감싸 최소한의 안전장치를 둔다.
+				 * (팝오버·드롭다운은 Portal 로 body 에 그려져 이 스크롤 영역에 잘리지 않는다.)
+				 */}
+				<div className="overflow-x-auto">
+					{isLoading ? (
+						<LoadingBox />
+					) : isPendingTab ? (
+						<PendingMemberTable
+							rows={rows}
+							isSelected={selection.isSelected}
+							isAllSelected={selection.isAllSelected}
+							isTogglingAll={isLoadingAllForSelection}
+							onToggle={selection.toggle}
+							onToggleAll={handleToggleAllSelection}
+							onApprove={(row) => openApproveDialog([row])}
+							onReject={(row) => setDialog({ type: 'reject', targets: [row] })}
+						/>
+					) : (
+						<ApprovedMemberTable
+							rows={rows}
+							isSelected={selection.isSelected}
+							isAllSelected={selection.isAllSelected}
+							isTogglingAll={isLoadingAllForSelection}
+							onToggle={selection.toggle}
+							onToggleAll={handleToggleAllSelection}
+							editingId={inlineEdit.editingId}
+							draft={inlineEdit.draft}
+							onChange={inlineEdit.change}
+							onStartEdit={inlineEdit.start}
+							onCancelEdit={inlineEdit.cancel}
+							onSaveEdit={handleInlineSave}
+							isSaving={isUpdating}
+						/>
+					)}
+				</div>
 
 				{/* 끝에 닿으면 다음 페이지를 불러온다. */}
 				<div ref={loadMoreRef} className="h-10" />
@@ -480,7 +517,11 @@ export const MemberManagement = () => {
 				open={dialog?.type === 'merge-required'}
 				onOpenChange={closeDialog}
 				title="승인 전 계정 병합 필요"
-				description="승인 전 병합이 필요한 계정은 병합할 계정 모두를 선택해주세요."
+				description={
+					dialog?.type === 'merge-required' && dialog.hasOversizedGroup
+						? '한 번에 최대 2개 계정까지만 병합할 수 있어요. 같은 사람으로 의심되는 계정을 2개씩 나눠서 선택해 주세요.'
+						: '승인 전 병합이 필요한 계정은 병합할 계정 모두를 선택해주세요.'
+				}
 				actions={[{ label: '확인', onClick: closeDialog }]}
 			/>
 
@@ -516,7 +557,12 @@ function toBulkChanges(
 		case 'teamNumber': {
 			if (draft.teamNumber === undefined) return null;
 			const teamId = toTeamId(draft.teamNumber, teams);
-			return teamId === undefined ? null : { teamId };
+			// 조용히 건너뛰면 다른 컬럼은 저장되고 팀만 빠진 채 "수정 완료" 토스트가 뜨게 된다.
+			// 이 요청 전체를 실패로 던져서 onError 가 처리하게 한다 (선택·임시값은 그대로 남는다).
+			if (teamId === undefined) {
+				throw new Error('팀 번호를 팀 ID 로 변환하지 못했습니다.');
+			}
+			return { teamId };
 		}
 		default:
 			return null;

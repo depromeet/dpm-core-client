@@ -25,13 +25,21 @@ export interface ApprovalPlan {
 	/** 중복이 아니라 그대로 승인하면 되는 멤버 */
 	approveIds: number[];
 	merges: MergePlan[];
-	/** 짝이 함께 선택되지 않아 병합할 수 없는 멤버 */
+	/** 짝이 함께 선택되지 않았거나, 셋 이상이 함께 선택되어 병합할 수 없는 멤버 */
 	unpaired: MemberRow[];
+	/**
+	 * unpaired 중 셋 이상이 같은 묶음으로 선택된 경우가 있는지.
+	 * merge API 는 한 번에 두 계정만, 그것도 둘 다 PENDING 일 때만 병합한다.
+	 * 병합은 호출 즉시 유지 계정을 승인 처리하므로, 같은 계정에 두 번째 병합을 또
+	 * 시도하면 "이미 PENDING 이 아님" 으로 실패한다. 그래서 셋 이상은 한 번에 처리하지 않고
+	 * 사용자가 두 개씩 나눠서 처리하도록 안내한다.
+	 */
+	hasOversizedGroup: boolean;
 }
 
 /**
  * 고른 멤버들을 "그냥 승인" 과 "병합 후 승인" 으로 나눈다.
- * 짝 중 하나만 골랐다면 승인하지 않고 unpaired 로 돌려보낸다.
+ * 짝 중 하나만 골랐거나 셋 이상을 묶어 골랐다면 승인하지 않고 unpaired 로 돌려보낸다.
  *
  * 유지할 계정은 표시 이메일이 있는 쪽을, 둘 다 있거나 없으면 ID 가 작은 쪽을 고른다.
  * (서버가 어느 계정을 유지할지 정해주지 않으므로 항상 같은 결과가 나오도록 둔 규칙)
@@ -42,6 +50,7 @@ export function planApproval(selected: MemberRow[], allRows: MemberRow[]): Appro
 	const merges: MergePlan[] = [];
 	const unpaired: MemberRow[] = [];
 	const handled = new Set<number>();
+	let hasOversizedGroup = false;
 
 	for (const row of selected) {
 		if (handled.has(row.id)) continue;
@@ -62,19 +71,23 @@ export function planApproval(selected: MemberRow[], allRows: MemberRow[]): Appro
 			continue;
 		}
 
-		// 셋 이상이 묶여 있으면 짝을 지어 순서대로 병합한다.
-		const group = [row, ...partners].sort((a, b) => a.id - b.id);
+		const group = [row, ...partners];
 		for (const member of group) handled.add(member.id);
 
-		const [retained, ...sources] = [...group].sort((a, b) => {
+		// 셋 이상은 한 번의 요청 흐름으로 안전하게 병합할 수 없다 (위 hasOversizedGroup 설명 참고).
+		if (group.length > 2) {
+			unpaired.push(...group);
+			hasOversizedGroup = true;
+			continue;
+		}
+
+		const [retained, source] = [...group].sort((a, b) => {
 			const emailDiff = Number(Boolean(b.email)) - Number(Boolean(a.email));
 			return emailDiff !== 0 ? emailDiff : a.id - b.id;
 		});
 
-		for (const source of sources) {
-			merges.push({ retainedMemberId: retained.id, sourceMemberId: source.id });
-		}
+		merges.push({ retainedMemberId: retained.id, sourceMemberId: source.id });
 	}
 
-	return { approveIds, merges, unpaired };
+	return { approveIds, merges, unpaired, hasOversizedGroup };
 }

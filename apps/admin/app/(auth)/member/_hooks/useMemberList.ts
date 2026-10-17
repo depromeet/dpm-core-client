@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import type { MemberManagementTotals } from '@dpm-core/api';
 
@@ -31,6 +31,8 @@ export const useMemberList = (params: MemberManagementFilterParams) => {
 	const { data, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } =
 		useInfiniteQuery(getMemberManagementInfiniteQuery(params));
 
+	const [isLoadingAllForSelection, setIsLoadingAllForSelection] = useState(false);
+
 	const rows = useMemo<MemberRow[]>(
 		() => (data?.pages ?? []).flatMap((page) => page.data.members.map(mapMemberRow)),
 		[data],
@@ -45,6 +47,35 @@ export const useMemberList = (params: MemberManagementFilterParams) => {
 		enabled: !isFetchingNextPage,
 	});
 
+	/**
+	 * "전체 선택" 은 화면에 아직 안 불러온 페이지가 있어도 서버에 있는 전부를 선택해야 한다.
+	 * 로드된 행만 기준으로 선택하면, 다음 페이지가 더 있는데도 체크박스는 "전체 선택됨"으로
+	 * 보이는 채 실제로는 일부만 선택된 상태가 된다. 그래서 남은 페이지를 먼저 전부 불러온
+	 * 뒤, 그 결과로 돌아온 최신 페이지 목록에서 id 를 모아 돌려준다.
+	 *
+	 * fetchNextPage 가 반환하는 result.data 는 그 시점까지 불러온 모든 페이지를 합친 값이라,
+	 * 컴포넌트가 다시 렌더링되길 기다리지 않고도 완전한 목록을 바로 얻을 수 있다.
+	 */
+	const loadAllAndGetIds = useCallback(async (): Promise<number[]> => {
+		if (!hasNextPage) {
+			return rows.map((row) => row.id);
+		}
+
+		setIsLoadingAllForSelection(true);
+		try {
+			let result = await fetchNextPage();
+			while (result.hasNextPage) {
+				result = await fetchNextPage();
+			}
+
+			return (result.data?.pages ?? []).flatMap((page) =>
+				page.data.members.map((member) => member.memberId),
+			);
+		} finally {
+			setIsLoadingAllForSelection(false);
+		}
+	}, [hasNextPage, fetchNextPage, rows]);
+
 	return {
 		rows,
 		summary: firstPage?.summary ?? EMPTY_SUMMARY,
@@ -54,6 +85,8 @@ export const useMemberList = (params: MemberManagementFilterParams) => {
 		isError,
 		refetch,
 		isFetchingNextPage,
+		isLoadingAllForSelection,
+		loadAllAndGetIds,
 		loadMoreRef: targetRef,
 	};
 };

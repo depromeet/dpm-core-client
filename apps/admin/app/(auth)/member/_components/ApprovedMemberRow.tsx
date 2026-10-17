@@ -27,6 +27,7 @@ const ACTIVITY_STATUS_OPTIONS = ACTIVITY_STATUS_ORDER.map((value) => ({
 	value,
 	label: ACTIVITY_STATUS_LABEL[value],
 	disabled: value === 'AT_RISK',
+	disabledReason: value === 'AT_RISK' ? '출석 데이터로 자동 계산돼요' : undefined,
 }));
 
 const teamLabel = (teamNumber: number) =>

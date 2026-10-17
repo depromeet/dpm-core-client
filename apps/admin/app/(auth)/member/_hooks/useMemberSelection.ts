@@ -30,15 +30,10 @@ export const useMemberSelection = (visibleIds: number[], resetKey: unknown) => {
 		[visibleIds, selectedIds],
 	);
 
-	const toggleAll = useCallback(() => {
-		setSelectedIds((prev) => {
-			const allSelected = visibleIds.length > 0 && visibleIds.every((id) => prev.has(id));
-			if (allSelected) return new Set();
-			return new Set(visibleIds);
-		});
-	}, [visibleIds]);
-
 	const clear = useCallback(() => setSelectedIds(new Set()), []);
+
+	/** 주어진 id 전체로 선택 상태를 덮어쓴다. "전체 선택" 처럼 바깥에서 완전한 목록을 들고 있을 때 쓴다. */
+	const selectIds = useCallback((ids: number[]) => setSelectedIds(new Set(ids)), []);
 
 	const deselect = useCallback((ids: number[]) => {
 		setSelectedIds((prev) => {
@@ -54,7 +49,7 @@ export const useMemberSelection = (visibleIds: number[], resetKey: unknown) => {
 		isSelected: useCallback((id: number) => selectedIds.has(id), [selectedIds]),
 		isAllSelected,
 		toggle,
-		toggleAll,
+		selectIds,
 		clear,
 		deselect,
 	};

@@ -20,6 +20,8 @@ interface PendingMemberTableProps {
 	rows: MemberRow[];
 	isSelected: (id: number) => boolean;
 	isAllSelected: boolean;
+	/** 더 불러올 페이지를 불러오는 동안 전체 선택 체크박스를 잠근다. */
+	isTogglingAll?: boolean;
 	onToggle: (id: number) => void;
 	onToggleAll: () => void;
 	onApprove: (row: MemberRow) => void;
@@ -31,6 +33,7 @@ export const PendingMemberTable = ({
 	rows,
 	isSelected,
 	isAllSelected,
+	isTogglingAll = false,
 	onToggle,
 	onToggleAll,
 	onApprove,
@@ -45,6 +48,7 @@ export const PendingMemberTable = ({
 					<TableHead className="w-12 px-3 [&:has([role=checkbox])]:pr-0">
 						<TableCheckbox
 							checked={isAllSelected}
+							disabled={isTogglingAll}
 							onCheckedChange={onToggleAll}
 							aria-label="전체 선택"
 						/>

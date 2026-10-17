@@ -59,9 +59,11 @@ export const useInlineMemberEdit = () => {
 		[],
 	);
 
+	// "취소" 버튼은 사용자가 이미 버리겠다고 분명히 누른 것이므로 확인 없이 바로 닫는다.
+	// guard 는 탭 전환처럼 "의도치 않게 나가는" 경로에서만 쓴다 (Figma: 타 메뉴/탭 클릭, 창 끄기 시에만 모달).
 	const cancel = useCallback(() => {
-		guard(close);
-	}, [guard, close]);
+		close();
+	}, [close]);
 
 	const confirmExit = useCallback(() => {
 		setExitGuardOpen(false);

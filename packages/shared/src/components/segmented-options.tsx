@@ -8,6 +8,8 @@ export interface SegmentedOption {
 	label: string;
 	/** 읽기 전용 값. 선택은 막되 현재 상태로는 보여줘야 할 때 사용한다. */
 	disabled?: boolean;
+	/** disabled 인 이유. 호버 시 title 로 보여준다. */
+	disabledReason?: string;
 }
 
 export interface SegmentedOptionsProps {
@@ -44,11 +46,12 @@ export const SegmentedOptions = ({
 			)}
 			{...props}
 		>
-			{options.map(({ value: optionValue, label, disabled }) => (
+			{options.map(({ value: optionValue, label, disabled, disabledReason }) => (
 				<ToggleGroupItem
 					key={optionValue}
 					value={optionValue}
 					disabled={disabled}
+					title={disabled ? disabledReason : undefined}
 					className={cn(
 						'h-full min-w-0 flex-1 rounded-none border-line-normal border-l px-3 font-medium text-body2 text-label-assistive first:border-l-0',
 						'data-[state=on]:bg-primary-extralight data-[state=on]:font-semibold data-[state=on]:text-primary-normal',

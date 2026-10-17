@@ -9,6 +9,8 @@ export interface InlineOption<T extends string | number> {
 	label: string;
 	/** 고를 수는 없지만 현재 값으로는 보여줘야 하는 항목 */
 	disabled?: boolean;
+	/** disabled 인 이유. 호버 시 title 로 보여준다. */
+	disabledReason?: string;
 }
 
 interface InlineOptionSelectProps<T extends string | number> {
@@ -43,6 +45,7 @@ export const InlineOptionSelect = <T extends string | number>({
 							<button
 								type="button"
 								disabled={option.disabled}
+								title={option.disabled ? option.disabledReason : undefined}
 								onClick={() => {
 									onChange(option.value);
 									setOpen(false);
