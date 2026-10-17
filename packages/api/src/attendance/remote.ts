@@ -9,6 +9,7 @@ import type {
 	AttendanceStatus,
 	MyAbsenceReasonResponse,
 	MyAttendanceBySessionIdResponse,
+	SubmitAbsenceReasonRequest,
 } from './types';
 
 export const attendance = {
@@ -124,16 +125,15 @@ export const attendance = {
 	},
 
 	// 내 결석 사유서 조회
-	getMyAbsenceReason: async (params: { sessionId: number }) => {
-		return await http.get<MyAbsenceReasonResponse | null>(
-			`v2/sessions/${params.sessionId}/absence-reasons/me`,
+	getMyAbsenceReason: (params: { sessionId: number }) => {
+		return http.get<MyAbsenceReasonResponse | null | undefined>(
+			`v3/sessions/${params.sessionId}/absence-reasons/me`,
 		);
 	},
 
 	// 결석 사유서 제출
-	submitAbsenceReason: async (params: { sessionId: number; contents: string }) => {
-		const { sessionId, ...json } = params;
-		return await http.post(`v2/sessions/${sessionId}/absence-reasons`, { json });
+	submitAbsenceReason: ({ sessionId, ...json }: SubmitAbsenceReasonRequest) => {
+		return http.post(`v3/sessions/${sessionId}/absence-reasons`, { json });
 	},
 
 	// 세션 결석 사유서 목록 조회 (운영진)
