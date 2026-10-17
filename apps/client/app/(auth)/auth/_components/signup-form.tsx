@@ -23,12 +23,16 @@ type SignupSchema = z.infer<typeof signupSchema>;
 
 const FORM_ID = 'signup-form';
 
-export const SignupForm = () => {
+interface SignupFormProps {
+	defaultValues?: Partial<SignupSchema>;
+}
+
+export const SignupForm = ({ defaultValues }: SignupFormProps = {}) => {
 	const form = useForm<SignupSchema>({
 		resolver: zodResolver(signupSchema),
 		defaultValues: {
-			name: '',
-			signupEmail: '',
+			name: defaultValues?.name ?? '',
+			signupEmail: defaultValues?.signupEmail ?? '',
 		},
 	});
 

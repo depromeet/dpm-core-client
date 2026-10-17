@@ -6,15 +6,7 @@ import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { motion } from 'motion/react';
-import type { LoginMethod } from '@dpm-core/api';
-import {
-	AppleLogo,
-	ATTENDANCE_MEMBER_LABEL_MAP,
-	Badge,
-	cn,
-	fadeInOutVariatns,
-	KakaoLogo,
-} from '@dpm-core/shared';
+import { ATTENDANCE_MEMBER_LABEL_MAP, Badge, fadeInOutVariatns } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
@@ -23,23 +15,8 @@ import { isExistPart } from '@/lib/utils';
 import { getAttendanceMeOptions } from '@/remotes/queries/attendance';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
+import { MyPageAccount } from './my-page-account';
 import { MyPageBox } from './my-page-box';
-
-function getSocialIcon(method: LoginMethod | undefined) {
-	if (method === 'KAKAO') {
-		return {
-			icon: <KakaoLogo className="h-2.5 w-3" />,
-			background: 'bg-[#FEE500]',
-		};
-	}
-	if (method === 'APPLE') {
-		return {
-			icon: <AppleLogo className="h-3 w-2.5" />,
-			background: 'bg-[#1F2937]',
-		};
-	}
-	return null;
-}
 
 const MyPageInfoContent = () => {
 	const [{ data: memberResponse }, { data: attendanceResponse }] = useSuspenseQueries({
@@ -58,8 +35,6 @@ const MyPageInfoContent = () => {
 				{ label: '결석', value: attendance.attendance.absentCount },
 			]
 		: [];
-
-	const socialIcon = getSocialIcon(member.loginMethod);
 
 	return (
 		<motion.div variants={fadeInOutVariatns.variants} className="flex flex-col gap-2">
@@ -104,22 +79,7 @@ const MyPageInfoContent = () => {
 					</div>
 				) : null}
 			</MyPageBox>
-			<MyPageBox className="flex flex-col gap-2">
-				<p className="font-semibold text-body2 text-label-assistive">계정 정보</p>
-				<p className="flex gap-2 text-body2 text-label-subtle">
-					{socialIcon != null ? (
-						<span
-							className={cn(
-								'inline-grid aspect-square w-5 place-items-center rounded-full',
-								socialIcon.background,
-							)}
-						>
-							{socialIcon.icon}
-						</span>
-					) : null}
-					{member.email}
-				</p>
-			</MyPageBox>
+			<MyPageAccount loginMethod={member.loginMethod} email={member.email} />
 		</motion.div>
 	);
 };

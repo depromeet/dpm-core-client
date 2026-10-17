@@ -1,16 +1,17 @@
 import Image from 'next/image';
 import { Suspense } from 'react';
+
+import dpmLogo from '@/assets/images/dpm-logo.svg';
 import bgEllipse from '@/assets/images/login-bg-ellipse.svg';
 import bgGraphic from '@/assets/images/login-bg-graphic.svg';
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { AppleLoginButton } from '@/components/apple-login-button';
 import { EmailLoginButton } from '@/components/email-login-button';
 import { LoginButton } from '@/components/login-button';
+import { LoginErrorToast } from '@/components/login-error-toast';
 import { LoginReturnTo } from '@/components/login-return-to';
 import { CoreLogo } from '@/components/lotties/core-logo';
-import { LoginErrorToast } from '@/components/login-error-toast';
 import { RecentLoginBadge } from '@/components/recent-login-badge';
-import { ReviewLoginLogo } from '@/components/review-login-logo';
 
 const LoginPage = async ({
 	searchParams,
@@ -26,7 +27,7 @@ const LoginPage = async ({
 			hasBottomTabBar
 			className="relative h-dvh overflow-hidden bg-[linear-gradient(150.15deg,#FFFFFF_5.91%,#CFD9FF_42.11%,#E6F9FF_70.04%)] bg-gray-50"
 		>
-      <LoginReturnTo returnTo={returnToValue} preserveExisting={hasError} />
+			<LoginReturnTo returnTo={returnToValue} preserveExisting={hasError} />
 			<Suspense>
 				<LoginErrorToast />
 			</Suspense>
@@ -43,7 +44,7 @@ const LoginPage = async ({
 				/>
 			</div>
 			<div className="relative flex flex-col gap-y-4.5 px-4 pt-20">
-				<ReviewLoginLogo />
+				<Image src={dpmLogo} alt="DPM" priority className="h-auto w-31" />
 				<p className="font-normal text-body1 text-label-strong">
 					출석부터 공지 확인까지,
 					<br />
