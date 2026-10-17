@@ -72,11 +72,26 @@ export interface AttendanceBySessionReponse {
 
 export type ExcuseDocumentStatus = 'SUBMITTED' | 'PENDING' | null;
 
-export interface MyAbsenceReasonResponse {
+export type AbsenceReasonStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+
+export interface SubmitAbsenceReasonRequest {
+	sessionId: number;
 	contents: string;
-	status: ExcuseDocumentStatus;
+	imageIds: number[];
+}
+
+export interface ImageResponse {
+	imageId: number;
+	fileName: string | null;
+}
+
+export interface MyAbsenceReasonResponse {
+	images: ImageResponse[];
+	contents: string;
+	status: AbsenceReasonStatus;
+	imageIds: number[];
 	createdAt: string;
-	updatedAt: string;
+	updatedAt: string | null;
 }
 
 export interface AbsenceReason {
