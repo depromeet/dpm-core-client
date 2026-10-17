@@ -9,5 +9,6 @@ export const showAttendanceBanner = (
 		return false;
 	}
 	const now = dayjs();
-	return now.isAfter(dayjs(attendanceStart)) && now.isBefore(dayjs(absentStart));
+	const start = dayjs(attendanceStart);
+	return (now.isSame(start) || now.isAfter(start)) && now.isBefore(dayjs(absentStart));
 };

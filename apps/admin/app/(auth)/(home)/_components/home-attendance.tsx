@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useMemo, useRef } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { ChevronDown, ChevronRight, RotateCw } from 'lucide-react';
 import type { AttendanceStatus, Session } from '@dpm-core/api';
@@ -22,6 +22,7 @@ import {
 
 import { Section } from '@/components/section';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
+import { filterAttendanceMembers } from '@/lib/attendance/filterAttendanceMembers';
 import { getAttendanceStatusLabel } from '@/lib/attendance/status';
 import { getPreviousSession } from '@/lib/session/getPreviousSession';
 import { useAuth } from '@/providers/auth-provider';
@@ -276,14 +277,14 @@ const AttendanceHeader = (props: AttendanceHeaderProps) => {
 	const customSearchParams = useCustomSearchParams();
 	const searchParams = customSearchParams.getAll();
 
-	const attendanceSearchParams = {
-		week: session.id,
+	const attendanceFilters = {
 		statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
 		teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
 		name: searchParams.name,
 	};
 
-	const { data } = useInfiniteQuery(getAttendanceBySessionOptions(attendanceSearchParams));
+	const { data } = useQuery(getAttendanceBySessionOptions({ sessionId: session.id }));
+	const filteredMembers = filterAttendanceMembers(data?.data.members ?? [], attendanceFilters);
 
 	return (
 		<div className="mb-4 flex items-center">
@@ -291,7 +292,7 @@ const AttendanceHeader = (props: AttendanceHeaderProps) => {
 				출석 {session.week}주차 ({formatDate(session.date)})
 			</h3>
 			<span className="ml-2 font-medium text-body1 text-primary-normal">
-				{data?.pages[0].data.totalElements}
+				{filteredMembers.length}
 			</span>
 			<Button variant="text" className="ml-3 gap-0" asChild>
 				<Link href={`/attendance/search/session?week=${session.id}`}>

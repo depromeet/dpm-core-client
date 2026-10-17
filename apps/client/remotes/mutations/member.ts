@@ -1,6 +1,6 @@
 import { type MutationOptions, mutationOptions } from '@tanstack/react-query';
 import type { HTTPError } from 'ky';
-import { type ApiErrorReponse, type AppleMemberProfileUpdateRequest, member } from '@dpm-core/api';
+import { type ApiErrorReponse, type MemberProfileUpdateRequest, member } from '@dpm-core/api';
 
 type WithdrawMutationOptions = MutationOptions;
 
@@ -33,17 +33,27 @@ export const approveWhitelistMutationOptions = (options: ApproveWhitelistOptions
 		...options,
 	});
 
-type UpdateAppleProfileOptions = MutationOptions<
+type UpdateMyProfileOptions = MutationOptions<
 	unknown,
 	HTTPError<ApiErrorReponse>,
-	AppleMemberProfileUpdateRequest,
+	MemberProfileUpdateRequest,
 	unknown
 >;
 
-/** Apple 로그인 멤버 프로필(이름/직군) 수정 */
-export const updateAppleProfileMutationOptions = (options?: UpdateAppleProfileOptions) =>
+/** 본인 프로필(이름/직군) 최초 입력 */
+export const updateMyProfileMutationOptions = (options?: UpdateMyProfileOptions) =>
 	mutationOptions({
-		mutationKey: ['apple-profile-update'],
-		mutationFn: (params: AppleMemberProfileUpdateRequest) => member.updateAppleProfile(params),
+		mutationKey: ['my-profile-update'],
+		mutationFn: (params: MemberProfileUpdateRequest) => member.updateMyProfile(params),
+		...options,
+	});
+
+type ReapplyMembershipOptions = MutationOptions<unknown, HTTPError<ApiErrorReponse>, void, unknown>;
+
+/** 반려 회원 본인 재신청 (PENDING으로 전환) */
+export const reapplyMembershipMutationOptions = (options?: ReapplyMembershipOptions) =>
+	mutationOptions({
+		mutationKey: ['member-reapply'],
+		mutationFn: () => member.reapplyMembership(),
 		...options,
 	});

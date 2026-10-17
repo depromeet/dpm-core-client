@@ -18,7 +18,9 @@ import { getCurrentWeekSessionQuery } from '@/remotes/queries/session';
 
 const SessionBannerContainer = () => {
 	const {
-		data: { data: currentWeekSession },
+		data: {
+			data: { session: currentWeekSession },
+		},
 	} = useSuspenseQuery(getCurrentWeekSessionQuery);
 
 	if (!currentWeekSession) return null;

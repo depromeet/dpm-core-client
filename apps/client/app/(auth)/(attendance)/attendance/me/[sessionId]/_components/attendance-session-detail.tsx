@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQueries } from '@tanstack/react-query';
-import type { AttendanceSession } from '@dpm-core/api';
+import type { MyAttendanceBySessionIdResponse } from '@dpm-core/api';
 import { Button } from '@dpm-core/shared';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
@@ -17,12 +17,12 @@ import {
 	getMyAbsenceReasonOptions,
 } from '@/remotes/queries/attendance';
 
-function SessionInfoCard({ session }: { session: AttendanceSession }) {
+function SessionInfoCard({ session }: { session: MyAttendanceBySessionIdResponse['session'] }) {
 	const rows = [
 		{ label: '세션 주차', value: `${session.week}주차` },
 		{ label: '세션명', value: session.eventName },
 		{ label: '세션 날짜', value: formatISOStringToFullDateString(session.date) },
-		{ label: '세션 장소', value: session.place },
+		{ label: '세션 장소', value: session.place ?? '-' },
 	];
 
 	return (

@@ -10,6 +10,7 @@ import { Button, type ButtonProps } from './button';
 
 interface CopyButtonProps extends ButtonProps {
 	value: string;
+	successMessage?: string;
 	src?: string;
 }
 
@@ -17,7 +18,14 @@ async function copyToClipboardWithMeta(value: string) {
 	navigator.clipboard.writeText(value);
 }
 
-function CopyButton({ value, className, src, variant = 'none', ...props }: CopyButtonProps) {
+function CopyButton({
+	value,
+	successMessage = '출석 코드를 복사했습니다.',
+	className,
+	src,
+	variant = 'none',
+	...props
+}: CopyButtonProps) {
 	const [hasCopied, setHasCopied] = React.useState(false);
 	const timeoutIdRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -31,7 +39,7 @@ function CopyButton({ value, className, src, variant = 'none', ...props }: CopyB
 	};
 
 	const handleCopy = () => {
-		toast.success('출석 코드를 복사했습니다.');
+		toast.success(successMessage);
 		copyToClipboardWithMeta(value);
 		setHasCopied(true);
 		handleDebounceCopiedState();

@@ -1,0 +1,12 @@
+[
+	{
+		"relation": ["delegate_permission/common.handle_all_urls"],
+		"target": {
+			"namespace": "android_app",
+			"package_name": "com.depromeet.core.app",
+			"sha256_cert_fingerprints": [
+				"73:4E:34:22:96:A7:2E:ED:59:03:6D:89:35:F6:62:3E:40:3F:AB:6B:FC:52:74:CA:C7:9F:9C:8A:9F:8E:CF:AE"
+			]
+		}
+	}
+]

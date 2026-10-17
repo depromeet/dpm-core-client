@@ -11,6 +11,7 @@ export default function CreateSessionPage() {
 		<AppLayout className="bg-background-normal">
 			<AppHeader
 				title="세션 추가"
+				backHref="/session"
 				rightIcon={
 					<Button variant="secondary" size="md" type="submit" form={FORM_ID}>
 						저장하기

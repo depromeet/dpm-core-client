@@ -3,31 +3,21 @@ import { attendance } from '@dpm-core/api';
 
 export const ATTENDANCE_QUERY_KEY = 'ATTENDANCE';
 
-interface getAttendanceBySessionOptionsParams {
-	week: number;
+export const getAttendanceBySessionOptions = (params: { sessionId: number }) =>
+	queryOptions({
+		queryKey: [ATTENDANCE_QUERY_KEY, 'session', params.sessionId],
+		queryFn: () => attendance.getAttendanceBySession(params),
+		retry: false,
+	});
+
+interface AttendanceMemberFilters {
 	statuses?: string[];
 	teams?: number[];
 	name?: string;
 }
 
-export const getAttendanceBySessionOptions = (params: getAttendanceBySessionOptionsParams) =>
-	infiniteQueryOptions({
-		queryKey: [ATTENDANCE_QUERY_KEY, params],
-		initialPageParam: 1,
-		queryFn: ({ pageParam }) => {
-			return attendance.getAttendanceBySession({ ...params, cursorId: pageParam, size: 100 });
-		},
-		getNextPageParam: (lastPage) => {
-			return lastPage.data.hasNext && lastPage.data.nextCursorId != null
-				? lastPage.data.nextCursorId
-				: undefined;
-		},
-		placeholderData: (previousData) => previousData,
-		retry: false,
-	});
-
 export const getAttendanceByMemberOptions = (
-	params: Omit<getAttendanceBySessionOptionsParams, 'week'>,
+	params: AttendanceMemberFilters,
 ) =>
 	infiniteQueryOptions({
 		queryKey: [ATTENDANCE_QUERY_KEY, params],

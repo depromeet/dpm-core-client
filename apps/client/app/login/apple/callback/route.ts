@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { BASE_URL, COOKIE_KEYS, getSharedAuthCookieOptions } from '@dpm-core/api';
 
+import { getAppleRedirectUri } from '@/lib/env';
+
 export async function POST(request: NextRequest) {
 	try {
 		const formData = (await request.formData()) as unknown as globalThis.FormData;
@@ -19,7 +21,8 @@ export async function POST(request: NextRequest) {
 				'Content-Type': 'application/json',
 			},
 			credentials: 'include',
-			body: JSON.stringify({ authorizationCode: code }),
+			// 서버가 Apple 토큰 교환 시 인증 요청과 같은 redirect_uri 를 써야 하므로 함께 보낸다.
+			body: JSON.stringify({ authorizationCode: code, redirectUri: getAppleRedirectUri() }),
 		});
 
 		if (!response.ok) {
