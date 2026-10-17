@@ -15,7 +15,8 @@ interface AuthContextType {
 	user: Member | null;
 }
 
-const PENDING_ACCESSIBLE_PATHS = ['/pending', '/profile', '/my-page'];
+const PENDING_ACCESSIBLE_PATHS = ['/pending', '/profile', '/my-page', '/rejected/edit'];
+const REJECTED_ACCESSIBLE_PATHS = ['/rejected', '/rejected/edit', '/my-page'];
 
 const [AuthProviderContext, useAuth] = createContext<AuthContextType>('Auth', {
 	isAuthenticated: false,
@@ -61,6 +62,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
 	// 승인 대기 회원이 이름·직군을 아직 입력하지 않았다면 검토중 화면 대신 가입정보 입력으로 보낸다.
 	const isPending = memberInfo?.status === 'PENDING';
+	const isRejected = memberInfo?.status === 'REJECTED';
 	const { data: { data: profile } = {}, isLoading: isProfileLoading } = useQuery({
 		...getMyProfileQuery,
 		enabled: isPending,
@@ -84,7 +86,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		if (!memberInfo) return;
 
 		const returnTo = consumeLoginReturnTo();
-		if (!returnTo || memberInfo.status === 'PENDING') return;
+		if (!returnTo || memberInfo.status === 'PENDING' || memberInfo.status === 'REJECTED') return;
 
 		const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
 		if (returnTo !== currentPath) router.replace(returnTo);
@@ -109,11 +111,20 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		}
 	}
 
+	// 반려 회원은 반려 안내 화면과 재신청 수정 폼만 이용할 수 있다.
+	if (isRejected && pathname !== '/rejected' && !REJECTED_ACCESSIBLE_PATHS.includes(pathname)) {
+		return redirect('/rejected');
+	}
+
 	if (!isAuthReady || isLoading) {
       return null;
   }
-        
+
 	if (memberInfo && memberInfo.status !== 'PENDING' && pathname === '/pending') {
+		return redirect('/');
+	}
+
+	if (memberInfo && memberInfo.status !== 'REJECTED' && pathname === '/rejected') {
 		return redirect('/');
 	}
 

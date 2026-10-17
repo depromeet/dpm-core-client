@@ -2,7 +2,7 @@ import type { Cohort } from '../cohort';
 
 export type Part = 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER' | 'ETC';
 
-export type MemberStatus = 'PENDING' | 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN';
+export type MemberStatus = 'PENDING' | 'REJECTED' | 'ACTIVE' | 'INACTIVE' | 'WITHDRAWN';
 
 /** /v1/members/overview API 응답의 파트 (UNASSIGNED = 미배정) */
 export type MemberOverviewPart = 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER' | 'UNASSIGNED';

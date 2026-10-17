@@ -253,6 +253,9 @@ export const member = {
 	/** GET /v3/members/parts - 파트 선택지 조회 */
 	getMemberParts: async () => {
 		const res = await http.get<MemberPartsResponse>('v3/members/parts');
+	/** POST /v3/members/me/reapplication - 본인 가입 재신청 (반려 회원 전용) */
+	reapplyMembership: async () => {
+		const res = await http.post('v3/members/me/reapplication');
 		return res;
 	},
 };
