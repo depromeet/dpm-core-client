@@ -4,9 +4,8 @@ import { useRef } from 'react';
 import { LoaderCircle, RotateCw } from 'lucide-react';
 import { Button, Label, Upload, XIcon } from '@dpm-core/shared';
 
+import { EvidencePreview } from '@/components/attendance/evidence-preview';
 import type { ImageUploadItem } from '@/hooks/use-image-uploads';
-
-import { EvidencePreview } from './evidence-preview';
 
 interface AbsenceEvidenceFieldProps {
 	items: ImageUploadItem[];
@@ -55,13 +54,17 @@ export function AbsenceEvidenceField({
 			</Button>
 			<p className="text-caption1 text-label-assistive">PNG, JPG · 최대 10MB</p>
 			<ul className="flex flex-wrap items-start gap-2 rounded-lg bg-background-subtle p-3 empty:hidden">
-				{items.map((item) => (
+				{items.map((item, index) => (
 					<li
 						key={item.id}
 						className="flex w-fit max-w-full items-center gap-3 rounded-md bg-background-normal px-2 py-1 font-medium text-caption1 text-label-subtle"
 					>
 						{item.status === 'uploaded' ? (
-							<EvidencePreview imageId={item.imageId} fileName={item.fileName} />
+							<EvidencePreview
+								imageId={item.imageId}
+								fileName={item.fileName}
+								sequence={index + 1}
+							/>
 						) : (
 							<div className="flex min-w-0 items-center gap-1">
 								{item.status === 'uploading' ? (
