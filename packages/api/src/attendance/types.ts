@@ -137,3 +137,26 @@ export interface AttendanceByMemberReponse {
 	nextCursorId: number | null;
 	totalElements: number;
 }
+
+export interface MyAttendanceAbsenceReason {
+	id: number;
+	contents: string;
+	status: AbsenceReasonStatus;
+	imageIds: number[];
+	images: ImageResponse[];
+}
+
+export interface MyAttendanceSession extends AttendanceSession {
+	attendedAt: string | null;
+	isOnline: boolean;
+	absenceReason: MyAttendanceAbsenceReason | null;
+}
+
+export interface MyAttendanceResponse {
+	member: Omit<AttendanceMember, 'teamNumber' | 'part'> & {
+		teamNumber: number | null;
+		part: string | null;
+	};
+	attendance: Pick<Attendance, 'presentCount' | 'lateCount' | 'excusedAbsentCount' | 'absentCount'>;
+	sessions: MyAttendanceSession[];
+}

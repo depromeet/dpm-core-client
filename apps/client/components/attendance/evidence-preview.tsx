@@ -19,8 +19,12 @@ import {
 
 import { getImageUrlQueryOptions } from '@/remotes/queries/image';
 
-export function EvidencePreview({ imageId, fileName }: ImageResponse) {
-	const name = fileName ?? '첨부 이미지';
+interface EvidencePreviewProps extends ImageResponse {
+	sequence: number;
+}
+
+export function EvidencePreview({ imageId, fileName, sequence }: EvidencePreviewProps) {
+	const name = fileName?.trim() || `첨부 이미지 ${sequence}`;
 
 	return (
 		<Dialog>
@@ -49,7 +53,12 @@ export function EvidencePreview({ imageId, fileName }: ImageResponse) {
 	);
 }
 
-function EvidenceImage({ imageId, fileName }: ImageResponse) {
+interface EvidenceImageProps {
+	imageId: number;
+	fileName: string;
+}
+
+function EvidenceImage({ imageId, fileName }: EvidenceImageProps) {
 	const { data: url, isFetching, isError, refetch } = useQuery(getImageUrlQueryOptions(imageId));
 
 	return (
@@ -65,15 +74,13 @@ function EvidenceImage({ imageId, fileName }: ImageResponse) {
 	);
 }
 
-function ImageContent({
-	url,
-	fileName,
-	onRetry,
-}: {
+interface ImageContentProps {
 	url: string;
-	fileName: string | null;
+	fileName: string;
 	onRetry: () => void;
-}) {
+}
+
+function ImageContent({ url, fileName, onRetry }: ImageContentProps) {
 	const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
 
 	if (status === 'error') {
@@ -93,7 +100,7 @@ function ImageContent({
 				unoptimized
 				fill
 				src={url}
-				alt={fileName ?? '첨부 이미지'}
+				alt={fileName}
 				className={`object-contain ${status === 'loaded' ? 'opacity-100' : 'opacity-0'}`}
 				onLoad={() => setStatus('loaded')}
 				onError={() => setStatus('error')}
@@ -111,7 +118,11 @@ function ImageLoading() {
 	);
 }
 
-function ImageError({ onRetry }: { onRetry: () => void }) {
+interface ImageErrorProps {
+	onRetry: () => void;
+}
+
+function ImageError({ onRetry }: ImageErrorProps) {
 	return (
 		<div className="flex h-full flex-col items-center justify-center gap-3">
 			<p className="text-body2 text-label-subtle">첨부 자료를 불러오지 못했어요.</p>

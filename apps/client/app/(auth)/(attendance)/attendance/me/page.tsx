@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Button } from '@dpm-core/shared';
+import { ChevronRight } from '@dpm-core/shared';
 
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { BottomTabBar } from '@/components/bottom-tab-bar';
@@ -14,14 +14,12 @@ export default function AttendanceMePage() {
 				<h1 className="-translate-x-1/2 absolute left-1/2 font-semibold text-body1">
 					내 출석 현황
 				</h1>
-				<Button
-					asChild
-					variant="none"
-					size="sm"
-					className="rounded-[100px] border border-line-normal bg-background-normal text-label-subtle"
-				>
-					<Link href="/attendance/policy">규정</Link>
-				</Button>
+				<div className="flex items-center gap-1">
+					<Link href="/attendance/policy" className="font-medium text-caption1 text-label-tertiary">
+						규정
+					</Link>
+					<ChevronRight className="size-3 text-icon-noraml" />
+				</div>
 			</NavigationBar>
 			<AttendanceMe />
 			<BottomTabBar />

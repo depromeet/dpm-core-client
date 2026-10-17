@@ -30,6 +30,7 @@ export * from './components/subject-chip-list';
 export * from './components/table';
 export * from './components/team-tab-bar';
 export * from './components/toggle-button';
+export * from './components/ui/accordion';
 export * from './components/ui/avatar';
 export * from './components/ui/button';
 export * from './components/ui/calendar';
