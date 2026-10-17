@@ -19,6 +19,7 @@ export { Edit } from './edit';
 export { KakaoLogo } from './kakao-logo';
 export { Notification } from './notification';
 export { Paperclip } from './paperclip';
+export { Pencil } from './pencil';
 export { Plus } from './plus';
 export { SubmitCompleted } from './submit-completed';
 export { SubmitLate } from './submit-late';

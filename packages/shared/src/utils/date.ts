@@ -26,8 +26,9 @@ export const formatTimeOnly = (date: Date | string) => {
 	return dayjs(date).format('HH:mm');
 };
 
-export const formatDotFullDate = (date: Date | string) => {
-	return dayjs(date).format('YYYY.MM.DD (ddd)');
+export const formatDotFullDate = (date: Date | string, options?: { withTime: boolean }) => {
+	const format = options?.withTime ? 'YYYY.MM.DD (ddd) HH:mm' : 'YYYY.MM.DD (ddd)';
+	return dayjs(date).format(format);
 };
 
 export const formatKoreanDate = (date: Date | string) => {
