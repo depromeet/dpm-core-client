@@ -6,7 +6,7 @@ import { ATTENDANCE_POLICY } from './const/policy';
 export default function AttendancePolicyPage() {
 	return (
 		<SafeAreaAppLayout className="h-dvh bg-background-normal">
-			<AppHeader title="출석 규정" className="mb-6" />
+			<AppHeader title="출석 규정 안내" className="mb-6" />
 			<section className="scrollbar-hide mx-4 flex-1 overflow-auto pb-4">
 				{ATTENDANCE_POLICY.map((section, idx) => (
 					<article key={Number(idx)} className="mb-5 text-label-subtle last:mb-0">

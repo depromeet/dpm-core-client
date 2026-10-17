@@ -43,7 +43,7 @@ export const ATTENDANCE_POLICY = [
 				items: ['가족 경조사 참석 시 출석 인정', '결혼, 사망으로 인한 장례에 한정'],
 			},
 			{
-				title: '수료/ 불가',
+				title: '결석 처리',
 				items: ['지인 경조사 참석 시 결석 처리'],
 			},
 		],
