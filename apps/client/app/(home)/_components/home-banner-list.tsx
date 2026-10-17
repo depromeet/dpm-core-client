@@ -9,6 +9,7 @@ import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
 import { showAttendanceBanner } from '@/lib/attendance/banner';
 import { getSessionCurrentOptions } from '@/remotes/queries/session';
 
+import { CohortEndedBanner } from './cohort-ended-banner';
 import { HomeCheckAttendanceBanner } from './home-attendance-banner';
 import { HomeFeedbackCard } from './home-feedback-card';
 import { SessionCard } from './session-card';
@@ -52,6 +53,15 @@ const HomeBannerListContainer = () => {
 		const sessionId = currentWeekSession?.id?.toString() || 'home';
 		gaTrackHomeEnter(sessionId);
 	}, [currentWeekSession]);
+
+	if (nextSessionHome.status === 'COHORT_ENDED') {
+		return (
+			<section className="px-4 pb-5">
+				<HomeFeedbackCard isAttendanceOpen={false} />
+				<CohortEndedBanner cohortValue={nextSessionHome.cohortValue} />
+			</section>
+		);
+	}
 
 	if (!currentWeekSession) {
 		return (

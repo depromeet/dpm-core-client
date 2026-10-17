@@ -156,6 +156,6 @@ export type NextSessionHomeStatus = 'AVAILABLE' | 'NOT_REGISTERED' | 'COHORT_END
 
 export interface NextSessionHomeResponse {
 	status: NextSessionHomeStatus;
-	cohortValue: string;
-	session?: CurrentWeekSessionResponse | null;
+	cohortValue: string | null;
+	session: CurrentWeekSessionResponse | null;
 }
