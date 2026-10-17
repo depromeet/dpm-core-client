@@ -17,7 +17,7 @@ export const UserActionList = () => {
 				<Link
 					href={USER_VOC_LINK}
 					target="_blank"
-					className="flex basis-1/2 flex-col items-start gap-3 rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f9faff_59.35%,#eff3ff_73.36%)] p-4 shadow-[0_0_10px_rgba(0,0,0,0.04)]"
+					className="flex basis-1/2 rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f9faff_59.35%,#eff3ff_73.36%)] p-4 shadow-[0_0_10px_rgba(0,0,0,0.04)]"
 					onClick={() => track(CLARITY_ACTION_ID.HOME.VOC_BUTTON_CLICK)}
 				>
 					<div className="flex w-full flex-wrap items-center justify-between">
@@ -82,16 +82,11 @@ export const UserActionList = () => {
 							</defs>
 						</svg>
 					</div>
-					<p className="text-caption1 text-label-assistive">
-						코어를 사용하며 느낀 점을
-						<br />
-						자유롭게 들려주세요!
-					</p>
 				</Link>
 				<Link
 					href={USER_GUIDE_LINK}
 					target="_blank"
-					className="flex basis-1/2 flex-col items-start gap-3 rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f8feff_56.78%,#effdff_73.36%)] p-4 shadow-[0_0_10px_rgba(0,0,0,0.04)]"
+					className="flex basis-1/2 rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f8feff_56.78%,#effdff_73.36%)] p-4 shadow-[0_0_10px_rgba(0,0,0,0.04)]"
 				>
 					<div className="flex w-full flex-wrap items-center justify-between">
 						<p className="font-semibold text-body2 text-label-subtle">
@@ -156,11 +151,6 @@ export const UserActionList = () => {
 							</defs>
 						</svg>
 					</div>
-					<p className="text-caption1 text-label-assistive">
-						코어의 자세한
-						<br />
-						사용법이 궁금하다면?
-					</p>
 				</Link>
 			</div>
 		</section>
