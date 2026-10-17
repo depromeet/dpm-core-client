@@ -18,7 +18,7 @@ export const HomeHeader = () => {
 					</svg>
 					<div className="absolute top-1.5 right-2 h-1.5 w-1.5 rounded-full bg-red-500" />
 				</Link> */}
-				<Link href="/my-page">
+				<Link href="/my-page" data-coachmark="my-page">
 					<UserAvatar />
 				</Link>
 			</div>

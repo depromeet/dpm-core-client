@@ -16,6 +16,7 @@ export const UserActionList = () => {
 			<div className="flex gap-3">
 				<Link
 					href={USER_VOC_LINK}
+					data-coachmark="feedback"
 					target="_blank"
 					className="flex basis-1/2 rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f9faff_59.35%,#eff3ff_73.36%)] p-4 shadow-[0_0_10px_rgba(0,0,0,0.04)]"
 					onClick={() => track(CLARITY_ACTION_ID.HOME.VOC_BUTTON_CLICK)}
@@ -85,6 +86,7 @@ export const UserActionList = () => {
 				</Link>
 				<Link
 					href={USER_GUIDE_LINK}
+					data-coachmark="user-guide"
 					target="_blank"
 					className="flex basis-1/2 rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f8feff_56.78%,#effdff_73.36%)] p-4 shadow-[0_0_10px_rgba(0,0,0,0.04)]"
 				>

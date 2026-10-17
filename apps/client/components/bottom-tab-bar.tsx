@@ -135,8 +135,13 @@ const BottomTabBarItem = (props: BottomTabBarItemProps) => {
 					isActive && 'text-gray-700',
 				)}
 			>
-				{icon}
-				<span className="font-semibold text-caption1">{name}</span>
+				<span
+					data-coachmark={href === '/attendance/me' ? 'attendance-history' : undefined}
+					className="flex flex-col items-center gap-1"
+				>
+					{icon}
+					<span className="font-semibold text-caption1">{name}</span>
+				</span>
 			</Link>
 		</li>
 	);

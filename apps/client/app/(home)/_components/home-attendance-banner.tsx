@@ -53,7 +53,12 @@ export const HomeCheckAttendanceBanner = ({
 						transition={transition}
 						className="pb-5"
 					>
-						<div className="rounded-[10px] bg-background-inverse p-5">
+						<div
+							data-coachmark={
+								data.data.attendance.status === 'PENDING' ? 'attendance-check' : undefined
+							}
+							className="rounded-[10px] bg-background-inverse p-5"
+						>
 							<HomeCheckAttendanceBannerContent
 								attendanceSession={attendanceSession}
 								attendanceMeBySessionId={data.data}
