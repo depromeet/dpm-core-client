@@ -1,11 +1,12 @@
 'use client';
 
-import type { AttendanceReponse } from '@dpm-core/api';
+import type { MyAttendanceSession } from '@dpm-core/api';
+import { Accordion } from '@dpm-core/shared';
 
 import { SessionItem } from './attendance-session-item';
 
 interface AttendanceSessionListProps {
-	sessions: AttendanceReponse['sessions'];
+	sessions: MyAttendanceSession[];
 }
 
 export const AttendanceSessionList = (props: AttendanceSessionListProps) => {
@@ -13,9 +14,11 @@ export const AttendanceSessionList = (props: AttendanceSessionListProps) => {
 
 	return (
 		<section className="px-4">
-			{sessions.map((session) => (
-				<SessionItem key={session.id} {...session} />
-			))}
+			<Accordion type="single">
+				{sessions.map((session) => (
+					<SessionItem key={session.id} {...session} />
+				))}
+			</Accordion>
 		</section>
 	);
 };
