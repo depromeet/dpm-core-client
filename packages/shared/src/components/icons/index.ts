@@ -17,6 +17,7 @@ export { CopyIcon } from './copy';
 export { DpmText } from './dpm-text';
 export { Edit } from './edit';
 export { KakaoLogo } from './kakao-logo';
+export { Megaphone } from './megaphone';
 export { Notification } from './notification';
 export { Paperclip } from './paperclip';
 export { Pencil } from './pencil';

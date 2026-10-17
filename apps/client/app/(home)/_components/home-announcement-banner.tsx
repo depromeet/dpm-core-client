@@ -3,8 +3,7 @@
 import Link from 'next/link';
 import { ErrorBoundary, Suspense } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Megaphone } from 'lucide-react';
-import { Skeleton } from '@dpm-core/shared';
+import { Megaphone, Skeleton } from '@dpm-core/shared';
 
 import { getAnnouncementListQuery } from '@/remotes/queries/announcement';
 
@@ -30,9 +29,9 @@ const HomeAnnouncementBannerContainer = () => {
 		<div className="px-4 pt-5 pb-2">
 			<Link
 				href={`/announcement/${announcement.announcementId}`}
-				className="flex h-10 items-center gap-3 rounded-xl bg-primary-extralight px-3 text-body2 text-label-normal"
+				className="flex h-10 items-center gap-2 rounded-xl bg-primary-extralight px-3 text-body2 text-label-normal"
 			>
-				<Megaphone className="size-5 shrink-0 fill-primary-normal text-primary-normal" />
+				<Megaphone className="size-6 shrink-0" />
 				<span className="truncate">{announcement.title}</span>
 			</Link>
 		</div>
