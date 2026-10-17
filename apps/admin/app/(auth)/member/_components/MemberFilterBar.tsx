@@ -8,12 +8,13 @@ import { ToggleButton } from '@dpm-core/shared';
 import { getCurrentCohortTeamsQuery } from '@/remotes/queries/cohort';
 
 import { ACTIVITY_STATUS_OPTIONS, PART_OPTIONS, UNASSIGNED_TEAM_NUMBER } from '../_constants';
+import { toRealTeamNumbers } from '../_lib/team-options';
 import { MultiSelectFilter } from './MultiSelectFilter';
 
 function toTeamOptions(teams: CohortTeam[]) {
 	return [
 		{ value: String(UNASSIGNED_TEAM_NUMBER), label: '미배정' },
-		...teams.map((team) => ({ value: String(team.number), label: `${team.number}팀` })),
+		...toRealTeamNumbers(teams).map((number) => ({ value: String(number), label: `${number}팀` })),
 	];
 }
 

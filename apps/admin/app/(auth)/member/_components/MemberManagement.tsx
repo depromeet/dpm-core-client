@@ -132,13 +132,18 @@ export const MemberManagement = () => {
 	);
 
 	const handleSelectCard = (card: MemberBadgeCard) => {
-		applyBadgePreset(card);
-		setSearchInput('');
+		// 탭 버튼과 마찬가지로 요약 카드도 탭·필터를 바꾸는 이동이다. 저장하지 않은
+		// 인라인 수정이 있으면 먼저 확인을 받아야 한다 (안 그러면 탭 버튼에서만
+		// 막히고 카드를 누르면 그대로 새 조건으로 넘어가 버린다).
+		inlineEdit.guard(() => {
+			applyBadgePreset(card);
+			setSearchInput('');
 
-		const target = badges?.cards.find((item) => item.card === card);
-		if (badges && target?.hasNew) {
-			acknowledgeBadge({ card, cohortId: badges.cohortId, version: target.version });
-		}
+			const target = badges?.cards.find((item) => item.card === card);
+			if (badges && target?.hasNew) {
+				acknowledgeBadge({ card, cohortId: badges.cohortId, version: target.version });
+			}
+		});
 	};
 
 	/* -------------------------------- 승인·병합 ------------------------------- */

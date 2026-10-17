@@ -1,5 +1,6 @@
 'use client';
 
+import { forwardRef } from 'react';
 import { ChevronDown } from 'lucide-react';
 import type { MemberActivityStatus as ActivityStatus } from '@dpm-core/api';
 import { cn } from '@dpm-core/shared';
@@ -19,12 +20,14 @@ const DOT_COLOR: Record<ActivityStatus, string> = {
 /**
  * 활동 상태 셀.
  * 수료 위험은 "활동 중" 옆에 별도 배지로 붙는다 (서버가 계산하는 값이라 직접 고를 수 없다).
+ *
+ * InlineOptionSelect 의 asChild 트리거로 쓰이므로 ref 를 실제 DOM 요소에 전달해야
+ * Radix 가 드롭다운 위치를 올바르게 잴 수 있다 (MemberFieldChip 의 설명 참고).
  */
-export const MemberActivityStatus = ({
-	status,
-	editable = false,
-	onClick,
-}: MemberActivityStatusProps) => {
+export const MemberActivityStatus = forwardRef<
+	HTMLButtonElement | HTMLDivElement,
+	MemberActivityStatusProps
+>(({ status, editable = false, onClick, ...props }, ref) => {
 	const content = (
 		<>
 			<span className={cn('size-2 shrink-0 rounded-full', DOT_COLOR[status])} />
@@ -40,15 +43,24 @@ export const MemberActivityStatus = ({
 		</>
 	);
 
-	if (!editable) return <div className="flex items-center gap-1.5">{content}</div>;
+	if (!editable) {
+		return (
+			<div ref={ref as React.Ref<HTMLDivElement>} className="flex items-center gap-1.5">
+				{content}
+			</div>
+		);
+	}
 
 	return (
 		<button
+			ref={ref as React.Ref<HTMLButtonElement>}
 			type="button"
 			className="flex cursor-pointer items-center gap-1.5 rounded-lg px-1 py-1 hover:bg-background-strong"
 			onClick={onClick}
+			{...props}
 		>
 			{content}
 		</button>
 	);
-};
+});
+MemberActivityStatus.displayName = 'MemberActivityStatus';

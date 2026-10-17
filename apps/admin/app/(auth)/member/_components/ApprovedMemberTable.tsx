@@ -13,6 +13,7 @@ import {
 
 import { getCurrentCohortTeamsQuery } from '@/remotes/queries/cohort';
 
+import { toRealTeamNumbers } from '../_lib/team-options';
 import type { MemberEditableField, MemberEditableFields, MemberRow } from '../_types';
 import { ApprovedMemberRow } from './ApprovedMemberRow';
 import { MemberEmptyView } from './MemberEmptyView';
@@ -50,7 +51,7 @@ export const ApprovedMemberTable = ({
 	isSaving,
 }: ApprovedMemberTableProps) => {
 	const { data: teams } = useQuery(getCurrentCohortTeamsQuery);
-	const teamNumbers = useMemo(() => (teams ?? []).map((team) => team.number), [teams]);
+	const teamNumbers = useMemo(() => toRealTeamNumbers(teams ?? []), [teams]);
 
 	if (rows.length === 0) return <MemberEmptyView />;
 
