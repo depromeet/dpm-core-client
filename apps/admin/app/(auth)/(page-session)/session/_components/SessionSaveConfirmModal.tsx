@@ -1,5 +1,6 @@
 import {
 	Button,
+	cn,
 	Dialog,
 	DialogClose,
 	DialogContent,
@@ -14,6 +15,9 @@ interface SessionSaveConfirmModalProps {
 	onSubmit: () => void;
 	title?: string;
 	isPending?: boolean;
+	isConfirmDisabled?: boolean;
+	content?: React.ReactNode;
+	contentClassName?: string;
 }
 
 export const SessionSaveConfirmModal = ({
@@ -22,6 +26,9 @@ export const SessionSaveConfirmModal = ({
 	onSubmit,
 	title = '세션 정보를 저장할까요?',
 	isPending = false,
+	isConfirmDisabled = false,
+	content,
+	contentClassName,
 }: SessionSaveConfirmModalProps) => {
 	const handleSubmit = () => {
 		onOpenChange(false);
@@ -30,10 +37,14 @@ export const SessionSaveConfirmModal = ({
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="w-fit max-w-[calc(100%-2rem)] sm:max-w-fit" showCloseButton={false}>
+			<DialogContent
+				className={cn('w-fit max-w-[calc(100%-2rem)] sm:max-w-fit', contentClassName)}
+				showCloseButton={false}
+			>
 				<DialogHeader className="text-left">
 					<DialogTitle>{title}</DialogTitle>
 				</DialogHeader>
+				{content}
 				<DialogFooter className="w-[368px] max-w-full">
 					<DialogClose asChild>
 						<Button
@@ -49,7 +60,7 @@ export const SessionSaveConfirmModal = ({
 						variant="secondary"
 						size="lg"
 						className="h-[46px] max-w-[180px] flex-1"
-						disabled={isPending}
+						disabled={isPending || isConfirmDisabled}
 						onClick={handleSubmit}
 					>
 						저장

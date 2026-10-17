@@ -70,6 +70,11 @@ export const SessionModifyContainer = (props: SessionModifyContainerProps) => {
 			{isModifyConfirmModalOpen && SessionFormData.current && (
 				<SessionModifyConfirmModal
 					formData={SessionFormData.current}
+					initialAttendanceTimes={{
+						attendanceStart: sessionDetail.attendanceStart,
+						lateStart: sessionDetail.lateStart,
+						absentStart: sessionDetail.absentStart,
+					}}
 					sessionId={sessionId}
 					open={isModifyConfirmModalOpen}
 					onOpenChange={setIsModifyConfirmModalOpen}

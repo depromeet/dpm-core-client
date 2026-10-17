@@ -20,6 +20,7 @@ import {
 	useIsMobile,
 } from '@dpm-core/shared';
 
+import { EmptyView } from '@/components/attendance/EmptyView';
 import { Section } from '@/components/section';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { filterAttendanceMembers } from '@/lib/attendance/filterAttendanceMembers';
@@ -38,11 +39,23 @@ export const HomeAttendance = () => {
 
 	const prevSession = getPreviousSession(sessions, currentSessionWeek);
 
-	if (!prevSession || isMobile) return null;
+	if (isMobile) return null;
 
 	return (
 		<Section>
-			<AttendanceHeader session={prevSession} />
+			{prevSession ? (
+				<AttendanceHeader session={prevSession} />
+			) : (
+				<div className="mb-4 flex items-center">
+					<h3 className="font-bold text-label-normal text-title1">출석</h3>
+					<Button variant="text" className="ml-3 gap-0" asChild>
+						<Link href="/attendance/search/session">
+							전체보기
+							<ChevronRight className="size-4" />
+						</Link>
+					</Button>
+				</div>
+			)}
 			<div className="flex justify-between">
 				<div className="max-w-[270px] flex-1">
 					<SearchInput id="search" placeholder="디퍼 검색" />
@@ -50,7 +63,11 @@ export const HomeAttendance = () => {
 				<AttendanceFilter />
 			</div>
 
-			<AttendanceList sessionId={prevSession.id} />
+			{prevSession ? (
+				<AttendanceList sessionId={prevSession.id} />
+			) : (
+				<EmptyView className="mt-10 h-41.5" message="조건에 맞는 디퍼를 찾을 수 없어요" />
+			)}
 		</Section>
 	);
 };

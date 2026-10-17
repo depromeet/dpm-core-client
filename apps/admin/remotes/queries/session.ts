@@ -24,6 +24,19 @@ export const getSessionFeedbackInsightQuery = (sessionId: number) =>
 		refetchInterval: (query) => (query.state.data?.data.status === 'IN_PROGRESS' ? 5_000 : false),
 	});
 
+export const getSessionModifyPolicyQuery = (params: {
+	sessionId: number;
+	attendanceStart: string;
+	lateStart: string;
+	absentStart: string;
+}) => {
+	return queryOptions({
+		queryKey: ['session-modify-policy', params],
+		queryFn: () => session.getSessionModifyPolicy(params),
+		retry: false,
+	});
+};
+
 export const getSessionWeeks = () =>
 	queryOptions({
 		queryKey: ['sessions, weeks'],
