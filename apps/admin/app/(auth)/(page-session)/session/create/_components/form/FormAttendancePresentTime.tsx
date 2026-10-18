@@ -16,7 +16,7 @@ import {
 	Label,
 } from '@dpm-core/shared';
 
-import { subtractOneMinute } from '../../../_utils';
+import { REGEXP_HHMM, subtractOneMinute, TIME_RANGE_ERROR_MESSAGE } from '../../../_utils';
 
 export const FormAttendancePresentTime = () => {
 	const form = useFormContext();
@@ -53,6 +53,17 @@ export const FormAttendancePresentTime = () => {
 									inputMode="numeric"
 									placeholder="0000"
 									{...field}
+									onChange={(value) => {
+										field.onChange(value);
+										if (value.length === 4 && !REGEXP_HHMM.test(value)) {
+											form.setError(field.name, {
+												type: 'manual',
+												message: TIME_RANGE_ERROR_MESSAGE,
+											});
+										} else {
+											form.clearErrors(field.name);
+										}
+									}}
 								>
 									<InputOTPGroup>
 										<div className="relative left-1 flex items-center gap-1">

@@ -14,6 +14,8 @@ import {
 	Label,
 } from '@dpm-core/shared';
 
+import { REGEXP_HHMM, TIME_RANGE_ERROR_MESSAGE } from '../../../_utils';
+
 export const FormAttendanceLateTime = () => {
 	const form = useFormContext();
 
@@ -33,6 +35,17 @@ export const FormAttendanceLateTime = () => {
 									maxLength={4}
 									placeholder="0000"
 									{...field}
+									onChange={(value) => {
+										field.onChange(value);
+										if (value.length === 4 && !REGEXP_HHMM.test(value)) {
+											form.setError(field.name, {
+												type: 'manual',
+												message: TIME_RANGE_ERROR_MESSAGE,
+											});
+										} else {
+											form.clearErrors(field.name);
+										}
+									}}
 								>
 									<InputOTPGroup>
 										<div className="relative left-1 flex items-center gap-1">
@@ -80,6 +93,17 @@ export const FormAttendanceLateTime = () => {
 									inputMode="numeric"
 									placeholder="0000"
 									{...field}
+									onChange={(value) => {
+										field.onChange(value);
+										if (value.length === 4 && !REGEXP_HHMM.test(value)) {
+											form.setError(field.name, {
+												type: 'manual',
+												message: TIME_RANGE_ERROR_MESSAGE,
+											});
+										} else {
+											form.clearErrors(field.name);
+										}
+									}}
 								>
 									<InputOTPGroup>
 										<div className="relative left-1 flex items-center gap-1">
