@@ -85,23 +85,27 @@ export const FormDate = () => {
 									{...field}
 								>
 									<InputOTPGroup>
-										<InputOTPSlot
-											className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-											index={0}
-										/>
-										<InputOTPSlot
-											className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-											index={1}
-										/>
+										<div className="relative left-1 flex items-center gap-1">
+											<InputOTPSlot
+												className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+												index={0}
+											/>
+											<InputOTPSlot
+												className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+												index={1}
+											/>
+										</div>
 										<p className="mx-1 font-medium text-body2 text-label-assistive">시</p>
-										<InputOTPSlot
-											className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-											index={2}
-										/>
-										<InputOTPSlot
-											className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-											index={3}
-										/>
+										<div className="relative left-1 flex items-center gap-1">
+											<InputOTPSlot
+												className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+												index={2}
+											/>
+											<InputOTPSlot
+												className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+												index={3}
+											/>
+										</div>
 										<p className="ml-1 font-medium text-body2 text-label-assistive">분 부터</p>
 									</InputOTPGroup>
 								</InputOTP>
