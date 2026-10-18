@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { LoaderCircle, RotateCw } from 'lucide-react';
 import { Button, Label, Upload, XIcon } from '@dpm-core/shared';
 
-import { EvidencePreview } from '@/components/attendance/evidence-preview';
+import { EvidencePreview } from '@/components/attendance';
 import type { ImageUploadItem } from '@/hooks/use-image-uploads';
 
 interface AbsenceEvidenceFieldProps {

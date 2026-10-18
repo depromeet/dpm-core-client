@@ -2,7 +2,7 @@
 
 import type { ImageResponse } from '@dpm-core/api';
 
-import { EvidencePreview } from '@/components/attendance/evidence-preview';
+import { EvidencePreview } from '@/components/attendance';
 
 interface AbsenceEvidenceFilesProps {
 	images: ImageResponse[];
