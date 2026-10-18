@@ -25,7 +25,6 @@ import { Section } from '@/components/section';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
 import { filterAttendanceMembers } from '@/lib/attendance/filterAttendanceMembers';
 import { getAttendanceStatusLabel } from '@/lib/attendance/status';
-import { getPreviousSession } from '@/lib/session/getPreviousSession';
 import { useAuth } from '@/providers/auth-provider';
 import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 
@@ -35,16 +34,14 @@ import { useSession } from './session-provider';
 
 export const HomeAttendance = () => {
 	const isMobile = useIsMobile();
-	const { sessions, currentSessionWeek } = useSession();
-
-	const prevSession = getPreviousSession(sessions, currentSessionWeek);
+	const { currentSessionWeek } = useSession();
 
 	if (isMobile) return null;
 
 	return (
 		<Section>
-			{prevSession ? (
-				<AttendanceHeader session={prevSession} />
+			{currentSessionWeek ? (
+				<AttendanceHeader session={currentSessionWeek} />
 			) : (
 				<div className="mb-4 flex items-center">
 					<h3 className="font-bold text-label-normal text-title1">출석</h3>
@@ -63,8 +60,8 @@ export const HomeAttendance = () => {
 				<AttendanceFilter />
 			</div>
 
-			{prevSession ? (
-				<AttendanceList sessionId={prevSession.id} />
+			{currentSessionWeek ? (
+				<AttendanceList sessionId={currentSessionWeek.id} />
 			) : (
 				<EmptyView className="mt-10 h-41.5" message="조건에 맞는 디퍼를 찾을 수 없어요" />
 			)}
