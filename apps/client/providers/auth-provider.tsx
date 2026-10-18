@@ -16,7 +16,12 @@ interface AuthContextType {
 }
 
 const PENDING_ACCESSIBLE_PATHS = ['/pending', '/profile', '/my-page', '/rejected/edit'];
-const REJECTED_ACCESSIBLE_PATHS = ['/rejected', '/rejected/edit', '/my-page'];
+// '/pending'은 재신청 직후 상태 캐시가 아직 REJECTED로 남아있는 짧은 순간에도 튕겨내지 않기 위해 포함한다.
+// (재신청 성공 → /pending 이동 사이에 멤버 정보 재조회가 끝나지 않으면 여기서 막지 않는 한 /rejected로 되돌아간다.)
+const REJECTED_ACCESSIBLE_PATHS = ['/rejected', '/rejected/edit', '/my-page', '/pending'];
+
+/** AuthProvider가 승인 상태 판단에 쓰는 멤버 정보 쿼리 키. 상태를 바꾸는 요청(예: 재신청) 후에는 이 키를 무효화해야 AuthProvider가 바뀐 상태를 바로 반영한다. */
+export const memberAuthQueryKey = ['memberInfo', 'reissue'];
 
 const [AuthProviderContext, useAuth] = createContext<AuthContextType>('Auth', {
 	isAuthenticated: false,
@@ -49,7 +54,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		isLoading,
 		error,
 	} = useQuery({
-		queryKey: ['memberInfo', 'reissue'],
+		queryKey: memberAuthQueryKey,
 		queryFn: async () => {
 			await auth.reissue();
 
@@ -120,7 +125,14 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
       return null;
   }
 
-	if (memberInfo && memberInfo.status !== 'PENDING' && pathname === '/pending') {
+	// REJECTED는 제외한다: 재신청 직후 상태 캐시가 아직 REJECTED로 남아있는 순간에도
+	// 이 체크가 먼저 걸려 홈으로, 이어서 홈의 반려자 가드에 의해 다시 /rejected로 튕겨나가는 것을 막는다.
+	if (
+		memberInfo &&
+		memberInfo.status !== 'PENDING' &&
+		memberInfo.status !== 'REJECTED' &&
+		pathname === '/pending'
+	) {
 		return redirect('/');
 	}
 

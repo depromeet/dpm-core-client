@@ -22,25 +22,42 @@ const PART_OPTIONS: { value: SelectablePart; label: string }[] = [
 	{ value: 'SERVER', label: '서버' },
 ];
 
+interface ProfileFormProps {
+	/** 저장 성공 후 기본 이동(/pending) 대신 실행할 콜백. 반려 후 재입력처럼 저장 다음에 별도 처리가 필요할 때 쓴다. */
+	onSubmitted?: () => void;
+	/**
+	 * 서버의 완료 플래그와 무관하게 항상 수정 가능하게 한다.
+	 * 반려 후 재입력 화면처럼 이 화면에 들어왔다는 사실 자체가 수정 권한을 뜻하는 곳에서 쓴다.
+	 */
+	alwaysEditable?: boolean;
+}
+
 /**
  * 가입정보(이름/직군) 입력 폼
  * 서버가 이름·직군을 최초 1회만 받으므로, 이미 입력을 마친 값과 다른 값은 저장할 수 없다(409).
  */
-export const ProfileForm = () => {
+export const ProfileForm = ({ onSubmitted, alwaysEditable = false }: ProfileFormProps = {}) => {
 	const { data: profileResponse } = useQuery(getMyProfileQuery);
 	const profile = profileResponse?.data;
 
 	// 이전에 입력해 둔 값을 채우기 위해 프로필 조회가 끝난 뒤에 폼을 그린다.
+	// 반려 후 재입력 대상자는 이전 이름/파트가 보존되어 내려오므로 그대로 기본값으로 쓰지만,
+	// 파트를 한 번도 제출한 적 없는 최초 가입자는 서버가 내려주는 name(애플 로그인 시 애플 ID 등)을
+	// 기본값으로 쓰지 않는다.
 	if (!profile) return null;
-
-	if (profile.profileCompletionRequired) {
-		return <ProfileFields initialName="" initialPart={null} />;
-	}
 
 	const savedPart =
 		profile.part && profile.part !== 'UNASSIGNED' && profile.part !== 'ETC' ? profile.part : null;
+	const hasPreviousSubmission = savedPart !== null;
 
-	return <ProfileFields initialName={profile.name} initialPart={savedPart} isReadOnly />;
+	return (
+		<ProfileFields
+			initialName={hasPreviousSubmission ? profile.name : ''}
+			initialPart={savedPart}
+			isReadOnly={!alwaysEditable && !profile.profileCompletionRequired}
+			onSubmitted={onSubmitted}
+		/>
+	);
 };
 
 interface ProfileFieldsProps {
@@ -48,9 +65,15 @@ interface ProfileFieldsProps {
 	initialPart: SelectablePart | null;
 	/** 이미 입력을 마친 회원은 서버가 변경을 받지 않으므로(409) 값을 고칠 수 없게 한다. */
 	isReadOnly?: boolean;
+	onSubmitted?: () => void;
 }
 
-const ProfileFields = ({ initialName, initialPart, isReadOnly = false }: ProfileFieldsProps) => {
+const ProfileFields = ({
+	initialName,
+	initialPart,
+	isReadOnly = false,
+	onSubmitted,
+}: ProfileFieldsProps) => {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 	const [name, setName] = useState(initialName);
@@ -73,7 +96,11 @@ const ProfileFields = ({ initialName, initialPart, isReadOnly = false }: Profile
 						queryClient.invalidateQueries({ queryKey: getMyMemberInfoQuery.queryKey }),
 						queryClient.invalidateQueries({ queryKey: getMyProfileQuery.queryKey }),
 					]);
-					router.replace('/pending');
+					if (onSubmitted) {
+						onSubmitted();
+					} else {
+						router.replace('/pending');
+					}
 				},
 				onError: (error) => {
 					const status = error.response?.status;
