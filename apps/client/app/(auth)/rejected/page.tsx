@@ -1,25 +1,12 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
-import { Button, CircleAlert, toast } from '@dpm-core/shared';
+import { Button, CircleAlert } from '@dpm-core/shared';
 
 import { SafeAreaAppLayout } from '@/components/app-layout';
-import { reapplyMembershipMutationOptions } from '@/remotes/mutations/member';
 
 export default function RejectedPage() {
 	const router = useRouter();
-
-	const { mutate: reapply, isPending } = useMutation(
-		reapplyMembershipMutationOptions({
-			onSuccess: () => {
-				router.push('/rejected/edit');
-			},
-			onError: () => {
-				toast.error('재신청에 실패했어요. 다시 시도해주세요.');
-			},
-		}),
-	);
 
 	return (
 		<SafeAreaAppLayout className="h-dvh bg-white">
@@ -46,8 +33,7 @@ export default function RejectedPage() {
 					variant="secondary"
 					size="full"
 					className="h-12 rounded-lg"
-					disabled={isPending}
-					onClick={() => reapply()}
+					onClick={() => router.push('/rejected/edit')}
 				>
 					개인정보 수정하기
 				</Button>
