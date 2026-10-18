@@ -14,25 +14,6 @@ export const withdrawMutationOptions = (options: WithdrawMutationOptions) =>
 		...options,
 	});
 
-interface ApproveWhitelistParams {
-	signupEmail: string;
-	name: string;
-}
-
-type ApproveWhitelistOptions = MutationOptions<
-	unknown,
-	HTTPError<ApiErrorReponse>,
-	ApproveWhitelistParams,
-	unknown
->;
-
-export const approveWhitelistMutationOptions = (options: ApproveWhitelistOptions) =>
-	mutationOptions({
-		mutationKey: ['whitelist'],
-		mutationFn: (params: ApproveWhitelistParams) => member.approveWhitelistForSignup(params),
-		...options,
-	});
-
 type UpdateMyProfileOptions = MutationOptions<
 	unknown,
 	HTTPError<ApiErrorReponse>,

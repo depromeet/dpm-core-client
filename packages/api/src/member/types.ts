@@ -18,24 +18,6 @@ export interface MemberOverviewItem {
 	part: MemberOverviewPart;
 }
 
-/** Client - PATCH /v1/members/whitelist (signup 승인) */
-export interface ApproveWhitelistForSignupRequest {
-	signupEmail: string;
-	name: string;
-}
-
-/** Admin - PATCH /v1/members/whitelist (멤버 일괄 승인) */
-export interface ApproveWhitelistRequest {
-	members: number[];
-}
-
-export interface ApproveWhitelistResponse {
-	status: string;
-	message: string;
-	code: string;
-	data: string;
-}
-
 export interface MembersOverviewResponse {
 	members: MemberOverviewItem[];
 }

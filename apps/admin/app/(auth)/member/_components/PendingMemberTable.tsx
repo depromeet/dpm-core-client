@@ -69,7 +69,10 @@ export const PendingMemberTable = ({
 			</TableHeader>
 			<TableBody>
 				{rows.map((row) => (
-					<TableRow key={row.id} className="h-17.5 border-line-subtle">
+					<TableRow
+						key={row.id}
+						className="h-17.5 border-line-subtle hover:bg-background-strong/40"
+					>
 						<TableCell className="w-12 px-3 [&:has([role=checkbox])]:pr-0">
 							<TableCheckbox
 								checked={isSelected(row.id)}

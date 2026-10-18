@@ -54,7 +54,10 @@ export const MultiSelectFilter = <T extends string>({
 					isSelected={value.length > 0}
 				/>
 			</PopoverTrigger>
-			<PopoverContent align="start" className="w-auto border-0 p-0 shadow-none">
+			<PopoverContent
+				align="start"
+				className="w-auto border-0 bg-background-normal p-0 shadow-none"
+			>
 				<FilterPopover
 					className="w-60"
 					title={title}

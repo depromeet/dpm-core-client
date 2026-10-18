@@ -69,7 +69,12 @@ export const ApprovedMemberRow = ({
 	];
 
 	return (
-		<TableRow className={cn('h-17.5 border-line-subtle', isSelected && 'bg-background-strong/60')}>
+		<TableRow
+			className={cn(
+				'h-17.5 border-line-subtle hover:bg-background-strong/40',
+				isSelected && 'bg-background-strong/60',
+			)}
+		>
 			<TableCell className="w-12 px-3 [&:has([role=checkbox])]:pr-0">
 				<TableCheckbox
 					checked={isSelected}
