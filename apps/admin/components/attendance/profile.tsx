@@ -6,19 +6,20 @@ import { cohort } from '@/constants/cohort';
 import { getMemberPartLabel } from '@/lib/member/part';
 import { isExistPart } from '@/lib/utils';
 
-interface ProfileProps extends React.ComponentProps<'div'> {
-	part: Part;
+interface ProfileProps {
+	part: Part | null;
 	name: string;
-	teamNumber: number;
+	teamNumber: number | null;
+	inline?: boolean;
 	isAdmin?: boolean;
 	size?: number;
 }
 
 export const Profile = (props: ProfileProps) => {
-	const { part, name, teamNumber, isAdmin = false, size = 40 } = props;
+	const { part, name, teamNumber, isAdmin = false, size = 40, inline = false } = props;
 
-	const teamLabel = teamNumber === 0 ? '팀 미배정' : `${teamNumber}팀`;
-	const partLabel = isExistPart(part) ? getMemberPartLabel(part) : '파트 미배정';
+	const teamLabel = teamNumber === null || teamNumber === 0 ? '팀 미배정' : `${teamNumber}팀`;
+	const partLabel = isExistPart(part) ? getMemberPartLabel(part) : '미배정';
 
 	const metaItems = [isAdmin && '운영진', teamLabel, partLabel].filter(Boolean);
 
@@ -32,7 +33,7 @@ export const Profile = (props: ProfileProps) => {
 					alt={`${part}_프로필_이미지`}
 				/>
 			</div>
-			<div className="flex flex-col gap-0.5">
+			<div className={cn('flex gap-0.5', inline ? 'flex-row items-center gap-4' : 'flex-col')}>
 				<span className="font-semibold text-body1">{name}</span>
 				<div className="flex flex-wrap gap-1.5 font-medium text-caption1 text-label-assistive">
 					{metaItems.map((item, idx) => (

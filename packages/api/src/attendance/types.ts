@@ -1,11 +1,5 @@
 import type { Part } from '../member';
-export type AttendanceStatus =
-	| 'PRESENT'
-	| 'LATE'
-	| 'ABSENT'
-	| 'EXCUSED_ABSENT'
-	| 'PENDING'
-	| 'EARLY_LEAVE';
+export type AttendanceStatus = 'PRESENT' | 'LATE' | 'ABSENT' | 'EXCUSED_ABSENT' | 'PENDING';
 export type MemberAttendanceStatus = 'NORMAL' | 'AT_RISK' | 'IMPOSSIBLE';
 
 export interface AttendanceSession {
@@ -22,7 +16,7 @@ export interface AttendanceMember {
 	name: string;
 	teamNumber: number;
 	isAdmin: boolean;
-	part: Exclude<Part, 'ETC'>;
+	part: Exclude<Part, 'ETC'> | null;
 	attendanceStatus: MemberAttendanceStatus;
 }
 
@@ -31,7 +25,6 @@ export interface Attendance {
 	lateCount: number;
 	excusedAbsentCount: number;
 	absentCount: number;
-	earlyLeaveCount: number;
 }
 
 export interface AttendanceReponse {
@@ -44,22 +37,22 @@ export interface AttendanceBySessionIdReponse {
 	member: AttendanceMember;
 	attendance: {
 		status: AttendanceStatus;
-		attendedAt: string;
-		updatedAt: string;
+		attendedAt: string | null;
+		updatedAt: string | null;
 	};
-	session: AttendanceSession;
+	session: Pick<AttendanceSession, 'id' | 'week' | 'eventName' | 'date'>;
 }
 
 export interface MyAttendanceBySessionIdResponse {
 	attendance: {
 		status: AttendanceStatus;
-		attendedAt: string;
+		attendedAt: string | null;
 	};
 	session: {
 		week: number;
 		eventName: string;
 		date: string;
-		place: string | null;
+		place: string;
 	};
 }
 
@@ -73,7 +66,7 @@ export interface AttendanceBySessionMember {
 	name: string;
 	teamNumber: number | null;
 	isAdmin: boolean;
-	part: Exclude<Part, 'ETC'>;
+	part: Exclude<Part, 'ETC'> | null;
 	attendanceStatus: AttendanceStatus;
 	attendedAt: string | null;
 	isManuallyUpdated: boolean;
@@ -115,9 +108,11 @@ export interface AbsenceReason {
 	memberId: number;
 	memberName: string;
 	contents: string;
-	status: ExcuseDocumentStatus;
-	createdAt: string;
-	updatedAt: string;
+	status: AbsenceReasonStatus;
+	imageIds: number[];
+	images: ImageResponse[];
+	createdAt: string | null;
+	updatedAt: string | null;
 }
 
 export interface AbsenceReasonsResponse {

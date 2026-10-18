@@ -1,20 +1,23 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { AttendanceStatus } from '@dpm-core/api';
-import { gaTrackAttendanceOverride, toast } from '@dpm-core/shared';
+import { gaTrackAttendanceOverride } from '@dpm-core/shared';
 
+import { toast } from '@/lib/toast';
 import { modifyAttendanceStatusOptions } from '@/remotes/mutations/attendance';
 
 interface UseAttendanceStatusEditParams {
 	sessionId: number;
 	memberId: number;
 	initialStatus: AttendanceStatus;
+	successMessage?: string;
 }
 
 export const useAttendanceStatusEdit = ({
 	sessionId,
 	memberId,
 	initialStatus,
+	successMessage = '출석 정보를 저장했습니다.',
 }: UseAttendanceStatusEditParams) => {
 	const [isEditMode, setIsEditMode] = useState(false);
 	const [selectedStatus, setSelectedStatus] = useState<AttendanceStatus>(initialStatus);
@@ -31,18 +34,24 @@ export const useAttendanceStatusEdit = ({
 					selectedStatus,
 				);
 
-				queryClient.invalidateQueries({
+				await queryClient.invalidateQueries({
 					queryKey: ['ATTENDANCE'],
 				});
 
-				toast.success('출석 정보를 저장했습니다.');
+				toast.success(successMessage);
 				setIsEditMode(false);
 			},
+			onError: () => toast.error('출석 정보 수정에 실패했습니다.'),
 		}),
 	);
 
+	const handleEdit = () => {
+		setSelectedStatus(initialStatus);
+		setIsEditMode(true);
+	};
+
 	const handleSave = () => {
-		modifyStatus({ attendanceStatus: selectedStatus });
+		if (!isPending) modifyStatus({ attendanceStatus: selectedStatus });
 	};
 
 	const handleCancel = () => {
@@ -54,7 +63,7 @@ export const useAttendanceStatusEdit = ({
 		isEditMode,
 		selectedStatus,
 		setSelectedStatus,
-		setIsEditMode,
+		handleEdit,
 		handleSave,
 		handleCancel,
 		isLoading: isPending,

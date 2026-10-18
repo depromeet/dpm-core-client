@@ -133,6 +133,10 @@ export interface SessionWeek {
 	id: Session['id'];
 	week: Session['week'];
 	date: Session['date'];
+	eventName: string;
+	place: string;
+	isOnline: boolean;
+	attendanceStatus: 'NOT_STARTED' | 'IN_PROGRESS' | 'CLOSED';
 }
 
 export interface SessionTargeted {

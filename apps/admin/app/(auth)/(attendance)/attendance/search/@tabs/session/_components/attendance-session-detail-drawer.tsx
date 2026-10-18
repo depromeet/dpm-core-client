@@ -1,14 +1,14 @@
 'use client';
 
 import { Suspense } from 'react';
-import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
-import { ErrorBoundary } from '@suspensive/react';
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { useQueryErrorResetBoundary, useSuspenseQueries } from '@tanstack/react-query';
 import { Sheet, SheetContent } from '@dpm-core/shared';
 
+import { EvidencePreview } from '@/components/attendance';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
-import { useAttendanceStatusEdit } from '@/hooks/use-attendance-status-edit';
+import { useAttendanceStatusEdit } from '@/hooks';
 import {
 	getAbsenceReasonsOptions,
 	getAttendanceBySessionDetailOptions,
@@ -25,32 +25,34 @@ interface AttendanceSessionDetailDrawerProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 }
-
-const _AttendanceSessionDetailContent = ({
-	memberId,
-	sessionId,
-}: {
+interface AttendanceSessionDetailContentProps {
 	memberId: number;
 	sessionId: number;
-}) => {
-	const { data: sessionDetail } = useSuspenseQuery(
-		getAttendanceBySessionDetailOptions({ memberId, sessionId }),
-	);
-	const { data: absenceReasonsData } = useQuery({
-		...getAbsenceReasonsOptions({ sessionId }),
-		enabled: !!sessionId,
+}
+
+function AttendanceSessionDetailContent({
+	memberId,
+	sessionId,
+}: AttendanceSessionDetailContentProps) {
+	const [detailQuery, reasonsQuery] = useSuspenseQueries({
+		queries: [
+			getAttendanceBySessionDetailOptions({ memberId, sessionId }),
+			getAbsenceReasonsOptions({ sessionId }),
+		],
 	});
+	const data = detailQuery.data.data;
+	const reasons = reasonsQuery.data.data;
+	const reason = reasons.reasons.find((item) => item.memberId === memberId);
 
-	const { data } = sessionDetail;
-	const absenceReason =
-		absenceReasonsData?.data.reasons.find((r) => r.memberId === memberId)?.contents ?? null;
-
-	const { isEditMode, selectedStatus, setSelectedStatus, setIsEditMode, handleSave, handleCancel } =
-		useAttendanceStatusEdit({
-			sessionId,
-			memberId,
-			initialStatus: data.attendance.status,
-		});
+	const {
+		isEditMode,
+		selectedStatus,
+		setSelectedStatus,
+		handleEdit,
+		handleSave,
+		handleCancel,
+		isLoading,
+	} = useAttendanceStatusEdit({ sessionId, memberId, initialStatus: data.attendance.status });
 
 	return (
 		<div className="flex-1 overflow-y-auto px-10 py-6">
@@ -60,7 +62,6 @@ const _AttendanceSessionDetailContent = ({
 				teamNumber={data.member.teamNumber}
 				isAdmin={data.member.isAdmin}
 			/>
-
 			<AttendanceStatusSection
 				isEditMode={isEditMode}
 				selectedStatus={selectedStatus}
@@ -70,11 +71,30 @@ const _AttendanceSessionDetailContent = ({
 				onStatusChange={setSelectedStatus}
 				onSave={handleSave}
 				onCancel={handleCancel}
-				onEdit={() => setIsEditMode(true)}
-				isSaveDisabled={selectedStatus === data.attendance.status}
-				absenceReason={absenceReason}
+				onEdit={handleEdit}
+				isSaveDisabled={isLoading || selectedStatus === data.attendance.status}
+				isSaving={isLoading}
+				absenceReason={reason?.contents ?? null}
 			/>
-
+			{reason && reason.images.length > 0 ? (
+				<section className="mb-6">
+					<h3 className="mb-3 font-semibold text-body1">첨부 자료</h3>
+					<ul className="flex flex-wrap gap-2">
+						{reason.images.map((image, index) => (
+							<li
+								key={image.imageId}
+								className="max-w-full rounded-md bg-background-subtle px-3 py-2 text-caption1"
+							>
+								<EvidencePreview
+									imageId={image.imageId}
+									fileName={image.fileName}
+									sequence={index + 1}
+								/>
+							</li>
+						))}
+					</ul>
+				</section>
+			) : null}
 			<SessionInfoSection
 				week={data.session.week}
 				eventName={data.session.eventName}
@@ -82,26 +102,31 @@ const _AttendanceSessionDetailContent = ({
 			/>
 		</div>
 	);
-};
+}
 
-export const AttendanceSessionDetailDrawer = ({
+export function AttendanceSessionDetailDrawer({
 	memberId,
 	sessionId,
 	open,
 	onOpenChange,
-}: AttendanceSessionDetailDrawerProps) => {
+}: AttendanceSessionDetailDrawerProps) {
+	const { reset } = useQueryErrorResetBoundary();
+
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
-			<SheetContent side="right" className="w-full gap-0 border-none p-0 sm:max-w-150">
+			<SheetContent side="right" className="w-full max-w-150! gap-0 border-none p-0">
 				<AttendanceDetailHeader title="출석 상세" />
 				<ErrorBoundary
-					fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
+					onReset={reset}
+					fallback={({ reset: resetError }: ErrorBoundaryFallbackProps) => (
+						<ErrorBox onReset={resetError} />
+					)}
 				>
 					<Suspense fallback={<LoadingBox />}>
-						<_AttendanceSessionDetailContent memberId={memberId} sessionId={sessionId} />
+						<AttendanceSessionDetailContent memberId={memberId} sessionId={sessionId} />
 					</Suspense>
 				</ErrorBoundary>
 			</SheetContent>
 		</Sheet>
 	);
-};
+}

@@ -14,6 +14,7 @@ export * from './components/filter-popover';
 export * from './components/google-analytics';
 export * from './components/icon-button';
 export * from './components/icons';
+export * from './components/image-preview';
 export * from './components/member-profile';
 export * from './components/modals';
 export * from './components/multi-action-toolbar';
