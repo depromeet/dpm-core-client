@@ -47,48 +47,13 @@ export const attendance = {
 	},
 
 	// 사람별 출석 리스트 조회
-	getAttendanceByMember: async (params: {
-		statuses?: string[];
-		teams?: number[];
-		name?: string;
-		cursorId: number;
-		size?: number;
-	}) => {
-		const { statuses, teams, name, cursorId, size } = params;
-		const searchParams = new URLSearchParams();
-
-		if (statuses && statuses.length > 0) {
-			statuses.forEach((status) => {
-				searchParams.append('statuses', status);
-			});
-		}
-
-		if (teams && teams.length > 0) {
-			teams.forEach((team) => {
-				searchParams.append('teams', team.toString());
-			});
-		}
-
-		if (name) {
-			searchParams.set('name', name);
-		}
-
-		searchParams.set('cursorId', cursorId.toString());
-
-		if (size) {
-			searchParams.set('size', size.toString());
-		}
-
-		const res = await http.get<AttendanceByMemberReponse>(`v1/members/attendances`, {
-			searchParams,
-		});
-		return res;
+	getAttendanceByMember: () => {
+		return http.get<AttendanceByMemberReponse>('v3/members/attendances');
 	},
 
 	// 사람별 출석 상세 조회
-	getAttendanceByMemberDetail: async (params: { memberId: number }) => {
-		const { memberId } = params;
-		return await http.get<AttendanceReponse>(`v1/members/${memberId}/attendances`);
+	getAttendanceByMemberDetail: ({ memberId }: { memberId: number }) => {
+		return http.get<AttendanceReponse>(`v3/members/${memberId}/attendances`);
 	},
 
 	// 세션별 개인 출석 상세 조회
