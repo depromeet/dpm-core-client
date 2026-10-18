@@ -34,7 +34,6 @@ const ATTENDANCE_FILTER = [
 	{ label: '지각', value: 'LATE' },
 	{ label: '인정', value: 'EXCUSED_ABSENT' },
 	{ label: '결석', value: 'ABSENT' },
-	{ label: '조퇴', value: 'EARLY_LEAVE' },
 	{ label: '미출석', value: 'PENDING' },
 ] as const;
 const TEAM_FILTER = ['1', '2', '3', '4', '5', '6'];

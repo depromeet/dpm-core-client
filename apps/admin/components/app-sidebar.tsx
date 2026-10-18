@@ -4,10 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import type { ComponentType } from 'react';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import type { Part } from '@dpm-core/api';
 import {
 	Button,
+	ChevronDown,
 	ChevronRight,
 	cn,
 	Dialog,
@@ -34,6 +35,9 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarMenuSub,
+	SidebarMenuSubButton,
+	SidebarMenuSubItem,
 	SidebarSeparator,
 	TextLogo,
 	useIsTablet,
@@ -45,7 +49,6 @@ import { isExistPart } from '@/lib/utils';
 import { useAuth } from '@/providers/auth-provider';
 import { logoutMutationOptions } from '@/remotes/mutations/auth';
 import { withdrawMutationOptions } from '@/remotes/mutations/member';
-import { getSessionWeeks } from '@/remotes/queries/session';
 
 const ICON_COLOR_ACTIVE = '#374151';
 const ICON_COLOR_INACTIVE = '#D1D5DB';
@@ -481,17 +484,12 @@ interface AttendanceSideBarItemProps {
 }
 
 const AttendanceSideBarItem = (props: AttendanceSideBarItemProps) => {
-	const {
-		data: { data: sessionWeek },
-	} = useSuspenseQuery(getSessionWeeks());
+	const pathname = usePathname();
 
 	return (
 		<SidebarMenuItem>
 			<SidebarMenuButton asChild className="h-auto gap-1 p-2 lg:h-12">
-				<Link
-					href={`${props.href}?week=${sessionWeek?.sessions[0]?.id}`}
-					className="flex flex-col gap-2 lg:flex-row lg:gap-3"
-				>
+				<Link href={props.href} className="flex flex-col gap-2 lg:flex-row lg:gap-3">
 					<props.icon active={props.active} />
 					<span
 						className={cn(
@@ -501,8 +499,35 @@ const AttendanceSideBarItem = (props: AttendanceSideBarItemProps) => {
 					>
 						{props.title}
 					</span>
+					<ChevronDown className="ml-auto hidden size-4 md:block" />
 				</Link>
 			</SidebarMenuButton>
+			{props.active && (
+				<SidebarMenuSub className="mx-0 hidden border-0 px-0 pl-8 md:block">
+					{[
+						{ href: props.href, label: '세션별', path: '/attendance/search/session' },
+						{
+							href: '/attendance/search/people',
+							label: '사람별',
+							path: '/attendance/search/people',
+						},
+					].map((item) => (
+						<SidebarMenuSubItem key={item.path}>
+							<SidebarMenuSubButton
+								asChild
+								className={cn(
+									'h-10 text-caption1',
+									pathname === item.path
+										? 'font-semibold text-label-normal'
+										: 'text-label-assistive',
+								)}
+							>
+								<Link href={item.href}>{item.label}</Link>
+							</SidebarMenuSubButton>
+						</SidebarMenuSubItem>
+					))}
+				</SidebarMenuSub>
+			)}
 		</SidebarMenuItem>
 	);
 };

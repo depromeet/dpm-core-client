@@ -23,9 +23,10 @@ export const ATTENDANCE_MEMBER_LABEL_MAP: Record<MemberAttendanceStatus, string>
 
 export const ATTENDANCE_STATUS_OPTIONS = [
 	{ label: '출석', value: 'PRESENT' as const },
-	{ label: '결석', value: 'ABSENT' as const },
 	{ label: '지각', value: 'LATE' as const },
+	{ label: '결석', value: 'ABSENT' as const },
 	{ label: '인정', value: 'EXCUSED_ABSENT' as const },
+	{ label: '미출석', value: 'PENDING' as const },
 ];
 
 export const ATTENDANCE_STATUS_MAP = {

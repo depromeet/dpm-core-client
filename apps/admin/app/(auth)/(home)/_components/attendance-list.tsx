@@ -5,8 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { Part } from '@dpm-core/api';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@dpm-core/shared';
 
-import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
-import { EmptyView } from '@/components/attendance/EmptyView';
+import { AttendanceStatusLabel, EmptyView } from '@/components/attendance';
 import { LoadingBox } from '@/components/loading-box';
 import { cohort } from '@/constants/cohort';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';

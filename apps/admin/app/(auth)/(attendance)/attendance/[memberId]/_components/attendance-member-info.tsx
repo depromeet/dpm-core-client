@@ -1,7 +1,7 @@
 import type { Attendance, AttendanceMember } from '@dpm-core/api';
 import { Badge } from '@dpm-core/shared';
 
-import { Profile } from '@/components/attendance/profile';
+import { Profile } from '@/components/attendance';
 import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
 
 interface AttendanceMemberInfoProps {

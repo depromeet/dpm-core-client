@@ -1,167 +1,191 @@
-import Link from 'next/link';
-import { useState } from 'react';
-import type { AttendanceStatus, ExcuseDocumentStatus } from '@dpm-core/api';
-import { Checkbox } from '@dpm-core/shared';
+'use client';
 
-import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
-import { EmptyView } from '@/components/attendance/EmptyView';
-import { ExcuseDocumentCell } from '@/components/attendance/ExcuseDocumentCell';
-import { Profile } from '@/components/attendance/profile';
-import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
+import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { type AttendanceBySessionMember, type AttendanceStatus, attendance } from '@dpm-core/api';
+import {
+	ATTENDANCE_STATUS_OPTIONS,
+	Button,
+	ChevronDown,
+	cn,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+	formatTimeOnly,
+	TableCheckbox,
+} from '@dpm-core/shared';
+
+import { AttendanceStatusLabel, EmptyView, Profile } from '@/components/attendance';
+import { toast } from '@/lib/toast';
+import { ATTENDANCE_QUERY_KEY } from '@/remotes/queries/attendance';
 
 import { AttendanceSessionDetailDrawer } from './attendance-session-detail-drawer';
 
-interface AttendanceMember {
-	id: number;
-	name: string;
-	teamNumber: number;
-	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER' | null;
-	attendanceStatus: AttendanceStatus;
-	isAdmin: boolean;
-	excuseDocumentStatus: ExcuseDocumentStatus;
-}
-
 interface AttendanceListProps {
-	data: AttendanceMember[];
+	data: AttendanceBySessionMember[];
+	sessionId: number;
 	selectedIds: number[];
 	onToggleItem: (id: number) => void;
 	onToggleAll: () => void;
 	isAllSelected: boolean;
 }
 
-const AttendanceList = ({
+interface AttendanceStatusSelectProps {
+	member: AttendanceBySessionMember;
+	sessionId: number;
+}
+
+function AttendanceStatusSelect({ member, sessionId }: AttendanceStatusSelectProps) {
+	const queryClient = useQueryClient();
+
+	const mutation = useMutation({
+		mutationFn: (attendanceStatus: AttendanceStatus) =>
+			attendance.modifyAttendanceStatus({ sessionId, memberId: member.id, attendanceStatus }),
+		onSuccess: async () => {
+			await queryClient.invalidateQueries({ queryKey: [ATTENDANCE_QUERY_KEY] });
+			toast.success('출석 정보를 저장했습니다.');
+		},
+		onError: () => toast.error('출석 정보 수정에 실패했습니다.'),
+	});
+
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Button variant="none" size="none" disabled={mutation.isPending} className="gap-2 py-2">
+					<AttendanceStatusLabel status={member.attendanceStatus} />
+					<ChevronDown className="size-4 text-label-assistive" />
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent
+				align="start"
+				className="w-55 rounded-lg border-0 bg-background-normal p-2 text-label-normal shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] ring-1 ring-line-normal ring-inset"
+			>
+				{ATTENDANCE_STATUS_OPTIONS.map((option) => (
+					<DropdownMenuItem
+						key={option.value}
+						onSelect={() => {
+							if (option.value !== member.attendanceStatus) mutation.mutate(option.value);
+						}}
+						className={cn(
+							'h-8 justify-between py-0 focus:bg-background-strong',
+							option.value === member.attendanceStatus && 'bg-background-strong',
+						)}
+					>
+						<AttendanceStatusLabel status={option.value} />
+						{option.value === member.attendanceStatus ? (
+							<span className="text-caption1 text-label-assistive">선택됨</span>
+						) : null}
+					</DropdownMenuItem>
+				))}
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+}
+
+export default function AttendanceList({
 	data,
+	sessionId,
 	selectedIds,
 	onToggleItem,
 	onToggleAll,
 	isAllSelected,
-}: AttendanceListProps) => {
-	const customSearchParams = useCustomSearchParams();
-	const searchParams = customSearchParams.getAll();
-
-	const [selectedMember, setSelectedMember] = useState<{
-		memberId: number;
-		sessionId: number;
-	} | null>(null);
-	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-	const handleDesktopRowClick = (memberId: number) => {
-		setSelectedMember({ memberId, sessionId: Number(searchParams.week) });
-		setIsDrawerOpen(true);
-	};
+}: AttendanceListProps) {
+	const [memberId, setMemberId] = useState<number | null>(null);
 
 	if (data.length === 0) {
-		return (
-			<div className="md:flex md:min-h-100 md:items-center md:justify-center">
-				<EmptyView message="조건에 맞는 디퍼를 찾을 수 없어요" />
-			</div>
-		);
+		return <EmptyView className="min-h-0" message="조건에 맞는 디퍼가 없어요." />;
 	}
 
 	return (
-		<>
-			{/* Mobile view (< 768px) */}
-			<section className="relative mt-2 mb-15 flex-1 flex-col px-4 md:hidden">
-				{data.map((member, index) => {
-					return (
-						<Link
-							href={`/attendance/${member.id}/${searchParams.week}`}
-							className="flex justify-between py-3"
-							key={`${member.id}-${index}`}
-						>
-							<Profile
-								size={40}
-								name={member.name}
-								teamNumber={member.teamNumber ?? 0}
-								part={member.part}
-								isAdmin={member.isAdmin}
-							/>
-							<AttendanceStatusLabel status={member.attendanceStatus} />
-						</Link>
-					);
-				})}
-			</section>
-
-			{/* Desktop view (>= 768px) */}
-			<section className="relative mx-auto mb-15 hidden max-w-300 px-10 md:block">
-				<div className="overflow-auto">
-					<div className="flex items-center bg-gray-50 py-2.5 pr-5 pl-5">
-						<div className="flex flex-1 items-center gap-4">
-							<Checkbox
+		<section className="min-h-0 flex-1 overflow-auto px-10 pb-24">
+			<table className="w-full min-w-200 table-fixed border-collapse text-left">
+				<colgroup>
+					<col className="w-10" />
+					<col className="w-[36%]" />
+					<col className="w-[18%]" />
+					<col className="w-[16%]" />
+					<col />
+				</colgroup>
+				<thead className="bg-background-subtle font-medium text-caption1 text-label-subtle">
+					<tr className="h-10">
+						<th className="pl-3">
+							<TableCheckbox
+								className="size-4"
 								checked={isAllSelected}
 								onCheckedChange={onToggleAll}
-								className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
-								aria-label="전체 선택"
+								title="전체 선택"
 							/>
-							<span className="font-medium text-body2 text-label-subtle">멤버 정보</span>
-						</div>
-						<span className="w-30 shrink-0 font-medium text-body2 text-label-subtle">
-							결석 사유서
-						</span>
-						<span className="w-50 shrink-0 font-medium text-body2 text-label-subtle">
-							출석 상태
-						</span>
-					</div>
-
-					{data.map((member, index) => {
-						const isChecked = selectedIds.includes(member.id);
-						return (
-							// biome-ignore lint/a11y/useSemanticElements: Checkbox가 버튼 컴포넌트임으로 nested button 이슈를 해결하기 위해 div role button을 사용
-							<div
-								key={`${member.id}-${index}`}
-								role="button"
-								tabIndex={0}
-								onClick={() => handleDesktopRowClick(member.id)}
-								onKeyDown={(e) => {
-									if (e.target !== e.currentTarget) {
-										return;
-									}
-									if (e.key === 'Enter' || e.key === ' ') {
-										e.preventDefault();
-										handleDesktopRowClick(member.id);
-									}
-								}}
-								className="flex w-full cursor-pointer items-center border-gray-200 border-b py-5 pr-5 pl-5 text-left transition-colors hover:bg-gray-50"
-							>
-								<div className="flex flex-1 items-center gap-4">
-									<Checkbox
-										checked={isChecked}
-										onCheckedChange={() => onToggleItem(member.id)}
-										className="size-4 cursor-pointer rounded-sm border-line-normal text-gray-0 shadow-none data-[state=checked]:bg-primary-normal"
-										aria-label={`${member.name} 선택`}
-										onClick={(e) => e.stopPropagation()}
-										onKeyDown={(e) => e.stopPropagation()}
-									/>
-									<Profile
-										size={40}
-										name={member.name}
-										teamNumber={member.teamNumber}
-										part={member.part}
-										isAdmin={member.isAdmin}
-									/>
-								</div>
-								<div className="w-30 shrink-0">
-									<ExcuseDocumentCell status={member.excuseDocumentStatus} />
-								</div>
-								<AttendanceStatusLabel
-									className="w-50 shrink-0 justify-items-start"
-									status={member.attendanceStatus}
+						</th>
+						<th className="font-medium">멤버 정보</th>
+						<th className="font-medium">출석 상태</th>
+						<th className="font-medium">출석 시간</th>
+						<th className="font-medium">결석 사유서</th>
+					</tr>
+				</thead>
+				<tbody>
+					{data.map((member) => (
+						<tr key={member.id} className="h-17.5 border-line-subtle border-b text-body2">
+							<td className="pl-3">
+								<TableCheckbox
+									className="size-4"
+									checked={selectedIds.includes(member.id)}
+									onCheckedChange={() => onToggleItem(member.id)}
+									title={`${member.name} 선택`}
 								/>
-							</div>
-						);
-					})}
-				</div>
-				{selectedMember && (
-					<AttendanceSessionDetailDrawer
-						memberId={selectedMember.memberId}
-						sessionId={selectedMember.sessionId}
-						open={isDrawerOpen}
-						onOpenChange={setIsDrawerOpen}
-					/>
-				)}
-			</section>
-		</>
+							</td>
+							<td>
+								<button
+									type="button"
+									onClick={() => setMemberId(member.id)}
+									className="cursor-pointer py-3 text-left"
+								>
+									<Profile
+										name={member.name}
+										part={member.part}
+										teamNumber={member.teamNumber}
+										isAdmin={member.isAdmin}
+										size={40}
+										inline
+									/>
+								</button>
+							</td>
+							<td>
+								<AttendanceStatusSelect member={member} sessionId={sessionId} />
+							</td>
+							<td className="text-label-subtle">
+								{member.attendedAt !== null && !member.isManuallyUpdated
+									? formatTimeOnly(member.attendedAt)
+									: '-'}
+							</td>
+							<td className="pr-3 text-label-subtle">
+								{member.absenceReason !== null ? (
+									<button
+										type="button"
+										className="line-clamp-2 cursor-pointer break-all text-left"
+										onClick={() => setMemberId(member.id)}
+									>
+										{member.absenceReason}
+									</button>
+								) : (
+									'-'
+								)}
+							</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+			{memberId !== null ? (
+				<AttendanceSessionDetailDrawer
+					key={memberId}
+					memberId={memberId}
+					sessionId={sessionId}
+					open
+					onOpenChange={(open) => {
+						if (!open) setMemberId(null);
+					}}
+				/>
+			) : null}
+		</section>
 	);
-};
-
-export default AttendanceList;
+}

@@ -1,4 +1,4 @@
-import { Profile } from '@/components/attendance/profile';
+import { Profile } from '@/components/attendance';
 
 interface ProfileSectionProps {
 	name: string;

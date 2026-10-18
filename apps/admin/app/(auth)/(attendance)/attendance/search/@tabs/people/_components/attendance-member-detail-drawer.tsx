@@ -20,11 +20,10 @@ import {
 	XCircle,
 } from '@dpm-core/shared';
 
-import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
-import { Profile } from '@/components/attendance/profile';
+import { AttendanceStatusLabel, Profile } from '@/components/attendance';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
-import { useAttendanceStatusEdit } from '@/hooks/use-attendance-status-edit';
+import { useAttendanceStatusEdit } from '@/hooks';
 import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
 import {
 	getAbsenceReasonsOptions,
@@ -176,12 +175,19 @@ const _AttendanceSessionDetailView = ({
 	const absenceReason =
 		absenceReasonsData.data.reasons.find((r) => r.memberId === memberId)?.contents ?? null;
 
-	const { isEditMode, selectedStatus, setSelectedStatus, setIsEditMode, handleSave, handleCancel } =
-		useAttendanceStatusEdit({
-			sessionId,
-			memberId,
-			initialStatus: data.attendance.status,
-		});
+	const {
+		isEditMode,
+		selectedStatus,
+		setSelectedStatus,
+		handleEdit,
+		handleSave,
+		handleCancel,
+		isLoading,
+	} = useAttendanceStatusEdit({
+		sessionId,
+		memberId,
+		initialStatus: data.attendance.status,
+	});
 
 	return (
 		<div className="flex-1 overflow-y-auto px-10 py-6">
@@ -201,8 +207,9 @@ const _AttendanceSessionDetailView = ({
 				onStatusChange={setSelectedStatus}
 				onSave={handleSave}
 				onCancel={handleCancel}
-				onEdit={() => setIsEditMode(true)}
-				isSaveDisabled={selectedStatus === data.attendance.status}
+				onEdit={handleEdit}
+				isSaveDisabled={isLoading || selectedStatus === data.attendance.status}
+				isSaving={isLoading}
 				absenceReason={absenceReason}
 			/>
 
