@@ -36,11 +36,11 @@ function AccordionItem({
 	);
 }
 
-function AccordionTrigger({
-	className,
-	children,
-	...props
-}: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
+interface AccordionTriggerProps extends React.ComponentProps<typeof AccordionPrimitive.Trigger> {
+	icon?: React.ReactNode;
+}
+
+function AccordionTrigger({ className, children, icon, ...props }: AccordionTriggerProps) {
 	return (
 		<AccordionPrimitive.Header className="flex">
 			<AccordionPrimitive.Trigger
@@ -54,7 +54,9 @@ function AccordionTrigger({
 			>
 				<motion.button type="button" whileTap={{ scale: 0.99 }}>
 					{children}
-					<ChevronDown className="pointer-events-none size-4 shrink-0 transition-transform duration-200" />
+					{icon ?? (
+						<ChevronDown className="pointer-events-none size-4 shrink-0 transition-transform duration-200" />
+					)}
 				</motion.button>
 			</AccordionPrimitive.Trigger>
 		</AccordionPrimitive.Header>
