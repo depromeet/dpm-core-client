@@ -15,7 +15,7 @@ interface AttendanceMember {
 	id: number;
 	name: string;
 	teamNumber: number;
-	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER';
+	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER' | null;
 	attendanceStatus: AttendanceStatus;
 	isAdmin: boolean;
 	excuseDocumentStatus: ExcuseDocumentStatus;

@@ -4,13 +4,7 @@ export const ONE_MINUTE = 1000 * 60;
 export const ATTENDANCE_GAP_DURATION = ONE_MINUTE * 15; // 15 minutes
 export const ATTENDANCE_LATE_DURATION = ONE_MINUTE * 15; // 15 minutes
 
-type AttendanceStatus =
-	| 'PRESENT'
-	| 'LATE'
-	| 'ABSENT'
-	| 'EXCUSED_ABSENT'
-	| 'PENDING'
-	| 'EARLY_LEAVE';
+type AttendanceStatus = 'PRESENT' | 'LATE' | 'ABSENT' | 'EXCUSED_ABSENT' | 'PENDING';
 type MemberAttendanceStatus = 'NORMAL' | 'AT_RISK' | 'IMPOSSIBLE';
 
 export const ATTENDANCE_LABEL_MAP: Record<AttendanceStatus, string> = {
@@ -19,7 +13,6 @@ export const ATTENDANCE_LABEL_MAP: Record<AttendanceStatus, string> = {
 	LATE: '지각',
 	EXCUSED_ABSENT: '인정',
 	PENDING: '미출석',
-	EARLY_LEAVE: '조퇴',
 };
 
 export const ATTENDANCE_MEMBER_LABEL_MAP: Record<MemberAttendanceStatus, string> = {
@@ -33,7 +26,6 @@ export const ATTENDANCE_STATUS_OPTIONS = [
 	{ label: '결석', value: 'ABSENT' as const },
 	{ label: '지각', value: 'LATE' as const },
 	{ label: '인정', value: 'EXCUSED_ABSENT' as const },
-	{ label: '조퇴', value: 'EARLY_LEAVE' as const },
 ];
 
 export const ATTENDANCE_STATUS_MAP = {
@@ -52,10 +44,6 @@ export const ATTENDANCE_STATUS_MAP = {
 	EXCUSED_ABSENT: {
 		icon: <CircleMinus color="#3EA32C" size={16} />,
 		label: '인정',
-	},
-	EARLY_LEAVE: {
-		icon: <CircleMinus color="#FFC06E" size={16} />,
-		label: '조퇴',
 	},
 	PENDING: {
 		icon: <CircleDot color="#9CA3AF" size={16} />,

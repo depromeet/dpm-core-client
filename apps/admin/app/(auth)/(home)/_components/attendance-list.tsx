@@ -74,8 +74,8 @@ export const AttendanceList = ({ sessionId }: { sessionId: number }) => {
 	);
 };
 
-interface TableProfileProps extends React.ComponentProps<'div'> {
-	part: Exclude<Part, 'ETC'>;
+interface TableProfileProps {
+	part: Exclude<Part, 'ETC'> | null;
 	name: string;
 	teamNumber: number;
 	size?: number;
@@ -106,7 +106,7 @@ export const TableProfile = (props: TableProfileProps) => {
 					)}
 					<span>{teamNumber > 0 ? `${teamNumber}팀` : '팀 미배정'}</span>
 					<span aria-hidden="true" className="h-3 border-line-subtle border-l" />
-					<span>{getMemberPartLabel(part)}</span>
+					<span>{isExistPart(part) ? getMemberPartLabel(part) : '미배정'}</span>
 				</p>
 			</figcaption>
 		</figure>

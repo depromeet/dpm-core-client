@@ -73,7 +73,6 @@ export const HomeCheckAttendanceBanner = ({
 
 const completedAttendanceCopy = {
 	PRESENT: { title: '출석 완료 !', buttonLabel: '출석을 완료했어요' }, // 정상 출석
-	EARLY_LEAVE: { title: '출석 완료 !', buttonLabel: '출석을 완료했어요' }, // 조퇴
 	LATE: { title: '오늘은 지각이네요', buttonLabel: '출석을 완료했어요' }, // 지각
 	ABSENT: { title: '결석 처리됐어요', buttonLabel: '출석을 마감했어요' }, // 결석
 } satisfies Record<

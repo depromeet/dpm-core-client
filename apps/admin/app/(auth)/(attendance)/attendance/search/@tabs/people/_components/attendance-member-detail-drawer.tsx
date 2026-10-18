@@ -99,12 +99,6 @@ const _AttendanceMemberDetailContent = ({ memberId }: { memberId: number }) => {
 							{data.attendance.excusedAbsentCount ?? 0}
 						</span>
 					</li>
-					<li>
-						<span className="mr-2 font-medium text-label-assistive">조퇴</span>
-						<span className="font-semibold text-label-subtle">
-							{data.attendance.earlyLeaveCount ?? 0}
-						</span>
-					</li>
 				</ul>
 			)}
 		</>

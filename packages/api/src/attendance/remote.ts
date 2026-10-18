@@ -95,7 +95,7 @@ export const attendance = {
 	getAttendanceBySessionDetail: async (params: { memberId: number; sessionId: number }) => {
 		const { memberId, sessionId } = params;
 		return await http.get<AttendanceBySessionIdReponse>(
-			`v1/sessions/${sessionId}/attendances/${memberId}`,
+			`v3/sessions/${sessionId}/attendances/${memberId}`,
 		);
 	},
 
@@ -138,7 +138,7 @@ export const attendance = {
 	// 세션 결석 사유서 목록 조회 (운영진)
 	getAbsenceReasons: async (params: { sessionId: number }) => {
 		return await http.get<AbsenceReasonsResponse>(
-			`v2/sessions/${params.sessionId}/absence-reasons`,
+			`v3/sessions/${params.sessionId}/absence-reasons`,
 		);
 	},
 };

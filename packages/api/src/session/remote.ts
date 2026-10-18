@@ -95,7 +95,7 @@ export const session = {
 	},
 
 	getSessionWeeks: async () => {
-		const res = await http.get<SessionWeeksResponse>(`v1/sessions/weeks`);
+		const res = await http.get<SessionWeeksResponse>(`v3/sessions/weeks`);
 		return res;
 	},
 

@@ -6,10 +6,10 @@ import { cohort } from '@/constants/cohort';
 import { getMemberPartLabel } from '@/lib/member/part';
 import { isExistPart } from '@/lib/utils';
 
-interface ProfileProps extends React.ComponentProps<'div'> {
-	part: Part;
+interface ProfileProps {
+	part: Part | null;
 	name: string;
-	teamNumber: number;
+	teamNumber: number | null;
 	isAdmin?: boolean;
 	size?: number;
 }
@@ -17,8 +17,8 @@ interface ProfileProps extends React.ComponentProps<'div'> {
 export const Profile = (props: ProfileProps) => {
 	const { part, name, teamNumber, isAdmin = false, size = 40 } = props;
 
-	const teamLabel = teamNumber === 0 ? '팀 미배정' : `${teamNumber}팀`;
-	const partLabel = isExistPart(part) ? getMemberPartLabel(part) : '파트 미배정';
+	const teamLabel = teamNumber === null || teamNumber === 0 ? '팀 미배정' : `${teamNumber}팀`;
+	const partLabel = isExistPart(part) ? getMemberPartLabel(part) : '미배정';
 
 	const metaItems = [isAdmin && '운영진', teamLabel, partLabel].filter(Boolean);
 

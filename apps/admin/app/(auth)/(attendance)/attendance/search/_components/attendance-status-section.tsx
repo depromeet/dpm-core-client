@@ -9,8 +9,8 @@ interface AttendanceStatusSectionProps {
 	isEditMode: boolean;
 	selectedStatus: AttendanceStatus;
 	originalStatus: AttendanceStatus;
-	attendedAt: string;
-	updatedAt: string;
+	attendedAt: string | null;
+	updatedAt: string | null;
 	onStatusChange: (status: AttendanceStatus) => void;
 	onSave: () => void;
 	onCancel: () => void;
