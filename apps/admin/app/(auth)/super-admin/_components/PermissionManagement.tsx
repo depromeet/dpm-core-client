@@ -146,10 +146,6 @@ export const PermissionManagement = () => {
 		() => new Map(cohorts.map((c) => [c.cohortId, c.cohortNumber])),
 		[cohorts],
 	);
-	const cohortNumberToId = useMemo(
-		() => new Map(cohorts.map((c) => [c.cohortNumber, c.cohortId])),
-		[cohorts],
-	);
 
 	const cohortRolesMap = useMemo(() => {
 		const map = new Map<number, CohortRole[]>();
@@ -262,7 +258,10 @@ export const PermissionManagement = () => {
 			// 1) 출석부/공지/회식 등록 + overview cohortId 갱신
 			await member.initCohortMember({ memberId, cohortId });
 			// 2) 해당 기수 디퍼 역할 부여 (init 단독으로는 role이 안 붙음)
-			await member.updateMemberRole(memberId, { roleType: 'DEEPER', cohortId });
+			const cohort = cohortIdToNumber.get(cohortId);
+			if (cohort) {
+				await member.updateMemberRole(memberId, { roleType: 'DEEPER', cohort });
+			}
 		},
 		onSuccess: () => {
 			setDialogOpen(false);
@@ -313,12 +312,10 @@ export const PermissionManagement = () => {
 		switch (actionType) {
 			case 'role': {
 				if (!selectedCohortRole) return;
-				const cohortId = cohortNumberToId.get(selectedCohortRole.cohortNumber);
-				if (cohortId === undefined) return;
 				updateRole({
 					memberId: targetMember.memberId,
 					isAdmin: !selectedCohortRole.isAdmin,
-					cohortId,
+					cohort: selectedCohortRole.cohortNumber,
 				});
 				break;
 			}

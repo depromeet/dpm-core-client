@@ -1,11 +1,20 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { useState } from 'react';
 import type { LoginMethod } from '@dpm-core/api';
-import { AppleLogo, Button, cn, KakaoLogo, toast } from '@dpm-core/shared';
-
-import { useKakaoLogin } from '@/hooks/use-kakao-login';
-import { markKakaoLoginToast } from '@/lib/last-login';
+import {
+	AppleLogo,
+	Button,
+	cn,
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	KakaoLogo,
+	toast,
+} from '@dpm-core/shared';
 
 import { MyPageBox } from './my-page-box';
 
@@ -33,10 +42,10 @@ interface MyPageAccountProps {
 /**
  * 계정 정보
  * 애플 회원에게는 카카오톡 계정 연동 버튼을 함께 보여준다.
- * TODO: 연동 해제 API 연동 — 현재는 API 서버를 사용할 수 없어 성공 토스트만 띄운다.
+ * TODO: 연동/연동 해제 API 연동 — 현재는 API 서버를 사용할 수 없어 준비중 안내만 띄운다.
  */
 export const MyPageAccount = ({ loginMethod, email }: MyPageAccountProps) => {
-	const { canUseNativeKakao, loginWithNative, webFallbackUrl, isPending } = useKakaoLogin();
+	const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
 
 	const isAppleMember = loginMethod === 'APPLE';
 
@@ -44,19 +53,8 @@ export const MyPageAccount = ({ loginMethod, email }: MyPageAccountProps) => {
 		toast.success('계정 연동이 해제되었어요.');
 	};
 
-	// 카카오로 로그인하면 홈에서 활동 정보 입력 시트와 '카카오톡으로 로그인했어요' 토스트가 이어진다.
 	const handleKakaoLink = () => {
-		if (canUseNativeKakao) {
-			void loginWithNative({
-				onSuccess: () => {
-					markKakaoLoginToast();
-					window.location.assign('/');
-				},
-			});
-			return;
-		}
-		markKakaoLoginToast();
-		window.location.href = webFallbackUrl;
+		setIsComingSoonOpen(true);
 	};
 
 	return (
@@ -75,13 +73,7 @@ export const MyPageAccount = ({ loginMethod, email }: MyPageAccountProps) => {
 						</Button>
 					</AccountRow>
 					<AccountRow method="KAKAO" label="카카오톡 계정">
-						<Button
-							variant="secondary"
-							size="sm"
-							className="text-body2"
-							onClick={handleKakaoLink}
-							disabled={isPending}
-						>
+						<Button variant="secondary" size="sm" className="text-body2" onClick={handleKakaoLink}>
 							연동
 						</Button>
 					</AccountRow>
@@ -89,6 +81,25 @@ export const MyPageAccount = ({ loginMethod, email }: MyPageAccountProps) => {
 			) : (
 				<AccountRow method={loginMethod} label={email} />
 			)}
+			<Dialog open={isComingSoonOpen} onOpenChange={setIsComingSoonOpen}>
+				<DialogContent showCloseButton={false}>
+					<DialogTitle className="sr-only">준비 중인 기능이에요</DialogTitle>
+					<DialogHeader className="text-left font-bold text-title1">
+						준비 중인 기능이에요
+					</DialogHeader>
+					<p className="text-body1 text-label-subtle">계정 연동 기능은 곧 만나보실 수 있어요.</p>
+					<DialogFooter>
+						<Button
+							className="flex-1"
+							variant="secondary"
+							size="lg"
+							onClick={() => setIsComingSoonOpen(false)}
+						>
+							확인
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</MyPageBox>
 	);
 };

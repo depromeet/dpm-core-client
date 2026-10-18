@@ -59,13 +59,19 @@ const LoginPage = async ({
 						variant="none"
 						className="h-12.5 justify-center rounded-xl bg-[#FEE500] px-3.75 py-3.5 font-medium text-body1 leading-1"
 					/>
-					<RecentLoginBadge />
+					<RecentLoginBadge method="KAKAO" position="offset" />
 				</div>
 				<div className="flex flex-col items-center gap-y-3">
 					<p className="font-medium text-black/40 text-caption1">다른 방법으로 시작하기</p>
 					<div className="flex items-center gap-x-6">
-						<AppleLoginButton />
-						<EmailLoginButton />
+						<div className="relative">
+							<AppleLoginButton />
+							<RecentLoginBadge method="APPLE" position="centered" />
+						</div>
+						<div className="relative">
+							<EmailLoginButton />
+							<RecentLoginBadge method="EMAIL" position="centered" />
+						</div>
 					</div>
 				</div>
 			</div>
