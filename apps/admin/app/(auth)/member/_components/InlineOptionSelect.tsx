@@ -37,7 +37,7 @@ export const InlineOptionSelect = <T extends string | number>({
 			<PopoverTrigger asChild>{children}</PopoverTrigger>
 			<PopoverContent
 				align={align}
-				className="w-auto min-w-30 rounded-xl border-line-subtle p-1 shadow-[0px_-4px_21.1px_0px_rgba(0,0,0,0.12)]"
+				className="w-auto min-w-30 rounded-xl border-line-subtle bg-background-normal p-1 shadow-[0px_-4px_21.1px_0px_rgba(0,0,0,0.12)]"
 			>
 				<ul className="flex flex-col">
 					{options.map((option) => (

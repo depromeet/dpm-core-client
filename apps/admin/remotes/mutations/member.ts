@@ -60,24 +60,6 @@ export const withdrawMutationOptions = (options: WithdrawMutationOptions) =>
 		...options,
 	});
 
-export interface ApproveWhitelistParams {
-	members: number[];
-}
-
-export const approveWhitelistMutationOptions = (
-	options?: MutationOptions<
-		Awaited<ReturnType<typeof member.approveWhitelist>>,
-		Error,
-		ApproveWhitelistParams
-	>,
-) =>
-	mutationOptions({
-		mutationKey: ['whitelist'],
-		mutationFn: (params: ApproveWhitelistParams) =>
-			member.approveWhitelist({ members: params.members }),
-		...options,
-	});
-
 /** PATCH /v1/roles/members/{memberId} - 멤버 역할 변경 (isAdmin: true=ORGANIZER, false=DEEPER) */
 export interface UpdateMemberRoleParams {
 	memberId: number;
