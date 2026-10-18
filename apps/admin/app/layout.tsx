@@ -29,7 +29,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="ko">
+		<html lang="ko" suppressHydrationWarning>
 			<head>
 				<Script {...({ src: getGAScriptSrc() } as any)} />
 				<Script id="google-analytics">{getGAConfigScript()}</Script>

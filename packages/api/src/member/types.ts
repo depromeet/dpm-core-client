@@ -58,10 +58,13 @@ export interface Member {
 
 export type MemberRoleType = 'ORGANIZER' | 'DEEPER';
 
-/** PATCH /v1/roles/members/{memberId} - 멤버 기수별 역할 변경 */
+/**
+ * PATCH /v1/roles/members/{memberId} - 멤버 기수별 역할 변경
+ * cohort는 기수 ID가 아니라 기수명 문자열이다(예: "18"). cohortId로 보내면 400이 난다.
+ */
 export interface UpdateMemberRoleRequest {
 	roleType: MemberRoleType;
-	cohortId: number;
+	cohort: string;
 }
 
 /** PATCH /v1/members/status - 멤버 상태 변경 */

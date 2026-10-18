@@ -64,7 +64,8 @@ export const withdrawMutationOptions = (options: WithdrawMutationOptions) =>
 export interface UpdateMemberRoleParams {
 	memberId: number;
 	isAdmin: boolean;
-	cohortId: number;
+	/** 기수 ID가 아니라 기수명 문자열이다(예: "18"). */
+	cohort: string;
 }
 
 export const updateMemberRoleMutationOptions = (
@@ -79,7 +80,7 @@ export const updateMemberRoleMutationOptions = (
 		mutationFn: (params: UpdateMemberRoleParams) =>
 			member.updateMemberRole(params.memberId, {
 				roleType: params.isAdmin ? 'ORGANIZER' : 'DEEPER',
-				cohortId: params.cohortId,
+				cohort: params.cohort,
 			}),
 		...options,
 	});
