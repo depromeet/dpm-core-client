@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { ChevronDown } from 'lucide-react';
 import { type AttendanceBySessionMember, type AttendanceStatus, attendance } from '@dpm-core/api';
 import {
 	ATTENDANCE_STATUS_OPTIONS,
 	Button,
-	ChevronDown,
 	cn,
 	DropdownMenu,
 	DropdownMenuContent,
@@ -54,7 +54,7 @@ function AttendanceStatusSelect({ member, sessionId }: AttendanceStatusSelectPro
 			<DropdownMenuTrigger asChild>
 				<Button variant="none" size="none" disabled={mutation.isPending} className="gap-2 py-2">
 					<AttendanceStatusLabel status={member.attendanceStatus} />
-					<ChevronDown className="size-4 text-label-assistive" />
+					<ChevronDown size={24} className="text-label-assistive" />
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent

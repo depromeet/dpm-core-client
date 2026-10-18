@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { RotateCcw, Search, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import type {
 	AttendanceBySessionMember,
 	AttendanceStatus,
@@ -18,7 +18,7 @@ import {
 	TableCheckbox,
 } from '@dpm-core/shared';
 
-import { AttendanceFilterPopover } from '@/components/attendance';
+import { AttendanceFilterPopover, RotateCwIcon } from '@/components/attendance';
 import { getMemberPartLabel } from '@/lib/member/part';
 
 interface AttendanceSessionFiltersProps {
@@ -155,7 +155,7 @@ export function AttendanceSessionFilters({
 						className="size-8"
 						onClick={() => onChange({ name: '', status: '', myTeam: '', teams: '', parts: '' })}
 					>
-						<RotateCcw className="size-5" />
+						<RotateCwIcon />
 					</Button>
 				) : null}
 				<label
