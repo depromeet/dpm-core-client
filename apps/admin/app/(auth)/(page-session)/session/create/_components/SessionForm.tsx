@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { Form } from '@dpm-core/shared';
 
+import { useSession } from '@/app/(auth)/(home)/_components/session-provider';
+
 import { plusOneMinute } from '../../_utils';
 import { FormAttendanceLateTime } from './form/FormAttendanceLateTime';
 import { FormAttendancePresentTime } from './form/FormAttendancePresentTime';
@@ -69,7 +71,7 @@ export const buildSessionPayload = (formData: SessionSchema) => {
 	};
 };
 
-const createSessionSchema = (initialFeedbackStartAt?: string) =>
+const createSessionSchema = (initialFeedbackStartAt?: string, existingWeeks: number[] = []) =>
 	z
 		.object({
 			cohortId: z.number(),
@@ -108,9 +110,24 @@ const createSessionSchema = (initialFeedbackStartAt?: string) =>
 					attendanceLateTime,
 					feedbackEnabled,
 					feedbackStartAt,
+					week,
 				},
 				ctx,
 			) => {
+				if (!Number.isSafeInteger(Number(week))) {
+					ctx.addIssue({
+						code: 'custom',
+						path: ['week'],
+						message: '올바른 주차 형식이어야 합니다.',
+					});
+				} else if (existingWeeks.includes(Number(week))) {
+					ctx.addIssue({
+						code: 'custom',
+						path: ['week'],
+						message: '이미 세션이 등록된 주차입니다.',
+					});
+				}
+
 				if (isOnline === 'offline' && place.trim().length <= 0) {
 					ctx.addIssue({
 						code: 'custom',
@@ -197,6 +214,7 @@ export const SessionForm = ({
 	showFeedbackSettings = false,
 	feedbackSettingsLocked = false,
 	feedbackStartAtInitialValue,
+	excludeSessionId,
 	onDirtyChange,
 	onSubmit,
 }: Readonly<{
@@ -206,9 +224,16 @@ export const SessionForm = ({
 	showFeedbackSettings?: boolean;
 	feedbackSettingsLocked?: boolean;
 	feedbackStartAtInitialValue?: string | null;
+	excludeSessionId?: number;
 }>) => {
+	const { sessions } = useSession();
+	const existingWeeks = sessions
+		.filter((session) => session.id !== excludeSessionId)
+		.map((session) => session.week);
 	const form = useForm<SessionSchema>({
-		resolver: zodResolver(createSessionSchema(feedbackStartAtInitialValue ?? undefined)),
+		resolver: zodResolver(
+			createSessionSchema(feedbackStartAtInitialValue ?? undefined, existingWeeks),
+		),
 		defaultValues: {
 			cohortId: 1,
 			name: '',
