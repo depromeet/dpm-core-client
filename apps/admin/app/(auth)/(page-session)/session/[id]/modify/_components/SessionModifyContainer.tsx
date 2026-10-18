@@ -36,6 +36,7 @@ export const SessionModifyContainer = (props: SessionModifyContainerProps) => {
 			<SessionForm
 				onSubmit={handleOpenModifyConfirmModal}
 				showFeedbackSettings
+				excludeSessionId={sessionId}
 				feedbackSettingsLocked={
 					sessionDetail.feedback?.status === 'IN_PROGRESS' ||
 					sessionDetail.feedback?.status === 'CLOSED'

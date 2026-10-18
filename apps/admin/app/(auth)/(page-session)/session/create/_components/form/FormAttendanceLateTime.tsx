@@ -14,6 +14,8 @@ import {
 	Label,
 } from '@dpm-core/shared';
 
+import { REGEXP_HHMM, TIME_RANGE_ERROR_MESSAGE } from '../../../_utils';
+
 export const FormAttendanceLateTime = () => {
 	const form = useFormContext();
 
@@ -33,25 +35,40 @@ export const FormAttendanceLateTime = () => {
 									maxLength={4}
 									placeholder="0000"
 									{...field}
+									onChange={(value) => {
+										field.onChange(value);
+										if (value.length === 4 && !REGEXP_HHMM.test(value)) {
+											form.setError(field.name, {
+												type: 'manual',
+												message: TIME_RANGE_ERROR_MESSAGE,
+											});
+										} else {
+											form.clearErrors(field.name);
+										}
+									}}
 								>
 									<InputOTPGroup>
-										<InputOTPSlot
-											className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-											index={0}
-										/>
-										<InputOTPSlot
-											className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-											index={1}
-										/>
+										<div className="relative left-1 flex items-center gap-1">
+											<InputOTPSlot
+												className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+												index={0}
+											/>
+											<InputOTPSlot
+												className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+												index={1}
+											/>
+										</div>
 										<p className="mx-1 font-medium text-body2 text-label-assistive">시</p>
-										<InputOTPSlot
-											className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-											index={2}
-										/>
-										<InputOTPSlot
-											className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-											index={3}
-										/>
+										<div className="relative left-1 flex items-center gap-1">
+											<InputOTPSlot
+												className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+												index={2}
+											/>
+											<InputOTPSlot
+												className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+												index={3}
+											/>
+										</div>
 										<p className="ml-1 font-medium text-body2 text-label-assistive">분 부터</p>
 									</InputOTPGroup>
 								</InputOTP>
@@ -76,25 +93,40 @@ export const FormAttendanceLateTime = () => {
 									inputMode="numeric"
 									placeholder="0000"
 									{...field}
+									onChange={(value) => {
+										field.onChange(value);
+										if (value.length === 4 && !REGEXP_HHMM.test(value)) {
+											form.setError(field.name, {
+												type: 'manual',
+												message: TIME_RANGE_ERROR_MESSAGE,
+											});
+										} else {
+											form.clearErrors(field.name);
+										}
+									}}
 								>
 									<InputOTPGroup>
-										<InputOTPSlot
-											className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-											index={0}
-										/>
-										<InputOTPSlot
-											className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-											index={1}
-										/>
+										<div className="relative left-1 flex items-center gap-1">
+											<InputOTPSlot
+												className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+												index={0}
+											/>
+											<InputOTPSlot
+												className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+												index={1}
+											/>
+										</div>
 										<p className="mx-1 font-medium text-body2 text-label-assistive">시</p>
-										<InputOTPSlot
-											className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-											index={2}
-										/>
-										<InputOTPSlot
-											className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
-											index={3}
-										/>
+										<div className="relative left-1 flex items-center gap-1">
+											<InputOTPSlot
+												className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+												index={2}
+											/>
+											<InputOTPSlot
+												className="size-2.5 bg-inherit font-medium text-body2 text-label-normal"
+												index={3}
+											/>
+										</div>
 										<p className="ml-1 font-medium text-body2 text-label-assistive">분 까지</p>
 									</InputOTPGroup>
 								</InputOTP>

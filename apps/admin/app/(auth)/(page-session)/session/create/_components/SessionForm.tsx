@@ -7,7 +7,9 @@ import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { Form } from '@dpm-core/shared';
 
-import { plusOneMinute } from '../../_utils';
+import { useSession } from '@/app/(auth)/(home)/_components/session-provider';
+
+import { plusOneMinute, REGEXP_HHMM, TIME_RANGE_ERROR_MESSAGE } from '../../_utils';
 import { FormAttendanceLateTime } from './form/FormAttendanceLateTime';
 import { FormAttendancePresentTime } from './form/FormAttendancePresentTime';
 import { FormDate } from './form/FormDate';
@@ -15,8 +17,6 @@ import { FormFeedbackSettings } from './form/FormFeedbackSettings';
 import { FormName } from './form/FormName';
 import { FormPlace } from './form/FormPlace';
 import { FormWeek } from './form/FormWeek';
-
-export const REGEXP_HHMM = /^([0-1][0-9]|2[0-3])[0-5][0-9]$/;
 
 export const buildServerDatePayload = (formData: SessionSchema) => {
 	const { name, sessionDate, isOnline, place, week, attendancePresentTime, attendanceLateTime } =
@@ -69,14 +69,14 @@ export const buildSessionPayload = (formData: SessionSchema) => {
 	};
 };
 
-const createSessionSchema = (initialFeedbackStartAt?: string) =>
+const createSessionSchema = (initialFeedbackStartAt?: string, existingWeeks: number[] = []) =>
 	z
 		.object({
 			cohortId: z.number(),
 			name: z.string().min(1, '필수 입력 값입니다.'),
 			sessionDate: z.object({
 				date: z.date(),
-				time: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
+				time: z.string().regex(REGEXP_HHMM, TIME_RANGE_ERROR_MESSAGE),
 			}),
 			week: z
 				.string()
@@ -85,12 +85,12 @@ const createSessionSchema = (initialFeedbackStartAt?: string) =>
 			isOnline: z.enum(['online', 'offline']),
 			place: z.string(),
 			attendancePresentTime: z.object({
-				start: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
-				end: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
+				start: z.string().regex(REGEXP_HHMM, TIME_RANGE_ERROR_MESSAGE),
+				end: z.string().regex(REGEXP_HHMM, TIME_RANGE_ERROR_MESSAGE),
 			}),
 			attendanceLateTime: z.object({
-				start: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
-				end: z.string().regex(REGEXP_HHMM, '필수 입력 값입니다.'),
+				start: z.string().regex(REGEXP_HHMM, TIME_RANGE_ERROR_MESSAGE),
+				end: z.string().regex(REGEXP_HHMM, TIME_RANGE_ERROR_MESSAGE),
 			}),
 			feedbackEnabled: z.boolean(),
 			feedbackPushEnabled: z.boolean(),
@@ -108,9 +108,24 @@ const createSessionSchema = (initialFeedbackStartAt?: string) =>
 					attendanceLateTime,
 					feedbackEnabled,
 					feedbackStartAt,
+					week,
 				},
 				ctx,
 			) => {
+				if (!Number.isSafeInteger(Number(week))) {
+					ctx.addIssue({
+						code: 'custom',
+						path: ['week'],
+						message: '올바른 주차 형식이어야 합니다.',
+					});
+				} else if (existingWeeks.includes(Number(week))) {
+					ctx.addIssue({
+						code: 'custom',
+						path: ['week'],
+						message: '이미 세션이 등록된 주차입니다.',
+					});
+				}
+
 				if (isOnline === 'offline' && place.trim().length <= 0) {
 					ctx.addIssue({
 						code: 'custom',
@@ -162,7 +177,7 @@ const createSessionSchema = (initialFeedbackStartAt?: string) =>
 						ctx.addIssue({
 							code: 'custom',
 							path: ['feedbackStartAt.time'],
-							message: '피드백 시작 시간을 입력해주세요.',
+							message: TIME_RANGE_ERROR_MESSAGE,
 						});
 					}
 
@@ -197,6 +212,7 @@ export const SessionForm = ({
 	showFeedbackSettings = false,
 	feedbackSettingsLocked = false,
 	feedbackStartAtInitialValue,
+	excludeSessionId,
 	onDirtyChange,
 	onSubmit,
 }: Readonly<{
@@ -206,9 +222,16 @@ export const SessionForm = ({
 	showFeedbackSettings?: boolean;
 	feedbackSettingsLocked?: boolean;
 	feedbackStartAtInitialValue?: string | null;
+	excludeSessionId?: number;
 }>) => {
+	const { sessions } = useSession();
+	const existingWeeks = sessions
+		.filter((session) => session.id !== excludeSessionId)
+		.map((session) => session.week);
 	const form = useForm<SessionSchema>({
-		resolver: zodResolver(createSessionSchema(feedbackStartAtInitialValue ?? undefined)),
+		resolver: zodResolver(
+			createSessionSchema(feedbackStartAtInitialValue ?? undefined, existingWeeks),
+		),
 		defaultValues: {
 			cohortId: 1,
 			name: '',

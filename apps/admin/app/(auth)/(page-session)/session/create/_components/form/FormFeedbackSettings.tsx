@@ -27,6 +27,7 @@ import {
 
 import { formatDateWithDay } from '@/lib/date';
 
+import { REGEXP_HHMM, TIME_RANGE_ERROR_MESSAGE } from '../../../_utils';
 import type { SessionSchema } from '../SessionForm';
 
 export const FormFeedbackSettings = ({
@@ -39,7 +40,7 @@ export const FormFeedbackSettings = ({
 	const feedbackEnabled = useWatch({ control: form.control, name: 'feedbackEnabled' });
 	const feedbackStartDate = useWatch({ control: form.control, name: 'feedbackStartAt.date' });
 	const feedbackStartTime = useWatch({ control: form.control, name: 'feedbackStartAt.time' });
-	const hasValidStart = feedbackStartDate && /^([01]\d|2[0-3])[0-5]\d$/.test(feedbackStartTime);
+	const hasValidStart = feedbackStartDate && REGEXP_HHMM.test(feedbackStartTime);
 	const feedbackEndAt = hasValidStart
 		? dayjs(feedbackStartDate)
 				.hour(Number(feedbackStartTime.slice(0, 2)))
@@ -133,25 +134,40 @@ export const FormFeedbackSettings = ({
 												inputMode="numeric"
 												placeholder="0000"
 												{...field}
+												onChange={(value) => {
+													field.onChange(value);
+													if (value.length === 4 && !REGEXP_HHMM.test(value)) {
+														form.setError(field.name, {
+															type: 'manual',
+															message: TIME_RANGE_ERROR_MESSAGE,
+														});
+													} else {
+														form.clearErrors(field.name);
+													}
+												}}
 											>
 												<InputOTPGroup>
-													<InputOTPSlot
-														className="size-2.5 bg-inherit font-medium text-body2"
-														index={0}
-													/>
-													<InputOTPSlot
-														className="size-2.5 bg-inherit font-medium text-body2"
-														index={1}
-													/>
+													<div className="relative left-1 flex items-center gap-1">
+														<InputOTPSlot
+															className="size-2.5 bg-inherit font-medium text-body2"
+															index={0}
+														/>
+														<InputOTPSlot
+															className="size-2.5 bg-inherit font-medium text-body2"
+															index={1}
+														/>
+													</div>
 													<p className="mx-1 font-medium text-body2 text-label-assistive">시</p>
-													<InputOTPSlot
-														className="size-2.5 bg-inherit font-medium text-body2"
-														index={2}
-													/>
-													<InputOTPSlot
-														className="size-2.5 bg-inherit font-medium text-body2"
-														index={3}
-													/>
+													<div className="relative left-1 flex items-center gap-1">
+														<InputOTPSlot
+															className="size-2.5 bg-inherit font-medium text-body2"
+															index={2}
+														/>
+														<InputOTPSlot
+															className="size-2.5 bg-inherit font-medium text-body2"
+															index={3}
+														/>
+													</div>
 													<p className="ml-1 font-medium text-body2 text-label-assistive">분</p>
 												</InputOTPGroup>
 											</InputOTP>
