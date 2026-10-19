@@ -2,7 +2,7 @@ import type { AfterResponseHook } from 'ky';
 import ky from 'ky';
 import { logger } from '@dpm-core/shared';
 
-import { setAuthCookies } from '../auth/cookie';
+import { getAuthEpoch, setAuthCookies } from '../auth/cookie';
 
 interface RefreshPluginOptions {
 	whitelist?: (string | RegExp)[];
@@ -52,6 +52,7 @@ export function createRefreshPlugin(options?: RefreshPluginOptions): AfterRespon
 		} else if (!isRefreshing) {
 			logger.auth('새로운 refresh 시작', { refreshUrl });
 			isRefreshing = true;
+			const epochAtStart = getAuthEpoch();
 
 			try {
 				logger.debug('fetch로 refresh 호출 시도...');
@@ -65,6 +66,13 @@ export function createRefreshPlugin(options?: RefreshPluginOptions): AfterRespon
 						}
 						const data = await res.json();
 						logger.auth('refresh 성공', data);
+
+						// 응답을 기다리는 사이 로그아웃/탈퇴가 일어났다면, 이미 지운 쿠키를 되살리지 않는다.
+						if (getAuthEpoch() !== epochAtStart) {
+							logger.debug('refresh 응답 도착 전 로그아웃/탈퇴 발생, 쿠키 복원 스킵');
+							waitQueue.length = 0;
+							return;
+						}
 
 						setAuthCookies({
 							accessToken: data.data.token,

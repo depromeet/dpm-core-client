@@ -30,5 +30,6 @@ export { TextLogo } from './text-logo';
 export { Upload } from './upload';
 export { UserAvatar } from './user-avatar';
 export { XCircle } from './x-circle';
+export { XCircleMono } from './x-circle-mono';
 export { XIcon } from './x-icon';
 export { XRed } from './x-red';
