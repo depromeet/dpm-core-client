@@ -118,7 +118,6 @@ export const SessionModifyConfirmModal = ({
 				needsPolicyCheck && (policyQuery.isPending || policyQuery.isFetching || policyQuery.isError)
 			}
 			content={needsPolicyCheck ? policyCheckContent : null}
-			contentClassName={needsPolicyCheck ? 'w-[640px] sm:max-w-[640px]' : undefined}
 		/>
 	);
 };

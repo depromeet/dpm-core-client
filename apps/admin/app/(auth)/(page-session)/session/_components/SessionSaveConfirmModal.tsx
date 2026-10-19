@@ -1,6 +1,5 @@
 import {
 	Button,
-	cn,
 	Dialog,
 	DialogClose,
 	DialogContent,
@@ -17,7 +16,6 @@ interface SessionSaveConfirmModalProps {
 	isPending?: boolean;
 	isConfirmDisabled?: boolean;
 	content?: React.ReactNode;
-	contentClassName?: string;
 }
 
 export const SessionSaveConfirmModal = ({
@@ -28,7 +26,6 @@ export const SessionSaveConfirmModal = ({
 	isPending = false,
 	isConfirmDisabled = false,
 	content,
-	contentClassName,
 }: SessionSaveConfirmModalProps) => {
 	const handleSubmit = () => {
 		onOpenChange(false);
@@ -37,10 +34,7 @@ export const SessionSaveConfirmModal = ({
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent
-				className={cn('w-fit max-w-[calc(100%-2rem)] sm:max-w-fit', contentClassName)}
-				showCloseButton={false}
-			>
+			<DialogContent className="w-fit max-w-[calc(100%-2rem)] sm:max-w-fit" showCloseButton={false}>
 				<DialogHeader className="text-left">
 					<DialogTitle>{title}</DialogTitle>
 				</DialogHeader>
