@@ -402,7 +402,7 @@ export const MemberManagement = () => {
 				</div>
 
 				{/* 끝에 닿으면 다음 페이지를 불러온다. */}
-				<div ref={loadMoreRef} className="h-10" />
+				<div ref={loadMoreRef} className={showBulkEditBar ? 'h-28' : 'h-10'} />
 				{isFetchingNextPage && (
 					<p className="py-4 text-center font-medium text-body2 text-label-assistive">
 						불러오는 중...
@@ -411,7 +411,8 @@ export const MemberManagement = () => {
 			</div>
 
 			{showBulkEditBar && (
-				<div className="px-10">
+				// 목록 길이와 상관없이 뷰포트 하단에 고정한다. 사이드바 너비만큼 비켜서 콘텐츠 영역 기준으로 배치한다.
+				<div className="pointer-events-none fixed right-0 bottom-6 left-0 z-10 px-10 md:left-(--sidebar-width)">
 					<MemberBulkEditBar
 						selectedCount={selectedRows.length}
 						currentValueOf={bulkEdit.currentValueOf}

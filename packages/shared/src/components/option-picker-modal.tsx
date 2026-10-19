@@ -47,7 +47,7 @@ export const OptionPickerModal = ({
 }: OptionPickerModalProps) => {
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="gap-6 sm:max-w-[505px]">
+			<DialogContent className="gap-6 sm:max-w-[589px]">
 				<DialogHeader className="gap-2">
 					<DialogTitle className="text-left font-bold text-headline2 text-label-normal">
 						{title}

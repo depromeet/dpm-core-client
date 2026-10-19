@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Part } from '@dpm-core/api';
 import { Button, cn, Input, toast } from '@dpm-core/shared';
 
+import { memberAuthQueryKey } from '@/providers/auth-provider';
 import { updateMyProfileMutationOptions } from '@/remotes/mutations/member';
 import { getMyMemberInfoQuery, getMyProfileQuery } from '@/remotes/queries/member';
 
@@ -93,7 +94,8 @@ const ProfileFields = ({
 			{
 				onSuccess: async () => {
 					await Promise.all([
-						queryClient.invalidateQueries({ queryKey: getMyMemberInfoQuery.queryKey }),
+						queryClient.invalidateQueries({ queryKey: memberAuthQueryKey }),
+							queryClient.invalidateQueries({ queryKey: getMyMemberInfoQuery.queryKey }),
 						queryClient.invalidateQueries({ queryKey: getMyProfileQuery.queryKey }),
 					]);
 					if (onSubmitted) {
