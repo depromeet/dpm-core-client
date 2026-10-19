@@ -10,7 +10,6 @@ import { EmailLoginButton } from '@/components/email-login-button';
 import { LoginButton } from '@/components/login-button';
 import { LoginErrorToast } from '@/components/login-error-toast';
 import { LoginReturnTo } from '@/components/login-return-to';
-import { CoreLogo } from '@/components/lotties/core-logo';
 import { RecentLoginBadge } from '@/components/recent-login-badge';
 
 const LoginPage = async ({
@@ -31,46 +30,50 @@ const LoginPage = async ({
 			<Suspense>
 				<LoginErrorToast />
 			</Suspense>
-			<div aria-hidden className="pointer-events-none absolute inset-0">
-				<Image
-					src={bgEllipse}
-					alt=""
-					className="-scale-y-100 absolute top-[-127.36px] left-[-162.55px] max-w-none rotate-[-154.44deg]"
-				/>
-				<Image
-					src={bgGraphic}
-					alt=""
-					className="absolute top-[310.7px] left-[133.85px] max-w-none rotate-[11.03deg] mix-blend-color-dodge"
-				/>
-			</div>
-			<div className="relative flex flex-col gap-y-4.5 px-4 pt-20">
-				<Image src={dpmLogo} alt="DPM" priority className="h-auto w-31" />
-				<p className="font-normal text-body1 text-label-strong">
-					출석부터 공지 확인까지,
-					<br />
-					디프만을 더 쉽게
-				</p>
-			</div>
-			<div className="flex-1" />
-			<div className="relative flex flex-col items-center gap-y-5 bg-linear-to-b from-white/0 to-16% to-white px-4 pt-8 pb-[calc(var(--safe-area-inset-bottom)+2rem)]">
-				<div className="relative w-full">
-					<LoginButton
-						size="full"
-						variant="none"
-						className="h-12.5 justify-center rounded-xl bg-[#FEE500] px-3.75 py-3.5 font-medium text-body1 leading-1"
+			{/* 디자인이 393px 폭 모바일 프레임 기준으로 좌표를 잡아서, 웹에서 더 넓은 컨테이너에 그대로 두면
+			배경 그래픽이 실제 기기보다 중앙에 가깝게 보인다. 393px 폭으로 가둬 기기와 동일하게 보이게 한다. */}
+			<div className="relative flex h-full w-full max-w-[512px] flex-col">
+				<div aria-hidden className="pointer-events-none absolute inset-0">
+					<Image
+						src={bgEllipse}
+						alt=""
+						className="-scale-y-100 absolute top-[-127.36px] left-[-162.55px] max-w-none rotate-[-154.44deg]"
 					/>
-					<RecentLoginBadge method="KAKAO" position="offset" />
+					<Image
+						src={bgGraphic}
+						alt=""
+						className="absolute top-[310.7px] left-[133.85px] max-w-none rotate-[11.03deg] mix-blend-color-dodge"
+					/>
 				</div>
-				<div className="flex flex-col items-center gap-y-3">
-					<p className="font-medium text-black/40 text-caption1">다른 방법으로 시작하기</p>
-					<div className="flex items-center gap-x-6">
-						<div className="relative">
-							<AppleLoginButton />
-							<RecentLoginBadge method="APPLE" position="centered" />
-						</div>
-						<div className="relative">
-							<EmailLoginButton />
-							<RecentLoginBadge method="EMAIL" position="centered" />
+				<div className="relative flex flex-col gap-y-4.5 px-4 pt-20">
+					<Image src={dpmLogo} alt="DPM" priority className="h-auto w-31" />
+					<p className="font-normal text-body1 text-label-strong">
+						출석부터 공지 확인까지,
+						<br />
+						디프만을 더 쉽게
+					</p>
+				</div>
+				<div className="flex-1" />
+				<div className="relative flex flex-col items-center gap-y-5 bg-linear-to-b from-white/0 to-16% to-white px-4 pt-8 pb-[calc(var(--safe-area-inset-bottom)+2rem)]">
+					<div className="relative w-full">
+						<LoginButton
+							size="full"
+							variant="none"
+							className="h-12.5 justify-center rounded-xl bg-[#FEE500] px-3.75 py-3.5 font-medium text-body1 leading-1"
+						/>
+						<RecentLoginBadge method="KAKAO" position="offset" />
+					</div>
+					<div className="flex flex-col items-center gap-y-3">
+						<p className="font-medium text-black/40 text-caption1">다른 방법으로 시작하기</p>
+						<div className="flex items-center gap-x-6">
+							<div className="relative">
+								<AppleLoginButton />
+								<RecentLoginBadge method="APPLE" position="centered" />
+							</div>
+							<div className="relative">
+								<EmailLoginButton />
+								<RecentLoginBadge method="EMAIL" position="centered" />
+							</div>
 						</div>
 					</div>
 				</div>

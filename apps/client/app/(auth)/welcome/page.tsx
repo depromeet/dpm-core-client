@@ -66,7 +66,7 @@ export default function WelcomePage() {
 					</div>
 				</div>
 				<p className="absolute inset-x-0 bottom-0 flex h-8.5 items-center justify-center font-semibold text-body2 text-label-subtle">
-					DPM 19th
+					DPM {user.cohort}th
 				</p>
 				<Image
 					src={cardEllipse}
@@ -82,7 +82,7 @@ export default function WelcomePage() {
 				asChild
 			>
 				<Link href="/" replace>
-					디프만 19기 입장하기 →
+					디프만 {user.cohort}기 입장하기 →
 				</Link>
 			</Button>
 		</SafeAreaAppLayout>
