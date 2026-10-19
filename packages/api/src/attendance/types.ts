@@ -1,11 +1,5 @@
 import type { Part } from '../member';
-export type AttendanceStatus =
-	| 'PRESENT'
-	| 'LATE'
-	| 'ABSENT'
-	| 'EXCUSED_ABSENT'
-	| 'PENDING'
-	| 'EARLY_LEAVE';
+export type AttendanceStatus = 'PRESENT' | 'LATE' | 'ABSENT' | 'EXCUSED_ABSENT' | 'PENDING';
 export type MemberAttendanceStatus = 'NORMAL' | 'AT_RISK' | 'IMPOSSIBLE';
 
 export interface AttendanceSession {
@@ -22,7 +16,7 @@ export interface AttendanceMember {
 	name: string;
 	teamNumber: number;
 	isAdmin: boolean;
-	part: Exclude<Part, 'ETC'>;
+	part: Exclude<Part, 'ETC'> | null;
 	attendanceStatus: MemberAttendanceStatus;
 }
 
@@ -31,23 +25,35 @@ export interface Attendance {
 	lateCount: number;
 	excusedAbsentCount: number;
 	absentCount: number;
-	earlyLeaveCount: number;
 }
 
 export interface AttendanceReponse {
 	member: AttendanceMember;
 	attendance: Attendance;
-	sessions: AttendanceSession[];
+	sessions: MyAttendanceSession[];
 }
 
 export interface AttendanceBySessionIdReponse {
 	member: AttendanceMember;
 	attendance: {
 		status: AttendanceStatus;
-		attendedAt: string;
-		updatedAt: string;
+		attendedAt: string | null;
+		updatedAt: string | null;
 	};
-	session: AttendanceSession;
+	session: Pick<AttendanceSession, 'id' | 'week' | 'eventName' | 'date'>;
+}
+
+export interface MyAttendanceBySessionIdResponse {
+	attendance: {
+		status: AttendanceStatus;
+		attendedAt: string | null;
+	};
+	session: {
+		week: number;
+		eventName: string;
+		date: string;
+		place: string;
+	};
 }
 
 export interface AttendanceCheckReponse {
@@ -55,53 +61,90 @@ export interface AttendanceCheckReponse {
 	attendedAt: string;
 }
 
-// 세션별 출석 조회 타입
-export interface AttendanceBySessionReponse {
-	members: {
-		id: number;
-		name: string;
-		teamNumber: number;
-		isAdmin: boolean;
-		part: Exclude<Part, 'ETC'>;
-		attendanceStatus: AttendanceStatus;
-	}[];
-	hasNext: boolean;
-	nextCursorId: number | null;
+export interface AttendanceBySessionMember {
+	id: number;
+	name: string;
+	teamNumber: number | null;
+	isAdmin: boolean;
+	part: Exclude<Part, 'ETC'> | null;
+	attendanceStatus: AttendanceStatus;
+	attendedAt: string | null;
+	isManuallyUpdated: boolean;
+	absenceReason: string | null;
+}
+
+// GET /v3/sessions/{sessionId}/attendances
+export interface AttendanceBySessionResponse {
+	members: AttendanceBySessionMember[];
+	myTeamNumber: number | null;
 	totalElements: number;
 }
 
 export type ExcuseDocumentStatus = 'SUBMITTED' | 'PENDING' | null;
 
-export interface MyAbsenceReasonResponse {
+export type AbsenceReasonStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+
+export interface SubmitAbsenceReasonRequest {
+	sessionId: number;
 	contents: string;
-	status: ExcuseDocumentStatus;
+	imageIds: number[];
+}
+
+export interface ImageResponse {
+	imageId: number;
+	fileName: string | null;
+}
+
+export interface MyAbsenceReasonResponse {
+	images: ImageResponse[];
+	contents: string;
+	status: AbsenceReasonStatus;
+	imageIds: number[];
 	createdAt: string;
-	updatedAt: string;
+	updatedAt: string | null;
 }
 
 export interface AbsenceReason {
 	memberId: number;
 	memberName: string;
 	contents: string;
-	status: ExcuseDocumentStatus;
-	createdAt: string;
-	updatedAt: string;
+	status: AbsenceReasonStatus;
+	imageIds: number[];
+	images: ImageResponse[];
+	createdAt: string | null;
+	updatedAt: string | null;
 }
 
 export interface AbsenceReasonsResponse {
 	reasons: AbsenceReason[];
 }
 
+/** 현재 기수 전체 명단이며 teamNumber 0은 팀 미배정이다. */
 export interface AttendanceByMemberReponse {
-	members: {
-		id: number;
-		name: string;
-		teamNumber: number;
-		isAdmin: boolean;
-		part: Exclude<Part, 'ETC'>;
-		attendanceStatus: MemberAttendanceStatus;
-	}[];
-	hasNext: boolean;
-	nextCursorId: number | null;
+	members: AttendanceMember[];
+	myTeamNumber: number | null;
 	totalElements: number;
+}
+
+export interface MyAttendanceAbsenceReason {
+	id: number;
+	contents: string;
+	status: AbsenceReasonStatus;
+	imageIds: number[];
+	images: ImageResponse[];
+}
+
+export interface MyAttendanceSession extends AttendanceSession {
+	attendedAt: string | null;
+	isOnline: boolean;
+	absenceReason: MyAttendanceAbsenceReason | null;
+}
+
+export interface MyAttendanceResponse {
+	member: Omit<AttendanceMember, 'teamNumber' | 'part'> & {
+		teamNumber: number | null;
+		part: string | null;
+	};
+	attendance: Pick<Attendance, 'presentCount' | 'lateCount' | 'excusedAbsentCount' | 'absentCount'>;
+	sessions: MyAttendanceSession[];
 }

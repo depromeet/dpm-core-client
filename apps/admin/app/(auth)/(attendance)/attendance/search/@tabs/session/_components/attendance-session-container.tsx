@@ -1,207 +1,249 @@
 'use client';
 
-import { Suspense, useEffect, useMemo, useState } from 'react';
-import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
-import { ErrorBoundary } from '@suspensive/react';
-import { useInfiniteQuery, useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import dayjs from 'dayjs';
-import { Button } from '@dpm-core/shared';
+import { Suspense, useState } from 'react';
+import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
+import {
+	useIsMutating,
+	useQueryErrorResetBoundary,
+	useSuspenseQueries,
+	useSuspenseQuery,
+} from '@tanstack/react-query';
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { AnimatePresence } from 'motion/react';
+import type { SessionWeek } from '@dpm-core/api';
+import {
+	Button,
+	cn,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+	formatDateOnly,
+	formatKoreanDate,
+	formatTimeOnly,
+} from '@dpm-core/shared';
 
-import { EmptyView } from '@/components/attendance/EmptyView';
+import { EmptyView } from '@/components/attendance';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
-import { useCheckboxSelection } from '@/hooks/useCheckboxSelection';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
-import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
-import {
-	getAbsenceReasonsOptions,
-	getAttendanceBySessionOptions,
-} from '@/remotes/queries/attendance';
+import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
+import { getCurrentCohortTeamsQuery } from '@/remotes/queries/cohort';
+import { getMemberPartsQuery } from '@/remotes/queries/member';
 import { getSessionWeeks } from '@/remotes/queries/session';
 
-import { AttendanceFilter } from '../../_components/attendance-filter';
-import { SearchInput } from '../../_components/search-input';
-import { WeekFilter } from '../../_components/week-filter';
-import { AttendanceBulkModifyModal } from './attendance-bulk-modify-modal';
+import { AttendanceSelectionBar, AttendanceSessionFilters } from '.';
 import AttendanceList from './attendance-list';
 
-const formatDate = (date: string) => {
-	return dayjs(date).format('YYYY.MM.DD');
+const SESSION_STATUS_LABEL = {
+	NOT_STARTED: '출석 시작 전',
+	IN_PROGRESS: '출석 중',
+	CLOSED: '출석 마감',
 };
 
-const AttendanceSessionContainer = () => {
+interface SessionRosterProps {
+	session: SessionWeek;
+	sessions: SessionWeek[];
+}
+
+function SessionRoster({ session, sessions }: SessionRosterProps) {
+	const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+	const [rosterQuery, teamsQuery, partsQuery] = useSuspenseQueries({
+		queries: [
+			getAttendanceBySessionOptions({ sessionId: session.id }),
+			getCurrentCohortTeamsQuery,
+			getMemberPartsQuery,
+		],
+	});
+	const roster = rosterQuery.data.data;
+	const teams = teamsQuery.data;
+	const parts = partsQuery.data;
+
+	const isBulkSaving = useIsMutating({ mutationKey: ['ATTENDANCE', 'bulk', session.id] }) > 0;
+
+	const params = useCustomSearchParams();
+	const filters = params.getAll();
+	const selectedTeams = filters.teams?.split(',') ?? [];
+	const selectedParts = filters.parts?.split(',') ?? [];
+	const statusMembers = roster.members.filter(
+		(member) =>
+			(!filters.name || member.name.includes(filters.name.trim())) &&
+			(!selectedTeams.length ||
+				selectedTeams.includes(
+					member.teamNumber === null ? 'UNASSIGNED' : String(member.teamNumber),
+				)) &&
+			(!selectedParts.length || selectedParts.includes(member.part ?? 'UNASSIGNED')) &&
+			(filters.myTeam !== 'true' ||
+				(roster.myTeamNumber !== null && member.teamNumber === roster.myTeamNumber)),
+	);
+	const members = statusMembers.filter(
+		(member) => !filters.status || member.attendanceStatus === filters.status,
+	);
+	const visibleSelectedIds = selectedIds.filter((id) => members.some((member) => member.id === id));
+	const allSelected = members.length > 0 && visibleSelectedIds.length === members.length;
+	const sessionIndex = sessions.findIndex((item) => item.id === session.id);
+
+	const updateFilters = (values: Record<string, string>) => {
+		setSelectedIds([]);
+		params.update(values, 'REPLACE');
+	};
+	const selectSession = (id: string) => params.update({ week: id }, 'REPLACE');
+
+	return (
+		<div className="relative flex h-dvh min-h-0 flex-col">
+			<fieldset disabled={isBulkSaving} className="contents">
+				<div className="z-20 shrink-0 bg-background-normal">
+					<header className="px-10 py-6 shadow-[inset_0_-1px_0_0_var(--color-line-normal)]">
+						<div className="flex items-center justify-between gap-4">
+							<div className="flex min-w-0 flex-wrap items-center gap-3">
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<Button
+											variant="none"
+											size="none"
+											className="max-w-full gap-3 font-bold text-headline1 tracking-[-0.48px]"
+										>
+											<span className="truncate">
+												{session.week}주차 | {session.eventName}
+											</span>
+											<ChevronDown size={24} className="shrink-0 text-label-assistive" />
+										</Button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent
+										align="start"
+										className="max-h-59 w-70 space-y-2 rounded-lg border-0 bg-background-normal p-3 text-label-subtle shadow-none ring-1 ring-line-subtle ring-inset"
+									>
+										{sessions.map((item) => (
+											<DropdownMenuItem
+												key={item.id}
+												onSelect={() => selectSession(String(item.id))}
+												className={cn(
+													'h-9 justify-between gap-2 py-2 font-medium text-body2 focus:bg-background-strong',
+													item.id === session.id && 'bg-background-strong',
+												)}
+											>
+												<span className="min-w-0 truncate">
+													{item.week}주차 | {item.eventName}
+												</span>
+												{item.id === session.id ? (
+													<span className="shrink-0 text-caption1 text-label-assistive">
+														선택됨
+													</span>
+												) : null}
+											</DropdownMenuItem>
+										))}
+									</DropdownMenuContent>
+								</DropdownMenu>
+								<span className="shrink-0 rounded bg-primary-extralight px-2 py-1 font-medium text-caption1 text-primary-normal">
+									{SESSION_STATUS_LABEL[session.attendanceStatus]}
+								</span>
+							</div>
+							<div className="flex shrink-0 gap-2">
+								<Button
+									variant="text"
+									size="sm"
+									title="이전 세션"
+									disabled={sessionIndex === 0}
+									onClick={() => selectSession(String(sessions[sessionIndex - 1].id))}
+								>
+									<ChevronLeft size={24} className="text-label-assistive" />
+								</Button>
+								<Button
+									variant="text"
+									size="sm"
+									title="다음 세션"
+									disabled={sessionIndex === sessions.length - 1}
+									onClick={() => selectSession(String(sessions[sessionIndex + 1].id))}
+								>
+									<ChevronRight size={24} className="text-label-subtle" />
+								</Button>
+							</div>
+						</div>
+						<div className="mt-4 flex flex-wrap gap-x-3 gap-y-1 font-medium text-body1 text-label-subtle">
+							<p>
+								<span className="mr-2 text-label-assistive">시간</span>
+								{formatKoreanDate(session.date)} {formatTimeOnly(session.date)}
+							</p>
+							<p>
+								<span className="mr-2 text-label-assistive">장소</span>
+								{session.isOnline ? '온라인' : session.place}
+							</p>
+							<p>
+								<span className="mr-2 text-label-assistive">인원 수</span>
+								{roster.totalElements}명
+							</p>
+						</div>
+					</header>
+					<AttendanceSessionFilters
+						members={roster.members}
+						statusMembers={statusMembers}
+						teams={teams}
+						parts={parts}
+						myTeamNumber={roster.myTeamNumber}
+						filters={filters}
+						onChange={updateFilters}
+					/>
+				</div>
+				<AttendanceList
+					data={members}
+					sessionId={session.id}
+					selectedIds={visibleSelectedIds}
+					onToggleItem={(id) =>
+						setSelectedIds((ids) =>
+							ids.includes(id) ? ids.filter((item) => item !== id) : [...ids, id],
+						)
+					}
+					onToggleAll={() => setSelectedIds(allSelected ? [] : members.map((member) => member.id))}
+					isAllSelected={allSelected}
+				/>
+			</fieldset>
+			<AnimatePresence>
+				{visibleSelectedIds.length > 0 ? (
+					<AttendanceSelectionBar
+						sessionId={session.id}
+						selectedIds={visibleSelectedIds}
+						onClear={() => setSelectedIds([])}
+					/>
+				) : null}
+			</AnimatePresence>
+		</div>
+	);
+}
+
+function AttendanceSessionContainer() {
 	const {
-		data: { data },
+		data: {
+			data: { sessions },
+		},
 	} = useSuspenseQuery(getSessionWeeks());
 
-	const customSearchParams = useCustomSearchParams();
-	const selectedWeekId = customSearchParams.get('week');
+	const params = useCustomSearchParams();
+	const today = new Intl.DateTimeFormat('sv-SE', {
+		timeZone: 'Asia/Seoul',
+		year: 'numeric',
+		month: '2-digit',
+		day: '2-digit',
+	}).format(new Date());
+	const session =
+		sessions.find((item) => String(item.id) === params.get('week')) ??
+		sessions.find((item) => formatDateOnly(item.date) >= today) ??
+		sessions.at(-1);
 
-	const selectedSession = useMemo(() => {
-		return data.sessions?.find((session) => session.id.toString() === selectedWeekId);
-	}, [data.sessions, selectedWeekId]);
+	if (!session) return <EmptyView message="현재 조회된 세션 정보가 없습니다" />;
 
-	const searchParams = customSearchParams.getAll();
-	const attendanceSearchParams = useMemo(
-		() => ({
-			week: Number(searchParams.week),
-			statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
-			teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
-			name: searchParams.name,
-		}),
-		[searchParams],
-	);
-
-	const {
-		data: attendanceData,
-		fetchNextPage,
-		hasNextPage,
-		fetchStatus,
-		isLoading,
-	} = useInfiniteQuery(getAttendanceBySessionOptions(attendanceSearchParams));
-
-	const { targetRef } = useInfiniteScroll({
-		callback: fetchNextPage,
-		canObserve: hasNextPage,
-		enabled: fetchStatus !== 'fetching',
-	});
-
-	const rawData = attendanceData?.pages.flatMap((page) => page.data.members) ?? [];
-	const totalElements = attendanceData?.pages[0]?.data.totalElements ?? 0;
-
-	// TODO: GET /v2/sessions/{sessionId}/absence-reasons 로 excuseDocumentStatus 파생
-	// 백엔드가 출석 목록 응답에 해당 필드를 추가하면 rawData 직접 사용으로 교체 가능
-	const { data: absenceReasonsData, isSuccess: isAbsenceReasonsLoaded } = useQuery({
-		...getAbsenceReasonsOptions({ sessionId: attendanceSearchParams.week }),
-		enabled: !!attendanceSearchParams.week,
-	});
-	const submittedMemberIds = new Set(absenceReasonsData?.data.reasons.map((r) => r.memberId) ?? []);
-	const flatData = rawData.map((member) => ({
-		...member,
-		excuseDocumentStatus:
-			member.attendanceStatus !== 'ABSENT' || !isAbsenceReasonsLoaded
-				? null
-				: submittedMemberIds.has(member.id)
-					? ('SUBMITTED' as const)
-					: ('PENDING' as const),
-	}));
-
-	const { selectedIds, toggleItem, toggleAll, isAllSelected, clearSelection } =
-		useCheckboxSelection(flatData);
-
-	useEffect(() => {
-		if (attendanceSearchParams.week) {
-			clearSelection();
-		}
-	}, [attendanceSearchParams.week, clearSelection]);
-
-	const selectedMembers = useMemo(
-		() => flatData.filter((member) => selectedIds.includes(member.id)),
-		[flatData, selectedIds],
-	);
-
-	const [isBulkModifyModalOpen, setIsBulkModifyModalOpen] = useState(false);
-
-	const handleModifyAttendance = () => {
-		setIsBulkModifyModalOpen(true);
-	};
-
-	if (data?.sessions?.length === 0) {
-		return <EmptyView message="현재 조회된 세션 정보가 없습니다" />;
-	}
-
-	// 초기 로딩만 전체 LoadingBox 표시
-	if (isLoading && !attendanceData) {
-		return <LoadingBox />;
-	}
-
-	return (
-		<>
-			{/* Mobile view (< 768px) */}
-			<div className="md:hidden">
-				<section className="sticky top-0 z-10 space-y-3.5 bg-white px-4 py-2.5">
-					<WeekFilter weeks={data.sessions} />
-					<SearchInput placeholder="디퍼 검색" />
-					<AttendanceFilter />
-				</section>
-				<AttendanceList
-					data={flatData}
-					targetRef={targetRef}
-					selectedIds={selectedIds}
-					onToggleItem={toggleItem}
-					onToggleAll={toggleAll}
-					isAllSelected={isAllSelected}
-				/>
-			</div>
-
-			{/* Desktop view (>= 768px) */}
-			<div className="hidden w-full md:block">
-				<section className="border-gray-200 border-b bg-white">
-					<div className="mx-auto max-w-300 px-10 py-4">
-						<WeekFilter weeks={data.sessions} />
-					</div>
-				</section>
-
-				<section className="mx-auto max-w-300 bg-white px-10 py-6">
-					<div className="mb-4 flex items-center gap-2">
-						<h2 className="font-bold text-label-normal text-title1 tracking-[-0.2px]">
-							출석 {selectedSession?.week}주차 (
-							{selectedSession?.date ? formatDate(selectedSession.date) : '-'})
-						</h2>
-						<span className="font-medium text-body1 text-primary-normal">{totalElements}명</span>
-					</div>
-
-					<div className="flex items-center justify-between">
-						<div className="w-67.5">
-							<SearchInput placeholder="디퍼 검색" />
-						</div>
-						<div className="flex items-center gap-7.5">
-							{selectedIds.length > 0 && (
-								<div className="flex items-center gap-3">
-									<p className="font-medium text-body1 text-primary-normal">
-										{selectedIds.length}개 선택됨
-									</p>
-									<Button
-										variant="none"
-										size="none"
-										onClick={handleModifyAttendance}
-										className="rounded-lg border-none bg-background-inverse px-4 py-2.5 font-semibold text-body2 text-label-inverse"
-									>
-										출석 정보 수정
-									</Button>
-								</div>
-							)}
-							<AttendanceFilter />
-						</div>
-					</div>
-				</section>
-
-				<AttendanceList
-					data={flatData}
-					targetRef={targetRef}
-					selectedIds={selectedIds}
-					onToggleItem={toggleItem}
-					onToggleAll={toggleAll}
-					isAllSelected={isAllSelected}
-				/>
-
-				<AttendanceBulkModifyModal
-					sessionId={Number(searchParams.week)}
-					selectedMembers={selectedMembers}
-					open={isBulkModifyModalOpen}
-					onOpenChange={setIsBulkModifyModalOpen}
-				/>
-			</div>
-		</>
-	);
-};
+	return <SessionRoster key={session.id} session={session} sessions={sessions} />;
+}
 
 export const AttendanceSession = () => {
+	const { reset } = useQueryErrorResetBoundary();
+
 	return (
 		<ErrorBoundary
+			onReset={reset}
 			fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
 		>
-			<Suspense>
+			<Suspense fallback={<LoadingBox />}>
 				<AttendanceSessionContainer />
 			</Suspense>
 		</ErrorBoundary>

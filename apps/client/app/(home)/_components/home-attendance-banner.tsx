@@ -6,9 +6,9 @@ import { useQuery } from '@tanstack/react-query';
 import { CircleIcon } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type {
-	AttendanceBySessionIdReponse,
 	AttendanceStatus,
 	CurrentWeekSessionResponse,
+	MyAttendanceBySessionIdResponse,
 } from '@dpm-core/api';
 import { ArrowRight, Button } from '@dpm-core/shared';
 
@@ -53,7 +53,12 @@ export const HomeCheckAttendanceBanner = ({
 						transition={transition}
 						className="pb-5"
 					>
-						<div className="rounded-[10px] bg-background-inverse p-5">
+						<div
+							data-coachmark={
+								data.data.attendance.status === 'PENDING' ? 'attendance-check' : undefined
+							}
+							className="rounded-[10px] bg-background-inverse p-5"
+						>
 							<HomeCheckAttendanceBannerContent
 								attendanceSession={attendanceSession}
 								attendanceMeBySessionId={data.data}
@@ -68,7 +73,6 @@ export const HomeCheckAttendanceBanner = ({
 
 const completedAttendanceCopy = {
 	PRESENT: { title: '출석 완료 !', buttonLabel: '출석을 완료했어요' }, // 정상 출석
-	EARLY_LEAVE: { title: '출석 완료 !', buttonLabel: '출석을 완료했어요' }, // 조퇴
 	LATE: { title: '오늘은 지각이네요', buttonLabel: '출석을 완료했어요' }, // 지각
 	ABSENT: { title: '결석 처리됐어요', buttonLabel: '출석을 마감했어요' }, // 결석
 } satisfies Record<
@@ -78,7 +82,7 @@ const completedAttendanceCopy = {
 
 interface HomeCheckAttendanceBannerContentProps {
 	attendanceSession: CurrentWeekSessionResponse;
-	attendanceMeBySessionId: AttendanceBySessionIdReponse;
+	attendanceMeBySessionId: MyAttendanceBySessionIdResponse;
 }
 
 const HomeCheckAttendanceBannerContent = ({

@@ -7,14 +7,12 @@ interface AttendanceMeBySessionIdAbsenceReasonProps {
 	params: Promise<{ sessionId: string }>;
 }
 
-const EMPTY_TITLE = '';
-
 export default async function page({ params }: AttendanceMeBySessionIdAbsenceReasonProps) {
 	const { sessionId } = await params;
 
 	return (
 		<SafeAreaAppLayout className="bg-background-normal">
-			<AppHeader title={EMPTY_TITLE} />
+			<AppHeader title="" className="mb-0" />
 			<AbsenceReasonSubmit sessionId={Number(sessionId)} />
 		</SafeAreaAppLayout>
 	);

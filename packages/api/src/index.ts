@@ -7,6 +7,7 @@ export * from './cohort';
 export * from './constants';
 export * from './env';
 export * from './http';
+export * from './image';
 export * from './member';
 export * from './notification';
 export * from './session';

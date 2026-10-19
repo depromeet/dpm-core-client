@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import type { ApiResponse, AttendanceReponse } from '@dpm-core/api';
+import type { ApiResponse, MyAttendanceResponse } from '@dpm-core/api';
 import { Aesterisk } from '@dpm-core/shared';
 
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
@@ -29,7 +29,7 @@ const AttendanceMeContainer = () => {
 		);
 	}
 
-	const { data } = response as ApiResponse<AttendanceReponse>;
+	const { data } = response as ApiResponse<MyAttendanceResponse>;
 
 	return (
 		<div className="scrollbar-hide flex-1 overflow-auto">

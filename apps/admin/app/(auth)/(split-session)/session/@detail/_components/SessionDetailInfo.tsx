@@ -4,13 +4,8 @@ import { type PropsWithChildren, Suspense } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import {
-	CopyButton,
-	GAPageTracker,
-	useIsMobile,
-} from '@dpm-core/shared';
-
 import dayjs from 'dayjs';
+import { CopyButton, GAPageTracker, useIsMobile } from '@dpm-core/shared';
 
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
@@ -33,9 +28,9 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 	const isMobile = useIsMobile();
 
 	return (
-		<div className="flex flex-col gap-y-5 px-4 md:px-10">
+		<div className="flex flex-col gap-y-5">
 			<GAPageTracker type="session-detail" sessionId={String(sessionId)} />
-			<div className="flex items-center justify-between md:mt-6">
+			<div className="flex items-center justify-between">
 				<h3 className="font-semibold text-headline2 text-label-normal md:font-bold md:text-title1">
 					{sessionDetail.name}
 				</h3>
@@ -74,8 +69,31 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 					{dayjs(sessionDetail.absentStart).subtract(1, 'minute').format('HH:mm')}
 				</p>
 			</SessionDetailInfoBox>
+
+			{sessionDetail.feedback && (
+				<SessionDetailInfoBox label="피드백 링크">
+					<p className="font-semibold text-body2 text-label-assistive">링크 복사</p>
+					<div className="flex items-center justify-between">
+						<p className="font-medium text-body2 text-label-subtle">피드백 링크</p>
+						<CopyButton
+							value={getSessionFeedbackUrl(sessionId)}
+							successMessage="피드백 링크를 복사했습니다."
+							aria-label="피드백 링크 복사"
+						/>
+					</div>
+				</SessionDetailInfoBox>
+			)}
 		</div>
 	);
+};
+
+const getSessionFeedbackUrl = (sessionId: number) => {
+	const clientOrigin =
+		process.env.NEXT_PUBLIC_STAGE === 'production'
+			? 'https://core.depromeet.com'
+			: 'https://dev.depromeet.com';
+
+	return `${clientOrigin}/session/${sessionId}/feedback`;
 };
 
 interface SessionDetailInfoBoxProps {

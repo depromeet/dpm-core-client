@@ -52,6 +52,7 @@ export default async function RootLayout({
 	return (
 		<html
 			lang="ko"
+			suppressHydrationWarning
 			style={
 				{
 					'--safe-area-inset-top': `${safeAreaInsets.top}px`,

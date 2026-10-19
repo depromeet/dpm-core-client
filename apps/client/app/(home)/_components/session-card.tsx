@@ -11,7 +11,10 @@ export const SessionCard = ({ session, isAttendanceOpen }: SessionCardProps) => 
 	const place = session.isOnline ? '온라인' : session.place;
 
 	return (
-		<div className="flex h-43.5 flex-col rounded-lg bg-background-normal p-5">
+		<div
+			data-coachmark="session-info"
+			className="flex h-43.5 flex-col rounded-lg bg-background-normal p-5"
+		>
 			<div
 				className={cn('flex min-w-0 gap-2', isAttendanceOpen ? 'items-center' : 'flex-col gap-1')}
 			>

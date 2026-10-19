@@ -1,15 +1,19 @@
-import { Aesterisk, cn } from '@dpm-core/shared';
+import { Asterisk } from 'lucide-react';
+import { cn } from '@dpm-core/shared';
 
-export const MemberEmptyView = ({ className, ...restProps }: React.ComponentProps<'div'>) => {
+interface MemberEmptyViewProps {
+	className?: string;
+	message?: string;
+}
+
+export const MemberEmptyView = ({
+	className,
+	message = '조건에 맞는 멤버를 찾을 수 없어요',
+}: MemberEmptyViewProps) => {
 	return (
-		<div
-			className={cn('flex flex-1 flex-col items-center justify-center gap-y-3', className)}
-			{...restProps}
-		>
-			<Aesterisk />
-			<p className="font-semibold text-body1 text-label-assistive">
-				조건에 맞는 디퍼를 찾을 수 없어요
-			</p>
+		<div className={cn('flex w-full flex-col items-center justify-center gap-4 py-30', className)}>
+			<Asterisk className="size-14 text-label-assistive" strokeWidth={1.5} />
+			<p className="font-medium text-body1 text-label-assistive">{message}</p>
 		</div>
 	);
 };

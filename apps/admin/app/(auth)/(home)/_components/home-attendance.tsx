@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useMemo, useRef } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { ChevronDown, ChevronRight, RotateCw } from 'lucide-react';
 import type { AttendanceStatus, Session } from '@dpm-core/api';
@@ -20,10 +20,11 @@ import {
 	useIsMobile,
 } from '@dpm-core/shared';
 
+import { EmptyView } from '@/components/attendance/EmptyView';
 import { Section } from '@/components/section';
 import { useCustomSearchParams } from '@/hooks/useCustomSearchParams';
+import { filterAttendanceMembers } from '@/lib/attendance/filterAttendanceMembers';
 import { getAttendanceStatusLabel } from '@/lib/attendance/status';
-import { getPreviousSession } from '@/lib/session/getPreviousSession';
 import { useAuth } from '@/providers/auth-provider';
 import { getAttendanceBySessionOptions } from '@/remotes/queries/attendance';
 
@@ -33,15 +34,25 @@ import { useSession } from './session-provider';
 
 export const HomeAttendance = () => {
 	const isMobile = useIsMobile();
-	const { sessions, currentSessionWeek } = useSession();
+	const { currentSessionWeek } = useSession();
 
-	const prevSession = getPreviousSession(sessions, currentSessionWeek);
-
-	if (!prevSession || isMobile) return null;
+	if (isMobile) return null;
 
 	return (
 		<Section>
-			<AttendanceHeader session={prevSession} />
+			{currentSessionWeek ? (
+				<AttendanceHeader session={currentSessionWeek} />
+			) : (
+				<div className="mb-4 flex items-center">
+					<h3 className="font-bold text-label-normal text-title1">출석</h3>
+					<Button variant="text" className="ml-3 gap-0" asChild>
+						<Link href="/attendance/search/session">
+							전체보기
+							<ChevronRight className="size-4" />
+						</Link>
+					</Button>
+				</div>
+			)}
 			<div className="flex justify-between">
 				<div className="max-w-[270px] flex-1">
 					<SearchInput id="search" placeholder="디퍼 검색" />
@@ -49,7 +60,11 @@ export const HomeAttendance = () => {
 				<AttendanceFilter />
 			</div>
 
-			<AttendanceList sessionId={prevSession.id} />
+			{currentSessionWeek ? (
+				<AttendanceList sessionId={currentSessionWeek.id} />
+			) : (
+				<EmptyView className="mt-10 h-41.5" message="조건에 맞는 디퍼를 찾을 수 없어요" />
+			)}
 		</Section>
 	);
 };
@@ -276,14 +291,14 @@ const AttendanceHeader = (props: AttendanceHeaderProps) => {
 	const customSearchParams = useCustomSearchParams();
 	const searchParams = customSearchParams.getAll();
 
-	const attendanceSearchParams = {
-		week: session.id,
+	const attendanceFilters = {
 		statuses: searchParams.statuses ? searchParams.statuses.split(',') : [],
 		teams: searchParams.teams ? searchParams.teams.split(',').map(Number) : [],
 		name: searchParams.name,
 	};
 
-	const { data } = useInfiniteQuery(getAttendanceBySessionOptions(attendanceSearchParams));
+	const { data } = useQuery(getAttendanceBySessionOptions({ sessionId: session.id }));
+	const filteredMembers = filterAttendanceMembers(data?.data.members ?? [], attendanceFilters);
 
 	return (
 		<div className="mb-4 flex items-center">
@@ -291,7 +306,7 @@ const AttendanceHeader = (props: AttendanceHeaderProps) => {
 				출석 {session.week}주차 ({formatDate(session.date)})
 			</h3>
 			<span className="ml-2 font-medium text-body1 text-primary-normal">
-				{data?.pages[0].data.totalElements}
+				{filteredMembers.length}
 			</span>
 			<Button variant="text" className="ml-3 gap-0" asChild>
 				<Link href={`/attendance/search/session?week=${session.id}`}>

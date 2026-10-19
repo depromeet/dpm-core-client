@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { Suspense } from 'react';
 
+import dpmLogo from '@/assets/images/dpm-logo.svg';
 import bgEllipse from '@/assets/images/login-bg-ellipse.svg';
 import bgGraphic from '@/assets/images/login-bg-graphic.svg';
 import { SafeAreaAppLayout } from '@/components/app-layout';
@@ -8,15 +9,25 @@ import { AppleLoginButton } from '@/components/apple-login-button';
 import { EmailLoginButton } from '@/components/email-login-button';
 import { LoginButton } from '@/components/login-button';
 import { LoginErrorToast } from '@/components/login-error-toast';
+import { LoginReturnTo } from '@/components/login-return-to';
+import { CoreLogo } from '@/components/lotties/core-logo';
 import { RecentLoginBadge } from '@/components/recent-login-badge';
-import { ReviewLoginLogo } from '@/components/review-login-logo';
 
-const LoginPage = () => {
+const LoginPage = async ({
+	searchParams,
+}: {
+	searchParams: Promise<{ returnTo?: string | string[]; error?: string | string[] }>;
+}) => {
+	const { returnTo, error } = await searchParams;
+	const returnToValue = Array.isArray(returnTo) ? returnTo[0] : returnTo;
+	const hasError = Array.isArray(error) ? error.length > 0 : Boolean(error);
+
 	return (
 		<SafeAreaAppLayout
 			hasBottomTabBar
 			className="relative h-dvh overflow-hidden bg-[linear-gradient(150.15deg,#FFFFFF_5.91%,#CFD9FF_42.11%,#E6F9FF_70.04%)] bg-gray-50"
 		>
+			<LoginReturnTo returnTo={returnToValue} preserveExisting={hasError} />
 			<Suspense>
 				<LoginErrorToast />
 			</Suspense>
@@ -33,7 +44,7 @@ const LoginPage = () => {
 				/>
 			</div>
 			<div className="relative flex flex-col gap-y-4.5 px-4 pt-20">
-				<ReviewLoginLogo />
+				<Image src={dpmLogo} alt="DPM" priority className="h-auto w-31" />
 				<p className="font-normal text-body1 text-label-strong">
 					출석부터 공지 확인까지,
 					<br />
@@ -48,13 +59,19 @@ const LoginPage = () => {
 						variant="none"
 						className="h-12.5 justify-center rounded-xl bg-[#FEE500] px-3.75 py-3.5 font-medium text-body1 leading-1"
 					/>
-					<RecentLoginBadge />
+					<RecentLoginBadge method="KAKAO" position="offset" />
 				</div>
 				<div className="flex flex-col items-center gap-y-3">
 					<p className="font-medium text-black/40 text-caption1">다른 방법으로 시작하기</p>
 					<div className="flex items-center gap-x-6">
-						<AppleLoginButton />
-						<EmailLoginButton />
+						<div className="relative">
+							<AppleLoginButton />
+							<RecentLoginBadge method="APPLE" position="centered" />
+						</div>
+						<div className="relative">
+							<EmailLoginButton />
+							<RecentLoginBadge method="EMAIL" position="centered" />
+						</div>
 					</div>
 				</div>
 			</div>

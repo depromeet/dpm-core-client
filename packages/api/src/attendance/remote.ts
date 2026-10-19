@@ -3,11 +3,14 @@ import type {
 	AbsenceReasonsResponse,
 	AttendanceByMemberReponse,
 	AttendanceBySessionIdReponse,
-	AttendanceBySessionReponse,
+	AttendanceBySessionResponse,
 	AttendanceCheckReponse,
 	AttendanceReponse,
 	AttendanceStatus,
 	MyAbsenceReasonResponse,
+	MyAttendanceBySessionIdResponse,
+	MyAttendanceResponse,
+	SubmitAbsenceReasonRequest,
 } from './types';
 
 export const attendance = {
@@ -22,109 +25,42 @@ export const attendance = {
 
 	// 내 출석 정보 조회
 	getMe: async () => {
-		const res = await http.get<AttendanceReponse>(`v3/members/me/attendances`);
+		const res = await http.get<MyAttendanceResponse>(`v3/members/me/attendances`);
 		return res;
 	},
 
 	// 내 출석 세션별 정보 조회
 	getMeBySessionId: async (params: { sessionId: number }) => {
 		const { sessionId } = params;
-		const res = await http.get<AttendanceBySessionIdReponse>(
-			`v1/sessions/${sessionId}/attendances/me`,
+		const res = await http.get<MyAttendanceBySessionIdResponse>(
+			`v3/sessions/${sessionId}/attendances/me`,
 		);
 		return res;
 	},
 
 	// 세션별 출석 리스트 조회
-	getAttendanceBySession: async (params: {
-		week: number;
-		statuses?: string[];
-		teams?: number[];
-		name?: string;
-		cursorId: number;
-		size?: number;
-	}) => {
-		const { week, statuses, teams, name, cursorId, size } = params;
-		const searchParams = new URLSearchParams();
-
-		if (statuses && statuses.length > 0) {
-			statuses.forEach((status) => {
-				searchParams.append('statuses', status);
-			});
-		}
-
-		if (teams && teams.length > 0) {
-			teams.forEach((team) => {
-				searchParams.append('teams', team.toString());
-			});
-		}
-
-		if (name) {
-			searchParams.set('name', name);
-		}
-
-		searchParams.set('cursorId', cursorId.toString());
-
-		if (size) {
-			searchParams.set('size', size.toString());
-		}
-
-		const res = await http.get<AttendanceBySessionReponse>(`v1/sessions/${week}/attendances`, {
-			searchParams,
-		});
+	getAttendanceBySession: async (params: { sessionId: number }) => {
+		const res = await http.get<AttendanceBySessionResponse>(
+			`v3/sessions/${params.sessionId}/attendances`,
+		);
 		return res;
 	},
 
 	// 사람별 출석 리스트 조회
-	getAttendanceByMember: async (params: {
-		statuses?: string[];
-		teams?: number[];
-		name?: string;
-		cursorId: number;
-		size?: number;
-	}) => {
-		const { statuses, teams, name, cursorId, size } = params;
-		const searchParams = new URLSearchParams();
-
-		if (statuses && statuses.length > 0) {
-			statuses.forEach((status) => {
-				searchParams.append('statuses', status);
-			});
-		}
-
-		if (teams && teams.length > 0) {
-			teams.forEach((team) => {
-				searchParams.append('teams', team.toString());
-			});
-		}
-
-		if (name) {
-			searchParams.set('name', name);
-		}
-
-		searchParams.set('cursorId', cursorId.toString());
-
-		if (size) {
-			searchParams.set('size', size.toString());
-		}
-
-		const res = await http.get<AttendanceByMemberReponse>(`v1/members/attendances`, {
-			searchParams,
-		});
-		return res;
+	getAttendanceByMember: () => {
+		return http.get<AttendanceByMemberReponse>('v3/members/attendances');
 	},
 
 	// 사람별 출석 상세 조회
-	getAttendanceByMemberDetail: async (params: { memberId: number }) => {
-		const { memberId } = params;
-		return await http.get<AttendanceReponse>(`v1/members/${memberId}/attendances`);
+	getAttendanceByMemberDetail: ({ memberId }: { memberId: number }) => {
+		return http.get<AttendanceReponse>(`v3/members/${memberId}/attendances`);
 	},
 
 	// 세션별 개인 출석 상세 조회
 	getAttendanceBySessionDetail: async (params: { memberId: number; sessionId: number }) => {
 		const { memberId, sessionId } = params;
 		return await http.get<AttendanceBySessionIdReponse>(
-			`v1/sessions/${sessionId}/attendances/${memberId}`,
+			`v3/sessions/${sessionId}/attendances/${memberId}`,
 		);
 	},
 
@@ -153,22 +89,21 @@ export const attendance = {
 	},
 
 	// 내 결석 사유서 조회
-	getMyAbsenceReason: async (params: { sessionId: number }) => {
-		return await http.get<MyAbsenceReasonResponse | null>(
-			`v2/sessions/${params.sessionId}/absence-reasons/me`,
+	getMyAbsenceReason: (params: { sessionId: number }) => {
+		return http.get<MyAbsenceReasonResponse | null | undefined>(
+			`v3/sessions/${params.sessionId}/absence-reasons/me`,
 		);
 	},
 
 	// 결석 사유서 제출
-	submitAbsenceReason: async (params: { sessionId: number; contents: string }) => {
-		const { sessionId, ...json } = params;
-		return await http.post(`v2/sessions/${sessionId}/absence-reasons`, { json });
+	submitAbsenceReason: ({ sessionId, ...json }: SubmitAbsenceReasonRequest) => {
+		return http.post(`v3/sessions/${sessionId}/absence-reasons`, { json });
 	},
 
 	// 세션 결석 사유서 목록 조회 (운영진)
 	getAbsenceReasons: async (params: { sessionId: number }) => {
 		return await http.get<AbsenceReasonsResponse>(
-			`v2/sessions/${params.sessionId}/absence-reasons`,
+			`v3/sessions/${params.sessionId}/absence-reasons`,
 		);
 	},
 };

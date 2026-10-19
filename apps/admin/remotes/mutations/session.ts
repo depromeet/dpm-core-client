@@ -18,8 +18,7 @@ export const editSessionAttendanceTimeMutationOptions = (
 		},
 	});
 
-// TODO: 서버에서 데이터 타입 수정 후 타입 공통화
-interface CreateSessionParams {
+interface SessionParams {
 	name: string;
 	date: string;
 	isOnline: boolean;
@@ -28,6 +27,18 @@ interface CreateSessionParams {
 	attendanceStart: string;
 	lateStart: string;
 	absentStart: string;
+}
+
+interface CreateSessionParams extends SessionParams {
+	feedbackEnabled: boolean;
+	feedbackStartAt?: string;
+	feedbackPushEnabled: boolean;
+}
+
+interface ModifySessionParams
+	extends SessionParams,
+		Pick<CreateSessionParams, 'feedbackEnabled' | 'feedbackStartAt' | 'feedbackPushEnabled'> {
+	sessionId: number;
 }
 
 export const createSessionMutationOptions = (
@@ -42,9 +53,9 @@ export const createSessionMutationOptions = (
 	});
 
 export const modifySessionMutationOptions = (
-	options?: MutationOptions<unknown, Error, CreateSessionParams & { sessionId: number }>,
+	options?: MutationOptions<unknown, Error, ModifySessionParams>,
 ) =>
-	mutationOptions<unknown, Error, CreateSessionParams & { sessionId: number }>({
+	mutationOptions<unknown, Error, ModifySessionParams>({
 		...options,
 		mutationKey: ['modifySession'],
 		mutationFn: async (params) => {

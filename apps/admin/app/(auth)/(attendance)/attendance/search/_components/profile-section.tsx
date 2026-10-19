@@ -1,8 +1,8 @@
-import { Profile } from '@/components/attendance/profile';
+import { Profile } from '@/components/attendance';
 
 interface ProfileSectionProps {
 	name: string;
-	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER';
+	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER' | null;
 	teamNumber: number;
 	isAdmin: boolean;
 }

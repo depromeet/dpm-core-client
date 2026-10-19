@@ -73,6 +73,8 @@ class Http {
 		return res.json();
 	};
 
+	postResponse = (url: string, options?: Options) => this.instance.post(url, options);
+
 	put = async <Response = unknown>(url: string, options?: Options) => {
 		const res = await this.instance.put<ApiResponse<Response>>(url, options);
 		return res.json();

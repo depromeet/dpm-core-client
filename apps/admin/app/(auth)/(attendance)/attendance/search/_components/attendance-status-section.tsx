@@ -2,20 +2,21 @@ import * as RadioGroup from '@radix-ui/react-radio-group';
 import type { AttendanceStatus } from '@dpm-core/api';
 import { ATTENDANCE_STATUS_OPTIONS, Button } from '@dpm-core/shared';
 
-import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
+import { AttendanceStatusLabel } from '@/components/attendance';
 import { formatISOStringToFullDateString } from '@/lib/date';
 
 interface AttendanceStatusSectionProps {
 	isEditMode: boolean;
 	selectedStatus: AttendanceStatus;
 	originalStatus: AttendanceStatus;
-	attendedAt: string;
-	updatedAt: string;
+	attendedAt: string | null;
+	updatedAt: string | null;
 	onStatusChange: (status: AttendanceStatus) => void;
 	onSave: () => void;
 	onCancel: () => void;
 	onEdit: () => void;
 	isSaveDisabled: boolean;
+	isSaving: boolean;
 	absenceReason?: string | null;
 }
 
@@ -30,6 +31,7 @@ export const AttendanceStatusSection = ({
 	onCancel,
 	onEdit,
 	isSaveDisabled,
+	isSaving,
 	absenceReason,
 }: AttendanceStatusSectionProps) => {
 	return (
@@ -51,6 +53,7 @@ export const AttendanceStatusSection = ({
 					>
 						{ATTENDANCE_STATUS_OPTIONS.map((status) => (
 							<RadioGroup.Item
+								disabled={isSaving}
 								key={status.value}
 								value={status.value}
 								className="flex-1 px-3 py-2.5 text-label-assistive data-[state=checked]:bg-primary-extralight data-[state=checked]:text-primary-normal"
@@ -65,6 +68,7 @@ export const AttendanceStatusSection = ({
 							size="none"
 							onClick={onSave}
 							disabled={isSaveDisabled}
+							loading={isSaving}
 							className="rounded-lg bg-gray-800 px-4 py-3 font-medium text-body2 text-white disabled:opacity-50"
 						>
 							저장하기
@@ -73,6 +77,7 @@ export const AttendanceStatusSection = ({
 							variant="none"
 							size="none"
 							onClick={onCancel}
+							disabled={isSaving}
 							className="rounded-lg bg-gray-100 px-4 py-3 font-medium text-body2"
 						>
 							취소
@@ -94,9 +99,7 @@ export const AttendanceStatusSection = ({
 						</div>
 						<div className="flex gap-4">
 							<p className="w-20 shrink-0 font-medium text-body2 text-label-assistive">결석 사유</p>
-							<p className="font-medium text-body2 text-label-normal">
-								{absenceReason ?? '-'}
-							</p>
+							<p className="font-medium text-body2 text-label-normal">{absenceReason ?? '-'}</p>
 						</div>
 					</div>
 					<Button

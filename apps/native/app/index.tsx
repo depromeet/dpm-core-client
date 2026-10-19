@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createWebView } from '@webview-bridge/react-native';
 import Constants from 'expo-constants';
-import { SplashScreen } from 'expo-router';
+import { SplashScreen, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { BackHandler, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,14 +16,38 @@ export const { WebView } = createWebView({
 });
 
 const WEBVIEW_URL = process.env.EXPO_PUBLIC_WEBVIEW_URL ?? 'https://dev.depromeet.com';
+const FEEDBACK_PATH_PATTERN = /^\/session\/\d+\/feedback\/?$/;
+
+const getFeedbackLink = (value: string | string[] | undefined) => {
+	if (typeof value !== 'string') return undefined;
+
+	try {
+		const url = new URL(value);
+		if (url.origin === 'https://core.depromeet.com' && FEEDBACK_PATH_PATTERN.test(url.pathname)) {
+			return url.toString();
+		}
+	} catch {
+		return undefined;
+	}
+
+	return undefined;
+};
 
 function WebViewContainer() {
+	const { feedbackUrl } = useLocalSearchParams<{ feedbackUrl?: string | string[] }>();
+	const [initialFeedbackUrl] = useState(() => getFeedbackLink(feedbackUrl));
 	const webViewRef = useRef<NativeWebView>(null);
 	const [canGoBack, setCanGoBack] = useState(false);
 	const behavior = useBehavior();
 	const insets = useSafeAreaInsets();
 
 	const [appIsReady, setAppIsReady] = useState(false);
+	const [webViewUrl, setWebViewUrl] = useState(initialFeedbackUrl ?? WEBVIEW_URL);
+
+	useEffect(() => {
+		const nextFeedbackUrl = getFeedbackLink(feedbackUrl);
+		if (nextFeedbackUrl) setWebViewUrl(nextFeedbackUrl);
+	}, [feedbackUrl]);
 
 	const hideSplashScreen = useCallback(async () => {
 		if (appIsReady) {
@@ -67,7 +91,7 @@ function WebViewContainer() {
 				<WebView
 					style={styles.webview}
 					ref={webViewRef}
-					source={{ uri: WEBVIEW_URL }}
+					source={{ uri: webViewUrl }}
 					applicationNameForUserAgent={`DPMApp/${version} (${platformStr}; Insets=${insetsStr})`}
 					onNavigationStateChange={handleNavigationChanage}
 					onLoadEnd={handleWebViewLoadEnd}

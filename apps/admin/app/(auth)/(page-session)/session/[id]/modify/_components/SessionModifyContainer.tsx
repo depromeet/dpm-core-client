@@ -1,16 +1,15 @@
 'use client';
 
-import { Suspense, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { SessionProivder } from '@/app/(auth)/(home)/_components/session-provider';
 import { formatTimeToCode } from '@/app/(auth)/(split-session)/session/_utils';
-import { LoadingBox } from '@/components/loading-box';
 import { getSessionDetailQuery } from '@/remotes/queries/session';
 
 import { subtractOneMinute } from '../../../_utils';
 import { SessionForm, type SessionSchema } from '../../../create/_components/SessionForm';
-import { SessionPolicyModal } from './SessionPolicyModal';
+import { SessionModifyConfirmModal } from './SessionModifyConfirmModal';
 
 interface SessionModifyContainerProps {
 	sessionId: number;
@@ -23,19 +22,26 @@ export const SessionModifyContainer = (props: SessionModifyContainerProps) => {
 		data: { data: sessionDetail },
 	} = useSuspenseQuery(getSessionDetailQuery(sessionId));
 
-	const [isSessionPolicyModalOpen, setIsSessionPolicyModalOpen] = useState(false);
+	const [isModifyConfirmModalOpen, setIsModifyConfirmModalOpen] = useState(false);
 
 	const SessionFormData = useRef<SessionSchema | null>(null);
 
-	const handleOpenSessionPolicyModal = (formData: SessionSchema) => {
+	const handleOpenModifyConfirmModal = (formData: SessionSchema) => {
 		SessionFormData.current = formData;
-		setIsSessionPolicyModalOpen(true);
+		setIsModifyConfirmModalOpen(true);
 	};
 
 	return (
 		<SessionProivder>
 			<SessionForm
-				onSubmit={handleOpenSessionPolicyModal}
+				onSubmit={handleOpenModifyConfirmModal}
+				showFeedbackSettings
+				excludeSessionId={sessionId}
+				feedbackSettingsLocked={
+					sessionDetail.feedback?.status === 'IN_PROGRESS' ||
+					sessionDetail.feedback?.status === 'CLOSED'
+				}
+				feedbackStartAtInitialValue={sessionDetail.feedback?.startAt}
 				defaultValues={{
 					cohortId: 1,
 					name: sessionDetail.name,
@@ -54,17 +60,26 @@ export const SessionModifyContainer = (props: SessionModifyContainerProps) => {
 						start: formatTimeToCode(sessionDetail.lateStart),
 						end: subtractOneMinute(formatTimeToCode(sessionDetail.absentStart)),
 					},
+					feedbackEnabled: sessionDetail.feedback !== null,
+					feedbackPushEnabled: sessionDetail.feedback?.pushEnabled ?? true,
+					feedbackStartAt: {
+						date: sessionDetail.feedback ? new Date(sessionDetail.feedback.startAt) : null,
+						time: sessionDetail.feedback ? formatTimeToCode(sessionDetail.feedback.startAt) : '',
+					},
 				}}
 			/>
-			{isSessionPolicyModalOpen && SessionFormData.current && (
-				<Suspense fallback={<LoadingBox />}>
-					<SessionPolicyModal
-						formData={SessionFormData.current}
-						sessionId={sessionId}
-						open={isSessionPolicyModalOpen}
-						onOpenChange={setIsSessionPolicyModalOpen}
-					/>
-				</Suspense>
+			{isModifyConfirmModalOpen && SessionFormData.current && (
+				<SessionModifyConfirmModal
+					formData={SessionFormData.current}
+					initialAttendanceTimes={{
+						attendanceStart: sessionDetail.attendanceStart,
+						lateStart: sessionDetail.lateStart,
+						absentStart: sessionDetail.absentStart,
+					}}
+					sessionId={sessionId}
+					open={isModifyConfirmModalOpen}
+					onOpenChange={setIsModifyConfirmModalOpen}
+				/>
 			)}
 		</SessionProivder>
 	);

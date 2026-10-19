@@ -14,25 +14,6 @@ export const withdrawMutationOptions = (options: WithdrawMutationOptions) =>
 		...options,
 	});
 
-interface ApproveWhitelistParams {
-	signupEmail: string;
-	name: string;
-}
-
-type ApproveWhitelistOptions = MutationOptions<
-	unknown,
-	HTTPError<ApiErrorReponse>,
-	ApproveWhitelistParams,
-	unknown
->;
-
-export const approveWhitelistMutationOptions = (options: ApproveWhitelistOptions) =>
-	mutationOptions({
-		mutationKey: ['whitelist'],
-		mutationFn: (params: ApproveWhitelistParams) => member.approveWhitelistForSignup(params),
-		...options,
-	});
-
 type UpdateMyProfileOptions = MutationOptions<
 	unknown,
 	HTTPError<ApiErrorReponse>,
@@ -45,5 +26,15 @@ export const updateMyProfileMutationOptions = (options?: UpdateMyProfileOptions)
 	mutationOptions({
 		mutationKey: ['my-profile-update'],
 		mutationFn: (params: MemberProfileUpdateRequest) => member.updateMyProfile(params),
+		...options,
+	});
+
+type ReapplyMembershipOptions = MutationOptions<unknown, HTTPError<ApiErrorReponse>, void, unknown>;
+
+/** 반려 회원 본인 재신청 (PENDING으로 전환) */
+export const reapplyMembershipMutationOptions = (options?: ReapplyMembershipOptions) =>
+	mutationOptions({
+		mutationKey: ['member-reapply'],
+		mutationFn: () => member.reapplyMembership(),
 		...options,
 	});

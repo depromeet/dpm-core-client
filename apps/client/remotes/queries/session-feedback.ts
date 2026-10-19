@@ -1,18 +1,18 @@
-export const SESSION_FEEDBACK_STATUSES = [
-	'AVAILABLE',
-	'SUBMITTED',
-	'EXPIRED',
-	'NOT_TARGET',
-] as const;
+import { queryOptions } from '@tanstack/react-query';
+import { http, session } from '@dpm-core/api';
 
-export type SessionFeedbackStatus = (typeof SESSION_FEEDBACK_STATUSES)[number];
+export const getSessionFeedbackMeQuery = (sessionId: number) =>
+	queryOptions({
+		queryKey: ['session-feedback-me', sessionId],
+		queryFn: () => session.getMyFeedbackStatus(sessionId),
+		retry: false,
+		staleTime: 0,
+	});
 
-export interface SessionFeedbackStatusResponse {
-	sessionId: number;
-	status: SessionFeedbackStatus;
-}
-
-export const getSessionFeedbackStatusMock = async (
-	sessionId: number,
-	status: SessionFeedbackStatus = 'AVAILABLE',
-): Promise<SessionFeedbackStatusResponse> => ({ sessionId, status });
+export const getMyPendingSessionFeedbackQuery = () =>
+	queryOptions({
+		queryKey: ['session-feedback-pending'],
+		queryFn: () => session.getMyPendingFeedback(),
+		enabled: Boolean(http.getDefaultToken()),
+		retry: false,
+	});

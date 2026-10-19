@@ -9,15 +9,26 @@ import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
 import { showAttendanceBanner } from '@/lib/attendance/banner';
 import { getSessionCurrentOptions } from '@/remotes/queries/session';
 
+import { CohortEndedBanner } from './cohort-ended-banner';
 import { HomeCheckAttendanceBanner } from './home-attendance-banner';
+import { HomeFeedbackCard } from './home-feedback-card';
 import { SessionCard } from './session-card';
 
-// 배너 오류는 홈의 다른 콘텐츠에 영향을 주지 않도록 격리한다.
-export const HomeBannerList = ErrorBoundary.with({ fallback: () => null }, () => (
-	<Suspense fallback={<HomeSessionSkeleton />}>
-		<HomeBannerListContainer />
-	</Suspense>
-));
+// 세션 조회가 실패해도 피드백 카드 조회는 계속 보여준다.
+export const HomeBannerList = ErrorBoundary.with(
+	{
+		fallback: () => (
+			<section className="px-4 pb-5">
+				<HomeFeedbackCard isAttendanceOpen={false} />
+			</section>
+		),
+	},
+	() => (
+		<Suspense fallback={<HomeSessionSkeleton />}>
+			<HomeBannerListContainer />
+		</Suspense>
+	),
+);
 
 const HomeSessionSkeleton = () => (
 	<output className="block px-4 pb-5" aria-label="세션 정보 불러오는 중">
@@ -33,17 +44,29 @@ const HomeSessionSkeleton = () => (
 
 const HomeBannerListContainer = () => {
 	const {
-		data: { data: currentWeekSession },
+		data: { data: nextSessionHome },
 	} = useSuspenseQuery(getSessionCurrentOptions());
+	const currentWeekSession =
+		nextSessionHome.status === 'AVAILABLE' ? (nextSessionHome.session ?? null) : null;
 
 	useEffect(() => {
 		const sessionId = currentWeekSession?.id?.toString() || 'home';
 		gaTrackHomeEnter(sessionId);
 	}, [currentWeekSession]);
 
+	if (nextSessionHome.status === 'COHORT_ENDED') {
+		return (
+			<section className="px-4 pb-5">
+				<HomeFeedbackCard isAttendanceOpen={false} />
+				<CohortEndedBanner cohortValue={nextSessionHome.cohortValue} />
+			</section>
+		);
+	}
+
 	if (!currentWeekSession) {
 		return (
 			<section className="px-4 pb-5">
+				<HomeFeedbackCard isAttendanceOpen={false} />
 				<Empty className="h-43.5 rounded-lg bg-background-normal p-5">
 					<EmptyHeader className="gap-6">
 						<Aesterisk />
@@ -67,6 +90,7 @@ const HomeBannerListContainer = () => {
 				isAttendanceOpen={isAttendanceOpen}
 			/>
 			<SessionCard session={currentWeekSession} isAttendanceOpen={isAttendanceOpen} />
+			<HomeFeedbackCard isAttendanceOpen={isAttendanceOpen} />
 		</section>
 	);
 };

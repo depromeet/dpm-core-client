@@ -7,7 +7,6 @@ import {
 	attendance,
 } from '@dpm-core/api';
 
-
 const MUTATE_KEY = 'ATTENDANCE';
 
 interface CheckAttendanceParams {
@@ -30,9 +29,8 @@ export const checkAttendanceOptions = (sessionId: number, options?: CheckAttenda
 	});
 
 /* 결석 사유서 제출 */
-export const submitAbsenceReasonOptions = (sessionId: number) =>
+export const submitAbsenceReasonOptions = () =>
 	mutationOptions({
-		mutationKey: [MUTATE_KEY, 'absence-reason', sessionId],
-		mutationFn: (params: { contents: string }) =>
-			attendance.submitAbsenceReason({ sessionId, ...params }),
+		mutationKey: [MUTATE_KEY, 'absence-reason'],
+		mutationFn: attendance.submitAbsenceReason,
 	});

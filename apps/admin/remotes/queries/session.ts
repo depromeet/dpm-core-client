@@ -1,39 +1,44 @@
 import { queryOptions } from '@tanstack/react-query';
-import { type SessionAttendanceStatusTime, session } from '@dpm-core/api';
+import { session } from '@dpm-core/api';
 
 export const getSessionListQuery = queryOptions({
 	queryKey: ['session-list'],
-	queryFn: session.getList,
+	queryFn: () => session.getList(),
 });
 
 export const getCurrentWeekSessionQuery = queryOptions({
 	queryKey: ['session-current-week'],
-	queryFn: async () => {
-		return session.getCurrentWeekSession();
-	},
+	queryFn: () => session.getCurrentWeekSession(),
 });
 
 export const getSessionDetailQuery = (sessionId: number) =>
 	queryOptions({
 		queryKey: ['session-detail', sessionId],
-		queryFn: async () => {
-			return session.getSessionById(sessionId);
-		},
+		queryFn: () => session.getSessionById(sessionId),
 	});
+
+export const getSessionFeedbackInsightQuery = (sessionId: number) =>
+	queryOptions({
+		queryKey: ['session-feedback-insight', sessionId],
+		queryFn: () => session.getFeedbackInsight(sessionId),
+		refetchInterval: (query) => (query.state.data?.data.status === 'IN_PROGRESS' ? 5_000 : false),
+	});
+
+export const getSessionModifyPolicyQuery = (params: {
+	sessionId: number;
+	attendanceStart: string;
+	lateStart: string;
+	absentStart: string;
+}) => {
+	return queryOptions({
+		queryKey: ['session-modify-policy', params],
+		queryFn: () => session.getSessionModifyPolicy(params),
+		retry: false,
+	});
+};
 
 export const getSessionWeeks = () =>
 	queryOptions({
 		queryKey: ['sessions, weeks'],
-		queryFn: async () => {
-			return session.getSessionWeeks();
-		},
+		queryFn: () => session.getSessionWeeks(),
 	});
-
-export const getSessionModifyPolicyQuery = (
-	params: { sessionId: number } & SessionAttendanceStatusTime,
-) => {
-	return queryOptions({
-		queryKey: ['session-policy', params],
-		queryFn: async () => session.getSessionModifyPolicy(params),
-	});
-};

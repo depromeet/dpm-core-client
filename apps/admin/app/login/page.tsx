@@ -3,6 +3,8 @@ import { DpmText } from '@dpm-core/shared';
 import { LoginButton } from '@/components/login-button';
 import { CoreLogo } from '@/components/lotties/core-logo';
 
+import { AdminDevLoginTrigger } from './_components/admin-dev-login-trigger';
+
 export const dynamic = 'force-dynamic';
 
 const LoginPage = () => {
@@ -13,9 +15,7 @@ const LoginPage = () => {
 					<CoreLogo />
 					<div className="relative mx-auto flex gap-x-2.5 font-semibold text-headline1 text-label-normal uppercase">
 						<DpmText className="w-fit text-gray-800" />
-						<p className="absolute left-[105%] font-semibold text-body2 text-primary-strong lowercase leading-none">
-							admin
-						</p>
+						<AdminDevLoginTrigger />
 					</div>
 				</div>
 				<p className="font-medium text-body2 text-label-subtle">

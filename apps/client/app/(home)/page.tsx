@@ -9,12 +9,14 @@ import { GAPageTracker } from '@dpm-core/shared';
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { BottomTabBar } from '@/components/bottom-tab-bar';
 import { LastLoginRecorder } from '@/components/last-login-recorder';
+import { LoginReturnToRedirect } from '@/components/login-return-to-redirect';
 import { getAnnouncementListQuery } from '@/remotes/queries/announcement';
 import { getSessionCurrentOptions } from '@/remotes/queries/session';
 
 import { AppleProfileSetupSheet } from './_components/apple-profile-setup-sheet';
 import { HomeAnnouncementBanner } from './_components/home-announcement-banner';
 import { HomeBannerList } from './_components/home-banner-list';
+import { HomeCoachmark } from './_components/home-coachmark';
 import { HomeHeader } from './_components/home-header';
 import { MemberStatusRedirect } from './_components/member-status-redirect';
 import { UserActionList } from './_components/user-action-list';
@@ -32,6 +34,7 @@ export default function HomePage() {
 
 	return (
 		<SafeAreaAppLayout hasBottomTabBar className="h-dvh">
+			<LoginReturnToRedirect />
 			<GAPageTracker type="home" />
 			<HomeHeader />
 			<main className="scrollbar-hide flex-1 overflow-auto">
@@ -45,6 +48,7 @@ export default function HomePage() {
 			<AppleProfileSetupSheet />
 			<LastLoginRecorder />
 			<MemberStatusRedirect />
+			<HomeCoachmark />
 		</SafeAreaAppLayout>
 	);
 }

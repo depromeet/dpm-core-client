@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { HTTPError } from 'ky';
 import { ArrowDownAZ, ArrowUpAZ, Plus } from 'lucide-react';
-import { member, type MemberOverviewItem } from '@dpm-core/api';
+import { type MemberOverviewItem, member } from '@dpm-core/api';
 import {
 	Button,
 	cn,
@@ -69,10 +69,7 @@ const SORT_COLUMNS = [
 const EXPLICIT_ROLE_PATTERN = /^(\d+)기\s+(디퍼|운영진)$/;
 const BASE_ROLE_PATTERN = /^코어\s+(\d+)기$/;
 
-const parseCohortRoles = (
-	roles: string[],
-	cohortIdToNumber: Map<number, string>,
-): CohortRole[] => {
+const parseCohortRoles = (roles: string[], cohortIdToNumber: Map<number, string>): CohortRole[] => {
 	const map = new Map<string, CohortRole>();
 	const baseSet = new Set<string>();
 	for (const r of roles) {
@@ -261,9 +258,9 @@ export const PermissionManagement = () => {
 			// 1) 출석부/공지/회식 등록 + overview cohortId 갱신
 			await member.initCohortMember({ memberId, cohortId });
 			// 2) 해당 기수 디퍼 역할 부여 (init 단독으로는 role이 안 붙음)
-			const cohortNumber = cohortIdToNumber.get(cohortId);
-			if (cohortNumber) {
-				await member.updateMemberRole(memberId, { isAdmin: false, cohort: cohortNumber });
+			const cohort = cohortIdToNumber.get(cohortId);
+			if (cohort) {
+				await member.updateMemberRole(memberId, { roleType: 'DEEPER', cohort });
 			}
 		},
 		onSuccess: () => {
@@ -300,9 +297,7 @@ export const PermissionManagement = () => {
 		setDialogOpen(true);
 	};
 
-	const targetCohortRoles = targetMember
-		? (cohortRolesMap.get(targetMember.memberId) ?? [])
-		: [];
+	const targetCohortRoles = targetMember ? (cohortRolesMap.get(targetMember.memberId) ?? []) : [];
 	const selectedCohortRole = targetCohortRoles.find((r) => r.cohortNumber === selectedCohort);
 
 	const availableCohortsToAdd = useMemo(() => {

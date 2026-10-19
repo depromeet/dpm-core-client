@@ -23,8 +23,13 @@ export const FormWeek = () => {
 					<FormControl>
 						<Input
 							placeholder="ex. 1"
+							inputMode="numeric"
+							pattern="[0-9]*"
 							className="border border-line-normal bg-inherit"
 							{...field}
+							onChange={(event) => {
+								field.onChange(event.currentTarget.value.replace(/\D/g, ''));
+							}}
 						/>
 					</FormControl>
 

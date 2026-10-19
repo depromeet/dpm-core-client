@@ -4,6 +4,7 @@ import { type ComponentPropsWithoutRef, forwardRef } from 'react';
 import { type Button, KakaoLogo } from '@dpm-core/shared';
 
 import { useKakaoLogin } from '@/hooks/use-kakao-login';
+import { deleteToken } from '@/lib/utils';
 
 import { Pressable } from './motion';
 
@@ -19,6 +20,9 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 		const { canUseNativeKakao, loginWithNative, webFallbackUrl } = useKakaoLogin();
 
 		const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+			// 탈퇴·만료 등으로 남은 토큰이 로그인 요청에 실리면 서버가 401(JWT-401-1)을 반환하므로 먼저 비운다.
+			deleteToken();
+
 			if (!canUseNativeKakao) return;
 
 			e.preventDefault();

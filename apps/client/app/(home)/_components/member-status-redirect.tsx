@@ -10,6 +10,7 @@ import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 /**
  * 회원 상태에 따라 홈 진입을 대신한다.
  * - 승인 대기(PENDING): 검토중 화면
+ * - 반려(REJECTED): 반려 안내 화면
  * - 검토중 화면을 봤던 회원이 승인된 뒤 처음 들어온 경우: 인증완료 화면
  */
 export const MemberStatusRedirect = () => {
@@ -22,6 +23,11 @@ export const MemberStatusRedirect = () => {
 
 		if (status === 'PENDING') {
 			router.replace('/pending');
+			return;
+		}
+
+		if (status === 'REJECTED') {
+			router.replace('/rejected');
 			return;
 		}
 

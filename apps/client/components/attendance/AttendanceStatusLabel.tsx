@@ -6,19 +6,16 @@ interface AttendanceLabelProps extends React.ComponentProps<'span'> {
 }
 
 const AttendanceStatusLabel = ({ status, ...props }: AttendanceLabelProps) => {
+	const { className, ...restProps } = props;
 	const { icon, label } = ATTENDANCE_STATUS_MAP[status];
 
 	return (
-		<span className="flex items-center space-x-1" {...props}>
+		<span
+			className={cn('flex items-center gap-1 font-semibold text-body2', className)}
+			{...restProps}
+		>
 			{icon}
-			<strong
-				className={cn(
-					'font-semibold text-body2',
-					status === 'PENDING' ? 'text-label-assistive' : 'text-label-subtle',
-				)}
-			>
-				{label}
-			</strong>
+			<span>{label}</span>
 		</span>
 	);
 };
