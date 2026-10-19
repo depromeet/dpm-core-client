@@ -1,6 +1,5 @@
 'use client';
 
-import { ChevronDown } from 'lucide-react';
 import { Button } from '@dpm-core/shared';
 
 import {
@@ -40,6 +39,26 @@ function valueLabel<K extends MemberEditableField>(
 	}
 }
 
+/** Figma `icon-arrow-decrease-mono` (20px, 채워진 아래 화살표) */
+const ArrowDecreaseIcon = ({ className }: { className?: string }) => (
+	<svg
+		aria-hidden
+		className={className}
+		width="20"
+		height="20"
+		viewBox="0 0 20 20"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path
+			d="M4.99026 7.63948C4.72486 7.63948 4.61871 7.95796 4.77794 8.17027L9.44889 13.7436C9.71429 14.062 10.192 14.062 10.4574 13.7436L15.2876 8.17027C15.4468 7.95796 15.2876 7.63948 15.0753 7.63948H4.99026Z"
+			fill="currentColor"
+			fillRule="evenodd"
+			clipRule="evenodd"
+		/>
+	</svg>
+);
+
 interface MemberBulkEditBarProps {
 	selectedCount: number;
 	currentValueOf: <K extends MemberEditableField>(field: K) => MemberEditableFields[K] | null;
@@ -49,7 +68,7 @@ interface MemberBulkEditBarProps {
 	isSaving: boolean;
 }
 
-/** 여러 명을 고른 동안 테이블 아래에 떠 있는 일괄 수정 바. */
+/** 여러 명을 고른 동안 화면 하단에 고정되어 떠 있는 일괄 수정 바. 위치는 부모 래퍼가 정한다. */
 export const MemberBulkEditBar = ({
 	selectedCount,
 	currentValueOf,
@@ -59,24 +78,29 @@ export const MemberBulkEditBar = ({
 	isSaving,
 }: MemberBulkEditBarProps) => {
 	return (
-		<div className="sticky bottom-6 z-10 flex items-center gap-4 rounded-xl bg-background-inverse px-6 py-4 shadow-[0px_4px_24px_0px_rgba(0,0,0,0.16)]">
-			<p className="shrink-0 font-bold text-body1 text-label-inverse">
-				정보 수정 <span className="text-primary-light">{selectedCount}명</span> 선택됨
-			</p>
+		<div className="pointer-events-auto flex items-center justify-between gap-4 overflow-clip rounded-[20px] bg-background-inverse px-6 py-4">
+			<div className="flex shrink-0 items-center gap-2">
+				<p className="font-bold text-label-inverse text-title1">정보 수정</p>
+				<p className="flex items-center gap-1 text-body1">
+					<span className="font-semibold text-primary-normal">{selectedCount}명</span>
+					<span className="font-medium text-label-assistive">선택됨</span>
+				</p>
+			</div>
 
-			<div className="flex flex-1 flex-wrap items-center gap-2">
+			<div className="flex items-center gap-3">
 				{FIELDS.map(({ field, label }) => (
 					<button
 						key={field}
 						type="button"
 						onClick={() => onOpenField(field)}
-						className="flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-gray-700 px-3 transition-colors hover:bg-gray-700"
+						className="flex h-10 cursor-pointer items-center gap-2.5 rounded-lg bg-[#303d50] px-4 font-medium text-body1 transition-opacity hover:opacity-80"
 					>
-						<span className="font-medium text-body2 text-label-assistive">{label}</span>
-						<span className="font-semibold text-body2 text-label-inverse">
-							{valueLabel(field, currentValueOf(field))}
+						<span className="flex items-center gap-2.5 text-label-assistive">
+							{label}
+							<span aria-hidden className="h-6.5 w-px bg-[#B5BBC8]/30" />
 						</span>
-						<ChevronDown className="size-4 text-label-inverse" />
+						<span className="text-gray-0">{valueLabel(field, currentValueOf(field))}</span>
+						<ArrowDecreaseIcon className="-ml-1.25 text-gray-0" />
 					</button>
 				))}
 			</div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { OptionPickerModal, type SegmentedOption, type SubjectChip } from '@dpm-core/shared';
+import { OptionPickerModal, type SegmentedOption } from '@dpm-core/shared';
 
 import { getCurrentCohortTeamsQuery } from '@/remotes/queries/cohort';
 
@@ -11,12 +11,21 @@ import {
 	ACTIVITY_STATUS_ORDER,
 	MEMBER_TYPE_LABEL,
 	MEMBER_TYPE_ORDER,
-	PART_LABEL,
-	PART_ORDER,
+	PART_ICON,
 	UNASSIGNED_TEAM_NUMBER,
 } from '../_constants';
 import { toRealTeamNumbers } from '../_lib/team-options';
-import type { MemberEditableField, MemberEditableFields } from '../_types';
+import type { MemberEditableField, MemberEditableFields, MemberRow } from '../_types';
+
+/** 파트 수정 모달은 Figma 기준으로 영문 라벨과 이 순서로 노출한다. (표·필터의 한글 라벨과 다르다.) */
+const PART_PICKER_OPTIONS: SegmentedOption[] = [
+	{ value: 'UNASSIGNED', label: '미배정' },
+	{ value: 'DESIGN', label: 'DESIGN' },
+	{ value: 'WEB', label: 'WEB' },
+	{ value: 'SERVER', label: 'SERVER' },
+	{ value: 'IOS', label: 'IOS' },
+	{ value: 'ANDROID', label: 'ANDROID' },
+];
 
 const FIELD_TITLE: Record<MemberEditableField, string> = {
 	part: '파트 수정',
@@ -27,7 +36,7 @@ const FIELD_TITLE: Record<MemberEditableField, string> = {
 
 interface MemberBulkEditModalProps {
 	field: MemberEditableField | null;
-	subjects: SubjectChip[];
+	subjects: MemberRow[];
 	/** 선택한 멤버들의 현재 공통값. 섞여 있으면 null */
 	currentValue: string | number | null;
 	onClose: () => void;
@@ -62,7 +71,7 @@ export const MemberBulkEditModal = ({
 	const options = useMemo<SegmentedOption[]>(() => {
 		switch (displayField) {
 			case 'part':
-				return PART_ORDER.map((part) => ({ value: part, label: PART_LABEL[part] }));
+				return PART_PICKER_OPTIONS;
 			case 'memberType':
 				return MEMBER_TYPE_ORDER.map((type) => ({ value: type, label: MEMBER_TYPE_LABEL[type] }));
 			case 'activityStatus':
@@ -107,7 +116,11 @@ export const MemberBulkEditModal = ({
 					변경합니다.
 				</>
 			}
-			subjects={subjects}
+			subjects={subjects.map(({ id, name, part }) => ({
+				id,
+				name,
+				imageSrc: PART_ICON[part].src,
+			}))}
 			options={options}
 			value={value}
 			onChange={setValue}
