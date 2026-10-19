@@ -12,6 +12,7 @@ import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { cohort } from '@/constants/cohort';
 import { isExistPart } from '@/lib/utils';
+import { useAuth } from '@/providers/auth-provider';
 import { getAttendanceMeOptions } from '@/remotes/queries/attendance';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
@@ -84,7 +85,7 @@ const MyPageInfoContent = () => {
 	);
 };
 
-const MyPageInfo = ErrorBoundary.with(
+const MyPageInfoWithBoundary = ErrorBoundary.with(
 	{
 		fallback: ({ reset }: ErrorBoundaryFallbackProps) => {
 			return <ErrorBox onReset={reset} className="h-49 flex-none" />;
@@ -96,5 +97,14 @@ const MyPageInfo = ErrorBoundary.with(
 		</Suspense>
 	),
 );
+
+/** 운영진 검토 중(PENDING) 회원은 멤버/출석 정보가 아직 없어 항상 에러 화면으로 떨어지므로, 그 영역 자체를 보여주지 않는다. */
+const MyPageInfo = () => {
+	const { user } = useAuth();
+
+	if (user?.status === 'PENDING') return null;
+
+	return <MyPageInfoWithBoundary />;
+};
 
 export { MyPageInfo };
