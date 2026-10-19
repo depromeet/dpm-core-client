@@ -30,7 +30,7 @@ export interface Attendance {
 export interface AttendanceReponse {
 	member: AttendanceMember;
 	attendance: Attendance;
-	sessions: AttendanceSession[];
+	sessions: MyAttendanceSession[];
 }
 
 export interface AttendanceBySessionIdReponse {
@@ -119,17 +119,10 @@ export interface AbsenceReasonsResponse {
 	reasons: AbsenceReason[];
 }
 
+/** 현재 기수 전체 명단이며 teamNumber 0은 팀 미배정이다. */
 export interface AttendanceByMemberReponse {
-	members: {
-		id: number;
-		name: string;
-		teamNumber: number;
-		isAdmin: boolean;
-		part: Exclude<Part, 'ETC'>;
-		attendanceStatus: MemberAttendanceStatus;
-	}[];
-	hasNext: boolean;
-	nextCursorId: number | null;
+	members: AttendanceMember[];
+	myTeamNumber: number | null;
 	totalElements: number;
 }
 

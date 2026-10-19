@@ -1,122 +1,102 @@
-import Link from 'next/link';
-import type { RefObject } from 'react';
-import { useState } from 'react';
-import type { MemberAttendanceStatus } from '@dpm-core/api';
-import { Badge } from '@dpm-core/shared';
+'use client';
 
-import { EmptyView } from '@/components/attendance/EmptyView';
-import { Profile } from '@/components/attendance/profile';
+import { useState } from 'react';
+import type { AttendanceMember, Part } from '@dpm-core/api';
+import { Badge, ChevronRight } from '@dpm-core/shared';
+
+import { EmptyView } from '@/components/attendance';
 import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
 
 import { AttendanceMemberDetailDrawer } from './attendance-member-detail-drawer';
 
-interface AttendanceMember {
-	id: number;
-	name: string;
-	teamNumber: number;
-	part: 'WEB' | 'ANDROID' | 'IOS' | 'DESIGN' | 'SERVER';
-	attendanceStatus: MemberAttendanceStatus;
-	isAdmin: boolean;
-}
-
 interface AttendanceListProps {
 	data: AttendanceMember[];
-	targetRef: RefObject<HTMLDivElement | null>;
+	parts: Exclude<Part, 'ETC'>[];
 }
-
-export const AttendanceList = ({ data, targetRef }: AttendanceListProps) => {
+const PART_LABELS: Record<Exclude<Part, 'ETC'>, string> = {
+	DESIGN: '디자인',
+	IOS: 'iOS',
+	ANDROID: 'Android',
+	WEB: 'Web',
+	SERVER: '서버',
+};
+export function AttendanceList({ data, parts }: AttendanceListProps) {
 	const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
-	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-	const handleDesktopRowClick = (memberId: number) => {
-		setSelectedMemberId(memberId);
-		setIsDrawerOpen(true);
-	};
-
-	if (data.length === 0) {
-		return (
-			<div className="md:flex md:min-h-[400px] md:items-center md:justify-center">
-				<EmptyView message="조건에 맞는 디퍼를 찾을 수 없어요" />
-			</div>
-		);
-	}
-
+	const columns = parts.map((part) => ({
+		part,
+		members: data.filter((member) => member.part === part),
+	}));
+	const gridStyle = { gridTemplateColumns: `repeat(${parts.length}, minmax(0, 1fr))` };
 	return (
 		<>
-			{/* Mobile view (< 768px) */}
-			<section className="relative mt-2 mb-15 flex-1 flex-col px-4 md:hidden">
-				{data.map((member, index) => {
-					return (
-						<Link
-							href={`/attendance/${member.id}`}
-							className="flex items-center justify-between py-3"
-							key={`${member.id}-${index}`}
-						>
-							<Profile
-								size={40}
-								name={member.name}
-								teamNumber={member.teamNumber}
-								part={member.part}
-								isAdmin={member.isAdmin}
-							/>
-							{member.attendanceStatus !== 'NORMAL' && (
-								<Badge variant={member.attendanceStatus}>
-									{getAttendanceMemberStatusLabel(member.attendanceStatus)}
-								</Badge>
-							)}
-						</Link>
-					);
-				})}
-				<div ref={targetRef} />
-			</section>
-
-			{/* Desktop view (>= 768px) */}
-			<section className="relative mx-10 mb-15 hidden md:block">
-				<div className="overflow-auto">
-					<div className="flex items-center bg-gray-50 py-2.5 pr-5 pl-5">
-						<span className="flex-1 font-medium text-body2 text-label-subtle">멤버 정보</span>
-						<span className="w-[136px] shrink-0 text-right font-medium text-body2 text-label-subtle">
-							수료 상태
-						</span>
-					</div>
-
-					{data.map((member, index) => {
-						return (
-							<button
-								key={`${member.id}-${index}`}
-								type="button"
-								onClick={() => handleDesktopRowClick(member.id)}
-								className="flex w-full cursor-pointer items-center border-gray-200 border-b py-5 pr-5 pl-5 text-left transition-colors hover:bg-gray-50"
-							>
-								<div className="flex-1">
-									<Profile
-										size={40}
-										name={member.name}
-										teamNumber={member.teamNumber}
-										part={member.part}
-										isAdmin={member.isAdmin}
-									/>
-								</div>
-								<div className="flex w-[136px] shrink-0 justify-end">
-									<Badge variant={member.attendanceStatus}>
-										{getAttendanceMemberStatusLabel(member.attendanceStatus)}
-									</Badge>
-								</div>
-							</button>
-						);
-					})}
+			{data.length === 0 ? (
+				<div className="flex min-h-0 flex-1 items-center justify-center pb-15">
+					<EmptyView message="조건에 맞는 디퍼가 없어요" />
 				</div>
-				<div ref={targetRef} />
-
-				{/* Drawer for desktop */}
-				{selectedMemberId && (
-					<AttendanceMemberDetailDrawer
-						memberId={selectedMemberId}
-						open={isDrawerOpen}
-						onOpenChange={setIsDrawerOpen}
-					/>
-				)}
-			</section>
+			) : (
+				<div className="mx-10 flex min-h-0 flex-1 flex-col pb-15">
+					<div className="grid shrink-0 gap-3" style={gridStyle}>
+						{columns.map(({ part, members }) => (
+							<h2
+								key={part}
+								className="rounded-t-2xl bg-background-subtle px-4 pt-4 pb-3 font-semibold text-label-normal text-title2"
+							>
+								{PART_LABELS[part]} <span className="text-primary-normal">{members.length}</span>
+							</h2>
+						))}
+					</div>
+					<div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+						<div className="grid items-start gap-3" style={gridStyle}>
+							{columns.map(({ part, members }) => (
+								<section
+									key={part}
+									className="flex flex-col gap-3 rounded-b-2xl bg-background-subtle px-4 pb-4"
+								>
+									{members.length === 0 && (
+										<div className="flex h-19.5 items-center justify-center text-body2 text-label-assistive">
+											해당없음
+										</div>
+									)}
+									{members.map((member) => (
+										<button
+											type="button"
+											key={member.id}
+											onClick={() => setSelectedMemberId(member.id)}
+											className="flex min-h-19.5 min-w-0 cursor-pointer items-center justify-between gap-2.5 rounded-xl bg-background-normal px-4 py-3 text-left transition-colors hover:bg-primary-extralight"
+										>
+											<div className="flex min-w-0 flex-col items-start">
+												<Badge variant={member.attendanceStatus}>
+													{getAttendanceMemberStatusLabel(member.attendanceStatus)}
+												</Badge>
+												<p className="mt-2 flex w-full min-w-0 items-center gap-1.5">
+													<span className="shrink-0 font-medium text-body2 text-label-assistive">
+														{member.teamNumber === 0 ? '미배정' : `${member.teamNumber}팀`}
+													</span>
+													<span className="h-3.5 w-px shrink-0 bg-line-subtle" />
+													<span className="break-all font-semibold text-body1 text-label-subtle">
+														{member.name}
+													</span>
+												</p>
+											</div>
+											<ChevronRight className="size-4 shrink-0 text-label-assistive" />
+										</button>
+									))}
+								</section>
+							))}
+						</div>
+					</div>
+				</div>
+			)}
+			{selectedMemberId !== null && (
+				<AttendanceMemberDetailDrawer
+					key={selectedMemberId}
+					memberId={selectedMemberId}
+					open
+					onOpenChange={(open) => {
+						if (!open) setSelectedMemberId(null);
+					}}
+				/>
+			)}
 		</>
 	);
-};
+}

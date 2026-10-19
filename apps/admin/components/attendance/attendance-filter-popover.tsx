@@ -1,7 +1,9 @@
 'use client';
 
-import { RotateCcw, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Button, ChipGroup, cn, type FilterPopoverProps, IconButton } from '@dpm-core/shared';
+
+import { RotateCwIcon } from './attendance-icons';
 
 interface FilterOption {
 	value: string;
@@ -76,7 +78,7 @@ export const AttendanceFilterPopover = ({
 				className="size-12 bg-background-strong text-label-assistive"
 				onClick={onReset}
 			>
-				<RotateCcw className="size-5" />
+				<RotateCwIcon />
 			</IconButton>
 			<Button variant="secondary" size="lg" className="flex-1" onClick={onApply}>
 				적용하기

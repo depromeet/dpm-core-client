@@ -1,180 +1,114 @@
 'use client';
 
-import { Suspense, useState } from 'react';
-import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
-import { ErrorBoundary } from '@suspensive/react';
-import { useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query';
-import type { AttendanceSession } from '@dpm-core/api';
+import { Suspense } from 'react';
+import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { useQueryErrorResetBoundary, useSuspenseQuery } from '@tanstack/react-query';
+import { ChevronDown } from 'lucide-react';
+import type { MyAttendanceSession } from '@dpm-core/api';
 import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+	ATTENDANCE_STATUS_OPTIONS,
 	Badge,
 	Button,
-	Calender,
-	Clock,
+	cn,
+	Dialog,
+	DialogContent,
+	DialogTitle,
 	formatDotFullDate,
+	formatKoreanDate,
 	formatTimeOnly,
+	Pencil,
 	Sheet,
 	SheetClose,
 	SheetContent,
 	SheetHeader,
 	SheetTitle,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 	XCircle,
 } from '@dpm-core/shared';
 
-import { AttendanceStatusLabel, Profile } from '@/components/attendance';
+import { AttendanceStatusLabel, EvidencePreview, Profile } from '@/components/attendance';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { useAttendanceStatusEdit } from '@/hooks';
 import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
-import {
-	getAbsenceReasonsOptions,
-	getAttendanceByMemberDetailOptions,
-	getAttendanceBySessionDetailOptions,
-} from '@/remotes/queries/attendance';
-
-import { AttendanceDetailHeader } from '../../../_components/attendance-detail-header';
-import { AttendanceStatusSection } from '../../../_components/attendance-status-section';
-import { ProfileSection } from '../../../_components/profile-section';
-import { SessionInfoSection } from '../../../_components/session-info-section';
+import { getAttendanceByMemberDetailOptions } from '@/remotes/queries/attendance';
 
 interface AttendanceMemberDetailDrawerProps {
 	memberId: number;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 }
-
-const _AttendanceMemberHeader = ({ memberId }: { memberId: number }) => {
+interface AttendanceMemberDetailProps {
+	memberId: number;
+}
+function AttendanceMemberDetail({ memberId }: AttendanceMemberDetailProps) {
 	const {
 		data: { data },
 	} = useSuspenseQuery(getAttendanceByMemberDetailOptions({ memberId }));
-
+	const counts = [
+		{ label: '출석', value: data.attendance.presentCount },
+		{ label: '지각', value: data.attendance.lateCount },
+		{ label: '인정', value: data.attendance.excusedAbsentCount },
+		{ label: '결석', value: data.attendance.absentCount },
+	];
 	return (
-		<div className="mb-4 flex items-center justify-between">
-			<Profile
-				size={60}
-				name={data.member.name}
-				part={data.member.part}
-				teamNumber={data.member.teamNumber}
-				isAdmin={data.member.isAdmin}
-			/>
-			{data.member.attendanceStatus !== 'NORMAL' && (
-				<Badge variant={data.member.attendanceStatus}>
-					{getAttendanceMemberStatusLabel(data.member.attendanceStatus)}
-				</Badge>
+		<div className="min-h-0 flex-1 overflow-y-auto px-10 pb-15">
+			<div className="mb-4 flex items-start justify-between [&>div>div:first-child]:p-1.5 [&>div]:gap-3 [&_.text-body1]:text-title2">
+				<Profile
+					size={48}
+					name={data.member.name}
+					part={data.member.part}
+					teamNumber={data.member.teamNumber}
+					isAdmin={data.member.isAdmin}
+					badge={
+						<Badge variant={data.member.attendanceStatus}>
+							{getAttendanceMemberStatusLabel(data.member.attendanceStatus)}
+						</Badge>
+					}
+				/>
+			</div>
+			<ul className="mb-2 grid grid-cols-4 gap-2 rounded-xl bg-background-subtle px-3 py-2">
+				{counts.map(({ label, value }) => (
+					<li
+						key={label}
+						className="flex flex-col items-center gap-1 border-line-normal border-r py-2 text-body2 last:border-0"
+					>
+						<span className="font-medium text-label-assistive">{label}</span>
+						<span
+							className={cn(
+								'font-semibold text-label-normal',
+								label === '출석' && 'text-primary-normal',
+								label === '결석' && 'text-red-500',
+							)}
+						>
+							{value}
+						</span>
+					</li>
+				))}
+			</ul>
+			{data.sessions.length === 0 ? (
+				<p className="py-10 text-center text-body2 text-label-assistive">출석 기록이 없어요</p>
+			) : (
+				<Accordion type="multiple">
+					{data.sessions.map((session) => (
+						<MemberSession key={session.id} memberId={memberId} session={session} />
+					))}
+				</Accordion>
 			)}
 		</div>
 	);
-};
-
-const _AttendanceMemberDetailContent = ({ memberId }: { memberId: number }) => {
-	const {
-		data: { data },
-	} = useSuspenseQuery(getAttendanceByMemberDetailOptions({ memberId }));
-
-	return (
-		<>
-			{data.attendance && (
-				<ul className="flex justify-between rounded-xl bg-background-subtle px-5 py-4.5 text-body2">
-					<li>
-						<span className="mr-2 font-medium text-label-assistive">출석</span>
-						<span className="font-semibold text-label-subtle">
-							{data.attendance.presentCount ?? 0}
-						</span>
-					</li>
-					<li>
-						<span className="mr-2 font-medium text-label-assistive">결석</span>
-						<span className="font-semibold text-label-subtle">
-							{data.attendance.absentCount ?? 0}
-						</span>
-					</li>
-					<li>
-						<span className="mr-2 font-medium text-label-assistive">지각</span>
-						<span className="font-semibold text-label-subtle">
-							{data.attendance.lateCount ?? 0}
-						</span>
-					</li>
-					<li>
-						<span className="mr-2 font-medium text-label-assistive">인정</span>
-						<span className="font-semibold text-label-subtle">
-							{data.attendance.excusedAbsentCount ?? 0}
-						</span>
-					</li>
-				</ul>
-			)}
-		</>
-	);
-};
-
-const _AttendanceMemberSessions = ({
-	memberId,
-	onSessionClick,
-}: {
+}
+interface MemberSessionProps {
 	memberId: number;
-	onSessionClick: (sessionId: number) => void;
-}) => {
-	const {
-		data: { data },
-	} = useSuspenseQuery(getAttendanceByMemberDetailOptions({ memberId }));
-
-	return (
-		<section>
-			<div className="flex flex-col">
-				{data.sessions.map((session, index) => (
-					<SessionItem
-						key={`${session.id}-${index}`}
-						{...session}
-						onClick={() => onSessionClick(session.id)}
-					/>
-				))}
-			</div>
-		</section>
-	);
-};
-
-const SessionItem = (props: AttendanceSession & { onClick: () => void }) => {
-	const { onClick, week, eventName, date, attendanceStatus } = props;
-	return (
-		<button
-			type="button"
-			onClick={onClick}
-			className="flex w-full items-center justify-between border-line-normal border-b px-3 py-4 text-left transition-colors hover:bg-gray-50"
-		>
-			<div>
-				<p className="mb-0.5 font-medium text-caption1 text-label-assistive">{week}주차 세션</p>
-				<p className="mb-0.5 font-semibold text-body1 text-label-normal">{eventName}</p>
-				<p className="flex gap-2 font-medium text-caption1 text-label-assistive">
-					<span className="flex items-center gap-0.5">
-						<Calender />
-						<time dateTime={date}>{formatDotFullDate(date)}</time>
-					</span>
-					<span className="flex items-center gap-0.5">
-						<Clock />
-						{formatTimeOnly(date)}
-					</span>
-				</p>
-			</div>
-			<AttendanceStatusLabel status={attendanceStatus} />
-		</button>
-	);
-};
-
-const _AttendanceSessionDetailView = ({
-	memberId,
-	sessionId,
-}: {
-	memberId: number;
-	sessionId: number;
-}) => {
-	const [{ data: sessionDetail }, { data: absenceReasonsData }] = useSuspenseQueries({
-		queries: [
-			getAttendanceBySessionDetailOptions({ memberId, sessionId }),
-			getAbsenceReasonsOptions({ sessionId }),
-		],
-	});
-
-	const { data } = sessionDetail;
-	const absenceReason =
-		absenceReasonsData.data.reasons.find((r) => r.memberId === memberId)?.contents ?? null;
-
+	session: MyAttendanceSession;
+}
+function MemberSession({ memberId, session }: MemberSessionProps) {
 	const {
 		isEditMode,
 		selectedStatus,
@@ -184,118 +118,192 @@ const _AttendanceSessionDetailView = ({
 		handleCancel,
 		isLoading,
 	} = useAttendanceStatusEdit({
-		sessionId,
 		memberId,
-		initialStatus: data.attendance.status,
+		sessionId: session.id,
+		initialStatus: session.attendanceStatus,
+		successMessage: '출석 상태를 변경했어요.',
 	});
-
 	return (
-		<div className="flex-1 overflow-y-auto px-10 py-6">
-			<ProfileSection
-				name={data.member.name}
-				part={data.member.part}
-				teamNumber={data.member.teamNumber}
-				isAdmin={data.member.isAdmin}
-			/>
-
-			<AttendanceStatusSection
-				isEditMode={isEditMode}
-				selectedStatus={selectedStatus}
-				originalStatus={data.attendance.status}
-				attendedAt={data.attendance.attendedAt}
-				updatedAt={data.attendance.updatedAt}
-				onStatusChange={setSelectedStatus}
-				onSave={handleSave}
-				onCancel={handleCancel}
-				onEdit={handleEdit}
-				isSaveDisabled={isLoading || selectedStatus === data.attendance.status}
-				isSaving={isLoading}
-				absenceReason={absenceReason}
-			/>
-
-			<SessionInfoSection
-				week={data.session.week}
-				eventName={data.session.eventName}
-				date={data.session.date}
-			/>
-		</div>
+		<AccordionItem
+			value={String(session.id)}
+			className="border-line-normal px-3 py-4 last:border-b"
+		>
+			<div className="relative">
+				<AccordionTrigger
+					className="data-[state=closed]:-mb-0.75 items-center gap-3 rounded-none p-0 font-normal text-inherit"
+					icon={
+						<ChevronDown
+							size={24}
+							className="shrink-0 text-label-assistive transition-transform duration-200"
+						/>
+					}
+				>
+					<div className="min-w-0 flex-1">
+						<p className="mb-0.5 font-medium text-body2 text-label-assistive leading-4.75">
+							{session.week}주차
+						</p>
+						<p className="wrap-break-word font-semibold text-body1 text-label-normal">
+							{session.eventName}
+						</p>
+						<p className="mt-1 font-medium text-body2 text-label-assistive leading-4.75">
+							{formatDotFullDate(session.date, { withTime: true })}
+						</p>
+					</div>
+					<span className="mr-6 shrink-0">
+						<AttendanceStatusLabel status={session.attendanceStatus} />
+					</span>
+				</AccordionTrigger>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<button
+							type="button"
+							onClick={handleEdit}
+							className="-translate-y-1/2 absolute top-1/2 right-9 size-4 cursor-pointer rounded-sm bg-background-subtle"
+						>
+							<Pencil width={10.5} height={10.5} className="absolute top-[2.95px] left-[2.95px]" />
+						</button>
+					</TooltipTrigger>
+					<TooltipContent
+						side="bottom"
+						sideOffset={12}
+						className="[&_svg]:hidden! rounded-md bg-gray-800 px-3 py-2 text-caption1 text-white"
+					>
+						출석 상태 수정
+					</TooltipContent>
+				</Tooltip>
+			</div>
+			<AccordionContent className="pt-3.25 pb-0">
+				<div className="rounded-lg bg-background-subtle px-5 py-3 text-body2">
+					<dl className="grid grid-cols-[72px_minmax(0,1fr)] gap-x-3 gap-y-3">
+						<dt className="text-label-assistive">출석 시간</dt>
+						<dd className="text-label-normal">
+							{session.attendedAt
+								? `${formatKoreanDate(session.attendedAt)} ${formatTimeOnly(session.attendedAt)}`
+								: '-'}
+						</dd>
+						<dt className="text-label-assistive">세션 장소</dt>
+						<dd className="wrap-break-word text-label-normal">
+							{session.isOnline ? '온라인' : session.place}
+						</dd>
+						{session.absenceReason ? (
+							<>
+								<dt className="text-label-assistive">결석 사유</dt>
+								<dd className="min-w-0 space-y-2 text-label-normal">
+									<p className="whitespace-pre-wrap break-all">{session.absenceReason.contents}</p>
+									{session.absenceReason.images.map((image, index) => (
+										<div
+											key={image.imageId}
+											className="[&>button]:rounded-lg [&>button]:bg-background-normal [&>button]:px-2 [&>button]:py-1 [&>button]:text-caption1"
+										>
+											<EvidencePreview {...image} sequence={index + 1} />
+										</div>
+									))}
+								</dd>
+							</>
+						) : null}
+					</dl>
+				</div>
+			</AccordionContent>
+			<Dialog
+				open={isEditMode}
+				onOpenChange={(open) => {
+					if (!open && !isLoading) handleCancel();
+				}}
+			>
+				<DialogContent
+					showCloseButton={false}
+					className="max-w-147.25! gap-8 bg-background-normal p-8"
+					onEscapeKeyDown={(event) => {
+						if (isLoading) event.preventDefault();
+					}}
+					onPointerDownOutside={(event) => {
+						if (isLoading) event.preventDefault();
+					}}
+				>
+					<div className="flex items-center justify-between">
+						<DialogTitle className="text-headline2 tracking-[-0.02em]">출석 상태 수정</DialogTitle>
+						<Button
+							type="button"
+							variant="none"
+							size="none"
+							onClick={handleCancel}
+							disabled={isLoading}
+						>
+							<XCircle className="size-6 text-label-assistive" />
+						</Button>
+					</div>
+					<div className="relative flex h-12 overflow-hidden rounded-lg after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-line-normal after:ring-inset">
+						{ATTENDANCE_STATUS_OPTIONS.map((option) => (
+							<button
+								type="button"
+								key={option.value}
+								disabled={isLoading}
+								onClick={() => setSelectedStatus(option.value)}
+								className={cn(
+									'h-full min-w-0 flex-1 cursor-pointer border-line-normal border-r text-body2 first:rounded-l-lg last:rounded-r-lg last:border-0 disabled:cursor-default',
+									selectedStatus === option.value
+										? 'bg-primary-extralight font-semibold text-primary-normal'
+										: 'text-label-assistive',
+								)}
+							>
+								{option.label}
+							</button>
+						))}
+					</div>
+					<div className="flex gap-2">
+						<Button
+							type="button"
+							variant="assistive"
+							size="md"
+							className="h-12 flex-1 bg-gray-400 text-white hover:bg-gray-500"
+							onClick={handleCancel}
+							disabled={isLoading}
+						>
+							취소
+						</Button>
+						<Button
+							type="button"
+							variant="secondary"
+							size="md"
+							className="h-12 flex-1"
+							onClick={handleSave}
+							disabled={isLoading || selectedStatus === session.attendanceStatus}
+						>
+							{isLoading ? '저장 중' : '저장'}
+						</Button>
+					</div>
+				</DialogContent>
+			</Dialog>
+		</AccordionItem>
 	);
-};
-
-export const AttendanceMemberDetailDrawer = ({
+}
+export function AttendanceMemberDetailDrawer({
 	memberId,
 	open,
 	onOpenChange,
-}: AttendanceMemberDetailDrawerProps) => {
-	const [viewMode, setViewMode] = useState<'member' | 'session'>('member');
-	const [selectedSessionId, setSelectedSessionId] = useState<number | null>(null);
-
-	const handleSessionClick = (sessionId: number) => {
-		setSelectedSessionId(sessionId);
-		setViewMode('session');
-	};
-
-	const handleBack = () => {
-		setViewMode('member');
-		setSelectedSessionId(null);
-	};
-
+}: AttendanceMemberDetailDrawerProps) {
+	const { reset: resetQueries } = useQueryErrorResetBoundary();
 	return (
-		<Sheet
-			open={open}
-			onOpenChange={(newOpen) => {
-				onOpenChange(newOpen);
-				if (!newOpen) {
-					setViewMode('member');
-					setSelectedSessionId(null);
-				}
-			}}
-		>
-			<SheetContent side="right" className="w-full gap-0 border-none p-0 sm:max-w-150">
-				{viewMode === 'member' ? (
-					<>
-						<SheetHeader className="flex-row items-center justify-between border-gray-200 border-b px-10 py-6">
-							<SheetTitle className="font-semibold text-headline2 text-label-normal">
-								멤버 상세
-							</SheetTitle>
-							<SheetClose asChild>
-								<Button variant="none" size="none" className="size-6">
-									<XCircle className="size-6 text-icon-normal" />
-								</Button>
-							</SheetClose>
-						</SheetHeader>
-						<ErrorBoundary
-							fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
-						>
-							<Suspense fallback={<LoadingBox />}>
-								<div className="flex-1 overflow-y-auto px-10 py-6">
-									<section className="mb-10">
-										<_AttendanceMemberHeader memberId={memberId} />
-										<_AttendanceMemberDetailContent memberId={memberId} />
-									</section>
-									<_AttendanceMemberSessions
-										memberId={memberId}
-										onSessionClick={handleSessionClick}
-									/>
-								</div>
-							</Suspense>
-						</ErrorBoundary>
-					</>
-				) : (
-					<>
-						<AttendanceDetailHeader title="출석 상세" onBack={handleBack} />
-						<ErrorBoundary
-							fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
-						>
-							<Suspense fallback={<LoadingBox />}>
-								{selectedSessionId && (
-									<_AttendanceSessionDetailView memberId={memberId} sessionId={selectedSessionId} />
-								)}
-							</Suspense>
-						</ErrorBoundary>
-					</>
-				)}
+		<Sheet open={open} onOpenChange={onOpenChange}>
+			<SheetContent side="right" className="w-full max-w-150! gap-0 border-none p-0">
+				<SheetHeader className="h-20 shrink-0 flex-row items-center justify-between px-10">
+					<SheetTitle className="font-bold text-label-normal text-title1">출석 현황</SheetTitle>
+					<SheetClose asChild>
+						<Button variant="none" size="none" className="size-6">
+							<XCircle className="size-6 text-label-assistive" />
+						</Button>
+					</SheetClose>
+				</SheetHeader>
+				<ErrorBoundary
+					key={memberId}
+					onReset={resetQueries}
+					fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
+				>
+					<Suspense fallback={<LoadingBox />}>
+						<AttendanceMemberDetail memberId={memberId} />
+					</Suspense>
+				</ErrorBoundary>
 			</SheetContent>
 		</Sheet>
 	);
-};
+}
