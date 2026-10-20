@@ -21,7 +21,7 @@ const LoginPage = () => {
 				<p className="font-medium text-body2 text-label-subtle">
 					출석, 번개, 커피챗까지
 					<br />
-					17기의 모든 네트워킹을 코어에서 서포트합니다
+					19기의 모든 네트워킹을 코어에서 서포트합니다
 				</p>
 				<LoginButton
 					variant="none"
