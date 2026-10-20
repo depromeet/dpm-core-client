@@ -212,7 +212,7 @@ export const CohortManagement = () => {
 					</DialogHeader>
 					<input
 						type="text"
-						placeholder="기수명 (예: 17기)"
+						placeholder="기수명 (예: 19기)"
 						value={inputValue}
 						onChange={(e) => setInputValue(e.target.value)}
 						className="w-full rounded-lg border border-line-normal bg-background-normal px-4 py-3 font-medium text-body1 text-label-normal outline-none focus:border-primary-normal"
