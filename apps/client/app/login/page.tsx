@@ -30,10 +30,6 @@ const LoginPage = async ({
 			<Suspense>
 				<LoginErrorToast />
 			</Suspense>
-			{/* 디자인은 393px 폭 프레임 기준이고 배경 그래픽은 오른쪽 가장자리에 걸쳐 있다.
-			left 로 좌표를 잡으면 컨테이너가 393px 보다 넓은 웹에서 그래픽이 중앙 쪽으로 밀려 보이므로,
-			오른쪽 기준(right)으로 잡아 폭과 관계없이 오른쪽에 붙어 있게 한다.
-			(right = 393 - left - 그래픽 폭: 원 393-133.85-269.42, 블러 393+162.55-518.36) */}
 			<div className="relative flex h-full w-full max-w-[512px] flex-col">
 				<div aria-hidden className="pointer-events-none absolute inset-0">
 					<Image
