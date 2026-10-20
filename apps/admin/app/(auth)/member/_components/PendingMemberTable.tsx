@@ -15,6 +15,7 @@ import {
 import type { MemberRow } from '../_types';
 import { MemberEmptyView } from './MemberEmptyView';
 import { MemberPartChip } from './MemberFieldChip';
+import { MemberLoginMethodIcon } from './MemberLoginMethodIcon';
 
 interface PendingMemberTableProps {
 	rows: MemberRow[];
@@ -87,7 +88,10 @@ export const PendingMemberTable = ({
 							{row.name}
 						</TableCell>
 						<TableCell className="truncate px-3 font-medium text-body2 text-label-subtle">
-							{row.email ?? '-'}
+							<span className="flex items-center gap-1.5">
+								<MemberLoginMethodIcon loginMethod={row.loginMethod} />
+								<span className="truncate">{row.email ?? '-'}</span>
+							</span>
 						</TableCell>
 						<TableCell className="w-36 px-3 text-right">
 							{row.duplicateSuspected && (

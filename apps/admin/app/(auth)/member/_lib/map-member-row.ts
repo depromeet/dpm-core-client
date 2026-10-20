@@ -35,5 +35,6 @@ export function mapMemberRow(member: MemberManagementSummary): MemberRow {
 		isGraduationRisk: activityStatus === 'AT_RISK',
 		duplicateSuspected: member.duplicateSuspected,
 		missingInformation: member.missingInformation,
+		loginMethod: member.loginMethod ?? null,
 	};
 }

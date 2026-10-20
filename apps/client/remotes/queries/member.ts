@@ -29,3 +29,13 @@ export const getMyProfileQuery = queryOptions({
 	retry: false,
 	refetchInterval: false,
 });
+
+/** 내 연결 계정(카카오·애플·이메일) 조회 */
+export const getMyAccountsQuery = queryOptions({
+	queryKey: ['get-my-accounts'],
+	queryFn: () => {
+		return member.getMyAccounts();
+	},
+	retry: false,
+	refetchInterval: false,
+});

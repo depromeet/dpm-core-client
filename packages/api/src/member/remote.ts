@@ -2,8 +2,11 @@ import { http } from '../http';
 import type {
 	AppleHiddenEmailResponse,
 	AppleMemberProfileUpdateRequest,
+	CompleteAccountLinkRequest,
 	InitCohortMemberParams,
+	LinkableLoginMethod,
 	Member,
+	MemberAccountResponse,
 	MemberApprovalRequest,
 	MemberBadgeAcknowledgeRequest,
 	MemberBadgeCard,
@@ -22,6 +25,8 @@ import type {
 	MemberRoleListResponse,
 	MemberRoleResponse,
 	MembersOverviewResponse,
+	OAuthAuthorizationUrl,
+	StartAccountLinkRequest,
 	UpdateMemberRoleRequest,
 	UpdateMemberStatusRequest,
 	UpdateMembersInitRequest,
@@ -240,6 +245,42 @@ export const member = {
 	/** POST /v3/members/me/reapplication - 본인 가입 재신청 (반려 회원 전용) */
 	reapplyMembership: async () => {
 		const res = await http.post('v3/members/me/reapplication');
+		return res;
+	},
+
+	/* --------------------------------------------------------------------- *
+	 * 계정 연동 (본인)
+	 * --------------------------------------------------------------------- */
+
+	/** GET /v3/members/me/accounts - 내 연결 계정 조회 (카카오·애플 연동 현황 + 이메일 로그인 자격증명) */
+	getMyAccounts: async () => {
+		const res = await http.get<MemberAccountResponse>('v3/members/me/accounts');
+		return res;
+	},
+
+	/** POST /v3/members/me/accounts/{provider}/authorization - 소셜 계정 연결 시작, 인가 URL 발급 */
+	startAccountLink: async (provider: LinkableLoginMethod, params: StartAccountLinkRequest) => {
+		const res = await http.post<OAuthAuthorizationUrl>(
+			`v3/members/me/accounts/${provider}/authorization`,
+			{ json: params },
+		);
+		return res;
+	},
+
+	/** POST /v3/members/me/accounts/{provider} - 제공자 콜백의 code/state 로 소셜 계정 연결 완료 */
+	completeAccountLink: async (
+		provider: LinkableLoginMethod,
+		params: CompleteAccountLinkRequest,
+	) => {
+		const res = await http.post<MemberAccountResponse>(`v3/members/me/accounts/${provider}`, {
+			json: params,
+		});
+		return res;
+	},
+
+	/** DELETE /v3/members/me/accounts/social/{accountId} - 소셜 계정 연결 해제 */
+	unlinkAccount: async (accountId: number) => {
+		const res = await http.delete(`v3/members/me/accounts/social/${accountId}`);
 		return res;
 	},
 };

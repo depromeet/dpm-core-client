@@ -53,6 +53,7 @@ type DialogState =
 	| { type: 'reject'; targets: MemberRow[] }
 	| { type: 'delete'; targets: MemberRow[] }
 	| { type: 'merge-required'; hasOversizedGroup: boolean }
+	| { type: 'inactive-confirm'; targets: MemberRow[]; onConfirm: () => void }
 	| null;
 
 /** 멤버 관리 화면의 조립 지점. 훅에서 받은 상태를 각 UI 조각에 나눠준다. */
@@ -223,6 +224,7 @@ export const MemberManagement = () => {
 		updateManagedMemberMutationOptions({
 			onSuccess: () => {
 				closeInlineEdit();
+				closeDialog();
 				refresh();
 				toast.success('수정을 완료했어요.');
 			},
@@ -245,7 +247,14 @@ export const MemberManagement = () => {
 			inlineEdit.close();
 			return;
 		}
-		updateMember({ memberId: editingRow.id, changes });
+
+		const commit = () => updateMember({ memberId: editingRow.id, changes });
+		// 활동 정지는 이번 기수에서 되돌릴 수 없는 결정이라, 적용 전에 한 번 더 확인받는다.
+		if (changes.status === 'INACTIVE') {
+			setDialog({ type: 'inactive-confirm', targets: [editingRow], onConfirm: commit });
+			return;
+		}
+		commit();
 	}, [inlineEdit, teams, updateMember]);
 
 	/* ------------------------------- 일괄 수정 ------------------------------- */
@@ -267,11 +276,28 @@ export const MemberManagement = () => {
 		onSuccess: () => {
 			bulkEdit.reset();
 			selection.clear();
+			closeDialog();
 			refresh();
 			toast.success('수정을 완료했어요.');
 		},
 		onError: () => toast.error('수정에 실패했어요. 잠시 후 다시 시도해 주세요.'),
 	});
+
+	const handleBulkSave = useCallback(() => {
+		const isSettingInactive =
+			bulkEdit.stagedFields.includes('activityStatus') &&
+			bulkEdit.draft.activityStatus === 'INACTIVE';
+		// 활동 정지는 이번 기수에서 되돌릴 수 없는 결정이라, 적용 전에 한 번 더 확인받는다.
+		if (isSettingInactive) {
+			setDialog({
+				type: 'inactive-confirm',
+				targets: selectedRows,
+				onConfirm: () => saveBulkEdit(),
+			});
+			return;
+		}
+		saveBulkEdit();
+	}, [bulkEdit.stagedFields, bulkEdit.draft, selectedRows, saveBulkEdit]);
 
 	/* --------------------------------- 렌더 --------------------------------- */
 
@@ -418,7 +444,7 @@ export const MemberManagement = () => {
 						currentValueOf={bulkEdit.currentValueOf}
 						stagedFields={bulkEdit.stagedFields}
 						onOpenField={bulkEdit.openModal}
-						onSave={() => saveBulkEdit()}
+						onSave={handleBulkSave}
 						canSave={bulkEdit.hasChanges}
 						isSaving={isBulkSaving}
 					/>
@@ -515,6 +541,33 @@ export const MemberManagement = () => {
 						onClick: () => {
 							if (dialog?.type !== 'delete') return;
 							deleteMembers({ memberIds: dialog.targets.map((target) => target.id) });
+						},
+					},
+				]}
+			/>
+
+			<MemberConfirmDialog
+				open={dialog?.type === 'inactive-confirm'}
+				onOpenChange={closeDialog}
+				title="활동 정지"
+				description={
+					<>
+						해당 멤버{' '}
+						<span className="text-primary-normal">
+							{dialog?.type === 'inactive-confirm' ? dialog.targets.length : 0}명
+						</span>
+						을 활동 정지로 바꿀까요? 이번 기수에서는 다시 활동 중으로 되돌릴 수 없어요.
+					</>
+				}
+				subjects={dialog?.type === 'inactive-confirm' ? dialog.targets : []}
+				isPending={isUpdating || isBulkSaving}
+				actions={[
+					{ label: '취소', onClick: closeDialog },
+					{
+						label: '활동 정지',
+						onClick: () => {
+							if (dialog?.type !== 'inactive-confirm') return;
+							dialog.onConfirm();
 						},
 					},
 				]}

@@ -45,6 +45,9 @@ export interface UpdateMembersInitResponse {
 
 export type LoginMethod = 'KAKAO' | 'APPLE' | 'EMAIL';
 
+/** 연동(소셜 계정 추가·해제)을 지원하는 로그인 수단. 이메일은 조회만 가능하다. */
+export type LinkableLoginMethod = Extract<LoginMethod, 'KAKAO' | 'APPLE'>;
+
 export interface Member {
 	email: string;
 	name: string;
@@ -54,6 +57,43 @@ export interface Member {
 	isAdmin: boolean;
 	status: MemberStatus;
 	loginMethod: LoginMethod;
+}
+
+/**
+ * 연결된 계정 하나. accountId 는 memberId 가 아니라 로그인 방식별 연결 식별자이며
+ * 소셜 계정 해제(DELETE /v3/members/me/accounts/social/{accountId}) 시 이 값을 사용한다.
+ */
+export interface ConnectedMemberAccount {
+	accountId: number;
+	loginMethod: LoginMethod;
+	/** 제공자가 이메일을 주지 않으면 null. EMAIL 항목은 조회만 가능하다. */
+	email: string | null;
+	/** 조회 시점의 해제 가능 여부. 마지막 로그인 수단 또는 EMAIL이면 false */
+	unlinkAllowed: boolean;
+}
+
+/** GET /v3/members/me/accounts 응답, 연동·해제 완료 후 응답에도 재사용된다. */
+export interface MemberAccountResponse {
+	accounts: ConnectedMemberAccount[];
+}
+
+/** POST /v3/members/me/accounts/{provider}/authorization 요청 */
+export interface StartAccountLinkRequest {
+	/** 서버에 허용된 origin의 제공자 인증 콜백 절대 URL */
+	redirectUri: string;
+}
+
+/** POST /v3/members/me/accounts/{provider}/authorization 응답 */
+export interface OAuthAuthorizationUrl {
+	authorizationUrl: string;
+	state: string;
+	redirectUri: string;
+}
+
+/** POST /v3/members/me/accounts/{provider} 요청 - 제공자 콜백에서 받은 code/state 그대로 전달 */
+export interface CompleteAccountLinkRequest {
+	authorizationCode: string;
+	state: string;
 }
 
 export type MemberRoleType = 'ORGANIZER' | 'DEEPER';
@@ -208,6 +248,8 @@ export interface MemberManagementSummary {
 	/** 닉네임과 파트가 같은 다른 회원 존재 여부 */
 	duplicateSuspected: boolean;
 	updatedAt?: string;
+	/** 대표 로그인 수단. 카카오 → 애플 → 이메일 순. 최근 로그인 수단이 아니며, 연결 정보가 없으면 null */
+	loginMethod?: LoginMethod | null;
 }
 
 export interface MemberManagementResponse {
