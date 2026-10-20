@@ -14,15 +14,16 @@ import { cohort } from '@/constants/cohort';
 import { isExistPart } from '@/lib/utils';
 import { useAuth } from '@/providers/auth-provider';
 import { getAttendanceMeOptions } from '@/remotes/queries/attendance';
-import { getMyMemberInfoQuery } from '@/remotes/queries/member';
+import { getMyAccountsQuery, getMyMemberInfoQuery } from '@/remotes/queries/member';
 
 import { MyPageAccount } from './my-page-account';
 import { MyPageBox } from './my-page-box';
 
 const MyPageInfoContent = () => {
-	const [{ data: memberResponse }, { data: attendanceResponse }] = useSuspenseQueries({
-		queries: [getMyMemberInfoQuery, getAttendanceMeOptions()],
-	});
+	const [{ data: memberResponse }, { data: attendanceResponse }, { data: accountsResponse }] =
+		useSuspenseQueries({
+			queries: [getMyMemberInfoQuery, getAttendanceMeOptions(), getMyAccountsQuery],
+		});
 
 	const member = memberResponse.data;
 	const part = isExistPart(member.part) ? member.part : 'ETC';
@@ -80,7 +81,7 @@ const MyPageInfoContent = () => {
 					</div>
 				) : null}
 			</MyPageBox>
-			<MyPageAccount loginMethod={member.loginMethod} email={member.email} />
+			<MyPageAccount accounts={accountsResponse.data.accounts} />
 		</motion.div>
 	);
 };

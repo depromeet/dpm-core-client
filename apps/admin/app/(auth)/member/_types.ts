@@ -1,4 +1,5 @@
 import type {
+	LoginMethod,
 	ManagedMemberPart,
 	ManagedMemberStatus,
 	ManagedMemberType,
@@ -21,6 +22,8 @@ export interface MemberRow {
 	isGraduationRisk: boolean;
 	duplicateSuspected: boolean;
 	missingInformation: boolean;
+	/** 대표 로그인 수단(조회 전용). 연결 정보가 없으면 null */
+	loginMethod: LoginMethod | null;
 }
 
 /**

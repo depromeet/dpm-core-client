@@ -2,7 +2,14 @@
 
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import type { LoginMethod } from '@dpm-core/api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { HTTPError } from 'ky';
+import type {
+	ApiErrorReponse,
+	ConnectedMemberAccount,
+	LinkableLoginMethod,
+	LoginMethod,
+} from '@dpm-core/api';
 import {
 	AppleLogo,
 	Button,
@@ -16,86 +23,137 @@ import {
 	toast,
 } from '@dpm-core/shared';
 
+import { getAccountLinkRedirectUri } from '@/lib/env';
+import {
+	startAccountLinkMutationOptions,
+	unlinkAccountMutationOptions,
+} from '@/remotes/mutations/member';
+import { getMyAccountsQuery } from '@/remotes/queries/member';
+
 import { MyPageBox } from './my-page-box';
 
-function getSocialIcon(method: LoginMethod | undefined) {
+const LINKABLE_PROVIDERS: LinkableLoginMethod[] = ['KAKAO', 'APPLE'];
+
+const LOGIN_METHOD_LABEL: Record<LoginMethod, string> = {
+	KAKAO: '카카오 계정',
+	APPLE: '애플 계정',
+	EMAIL: '이메일 로그인',
+};
+
+function getSocialIcon(method: LoginMethod) {
 	if (method === 'KAKAO') {
-		return {
-			icon: <KakaoLogo className="h-2.5 w-3" />,
-			background: 'bg-[#FEE500]',
-		};
+		return { icon: <KakaoLogo className="h-2.5 w-3" />, background: 'bg-[#FEE500]' };
 	}
 	if (method === 'APPLE') {
-		return {
-			icon: <AppleLogo className="h-3 w-2.5" />,
-			background: 'bg-[#1F2937]',
-		};
+		return { icon: <AppleLogo className="size-3 text-white" />, background: 'bg-[#1F2937]' };
 	}
 	return null;
 }
 
 interface MyPageAccountProps {
-	loginMethod: LoginMethod | undefined;
-	email: string;
+	accounts: ConnectedMemberAccount[];
 }
 
-/**
- * 계정 정보
- * 애플 회원에게는 카카오톡 계정 연동 버튼을 함께 보여준다.
- * TODO: 연동/연동 해제 API 연동 — 현재는 API 서버를 사용할 수 없어 준비중 안내만 띄운다.
- */
-export const MyPageAccount = ({ loginMethod, email }: MyPageAccountProps) => {
-	const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
+/** 계정 정보. 연결된 카카오·애플·이메일 로그인 수단을 보여주고, 카카오·애플은 연동·해제할 수 있다. */
+export const MyPageAccount = ({ accounts }: MyPageAccountProps) => {
+	const queryClient = useQueryClient();
+	const [unlinkTarget, setUnlinkTarget] = useState<ConnectedMemberAccount | null>(null);
 
-	const isAppleMember = loginMethod === 'APPLE';
+	const { mutate: startLink, isPending: isLinking } = useMutation(
+		startAccountLinkMutationOptions({
+			onSuccess: (res) => {
+				window.location.href = res.data.authorizationUrl;
+			},
+			onError: () => toast.error('계정 연동을 시작하지 못했어요.'),
+		}),
+	);
 
-	const handleUnlink = () => {
-		toast.success('계정 연동이 해제되었어요.');
-	};
+	const { mutate: unlink, isPending: isUnlinking } = useMutation(
+		unlinkAccountMutationOptions({
+			onSuccess: () => {
+				setUnlinkTarget(null);
+				queryClient.invalidateQueries({ queryKey: getMyAccountsQuery.queryKey });
+				toast.success('계정 연동이 해제되었어요.');
+			},
+			onError: async (error) => {
+				const message =
+					error instanceof HTTPError
+						? ((await error.response.json().catch(() => null)) as ApiErrorReponse | null)?.message
+						: null;
+				toast.error(message ?? '계정 연동 해제에 실패했어요.');
+			},
+		}),
+	);
 
-	const handleKakaoLink = () => {
-		setIsComingSoonOpen(true);
-	};
+	const linkedMethods = new Set(accounts.map((account) => account.loginMethod));
+	const unlinkedProviders = LINKABLE_PROVIDERS.filter((provider) => !linkedMethods.has(provider));
 
 	return (
 		<MyPageBox className="flex flex-col gap-2">
 			<p className="font-semibold text-body2 text-label-assistive">계정 정보</p>
-			{isAppleMember ? (
-				<div className="flex flex-col gap-2">
-					<AccountRow method="APPLE" label={email}>
-						<Button
-							variant="assistive"
-							size="sm"
-							className="text-body2 text-label-subtle"
-							onClick={handleUnlink}
-						>
-							해제
-						</Button>
+			<div className="flex flex-col gap-2">
+				{accounts.map((account) => (
+					<AccountRow
+						key={account.accountId}
+						method={account.loginMethod}
+						label={account.email ?? LOGIN_METHOD_LABEL[account.loginMethod]}
+					>
+						{account.loginMethod !== 'EMAIL' && (
+							<Button
+								variant="assistive"
+								size="sm"
+								className="text-body2 text-label-subtle"
+								disabled={!account.unlinkAllowed || isUnlinking}
+								onClick={() => setUnlinkTarget(account)}
+							>
+								해제
+							</Button>
+						)}
 					</AccountRow>
-					<AccountRow method="KAKAO" label="카카오톡 계정">
-						<Button variant="secondary" size="sm" className="text-body2" onClick={handleKakaoLink}>
+				))}
+				{unlinkedProviders.map((provider) => (
+					<AccountRow key={provider} method={provider} label={LOGIN_METHOD_LABEL[provider]}>
+						<Button
+							variant="secondary"
+							size="sm"
+							className="text-body2"
+							disabled={isLinking}
+							onClick={() =>
+								startLink({ provider, redirectUri: getAccountLinkRedirectUri(provider) })
+							}
+						>
 							연동
 						</Button>
 					</AccountRow>
-				</div>
-			) : (
-				<AccountRow method={loginMethod} label={email} />
-			)}
-			<Dialog open={isComingSoonOpen} onOpenChange={setIsComingSoonOpen}>
+				))}
+			</div>
+
+			<Dialog open={unlinkTarget != null} onOpenChange={(open) => !open && setUnlinkTarget(null)}>
 				<DialogContent showCloseButton={false}>
-					<DialogTitle className="sr-only">준비 중인 기능이에요</DialogTitle>
+					<DialogTitle className="sr-only">계정 연동 해제</DialogTitle>
 					<DialogHeader className="text-left font-bold text-title1">
-						준비 중인 기능이에요
+						계정 연동을 해제할까요?
 					</DialogHeader>
-					<p className="text-body1 text-label-subtle">계정 연동 기능은 곧 만나보실 수 있어요.</p>
+					<p className="text-body1 text-label-subtle">
+						해제하면 이 계정으로는 다시 로그인할 수 없고, 다시 로그인하면 신규 가입 절차로 이동해요.
+					</p>
 					<DialogFooter>
 						<Button
 							className="flex-1"
-							variant="secondary"
+							variant="assistive"
 							size="lg"
-							onClick={() => setIsComingSoonOpen(false)}
+							onClick={() => setUnlinkTarget(null)}
 						>
-							확인
+							취소
+						</Button>
+						<Button
+							className="flex-1"
+							variant="danger"
+							size="lg"
+							loading={isUnlinking}
+							onClick={() => unlinkTarget && unlink(unlinkTarget.accountId)}
+						>
+							해제
 						</Button>
 					</DialogFooter>
 				</DialogContent>
@@ -109,7 +167,7 @@ const AccountRow = ({
 	label,
 	children,
 }: {
-	method: LoginMethod | undefined;
+	method: LoginMethod;
 	label: string;
 	children?: ReactNode;
 }) => {

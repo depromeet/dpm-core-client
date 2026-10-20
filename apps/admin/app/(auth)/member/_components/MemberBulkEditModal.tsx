@@ -74,14 +74,33 @@ export const MemberBulkEditModal = ({
 				return PART_PICKER_OPTIONS;
 			case 'memberType':
 				return MEMBER_TYPE_ORDER.map((type) => ({ value: type, label: MEMBER_TYPE_LABEL[type] }));
-			case 'activityStatus':
-				return ACTIVITY_STATUS_ORDER.map((status) => ({
-					value: status,
-					label: ACTIVITY_STATUS_LABEL[status],
-					// 수료 위험은 서버가 계산하는 값이라 일괄로 바꿀 수 없다.
-					disabled: status === 'AT_RISK',
-					disabledReason: status === 'AT_RISK' ? '출석 데이터로 자동 계산돼요' : undefined,
-				}));
+			case 'activityStatus': {
+				// 선택한 대상 중 이미 활동 정지된 멤버가 있으면, 이번 기수에서 되돌릴 수 없으므로
+				// "활동 중"으로 일괄 변경하는 선택지 자체를 막는다.
+				const hasInactiveSubject = subjects.some(
+					(subject) => subject.activityStatus === 'INACTIVE',
+				);
+				return ACTIVITY_STATUS_ORDER.map((status) => {
+					if (status === 'AT_RISK') {
+						// 수료 위험은 서버가 계산하는 값이라 일괄로 바꿀 수 없다.
+						return {
+							value: status,
+							label: ACTIVITY_STATUS_LABEL[status],
+							disabled: true,
+							disabledReason: '출석 데이터로 자동 계산돼요',
+						};
+					}
+					if (status === 'NORMAL' && hasInactiveSubject) {
+						return {
+							value: status,
+							label: ACTIVITY_STATUS_LABEL[status],
+							disabled: true,
+							disabledReason: '이미 활동 정지된 계정이 포함돼 있어요',
+						};
+					}
+					return { value: status, label: ACTIVITY_STATUS_LABEL[status] };
+				});
+			}
 			case 'teamNumber':
 				return [
 					{ value: String(UNASSIGNED_TEAM_NUMBER), label: '미배정' },
@@ -93,12 +112,20 @@ export const MemberBulkEditModal = ({
 			default:
 				return [];
 		}
-	}, [displayField, teams]);
+	}, [displayField, teams, subjects]);
 
 	if (!displayField) return null;
 
 	const handleConfirm = () => {
 		if (!value || !field) return;
+
+		// 공통값에서 아무것도 바꾸지 않고 확인을 눌렀다면 변경된 것으로 표시하지 않는다.
+		const isUnchanged = currentValue !== null && String(currentValue) === value;
+		if (isUnchanged) {
+			onClose();
+			return;
+		}
+
 		if (field === 'teamNumber') onConfirm('teamNumber', Number(value));
 		else onConfirm(field, value as never);
 	};
