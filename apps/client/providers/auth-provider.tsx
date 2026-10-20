@@ -16,9 +16,9 @@ interface AuthContextType {
 }
 
 const PENDING_ACCESSIBLE_PATHS = ['/pending', '/profile', '/my-page', '/rejected/edit'];
-// '/pending'은 재신청 직후 상태 캐시가 아직 REJECTED로 남아있는 짧은 순간에도 튕겨내지 않기 위해 포함한다.
-// (재신청 성공 → /pending 이동 사이에 멤버 정보 재조회가 끝나지 않으면 여기서 막지 않는 한 /rejected로 되돌아간다.)
-const REJECTED_ACCESSIBLE_PATHS = ['/rejected', '/rejected/edit', '/my-page', '/pending'];
+// '/pending'을 넣으면 검토중 화면을 보던 회원이 반려돼도 /rejected로 가지 못하고 검토중 화면에 머문다.
+// 재신청 성공 시에는 /rejected/edit 에서 상태 캐시 무효화가 끝난 뒤에 /pending 으로 이동하므로 포함하지 않아도 된다.
+const REJECTED_ACCESSIBLE_PATHS = ['/rejected', '/rejected/edit', '/my-page'];
 
 /** AuthProvider가 승인 상태 판단에 쓰는 멤버 정보 쿼리 키. 상태를 바꾸는 요청(예: 재신청) 후에는 이 키를 무효화해야 AuthProvider가 바뀐 상태를 바로 반영한다. */
 export const memberAuthQueryKey = ['memberInfo', 'reissue'];

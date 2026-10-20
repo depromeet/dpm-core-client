@@ -30,19 +30,17 @@ const LoginPage = async ({
 			<Suspense>
 				<LoginErrorToast />
 			</Suspense>
-			{/* 디자인이 393px 폭 모바일 프레임 기준으로 좌표를 잡아서, 웹에서 더 넓은 컨테이너에 그대로 두면
-			배경 그래픽이 실제 기기보다 중앙에 가깝게 보인다. 393px 폭으로 가둬 기기와 동일하게 보이게 한다. */}
 			<div className="relative flex h-full w-full max-w-[512px] flex-col">
 				<div aria-hidden className="pointer-events-none absolute inset-0">
 					<Image
 						src={bgEllipse}
 						alt=""
-						className="-scale-y-100 absolute top-[-127.36px] left-[-162.55px] max-w-none rotate-[-154.44deg]"
+						className="-scale-y-100 absolute top-[-127.36px] right-[37.19px] max-w-none rotate-[-154.44deg]"
 					/>
 					<Image
 						src={bgGraphic}
 						alt=""
-						className="absolute top-[310.7px] left-[133.85px] max-w-none rotate-[11.03deg] mix-blend-color-dodge"
+						className="absolute top-[310.7px] right-[-10.27px] max-w-none rotate-[11.03deg] mix-blend-color-dodge"
 					/>
 				</div>
 				<div className="relative flex flex-col gap-y-4.5 px-4 pt-20">
