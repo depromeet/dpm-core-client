@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@dpm-core/shared';
+import { Button, cn } from '@dpm-core/shared';
 
 import {
 	ACTIVITY_STATUS_LABEL,
@@ -62,6 +62,7 @@ const ArrowDecreaseIcon = ({ className }: { className?: string }) => (
 interface MemberBulkEditBarProps {
 	selectedCount: number;
 	currentValueOf: <K extends MemberEditableField>(field: K) => MemberEditableFields[K] | null;
+	stagedFields: MemberEditableField[];
 	onOpenField: (field: MemberEditableField) => void;
 	onSave: () => void;
 	canSave: boolean;
@@ -72,6 +73,7 @@ interface MemberBulkEditBarProps {
 export const MemberBulkEditBar = ({
 	selectedCount,
 	currentValueOf,
+	stagedFields,
 	onOpenField,
 	onSave,
 	canSave,
@@ -93,7 +95,10 @@ export const MemberBulkEditBar = ({
 						key={field}
 						type="button"
 						onClick={() => onOpenField(field)}
-						className="flex h-10 cursor-pointer items-center gap-2.5 rounded-lg bg-[#303d50] px-4 font-medium text-body1 transition-opacity hover:opacity-80"
+						className={cn(
+							'flex h-10 cursor-pointer items-center gap-2.5 rounded-lg border bg-[#303d50] px-4 font-medium text-body1 transition-opacity hover:opacity-80',
+							stagedFields.includes(field) ? 'border-blue-400' : 'border-transparent',
+						)}
 					>
 						<span className="flex items-center gap-2.5 text-label-assistive">
 							{label}

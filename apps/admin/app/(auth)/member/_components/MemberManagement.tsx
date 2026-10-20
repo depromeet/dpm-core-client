@@ -416,6 +416,7 @@ export const MemberManagement = () => {
 					<MemberBulkEditBar
 						selectedCount={selectedRows.length}
 						currentValueOf={bulkEdit.currentValueOf}
+						stagedFields={bulkEdit.stagedFields}
 						onOpenField={bulkEdit.openModal}
 						onSave={() => saveBulkEdit()}
 						canSave={bulkEdit.hasChanges}
