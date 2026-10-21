@@ -27,7 +27,11 @@ export async function POST(request: NextRequest) {
 
 		if (!response.ok) {
 			const url = new URL('/login', request.url);
-			url.searchParams.set('error', `api_failed_${response.status}`);
+			const errorCode = await response
+				.json()
+				.then((body) => (typeof body?.code === 'string' ? body.code : undefined))
+				.catch(() => undefined);
+			url.searchParams.set('error', errorCode ?? `api_failed_${response.status}`);
 
 			return NextResponse.redirect(url, { status: 303 });
 		}
