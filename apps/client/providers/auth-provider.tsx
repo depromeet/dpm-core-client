@@ -58,7 +58,10 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		queryFn: async () => {
 			await auth.reissue();
 
-			const memberInfo = await queryClient.fetchQuery(getMyMemberInfoQuery);
+			// 앱 기본 staleTime(5분) 안에 받아 둔 getMyMemberInfoQuery 캐시가 있으면 fetchQuery 가 재요청 없이
+			// 그 값을 돌려준다. 재신청 직후 이 쿼리를 무효화하면 직전(REJECTED)의 캐시가 그대로 반환돼
+			// 상태가 PENDING에서 REJECTED로 되돌아가므로, 이 쿼리는 항상 서버에서 새로 받는다.
+			const memberInfo = await queryClient.fetchQuery({ ...getMyMemberInfoQuery, staleTime: 0 });
 			return memberInfo;
 		},
 		retry: false,
