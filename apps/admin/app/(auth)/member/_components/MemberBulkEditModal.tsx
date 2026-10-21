@@ -8,7 +8,7 @@ import { getCurrentCohortTeamsQuery } from '@/remotes/queries/cohort';
 
 import {
 	ACTIVITY_STATUS_LABEL,
-	ACTIVITY_STATUS_ORDER,
+	ACTIVITY_STATUS_EDIT_ORDER,
 	MEMBER_TYPE_LABEL,
 	MEMBER_TYPE_ORDER,
 	PART_ICON,
@@ -80,16 +80,7 @@ export const MemberBulkEditModal = ({
 				const hasInactiveSubject = subjects.some(
 					(subject) => subject.activityStatus === 'INACTIVE',
 				);
-				return ACTIVITY_STATUS_ORDER.map((status) => {
-					if (status === 'AT_RISK') {
-						// 수료 위험은 서버가 계산하는 값이라 일괄로 바꿀 수 없다.
-						return {
-							value: status,
-							label: ACTIVITY_STATUS_LABEL[status],
-							disabled: true,
-							disabledReason: '출석 데이터로 자동 계산돼요',
-						};
-					}
+				return ACTIVITY_STATUS_EDIT_ORDER.map((status) => {
 					if (status === 'NORMAL' && hasInactiveSubject) {
 						return {
 							value: status,

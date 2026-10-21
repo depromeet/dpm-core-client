@@ -48,7 +48,7 @@ export const FilterPopover = ({
 			{...props}
 		>
 			{/* Header */}
-			<div className="flex items-center gap-2 px-4 pt-4 pb-4">
+			<div className="flex h-16 items-center gap-2 p-4">
 				<h3 className="flex-1 font-semibold text-label-normal text-title2">{title}</h3>
 				<IconButton variant="ghost" size="sm" onClick={onClose}>
 					<X className="size-4" />
@@ -58,7 +58,7 @@ export const FilterPopover = ({
 			{/* Body */}
 			<div className="flex flex-col gap-4 px-4 pb-4">
 				{sections.map(({ label, options }) => (
-					<ChipGroup key={label} label={label}>
+					<ChipGroup key={label} label={label} contentClassName="gap-1.5">
 						{options.map((option) => {
 							const isSelected = selectedValues[label]?.includes(option.value) || false;
 
@@ -82,7 +82,7 @@ export const FilterPopover = ({
 									type="button"
 									onClick={() => onFilterChange?.(label, option.value)}
 									className={cn(
-										'h-8 rounded-full border px-3 py-1 font-medium text-body2 transition-colors',
+										'h-7 rounded-full border px-3 py-1 font-medium text-body2 transition-colors',
 										isSelected
 											? 'border-primary-normal font-semibold text-primary-normal'
 											: 'border-line-normal text-label-assistive',
@@ -97,8 +97,13 @@ export const FilterPopover = ({
 			</div>
 
 			{/* Footer */}
-			<div className="flex gap-2 bg-background-normal px-4 py-3">
-				<IconButton variant="default" size="md" onClick={onReset}>
+			<div className="flex gap-2 bg-background-normal p-4">
+				<IconButton
+					variant="default"
+					size="md"
+					className="rounded-md bg-background-strong"
+					onClick={onReset}
+				>
 					<RotateCcw className="size-5" />
 				</IconButton>
 				<Button variant="secondary" size="md" className="flex-1" onClick={onApply}>
