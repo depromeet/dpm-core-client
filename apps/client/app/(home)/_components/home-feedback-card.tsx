@@ -20,8 +20,6 @@ export const HomeFeedbackCard = ({ isAttendanceOpen }: HomeFeedbackCardProps) =>
 		0,
 		Math.ceil(dayjs(pendingFeedback.endAt).diff(dayjs(), 'hour', true) / 24),
 	);
-	const searchParams = '?returnTo=%2F';
-
 	return (
 		<div className="flex h-[150px] flex-col gap-4 rounded-[10px] border border-white bg-background-normal p-4 shadow-[0_0_10px_rgba(0,0,0,0.04)]">
 			<div className="flex flex-col gap-1">
@@ -36,7 +34,7 @@ export const HomeFeedbackCard = ({ isAttendanceOpen }: HomeFeedbackCardProps) =>
 				</p>
 			</div>
 			<Link
-				href={`/session/${pendingFeedback.sessionId}/feedback${searchParams}`}
+				href="/session"
 				className="flex h-9 shrink-0 items-center justify-center rounded-lg bg-background-inverse font-semibold text-caption1 text-label-inverse"
 			>
 				피드백 남기기 (D-{daysRemaining})
