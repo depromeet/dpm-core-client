@@ -58,7 +58,7 @@ export const MemberFilterBar = ({
 				onChange={onPartsChange}
 			/>
 			<MultiSelectFilter
-				title="활동 상태"
+				title="활동 상태별"
 				options={ACTIVITY_STATUS_OPTIONS}
 				value={activityStatuses}
 				onChange={onActivityStatusesChange}
@@ -66,6 +66,8 @@ export const MemberFilterBar = ({
 			<ToggleButton
 				id="exclude-staff"
 				label="운영진/코어 제외"
+					className="gap-[5px] border border-line-subtle has-checked:text-label-assistive"
+					labelClassName="font-medium text-body2"
 				checked={excludeStaff}
 				onCheckedChange={(checked) => onExcludeStaffChange(checked === true)}
 			/>

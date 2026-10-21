@@ -303,6 +303,9 @@ export const MemberManagement = () => {
 
 	const isPendingTab = filters.approvalStatus === 'PENDING';
 	const showBulkEditBar = !isPendingTab && selectedRows.length > 0;
+	// 중복 의심 계정만 골랐다면 승인 전에 병합이 일어나므로 버튼 문구로 미리 알린다.
+	const isMergeOnlySelection =
+		selectedRows.length > 0 && selectedRows.every((row) => row.duplicateSuspected);
 
 	return (
 		<div className="flex w-full flex-col bg-background-normal pb-10">
@@ -334,7 +337,7 @@ export const MemberManagement = () => {
 			</div>
 
 			<div className="flex items-center justify-between gap-4 px-10 py-3">
-				<div className="flex items-center gap-4">
+				<div className="flex items-center gap-2">
 					{!isPendingTab && (
 						<MemberFilterBar
 							parts={filters.parts}
@@ -363,7 +366,7 @@ export const MemberManagement = () => {
 								disabled={selectedRows.length === 0}
 								onClick={() => openApproveDialog(selectedRows)}
 							>
-								승인하기
+								{isMergeOnlySelection ? '병합 후 승인하기' : '승인하기'}
 							</Button>
 							<Button
 								variant="assistive"
@@ -376,7 +379,8 @@ export const MemberManagement = () => {
 						</>
 					) : (
 						<Button
-							variant="assistive"
+							variant="secondary"
+							className="disabled:opacity-20"
 							size="md"
 							disabled={selectedRows.length === 0}
 							onClick={() => setDialog({ type: 'delete', targets: selectedRows })}
