@@ -4,15 +4,23 @@ import { AppleLogo } from '@dpm-core/shared';
 
 import { getAppleAuthUrl } from '@/lib/env';
 
-const AppleLoginButton = () => {
+import { Pressable } from './motion';
+
+interface AppleLoginButtonProps {
+	className?: string;
+}
+
+const AppleLoginButton = ({ className }: AppleLoginButtonProps) => {
 	return (
-		<a
-			href={getAppleAuthUrl()}
-			aria-label="Apple로 시작하기"
-			className="flex size-12 items-center justify-center rounded-full border border-black/12 bg-white text-black"
-		>
-			<AppleLogo className="size-7.5" />
-		</a>
+		<Pressable variant="none" size="full" className={className} asChild>
+			<a
+				href={getAppleAuthUrl()}
+				className="flex items-center justify-center gap-3.75 font-medium text-body1"
+			>
+				<AppleLogo />
+				<p>Apple로 시작하기</p>
+			</a>
+		</Pressable>
 	);
 };
 

@@ -6,7 +6,6 @@ import bgEllipse from '@/assets/images/login-bg-ellipse.svg';
 import bgGraphic from '@/assets/images/login-bg-graphic.svg';
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { AppleLoginButton } from '@/components/apple-login-button';
-import { EmailLoginButton } from '@/components/email-login-button';
 import { LoginButton } from '@/components/login-button';
 import { LoginErrorToast } from '@/components/login-error-toast';
 import { LoginReturnTo } from '@/components/login-return-to';
@@ -52,27 +51,18 @@ const LoginPage = async ({
 					</p>
 				</div>
 				<div className="flex-1" />
-				<div className="relative flex flex-col items-center gap-y-5 bg-linear-to-b from-white/0 to-16% to-white px-4 pt-8 pb-[calc(var(--safe-area-inset-bottom)+2rem)]">
+				<div className="relative flex flex-col gap-y-2.5 bg-linear-to-b from-white/0 to-16% to-white px-4 pt-8 pb-[calc(var(--safe-area-inset-bottom)+2rem)]">
 					<div className="relative w-full">
 						<LoginButton
 							size="full"
 							variant="none"
 							className="h-12.5 justify-center rounded-xl bg-[#FEE500] px-3.75 py-3.5 font-medium text-body1 leading-1"
 						/>
-						<RecentLoginBadge method="KAKAO" position="offset" />
+						<RecentLoginBadge method="KAKAO" />
 					</div>
-					<div className="flex flex-col items-center gap-y-3">
-						<p className="font-medium text-black/40 text-caption1">다른 방법으로 시작하기</p>
-						<div className="flex items-center gap-x-6">
-							<div className="relative">
-								<AppleLoginButton />
-								<RecentLoginBadge method="APPLE" position="centered" />
-							</div>
-							<div className="relative">
-								<EmailLoginButton />
-								<RecentLoginBadge method="EMAIL" position="centered" />
-							</div>
-						</div>
+					<div className="relative w-full">
+						<AppleLoginButton className="h-12.5 justify-center rounded-xl bg-black px-3.75 py-3.5 font-medium text-body1 text-white leading-1" />
+						<RecentLoginBadge method="APPLE" />
 					</div>
 				</div>
 			</div>
