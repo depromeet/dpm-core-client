@@ -5,7 +5,6 @@ import { Suspense } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import dayjs from 'dayjs';
 import { Virtuoso } from 'react-virtuoso';
 import type { SessionListItem } from '@dpm-core/api';
 import { Aesterisk, Button, Calender, Clock, formatDotFullDate } from '@dpm-core/shared';
@@ -14,6 +13,7 @@ import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringHHMM } from '@/lib/date';
+import { getFeedbackDaysRemaining } from '@/lib/session/feedback';
 import { formatSessionWeekString } from '@/lib/session/format';
 import { getSessionListQuery } from '@/remotes/queries/session';
 
@@ -44,7 +44,7 @@ const SessionListContainer = () => {
 
 function SessionItem({ session }: { session: SessionListItem }) {
 	const feedbackDaysRemaining = session.feedback
-		? Math.max(0, dayjs(session.feedback.endAt).startOf('day').diff(dayjs().startOf('day'), 'day'))
+		? getFeedbackDaysRemaining(session.feedback.endAt)
 		: null;
 	const feedbackSearchParams = '?returnTo=%2Fsession';
 
