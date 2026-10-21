@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import {
+	cn,
 	FilterDropdown,
 	FilterPopover,
 	Popover,
@@ -52,6 +53,11 @@ export const MultiSelectFilter = <T extends string>({
 				<FilterDropdown
 					label={formatFilterLabel(value, getLabel, title)}
 					isSelected={value.length > 0}
+						className={cn(
+							'gap-1 text-body2',
+							value.length > 0 ? 'font-semibold' : 'border-line-subtle font-medium',
+						)}
+						iconClassName="size-3"
 				/>
 			</PopoverTrigger>
 			<PopoverContent

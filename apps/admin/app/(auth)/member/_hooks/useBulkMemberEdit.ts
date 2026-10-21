@@ -5,14 +5,20 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toEditableFields } from '../_lib/build-member-changes';
 import type { MemberEditableField, MemberEditableFields, MemberRow } from '../_types';
 
-/** 선택한 행들이 같은 값을 가질 때만 그 값을, 섞여 있으면 null 을 돌려준다. */
+/**
+ * 선택한 행들이 같은 값을 가질 때만 그 값을, 섞여 있으면 null 을 돌려준다.
+ * 수료 위험은 "활동 중" 옆에 붙는 뱃지일 뿐 고를 수 있는 값이 아니므로, 활동 상태는 활동 중으로 취급해 비교한다.
+ */
 function commonValue<K extends MemberEditableField>(
 	rows: MemberRow[],
 	field: K,
 ): MemberEditableFields[K] | null {
 	if (rows.length === 0) return null;
 
-	const [first, ...rest] = rows.map((row) => toEditableFields(row)[field]);
+	const [first, ...rest] = rows.map((row) => {
+		const value = toEditableFields(row)[field];
+		return (value === 'AT_RISK' ? 'NORMAL' : value) as MemberEditableFields[K];
+	});
 	return rest.every((value) => value === first) ? first : null;
 }
 

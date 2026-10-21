@@ -5,7 +5,7 @@ import { Button, cn, TableCell, TableCheckbox, TableRow } from '@dpm-core/shared
 
 import {
 	ACTIVITY_STATUS_LABEL,
-	ACTIVITY_STATUS_ORDER,
+	ACTIVITY_STATUS_EDIT_ORDER,
 	MEMBER_TYPE_LABEL,
 	MEMBER_TYPE_ORDER,
 	PART_LABEL,
@@ -23,19 +23,11 @@ const MEMBER_TYPE_OPTIONS = MEMBER_TYPE_ORDER.map((value) => ({
 	label: MEMBER_TYPE_LABEL[value],
 }));
 /**
- * 수료 위험은 서버가 계산하므로 직접 고를 수 없다.
+ * 수료 위험은 서버가 계산하는 값이라 선택지에 두지 않는다.
  * 이미 활동 정지된 멤버는 이번 기수에서 다시 활동 중으로 되돌릴 수 없다.
  */
 const getActivityStatusOptions = (isCurrentlyInactive: boolean) =>
-	ACTIVITY_STATUS_ORDER.map((value) => {
-		if (value === 'AT_RISK') {
-			return {
-				value,
-				label: ACTIVITY_STATUS_LABEL[value],
-				disabled: true,
-				disabledReason: '출석 데이터로 자동 계산돼요',
-			};
-		}
+	ACTIVITY_STATUS_EDIT_ORDER.map((value) => {
 		if (value === 'NORMAL' && isCurrentlyInactive) {
 			return {
 				value,
@@ -158,7 +150,7 @@ export const ApprovedMemberRow = ({
 				{isEditing ? (
 					<InlineOptionSelect
 						options={getActivityStatusOptions(row.activityStatus === 'INACTIVE')}
-						value={current.activityStatus}
+						value={current.activityStatus === 'AT_RISK' ? 'NORMAL' : current.activityStatus}
 						onChange={(value) => onChange('activityStatus', value)}
 					>
 						<MemberActivityStatus status={current.activityStatus} editable />

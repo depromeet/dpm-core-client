@@ -69,6 +69,12 @@ export const ACTIVITY_STATUS_LABEL: Record<MemberActivityStatus, string> = {
 
 export const ACTIVITY_STATUS_ORDER: MemberActivityStatus[] = ['NORMAL', 'AT_RISK', 'INACTIVE'];
 
+/**
+ * 활동 상태 수정 드롭다운·모달에서 고를 수 있는 값.
+ * 수료 위험은 서버가 계산하는 값이라 필터와 뱃지에만 쓰고 수정 선택지에서는 뺀다.
+ */
+export const ACTIVITY_STATUS_EDIT_ORDER: MemberActivityStatus[] = ['NORMAL', 'INACTIVE'];
+
 export const PART_OPTIONS = PART_ORDER.map((value) => ({ value, label: PART_LABEL[value] }));
 
 export const MEMBER_TYPE_OPTIONS = MEMBER_TYPE_ORDER.map((value) => ({
