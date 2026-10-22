@@ -35,7 +35,7 @@ import {
 	toTeamId,
 	toUpdatableStatus,
 } from '../_lib/build-member-changes';
-import { type ApprovalPlan, planApproval } from '../_lib/duplicate-pairs';
+import { type ApprovalPlan, findDuplicatePartners, planApproval } from '../_lib/duplicate-pairs';
 import type { MemberEditableField, MemberEditableFields, MemberRow } from '../_types';
 import { ApprovedMemberTable } from './ApprovedMemberTable';
 import { MemberApprovalTabs } from './MemberApprovalTabs';
@@ -194,6 +194,27 @@ export const MemberManagement = () => {
 			return;
 		}
 		setDialog({ type: 'approve', targets, plan });
+	};
+
+	/**
+	 * 행 안의 승인 버튼. 그 행만 처리하면 중복 의심 계정은 짝이 빠져 항상 "병합 필요" 안내만 뜨므로
+	 * - 체크한 계정이 여럿이고 이 행도 그중 하나면 체크한 계정 전체를 함께 처리하고
+	 * - 아니면 중복 의심 계정은 짝이 정확히 하나일 때 짝과 함께 처리한다.
+	 * (확인 모달에 대상 계정이 모두 표시되므로 어떤 계정이 처리되는지 확인할 수 있다.)
+	 */
+	const handleRowApprove = (row: MemberRow) => {
+		if (selection.isSelected(row.id) && selectedRows.length > 1) {
+			openApproveDialog(selectedRows);
+			return;
+		}
+		if (row.duplicateSuspected) {
+			const partners = findDuplicatePartners(row, rows);
+			if (partners.length === 1) {
+				openApproveDialog([row, partners[0]]);
+				return;
+			}
+		}
+		openApproveDialog([row]);
 	};
 
 	/* --------------------------------- 삭제 --------------------------------- */
@@ -409,7 +430,7 @@ export const MemberManagement = () => {
 							isTogglingAll={isLoadingAllForSelection}
 							onToggle={selection.toggle}
 							onToggleAll={handleToggleAllSelection}
-							onApprove={(row) => openApproveDialog([row])}
+							onApprove={handleRowApprove}
 							onReject={(row) => setDialog({ type: 'reject', targets: [row] })}
 						/>
 					) : (
