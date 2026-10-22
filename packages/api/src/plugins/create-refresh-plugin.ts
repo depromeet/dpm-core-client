@@ -2,7 +2,7 @@ import type { AfterResponseHook } from 'ky';
 import ky from 'ky';
 import { logger } from '@dpm-core/shared';
 
-import { getAuthEpoch, setAuthCookies } from '../auth/cookie';
+import { reissueTokens } from '../auth/reissue-core';
 
 interface RefreshPluginOptions {
 	whitelist?: (string | RegExp)[];
@@ -10,105 +10,33 @@ interface RefreshPluginOptions {
 }
 
 export function createRefreshPlugin(options?: RefreshPluginOptions): AfterResponseHook {
-	let isRefreshing = false;
-	let refreshPromise: Promise<void> | null = null;
-	const waitQueue: (() => void)[] = [];
-
 	const { whitelist = [], refreshUrl = '' } = options ?? {};
 
 	logger.debug('refresh plugin 생성됨', { refreshUrl });
 
 	return async (request, _, response) => {
-		logger.debug(`refresh plugin 실행: ${response.status}`, {
-			url: request.url,
-		});
+		// 토큰 만료로 인한 미인증만 재발급 대상으로 삼는다. 그 외 상태 코드(403 권한 없음,
+		// 400 탈퇴 등 비즈니스 거절 포함)는 재발급해도 달라지지 않으므로 그대로 반환한다.
+		if (response.status !== 401) return response;
 
-		// FIXME: 미인증 반환 코드 확인 후 변경
-		if (response.status === 404 || response.ok || response.status < 400) {
-			return response;
-		}
-
-		logger.debug('401 에러 감지', { url: request.url });
-
-		const shouldSkip = whitelist.some((pattern) => {
-			if (typeof pattern === 'string') {
-				return request.url.includes(pattern);
-			}
-			return pattern.test(request.url);
-		});
-
+		const shouldSkip = whitelist.some((pattern) =>
+			typeof pattern === 'string' ? request.url.includes(pattern) : pattern.test(request.url),
+		);
 		if (shouldSkip) {
 			logger.debug('whitelist에 포함된 URL, 스킵', { url: request.url });
 			return response;
 		}
 
-		if (isRefreshing && refreshPromise) {
-			logger.debug('이미 refresh 중, 대기열에 추가', { url: request.url });
-			waitQueue.push(() => {
-				logger.debug('QUEUE 실행', { url: request.url });
-				ky(request);
-			});
-			await refreshPromise;
-		} else if (!isRefreshing) {
-			logger.auth('새로운 refresh 시작', { refreshUrl });
-			isRefreshing = true;
-			const epochAtStart = getAuthEpoch();
+		try {
+			logger.auth('401 감지, refresh 시도', { url: request.url });
+			const { token } = await reissueTokens(refreshUrl);
 
-			try {
-				logger.debug('fetch로 refresh 호출 시도...');
-				refreshPromise = fetch(refreshUrl, {
-					method: 'GET',
-					credentials: 'include',
-				})
-					.then(async (res) => {
-						if (!res.ok) {
-							throw new Error(`Refresh failed with status: ${res.status}`);
-						}
-						const data = await res.json();
-						logger.auth('refresh 성공', data);
-
-						// 응답을 기다리는 사이 로그아웃/탈퇴가 일어났다면, 이미 지운 쿠키를 되살리지 않는다.
-						if (getAuthEpoch() !== epochAtStart) {
-							logger.debug('refresh 응답 도착 전 로그아웃/탈퇴 발생, 쿠키 복원 스킵');
-							waitQueue.length = 0;
-							return;
-						}
-
-						setAuthCookies({
-							accessToken: data.data.token,
-							refreshToken: data.data.refreshToken,
-						});
-
-						request.headers.set('Authorization', `Bearer ${data.data.token}`);
-
-						for (const cb of waitQueue) {
-							cb();
-						}
-						waitQueue.length = 0;
-					})
-					.catch((error) => {
-						logger.error('refresh 실패', error);
-						for (const cb of waitQueue) {
-							cb();
-						}
-						waitQueue.length = 0;
-						throw error;
-					})
-					.finally(() => {
-						logger.debug('refresh 완료');
-						isRefreshing = false;
-						refreshPromise = null;
-					});
-
-				await refreshPromise;
-			} catch (error) {
-				logger.error('refresh promise 에러', error);
-				isRefreshing = false;
-				refreshPromise = null;
-				return response;
-			}
+			request.headers.set('Authorization', `Bearer ${token}`);
+			logger.debug('원본 요청 재실행', { url: request.url });
+			return ky(request);
+		} catch (error) {
+			logger.error('refresh 실패, 원본 401 응답 반환', { url: request.url, error });
+			return response;
 		}
-
-		logger.debug('원본 요청 재실행', { url: request.url });
 	};
 }
