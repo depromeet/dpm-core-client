@@ -18,6 +18,16 @@ const PROVIDER_LABEL: Record<LinkableLoginMethod, string> = {
 	APPLE: '애플',
 };
 
+/**
+ * 서버가 내려주는 오류 코드별 안내 문구.
+ * 서버 메시지("...다시 로그인해주세요")만으로는 사용자가 할 수 있는 조치를 알기 어려운 경우에 쓴다.
+ */
+const LINK_ERROR_MESSAGE_BY_CODE: Record<string, (provider: LinkableLoginMethod) => string> = {
+	// 연동하려는 소셜 계정이 이미 다른 회원(예: 연동 해제 후 소셜 로그인으로 새로 생긴 계정)에 연결된 경우
+	'MEMBER-409-21': (provider) =>
+		`이미 다른 계정에 연결된 ${PROVIDER_LABEL[provider]} 계정이에요. 운영진에게 문의해 주세요.`,
+};
+
 interface AccountLinkCallbackProps {
 	provider: LinkableLoginMethod;
 	code?: string;
@@ -49,11 +59,12 @@ export const AccountLinkCallback = ({
 				queryClient.invalidateQueries({ queryKey: getMyAccountsQuery.queryKey });
 			},
 			onError: async (error) => {
-				const message =
+				const body =
 					error instanceof HTTPError
-						? ((await error.response.json().catch(() => null)) as ApiErrorReponse | null)?.message
+						? ((await error.response.json().catch(() => null)) as ApiErrorReponse | null)
 						: null;
-				setErrorMessage(message ?? `${PROVIDER_LABEL[provider]} 연동에 실패했어요.`);
+				const guidance = body?.code ? LINK_ERROR_MESSAGE_BY_CODE[body.code]?.(provider) : undefined;
+				setErrorMessage(guidance ?? body?.message ?? `${PROVIDER_LABEL[provider]} 연동에 실패했어요.`);
 			},
 		}),
 	);
