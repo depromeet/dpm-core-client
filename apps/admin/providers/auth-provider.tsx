@@ -1,9 +1,9 @@
 'use client';
 
-import { redirect, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { type PropsWithChildren, useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { auth, type Member } from '@dpm-core/api';
+import { auth, clearAuthCookies, type Member } from '@dpm-core/api';
 import { createContext } from '@dpm-core/shared';
 
 import { UnauthenticatedLayout } from '@/components/unauthenticated-layout';
@@ -49,7 +49,17 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		enabled: isReady,
 	});
 
-	const { mutate: logoutMutate } = useMutation(logoutMutationOptions());
+	// 운영진이 아닌 계정은 권한 없음 화면으로 보낸다. 캐시된 회원 정보가 다음 로그인에 섞이지 않도록
+	// 쿠키를 정리하고 전체 이동한다. 서버 로그아웃이 실패해도 이 브라우저의 세션은 정리한다.
+	const { mutate: logoutMutate } = useMutation(
+		logoutMutationOptions({
+			onSettled: () => {
+				clearAuthCookies();
+				window.location.replace('/auth');
+			},
+		}),
+	);
+	const isForbidden = Boolean(memberInfo) && !memberInfo?.isAdmin;
 
 	useEffect(() => {
 		setIsReady(true);
@@ -59,7 +69,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		if (memberInfo) {
 			if (!memberInfo.isAdmin) {
 				logoutMutate();
-				redirect('/login');
+				return;
 			}
 			setIsAuthenticated(true);
 			setUser(memberInfo);
@@ -77,6 +87,11 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		// 	</div>
 		// );
 
+		return null;
+	}
+
+	// 권한 없는 계정에는 화면을 그리지 않아, 운영진 전용 API가 403으로 실패하며 오류 화면이 뜨는 것을 막는다.
+	if (isForbidden) {
 		return null;
 	}
 

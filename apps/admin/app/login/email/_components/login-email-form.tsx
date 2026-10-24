@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
-import { auth } from '@dpm-core/api';
+import { auth, clearAuthCookies } from '@dpm-core/api';
 import {
 	Button,
 	Form,
@@ -37,6 +37,8 @@ export const LoginEmailForm = () => {
 
 	const handleLoginEmail = async (formData: LoginEmailSchema) => {
 		try {
+			// 이전 로그인(다른 계정)의 토큰 쿠키가 남아 있으면 새 로그인 대신 그 계정으로 인증될 수 있다.
+			clearAuthCookies();
 			await auth.login(formData);
 			router.replace('/');
 		} catch {
