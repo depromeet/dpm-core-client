@@ -1,5 +1,7 @@
+import Cookies from 'js-cookie';
 import { logger } from '@dpm-core/shared';
 
+import { COOKIE_KEYS } from '../constants';
 import { getAuthEpoch, setAuthCookies } from './cookie';
 
 export interface ReissueResult {
@@ -20,9 +22,13 @@ export const reissueTokens = async (refreshUrl: string): Promise<ReissueResult> 
 
 	const epochAtStart = getAuthEpoch();
 	reissuePromise = (async () => {
+		// 앱(WebView)에서는 서버가 내려준 refreshToken 쿠키가 WebView 쿠키 저장소에 없을 수 있어
+		// (쿠키만 보내면 cookieCount=0으로 401) 서버가 쿠키보다 우선하는 Bearer 헤더로도 함께 보낸다.
+		const refreshToken = Cookies.get(COOKIE_KEYS.REFRESH_TOKEN);
 		const res = await fetch(refreshUrl, {
 			method: 'GET',
 			credentials: 'include',
+			headers: refreshToken ? { Authorization: `Bearer ${refreshToken}` } : undefined,
 		});
 
 		if (!res.ok) {
