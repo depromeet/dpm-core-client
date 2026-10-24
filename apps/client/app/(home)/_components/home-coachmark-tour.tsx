@@ -63,16 +63,37 @@ export const HomeCoachmarkTour = ({ onComplete }: HomeCoachmarkTourProps) => {
 	const maskId = useId();
 
 	const [step, setStep] = useState(0);
+	const [visibleSteps, setVisibleSteps] = useState<number[]>([]);
 	const [position, setPosition] = useState<CoachmarkPosition | null>(null);
 
 	useLayoutEffect(() => {
 		const shell = shellRef.current;
 		if (!shell) return;
 
+		if (visibleSteps.length === 0) {
+			const availableSteps = STEPS.flatMap(({ target }, index) => {
+				const element = shell.querySelector<HTMLElement>(`[data-coachmark="${target}"]`);
+				return element && element.getClientRects().length > 0 ? [index] : [];
+			});
+			if (availableSteps.length === 0) onComplete();
+			else {
+				setVisibleSteps(availableSteps);
+				setStep(availableSteps[0]);
+			}
+			return;
+		}
+
+		const skipCurrentStep = () => {
+			setPosition(null);
+			setVisibleSteps(visibleSteps.filter((index) => index !== step));
+			const nextStep = visibleSteps.find((index) => index > step);
+			if (nextStep === undefined) onComplete();
+			else setStep(nextStep);
+		};
+
 		const target = shell.querySelector<HTMLElement>(`[data-coachmark="${STEPS[step].target}"]`);
 		if (!target || target.getClientRects().length === 0) {
-			if (step === STEPS.length - 1) onComplete();
-			else setStep(step + 1);
+			skipCurrentStep();
 			return;
 		}
 
@@ -82,9 +103,7 @@ export const HomeCoachmarkTour = ({ onComplete }: HomeCoachmarkTourProps) => {
 		let previousGeometry = '';
 		const updatePosition = () => {
 			if (!target.isConnected || target.getClientRects().length === 0) {
-				setPosition(null);
-				if (step === STEPS.length - 1) onComplete();
-				else setStep(step + 1);
+				skipCurrentStep();
 				return;
 			}
 			const rect = target.getBoundingClientRect();
@@ -151,7 +170,7 @@ export const HomeCoachmarkTour = ({ onComplete }: HomeCoachmarkTourProps) => {
 
 		updatePosition();
 		return () => window.cancelAnimationFrame(frame);
-	}, [step, shellRef, onComplete]);
+	}, [step, visibleSteps, shellRef, onComplete]);
 
 	const isPositioned = position !== null;
 	useEffect(() => {
@@ -175,8 +194,9 @@ export const HomeCoachmarkTour = ({ onComplete }: HomeCoachmarkTourProps) => {
 	}, [isPositioned]);
 
 	const handleNext = () => {
-		if (step === STEPS.length - 1) onComplete();
-		else setStep(step + 1);
+		const nextStep = visibleSteps.find((index) => index > step);
+		if (nextStep === undefined) onComplete();
+		else setStep(nextStep);
 	};
 
 	return (
@@ -272,7 +292,7 @@ export const HomeCoachmarkTour = ({ onComplete }: HomeCoachmarkTourProps) => {
 					style={{ left: (position?.arrowLeft ?? 30) - 10 }}
 				/>
 				<p className="mb-2 text-body2 text-label-tertiary">
-					{step + 1}/{STEPS.length}
+					{visibleSteps.indexOf(step) + 1}/{visibleSteps.length}
 				</p>
 				<p className="mb-1 font-semibold text-body2">{STEPS[step].title}</p>
 				<p className="break-keep text-body2 text-label-subtle [overflow-wrap:break-word]">
@@ -280,7 +300,7 @@ export const HomeCoachmarkTour = ({ onComplete }: HomeCoachmarkTourProps) => {
 				</p>
 				<div className="mt-3 flex justify-end">
 					<Button size="sm" onClick={handleNext}>
-						{step === STEPS.length - 1 ? '시작하기' : '다음'}
+						{step === visibleSteps.at(-1) ? '시작하기' : '다음'}
 					</Button>
 				</div>
 			</div>
