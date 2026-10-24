@@ -344,7 +344,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 	}
 
 	return (
-		<SafeAreaAppLayout className="h-dvh bg-background-normal">
+		<SafeAreaAppLayout hasBottomSafeArea={false} className="h-dvh bg-background-normal">
 			<header className="relative flex h-12 shrink-0 items-center justify-center px-4 py-3">
 				<button
 					type="button"
@@ -522,7 +522,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 				)}
 			</main>
 
-			<footer className="shrink-0 bg-background-normal pb-safe-area">
+			<footer className="shrink-0 bg-background-normal">
 				{(step === 'satisfaction' || step === 'comment') && (
 					<div className="bg-background-subtle px-4 py-4">
 						<p className="font-medium text-body2 text-label-tertiary">
