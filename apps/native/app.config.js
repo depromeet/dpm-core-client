@@ -1,5 +1,6 @@
 const kakaoNativeAppKey = process.env.KAKAO_NATIVE_APP_KEY;
 const isProductionBuild = process.env.EAS_BUILD_PROFILE === 'production';
+const isAppLinksEnabled = ['preview', 'production'].includes(process.env.EAS_BUILD_PROFILE);
 
 if (!kakaoNativeAppKey && isProductionBuild) {
 	throw new Error('KAKAO_NATIVE_APP_KEY is required for production builds');
@@ -39,7 +40,7 @@ const config = {
 		edgeToEdgeEnabled: true,
 		predictiveBackGestureEnabled: false,
 		package: 'com.depromeet.core.app',
-		intentFilters: isProductionBuild
+		intentFilters: isAppLinksEnabled
 			? [
 					{
 						action: 'VIEW',
