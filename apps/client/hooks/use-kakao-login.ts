@@ -2,9 +2,11 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { auth, BASE_URL } from '@dpm-core/api';
 import { toast } from '@dpm-core/shared';
 
+import { memberAuthQueryKey } from '@/providers/auth-provider';
 import { useAppConfig } from '@/providers/app-config-provider';
 import { useBridgeStatus, useBridgeStore } from '@/providers/bridge-provider';
 
@@ -14,6 +16,7 @@ import { useBridgeStatus, useBridgeStore } from '@/providers/bridge-provider';
  */
 export const useKakaoLogin = () => {
 	const router = useRouter();
+	const queryClient = useQueryClient();
 	const { isApp } = useAppConfig();
 	const { isWebViewBridgeAvailable, isNativeMethodAvailable } = useBridgeStatus();
 	const kakaoLogin = useBridgeStore(({ kakaoLogin }) => kakaoLogin);
@@ -44,6 +47,8 @@ export const useKakaoLogin = () => {
 			}
 
 			await auth.kakaoLogin({ accessToken: result.accessToken });
+			// 로그인 전 reissue 실패가 AuthProvider 쿼리에 에러로 남아 있으면 이동 후에도 미로그인 상태로 보인다.
+			await queryClient.invalidateQueries({ queryKey: memberAuthQueryKey });
 			if (options?.onSuccess) options.onSuccess();
 			else router.replace('/');
 		} catch {
