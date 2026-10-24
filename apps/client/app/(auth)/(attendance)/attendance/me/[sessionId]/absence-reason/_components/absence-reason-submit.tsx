@@ -55,7 +55,13 @@ const AbsenceReasonSubmitContainer = ({ sessionId }: AbsenceReasonSubmitProps) =
 	return (
 		// 제출 버튼을 위한 하단 여백
 		<main className="pb-24">
-			<SessionInfoCard {...session} />
+			<SessionInfoCard
+				week={session.week}
+				name={session.name}
+				date={session.date}
+				place={session.place}
+				isOnline={session.isOnline}
+			/>
 			<Divider className="my-0.5 bg-line-normal" />
 			<AbsenceSubmitForm
 				key={sessionId}
@@ -68,7 +74,9 @@ const AbsenceReasonSubmitContainer = ({ sessionId }: AbsenceReasonSubmitProps) =
 	);
 };
 
-function SessionInfoCard({ week, name, date, place }: Session) {
+type SessionInfoCardProps = Pick<Session, 'week' | 'name' | 'date' | 'place' | 'isOnline'>;
+
+function SessionInfoCard({ week, name, date, place, isOnline }: SessionInfoCardProps) {
 	const rows = [
 		{ label: '세션명', value: name },
 		{ label: '세션 주차', value: `${week}주차` },
@@ -76,7 +84,7 @@ function SessionInfoCard({ week, name, date, place }: Session) {
 			label: '세션 날짜',
 			value: dayjs(date).locale('ko').format('YY.MM.DD (ddd) HH:mm'),
 		},
-		{ label: '세션 장소', value: place },
+		{ label: '세션 장소', value: isOnline ? '온라인' : place },
 	];
 
 	return (
@@ -183,7 +191,7 @@ function AbsenceSubmitForm({
 						onChange={(event) => setContents(event.target.value)}
 						variant="line"
 						required
-						placeholder="ex) 아파서 병원다녀옴"
+						placeholder="ex) 독감, 코딩테스트 등"
 						maxLength={MAX_CONTENTS_LENGTH}
 					/>
 				</div>
