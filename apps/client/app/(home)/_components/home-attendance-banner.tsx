@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { CircleIcon } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
@@ -29,11 +30,31 @@ export const HomeCheckAttendanceBanner = ({
 	isAttendanceOpen,
 }: HomeCheckAttendanceBannerProps) => {
 	const reduceMotion = useReducedMotion();
-	const { data } = useQuery({
+	const [showPreview, setShowPreview] = useState(false);
+
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		const isPreviewEnabled =
+			window.location.hostname === 'local-core.depromeet.com' &&
+			params.get('previewAttendanceCard') === 'true';
+		setShowPreview(isPreviewEnabled);
+	}, []);
+
+	const { data: attendanceResponse } = useQuery({
 		...getAttendanceMeBySessionIdOptions({ sessionId: attendanceSession.id }),
-		enabled: isAttendanceOpen,
+		enabled: isAttendanceOpen && !showPreview,
 	});
-	const visible = isAttendanceOpen && data;
+	const previewAttendance: MyAttendanceBySessionIdResponse = {
+		attendance: { status: 'PENDING', attendedAt: null },
+		session: {
+			week: attendanceSession.week,
+			eventName: attendanceSession.name,
+			date: attendanceSession.date,
+			place: attendanceSession.place,
+		},
+	};
+	const attendanceMeBySessionId = showPreview ? previewAttendance : attendanceResponse?.data;
+	const visible = (isAttendanceOpen || showPreview) && attendanceMeBySessionId;
 	const transition = { duration: reduceMotion ? 0 : 0.28, ease: 'easeOut' as const };
 
 	return (
@@ -55,13 +76,16 @@ export const HomeCheckAttendanceBanner = ({
 					>
 						<div
 							data-coachmark={
-								data.data.attendance.status === 'PENDING' ? 'attendance-check' : undefined
+								attendanceMeBySessionId.attendance.status === 'PENDING'
+									? 'attendance-check'
+									: undefined
 							}
 							className="rounded-[10px] bg-background-inverse p-5"
 						>
 							<HomeCheckAttendanceBannerContent
 								attendanceSession={attendanceSession}
-								attendanceMeBySessionId={data.data}
+								attendanceMeBySessionId={attendanceMeBySessionId}
+								isPreview={showPreview}
 							/>
 						</div>
 					</motion.div>
@@ -83,11 +107,13 @@ const completedAttendanceCopy = {
 interface HomeCheckAttendanceBannerContentProps {
 	attendanceSession: CurrentWeekSessionResponse;
 	attendanceMeBySessionId: MyAttendanceBySessionIdResponse;
+	isPreview?: boolean;
 }
 
 const HomeCheckAttendanceBannerContent = ({
 	attendanceSession,
 	attendanceMeBySessionId,
+	isPreview = false,
 }: HomeCheckAttendanceBannerContentProps) => {
 	const { status, attendedAt } = attendanceMeBySessionId.attendance;
 	const { absentStart } = attendanceSession;
@@ -116,18 +142,29 @@ const HomeCheckAttendanceBannerContent = ({
 					/>
 				</div>
 				<div className="flex flex-col items-center gap-3">
-					<AttendanceCheckBottomSheet sessionId={attendanceSession.id}>
-						<Button className="mt-5 w-full" variant="primary" size="lg">
+					{isPreview ? (
+						<Button disabled className="mt-5 w-full" variant="primary" size="lg">
 							출석체크하기
 							<ArrowRight />
 						</Button>
-					</AttendanceCheckBottomSheet>
-					<Link
-						href={`/attendance/me/${attendanceSession.id}/absence-reason`}
-						className="font-medium text-body2 text-label-assistive"
-					>
-						오늘 참석이 어렵다면 &gt;
-					</Link>
+					) : (
+						<AttendanceCheckBottomSheet sessionId={attendanceSession.id}>
+							<Button className="mt-5 w-full" variant="primary" size="lg">
+								출석체크하기
+								<ArrowRight />
+							</Button>
+						</AttendanceCheckBottomSheet>
+					)}
+					{isPreview ? (
+						<p className="font-medium text-body2 text-label-assistive">오늘 참석이 어렵다면 &gt;</p>
+					) : (
+						<Link
+							href={`/attendance/me/${attendanceSession.id}/absence-reason`}
+							className="font-medium text-body2 text-label-assistive"
+						>
+							오늘 참석이 어렵다면 &gt;
+						</Link>
+					)}
 				</div>
 			</>
 		);
