@@ -527,8 +527,6 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 					<div className="bg-background-subtle px-4 py-4">
 						<p className="font-medium text-body2 text-label-tertiary">
 							• 이름과 팀은 운영진 결과 화면에 표시되지 않아요.
-							<br />
-							&nbsp;&nbsp;&nbsp;제출 여부는 미응답 알림에만 활용돼요.
 						</p>
 					</div>
 				)}
