@@ -3,14 +3,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { CircleIcon } from 'lucide-react';
+import dayjs from 'dayjs';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type {
 	AttendanceStatus,
 	CurrentWeekSessionResponse,
 	MyAttendanceBySessionIdResponse,
 } from '@dpm-core/api';
-import { ArrowRight, Button } from '@dpm-core/shared';
+import { ArrowRight, Button, CheckIcon } from '@dpm-core/shared';
 
 import Iconttendance3D from '@/assets/icons/icon_attendance_3d.png';
 import { formatISOStringToFullDateString } from '@/lib/date';
@@ -29,11 +29,17 @@ export const HomeCheckAttendanceBanner = ({
 	isAttendanceOpen,
 }: HomeCheckAttendanceBannerProps) => {
 	const reduceMotion = useReducedMotion();
+	const now = dayjs();
+	const isVisible =
+		isAttendanceOpen ||
+		(dayjs(attendanceSession.absentStart).isValid() &&
+			now.isSame(dayjs(attendanceSession.date), 'day') &&
+			!now.isBefore(dayjs(attendanceSession.absentStart)));
 	const { data } = useQuery({
 		...getAttendanceMeBySessionIdOptions({ sessionId: attendanceSession.id }),
-		enabled: isAttendanceOpen,
+		enabled: isVisible,
 	});
-	const visible = isAttendanceOpen && data;
+	const visible = isVisible && data;
 	const transition = { duration: reduceMotion ? 0 : 0.28, ease: 'easeOut' as const };
 
 	return (
@@ -55,13 +61,16 @@ export const HomeCheckAttendanceBanner = ({
 					>
 						<div
 							data-coachmark={
-								data.data.attendance.status === 'PENDING' ? 'attendance-check' : undefined
+								isAttendanceOpen && data.data.attendance.status === 'PENDING'
+									? 'attendance-check'
+									: undefined
 							}
 							className="rounded-[10px] bg-background-inverse p-5"
 						>
 							<HomeCheckAttendanceBannerContent
 								attendanceSession={attendanceSession}
 								attendanceMeBySessionId={data.data}
+								isAttendanceOpen={isAttendanceOpen}
 							/>
 						</div>
 					</motion.div>
@@ -83,13 +92,16 @@ const completedAttendanceCopy = {
 interface HomeCheckAttendanceBannerContentProps {
 	attendanceSession: CurrentWeekSessionResponse;
 	attendanceMeBySessionId: MyAttendanceBySessionIdResponse;
+	isAttendanceOpen: boolean;
 }
 
 const HomeCheckAttendanceBannerContent = ({
 	attendanceSession,
 	attendanceMeBySessionId,
+	isAttendanceOpen,
 }: HomeCheckAttendanceBannerContentProps) => {
-	const { status, attendedAt } = attendanceMeBySessionId.attendance;
+	const { status: attendanceStatus, attendedAt } = attendanceMeBySessionId.attendance;
+	const status = !isAttendanceOpen && attendanceStatus === 'PENDING' ? 'ABSENT' : attendanceStatus;
 	const { absentStart } = attendanceSession;
 
 	// 출석체크 전
@@ -169,9 +181,8 @@ const HomeCheckAttendanceBannerContent = ({
 			</div>
 			{!isExcusedAbsent ? (
 				<Button disabled className="mt-5 w-full" variant="primary" size="lg">
-					<CircleIcon size={20} />
+					<CheckIcon size={16} />
 					{buttonLabel}
-					<ArrowRight />
 				</Button>
 			) : null}
 		</>

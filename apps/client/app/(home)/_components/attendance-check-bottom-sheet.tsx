@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { HTTPError } from 'ky';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
+import type { ApiErrorReponse } from '@dpm-core/api';
 import {
 	CircleAlert,
 	Drawer,
@@ -90,14 +91,16 @@ export const AttendanceCheckBottomSheet = ({
 				gaTrackAttendanceSubmit(sessionId.toString(), 'fail');
 
 				if (error instanceof HTTPError) {
-					const serverError = await error.response.json();
+					const serverError = (await error.response
+						.json()
+						.catch(() => null)) as Partial<ApiErrorReponse> | null;
 
-					if (serverError.code === 'SESSION-400-04') {
-						toast.error('이미 출석을 체크했습니다.');
-					} else if (serverError.code === 'SESSION-400-02') {
+					if (serverError?.code === 'SESSION-400-02') {
 						setIsValidationError(true);
 					} else {
-						toast.error('운영진에게 문의해 주세요.');
+						const message =
+							typeof serverError?.message === 'string' ? serverError.message.trim() : '';
+						toast.error(message || '운영진에게 문의해 주세요.');
 					}
 
 					return;
