@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { getFeedbackDaysRemaining } from '@/lib/session/feedback';
@@ -12,9 +13,26 @@ interface HomeFeedbackCardProps {
 
 export const HomeFeedbackCard = ({ isAttendanceOpen }: HomeFeedbackCardProps) => {
 	const { data } = useQuery(getMyPendingSessionFeedbackQuery());
-	const pendingFeedback = data?.data;
+	const [showPreview, setShowPreview] = useState(false);
 
-	if (!pendingFeedback || isAttendanceOpen) return null;
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		setShowPreview(
+			window.location.hostname === 'local-core.depromeet.com' &&
+			params.get('previewFeedbackCard') === 'true',
+		);
+	}, []);
+
+	const pendingFeedback = showPreview
+		? {
+				sessionId: 56,
+				week: 2,
+				sessionName: '디프만 코어 세션',
+				endAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+			}
+		: data?.data;
+
+	if (!pendingFeedback || (isAttendanceOpen && !showPreview)) return null;
 
 	const daysRemaining = getFeedbackDaysRemaining(pendingFeedback.endAt);
 	return (
@@ -31,7 +49,7 @@ export const HomeFeedbackCard = ({ isAttendanceOpen }: HomeFeedbackCardProps) =>
 				</p>
 			</div>
 			<Link
-				className="flex h-9 shrink-0 items-center justify-center rounded-lg bg-background-inverse font-semibold text-caption1 text-label-inverse"
+				className="flex h-10 shrink-0 items-center justify-center rounded-lg bg-background-inverse font-semibold text-caption1 text-label-inverse"
 				href={`/session/${pendingFeedback.sessionId}/feedback?returnTo=%2F`}
 			>
 				피드백 남기기 (D-{daysRemaining})
