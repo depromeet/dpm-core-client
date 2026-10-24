@@ -3,19 +3,22 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { CircleIcon } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type {
+	AbsenceReasonStatus,
 	AttendanceStatus,
 	CurrentWeekSessionResponse,
 	MyAttendanceBySessionIdResponse,
 } from '@dpm-core/api';
-import { ArrowRight, Button } from '@dpm-core/shared';
+import { ArrowRight, Button, CheckIcon } from '@dpm-core/shared';
 
 import Iconttendance3D from '@/assets/icons/icon_attendance_3d.png';
 import { formatISOStringToFullDateString } from '@/lib/date';
 import { formatSessionWeekString } from '@/lib/session/format';
-import { getAttendanceMeBySessionIdOptions } from '@/remotes/queries/attendance';
+import {
+	getAttendanceMeBySessionIdOptions,
+	getMyAbsenceReasonOptions,
+} from '@/remotes/queries/attendance';
 
 import { AttendanceCheckBottomSheet } from './attendance-check-bottom-sheet';
 
@@ -33,7 +36,15 @@ export const HomeCheckAttendanceBanner = ({
 		...getAttendanceMeBySessionIdOptions({ sessionId: attendanceSession.id }),
 		enabled: isAttendanceOpen,
 	});
-	const visible = isAttendanceOpen && data;
+	const absenceReasonQuery = useQuery({
+		...getMyAbsenceReasonOptions({ sessionId: attendanceSession.id }),
+		enabled: isAttendanceOpen,
+	});
+	const absenceReasonStatus = absenceReasonQuery.data?.data?.status;
+	const visible =
+		isAttendanceOpen &&
+		!absenceReasonQuery.isPending &&
+		(data || absenceReasonStatus === 'PENDING');
 	const transition = { duration: reduceMotion ? 0 : 0.28, ease: 'easeOut' as const };
 
 	return (
@@ -55,13 +66,16 @@ export const HomeCheckAttendanceBanner = ({
 					>
 						<div
 							data-coachmark={
-								data.data.attendance.status === 'PENDING' ? 'attendance-check' : undefined
+								data?.data.attendance.status === 'PENDING' && absenceReasonStatus !== 'PENDING'
+									? 'attendance-check'
+									: undefined
 							}
 							className="rounded-[10px] bg-background-inverse p-5"
 						>
 							<HomeCheckAttendanceBannerContent
 								attendanceSession={attendanceSession}
-								attendanceMeBySessionId={data.data}
+								attendanceMeBySessionId={data?.data}
+								absenceReasonStatus={absenceReasonStatus}
 							/>
 						</div>
 					</motion.div>
@@ -82,18 +96,22 @@ const completedAttendanceCopy = {
 
 interface HomeCheckAttendanceBannerContentProps {
 	attendanceSession: CurrentWeekSessionResponse;
-	attendanceMeBySessionId: MyAttendanceBySessionIdResponse;
+	attendanceMeBySessionId?: MyAttendanceBySessionIdResponse;
+	absenceReasonStatus?: AbsenceReasonStatus;
 }
 
 const HomeCheckAttendanceBannerContent = ({
 	attendanceSession,
 	attendanceMeBySessionId,
+	absenceReasonStatus,
 }: HomeCheckAttendanceBannerContentProps) => {
-	const { status, attendedAt } = attendanceMeBySessionId.attendance;
+	const status = attendanceMeBySessionId?.attendance.status ?? 'PENDING';
+	const attendedAt = attendanceMeBySessionId?.attendance.attendedAt ?? null;
+	const isReviewPending = absenceReasonStatus === 'PENDING';
 	const { absentStart } = attendanceSession;
 
 	// 출석체크 전
-	if (status === 'PENDING') {
+	if (status === 'PENDING' && !isReviewPending) {
 		return (
 			<>
 				<div className="flex justify-between">
@@ -134,9 +152,11 @@ const HomeCheckAttendanceBannerContent = ({
 	}
 
 	const isExcusedAbsent = status === 'EXCUSED_ABSENT';
-	const { title, buttonLabel } = isExcusedAbsent
-		? { title: '인정 결석', buttonLabel: null }
-		: completedAttendanceCopy[status];
+	const { title, buttonLabel } = isReviewPending
+		? { title: '인정 결석 대기', buttonLabel: null }
+		: isExcusedAbsent
+			? { title: '인정 결석', buttonLabel: null }
+			: completedAttendanceCopy[status === 'PENDING' ? 'ABSENT' : status];
 	const timeLabel = status === 'ABSENT' ? '출석 마감' : '출석 시간';
 	const time = status === 'ABSENT' ? absentStart : attendedAt;
 
@@ -148,9 +168,9 @@ const HomeCheckAttendanceBannerContent = ({
 						{formatSessionWeekString(attendanceSession.week)} 출석
 					</p>
 					<p className="font-bold text-headline2 text-white">{title}</p>
-					{isExcusedAbsent ? (
+					{isReviewPending || isExcusedAbsent ? (
 						<p className="mt-1 font-semibold text-caption1 text-label-assistive">
-							결석 사유서를 제출했어요.
+							{isReviewPending ? '결석 사유서를 검토하고 있어요.' : '결석 사유서를 제출했어요.'}
 						</p>
 					) : (
 						<p className="mt-1 font-semibold text-caption1 text-label-assistive">
@@ -167,11 +187,10 @@ const HomeCheckAttendanceBannerContent = ({
 					className="mt-2.5"
 				/>
 			</div>
-			{!isExcusedAbsent ? (
+			{!isReviewPending && !isExcusedAbsent ? (
 				<Button disabled className="mt-5 w-full" variant="primary" size="lg">
-					<CircleIcon size={20} />
+					<CheckIcon size={16} />
 					{buttonLabel}
-					<ArrowRight />
 				</Button>
 			) : null}
 		</>

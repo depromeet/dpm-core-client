@@ -8,7 +8,10 @@ import { useAppShell } from '@dpm-core/shared';
 import { showAttendanceBanner } from '@/lib/attendance/banner';
 import { useAuth } from '@/providers/auth-provider';
 import { getAnnouncementListQuery } from '@/remotes/queries/announcement';
-import { getAttendanceMeBySessionIdOptions } from '@/remotes/queries/attendance';
+import {
+	getAttendanceMeBySessionIdOptions,
+	getMyAbsenceReasonOptions,
+} from '@/remotes/queries/attendance';
 import { getMyProfileQuery } from '@/remotes/queries/member';
 import { getSessionCurrentOptions } from '@/remotes/queries/session';
 import { getMyPendingSessionFeedbackQuery } from '@/remotes/queries/session-feedback';
@@ -36,7 +39,8 @@ const HomeCoachmarkSession = ({ member }: HomeCoachmarkSessionProps) => {
 	const bannerFetchingCount = useIsFetching({
 		predicate: ({ queryKey }) =>
 			queryKey[0] === getAnnouncementListQuery.queryKey[0] ||
-			queryKey[0] === getMyPendingSessionFeedbackQuery().queryKey[0],
+			queryKey[0] === getMyPendingSessionFeedbackQuery().queryKey[0] ||
+			(queryKey[0] === 'ATTENDANCE' && queryKey[1] === 'absence-reason'),
 	});
 	const current = session.data?.data;
 	const attendanceFetchingCount = useIsFetching(
@@ -79,8 +83,13 @@ const HomeCoachmarkSession = ({ member }: HomeCoachmarkSessionProps) => {
 					const attendance = queryClient.getQueryState(attendanceQueryKey);
 					if (!attendance || attendance.status === 'pending') return;
 					const attendanceData = queryClient.getQueryData(attendanceQueryKey);
+					const absenceReasonKey = getMyAbsenceReasonOptions({ sessionId: id }).queryKey;
+					const absenceReason = queryClient.getQueryState(absenceReasonKey);
+					if (!absenceReason || absenceReason.status === 'pending') return;
+					const absenceReasonData = queryClient.getQueryData(absenceReasonKey);
 					if (
 						attendanceData?.data.attendance.status === 'PENDING' &&
+						absenceReasonData?.data?.status !== 'PENDING' &&
 						!shell.querySelector('[data-coachmark="attendance-check"]')
 					)
 						return;
