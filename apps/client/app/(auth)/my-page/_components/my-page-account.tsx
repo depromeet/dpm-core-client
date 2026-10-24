@@ -175,20 +175,20 @@ const AccountRow = ({
 
 	return (
 		<div className={cn('flex items-center justify-between gap-2', children != null && 'h-9')}>
-			<p className="flex gap-2 font-medium text-body2 text-label-subtle">
+			<p className="flex min-w-0 flex-1 gap-2 font-medium text-body2 text-label-subtle">
 				{socialIcon != null ? (
 					<span
 						className={cn(
-							'inline-grid aspect-square w-5 place-items-center rounded-full',
+							'inline-grid aspect-square w-5 shrink-0 place-items-center rounded-full',
 							socialIcon.background,
 						)}
 					>
 						{socialIcon.icon}
 					</span>
 				) : null}
-				{label}
+				<span className="min-w-0 truncate">{label}</span>
 			</p>
-			{children}
+			{children != null && <div className="shrink-0">{children}</div>}
 		</div>
 	);
 };
