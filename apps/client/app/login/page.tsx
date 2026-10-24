@@ -5,11 +5,11 @@ import bgEllipse from '@/assets/images/login-bg-ellipse.svg';
 import bgGraphic from '@/assets/images/login-bg-graphic.svg';
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { AppleLoginButton } from '@/components/apple-login-button';
+import { DpmLogoEmailLoginTrigger } from '@/components/dpm-logo-email-login-trigger';
 import { LoginButton } from '@/components/login-button';
 import { LoginErrorToast } from '@/components/login-error-toast';
 import { LoginReturnTo } from '@/components/login-return-to';
 import { RecentLoginBadge } from '@/components/recent-login-badge';
-import { ReviewLoginLogo } from '@/components/review-login-logo';
 
 const LoginPage = async ({
 	searchParams,
@@ -43,7 +43,7 @@ const LoginPage = async ({
 					/>
 				</div>
 				<div className="relative flex flex-col gap-y-4.5 px-4 pt-20">
-					<ReviewLoginLogo />
+					<DpmLogoEmailLoginTrigger />
 					<p className="font-normal text-body1 text-label-strong">
 						출석부터 공지 확인까지,
 						<br />
