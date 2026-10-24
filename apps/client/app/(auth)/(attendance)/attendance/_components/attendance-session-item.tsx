@@ -38,6 +38,7 @@ export const SessionItem = (props: SessionItemProps) => {
 					</div>
 					<AttendanceStatusLabel
 						status={attendanceStatus}
+						absenceReasonStatus={absenceReason?.status}
 						className="shrink-0 gap-0.5 text-label-subtle"
 					/>
 				</div>

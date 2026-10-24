@@ -17,7 +17,15 @@ import {
 	getMyAbsenceReasonOptions,
 } from '@/remotes/queries/attendance';
 
-function SessionInfoCard({ session }: { session: MyAttendanceBySessionIdResponse['session'] }) {
+interface SessionInfoCardProps {
+	session: MyAttendanceBySessionIdResponse['session'];
+}
+
+interface AttendanceSessionDetailProps {
+	sessionId: number;
+}
+
+function SessionInfoCard({ session }: SessionInfoCardProps) {
 	const rows = [
 		{ label: '세션 주차', value: `${session.week}주차` },
 		{ label: '세션명', value: session.eventName },
@@ -40,7 +48,7 @@ function SessionInfoCard({ session }: { session: MyAttendanceBySessionIdResponse
 	);
 }
 
-const AttendanceSessionDetailContainer = ({ sessionId }: { sessionId: number }) => {
+const AttendanceSessionDetailContainer = ({ sessionId }: AttendanceSessionDetailProps) => {
 	const [{ data: attendanceData }, { data: absenceReasonData }] = useSuspenseQueries({
 		queries: [
 			getAttendanceMeBySessionIdOptions({ sessionId }),
@@ -63,7 +71,10 @@ const AttendanceSessionDetailContainer = ({ sessionId }: { sessionId: number }) 
 					<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-3 font-semibold text-body2">
 						<div className="flex gap-4">
 							<p className="w-17.5 text-label-assistive">출석 상태</p>
-							<AttendanceStatusLabel status={attendance.status} />
+							<AttendanceStatusLabel
+								status={attendance.status}
+								absenceReasonStatus={absenceReasonData.data?.status}
+							/>
 						</div>
 						<div className="flex gap-4">
 							<p className="w-17.5 text-label-assistive">출석 시간</p>
@@ -95,7 +106,7 @@ const AttendanceSessionDetailContainer = ({ sessionId }: { sessionId: number }) 
 	);
 };
 
-export const AttendanceSessionDetail = ({ sessionId }: { sessionId: number }) => (
+export const AttendanceSessionDetail = ({ sessionId }: AttendanceSessionDetailProps) => (
 	<ErrorBoundary fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}>
 		<Suspense fallback={<LoadingBox />}>
 			<AttendanceSessionDetailContainer sessionId={sessionId} />

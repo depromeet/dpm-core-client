@@ -1,13 +1,17 @@
-import type { AttendanceStatus } from '@dpm-core/api';
+import type { AbsenceReasonStatus, AttendanceStatus } from '@dpm-core/api';
 import { ATTENDANCE_STATUS_MAP, cn } from '@dpm-core/shared';
 
 interface AttendanceLabelProps extends React.ComponentProps<'span'> {
 	status: AttendanceStatus;
+	absenceReasonStatus?: AbsenceReasonStatus;
 }
 
-const AttendanceStatusLabel = ({ status, ...props }: AttendanceLabelProps) => {
+const AttendanceStatusLabel = ({ status, absenceReasonStatus, ...props }: AttendanceLabelProps) => {
 	const { className, ...restProps } = props;
-	const { icon, label } = ATTENDANCE_STATUS_MAP[status];
+	const { icon, label } =
+		absenceReasonStatus === 'PENDING'
+			? { ...ATTENDANCE_STATUS_MAP.PENDING, label: '검토 대기' }
+			: ATTENDANCE_STATUS_MAP[status];
 
 	return (
 		<span

@@ -3,9 +3,9 @@
 import { type PropsWithChildren, Suspense } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
-import { HTTPError } from 'ky';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
+import { HTTPError } from 'ky';
 import { attendance as attendanceApi } from '@dpm-core/api';
 import { GAPageTracker } from '@dpm-core/shared';
 
@@ -13,6 +13,7 @@ import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringHHMM, formatISOStringToFullDateString } from '@/lib/date';
+import { getMyAbsenceReasonOptions } from '@/remotes/queries/attendance';
 import { getSessionDetailQuery } from '@/remotes/queries/session';
 
 interface SessionDetailInfoProps {
@@ -31,7 +32,10 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 				return await attendanceApi.getMeBySessionId({ sessionId });
 			} catch (error) {
 				if (error instanceof HTTPError && error.response.status === 404) {
-					const body = (await error.response.clone().json().catch(() => null)) as {
+					const body = (await error.response
+						.clone()
+						.json()
+						.catch(() => null)) as {
 						code?: string;
 					} | null;
 					if (body?.code === 'ATTENDANCE-404-01') return null;
@@ -42,6 +46,8 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 		},
 	});
 	const attendance = attendanceQuery.data?.data.attendance;
+	const absenceReasonQuery = useQuery(getMyAbsenceReasonOptions({ sessionId }));
+	const absenceReasonStatus = absenceReasonQuery.data?.data?.status;
 
 	return (
 		<div className="scrollbar-hide flex flex-1 flex-col gap-y-5 overflow-auto px-4 pb-5">
@@ -88,7 +94,9 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 						<button
 							type="button"
 							className="cursor-pointer font-medium text-caption1 text-primary-normal"
-							onClick={() => void attendanceQuery.refetch()}
+							onClick={async () => {
+								await attendanceQuery.refetch();
+							}}
 						>
 							다시 시도
 						</button>
@@ -96,8 +104,11 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 				}
 			>
 				<p className="font-semibold text-body2 text-label-assistive">출석 상태</p>
-				{attendance ? (
-					<AttendanceStatusLabel status={attendance.status} />
+				{attendance || absenceReasonStatus === 'PENDING' ? (
+					<AttendanceStatusLabel
+						status={attendance?.status ?? 'PENDING'}
+						absenceReasonStatus={absenceReasonStatus}
+					/>
 				) : (
 					<p className="font-medium text-body2 text-label-subtle">
 						{attendanceQuery.isPending
