@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { getFeedbackDaysRemaining } from '@/lib/session/feedback';
@@ -13,26 +12,9 @@ interface HomeFeedbackCardProps {
 
 export const HomeFeedbackCard = ({ isAttendanceOpen }: HomeFeedbackCardProps) => {
 	const { data } = useQuery(getMyPendingSessionFeedbackQuery());
-	const [showPreview, setShowPreview] = useState(false);
+	const pendingFeedback = data?.data;
 
-	useEffect(() => {
-		const params = new URLSearchParams(window.location.search);
-		setShowPreview(
-			window.location.hostname === 'local-core.depromeet.com' &&
-			params.get('previewFeedbackCard') === 'true',
-		);
-	}, []);
-
-	const pendingFeedback = showPreview
-		? {
-				sessionId: 56,
-				week: 2,
-				sessionName: '디프만 코어 세션',
-				endAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-			}
-		: data?.data;
-
-	if (!pendingFeedback || (isAttendanceOpen && !showPreview)) return null;
+	if (!pendingFeedback || isAttendanceOpen) return null;
 
 	const daysRemaining = getFeedbackDaysRemaining(pendingFeedback.endAt);
 	return (
