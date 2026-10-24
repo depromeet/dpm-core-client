@@ -89,8 +89,10 @@ const HomeBannerListContainer = () => {
 				attendanceSession={currentWeekSession}
 				isAttendanceOpen={isAttendanceOpen}
 			/>
-			<SessionCard session={currentWeekSession} isAttendanceOpen={isAttendanceOpen} />
-			<HomeFeedbackCard isAttendanceOpen={isAttendanceOpen} />
+			<div className="flex flex-col gap-4">
+				<HomeFeedbackCard isAttendanceOpen={isAttendanceOpen} />
+				<SessionCard session={currentWeekSession} isAttendanceOpen={isAttendanceOpen} />
+			</div>
 		</section>
 	);
 };

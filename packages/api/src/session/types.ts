@@ -16,7 +16,8 @@ export type SessionFeedbackMyStatus =
 	| 'BEFORE_START'
 	| 'SUBMITTED'
 	| 'EXPIRED'
-	| 'NOT_TARGET';
+	| 'NOT_TARGET'
+	| 'ATTENDANCE_INCOMPLETE';
 
 export interface SessionFeedbackMeResponse {
 	sessionName: string;
