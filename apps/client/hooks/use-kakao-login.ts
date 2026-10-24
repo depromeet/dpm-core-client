@@ -6,6 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { auth, BASE_URL } from '@dpm-core/api';
 import { toast } from '@dpm-core/shared';
 
+import { setLastLoginMethod } from '@/lib/last-login';
 import { memberAuthQueryKey } from '@/providers/auth-provider';
 import { useAppConfig } from '@/providers/app-config-provider';
 import { useBridgeStatus, useBridgeStore } from '@/providers/bridge-provider';
@@ -47,6 +48,7 @@ export const useKakaoLogin = () => {
 			}
 
 			await auth.kakaoLogin({ accessToken: result.accessToken });
+			setLastLoginMethod('KAKAO');
 			// 로그인 전 reissue 실패가 AuthProvider 쿼리에 에러로 남아 있으면 이동 후에도 미로그인 상태로 보인다.
 			await queryClient.invalidateQueries({ queryKey: memberAuthQueryKey });
 			if (options?.onSuccess) options.onSuccess();

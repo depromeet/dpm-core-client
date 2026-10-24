@@ -7,6 +7,7 @@ import { auth, type Member } from '@dpm-core/api';
 import { createContext } from '@dpm-core/shared';
 import { UnauthenticatedLayout } from '@/components/unauthenticated-layout';
 import { usePushNotification } from '@/hooks/use-push-notification';
+import { setLastLoginMethod } from '@/lib/last-login';
 import { consumeLoginReturnTo, getSafeFeedbackReturnTo } from '@/lib/login-return-to';
 import { getMyMemberInfoQuery, getMyProfileQuery } from '@/remotes/queries/member';
 
@@ -80,6 +81,8 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		if (memberInfo) {
 			setIsAuthenticated(true);
 			setUser(memberInfo);
+			// 홈에 도달하지 못하는 승인 대기·반려 회원도 로그인 화면의 '최근 로그인' 배지가 갱신되도록 여기서 기록한다.
+			if (memberInfo.loginMethod) setLastLoginMethod(memberInfo.loginMethod);
 
 			if (!pushRegistered.current) {
 				pushRegistered.current = true;
