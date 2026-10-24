@@ -7,7 +7,7 @@ import { useClarity } from '@/providers/client-clarity-adapter';
 
 const USER_VOC_LINK = 'https://forms.gle/yV88T98WsADu6VNc6';
 const USER_GUIDE_LINK =
-	'https://www.notion.so/depromeet/31745b4338b380e2b8e8f64767fb27f1?source=copy_link';
+	'https://depromeet.notion.site/CORE-40345b4338b380f1997ced13f540cb6b?source=copy_link';
 
 export const UserActionList = () => {
 	const { track } = useClarity();
