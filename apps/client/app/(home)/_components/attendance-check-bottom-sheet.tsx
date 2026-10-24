@@ -25,6 +25,7 @@ import {
 } from '@dpm-core/shared';
 
 import { Pressable } from '@/components/motion';
+import { useAppConfig } from '@/providers/app-config-provider';
 import { checkAttendanceOptions } from '@/remotes/mutations/attendance';
 import {
 	getAttendanceMeBySessionIdOptions,
@@ -49,6 +50,7 @@ export const AttendanceCheckBottomSheet = ({
 	children,
 	sessionId,
 }: PropsWithChildren<AttendanceCheckBottomSheetProps>) => {
+	const { isApp } = useAppConfig();
 	const [isOpen, setIsOpen] = useState(false);
 	const [isValidationError, setIsValidationError] = useState(false);
 
@@ -132,7 +134,7 @@ export const AttendanceCheckBottomSheet = ({
 	};
 
 	return (
-		<Drawer open={isOpen} onOpenChange={handleOpenChange}>
+		<Drawer open={isOpen} onOpenChange={handleOpenChange} repositionInputs={!isApp}>
 			<DrawerTrigger asChild>{children}</DrawerTrigger>
 			<DrawerContent className="mx-auto max-w-lg pb-safe-area">
 				<Form {...form}>
