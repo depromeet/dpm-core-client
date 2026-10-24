@@ -2,21 +2,30 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { OptionPickerModal, type SegmentedOption, type SubjectChip } from '@dpm-core/shared';
+import { OptionPickerModal, type SegmentedOption } from '@dpm-core/shared';
 
 import { getCurrentCohortTeamsQuery } from '@/remotes/queries/cohort';
 
 import {
 	ACTIVITY_STATUS_LABEL,
-	ACTIVITY_STATUS_ORDER,
+	ACTIVITY_STATUS_EDIT_ORDER,
 	MEMBER_TYPE_LABEL,
 	MEMBER_TYPE_ORDER,
-	PART_LABEL,
-	PART_ORDER,
+	PART_ICON,
 	UNASSIGNED_TEAM_NUMBER,
 } from '../_constants';
 import { toRealTeamNumbers } from '../_lib/team-options';
-import type { MemberEditableField, MemberEditableFields } from '../_types';
+import type { MemberEditableField, MemberEditableFields, MemberRow } from '../_types';
+
+/** 파트 수정 모달은 Figma 기준으로 영문 라벨과 이 순서로 노출한다. (표·필터의 한글 라벨과 다르다.) */
+const PART_PICKER_OPTIONS: SegmentedOption[] = [
+	{ value: 'UNASSIGNED', label: '미배정' },
+	{ value: 'DESIGN', label: 'DESIGN' },
+	{ value: 'WEB', label: 'WEB' },
+	{ value: 'SERVER', label: 'SERVER' },
+	{ value: 'IOS', label: 'IOS' },
+	{ value: 'ANDROID', label: 'ANDROID' },
+];
 
 const FIELD_TITLE: Record<MemberEditableField, string> = {
 	part: '파트 수정',
@@ -27,7 +36,7 @@ const FIELD_TITLE: Record<MemberEditableField, string> = {
 
 interface MemberBulkEditModalProps {
 	field: MemberEditableField | null;
-	subjects: SubjectChip[];
+	subjects: MemberRow[];
 	/** 선택한 멤버들의 현재 공통값. 섞여 있으면 null */
 	currentValue: string | number | null;
 	onClose: () => void;
@@ -62,17 +71,27 @@ export const MemberBulkEditModal = ({
 	const options = useMemo<SegmentedOption[]>(() => {
 		switch (displayField) {
 			case 'part':
-				return PART_ORDER.map((part) => ({ value: part, label: PART_LABEL[part] }));
+				return PART_PICKER_OPTIONS;
 			case 'memberType':
 				return MEMBER_TYPE_ORDER.map((type) => ({ value: type, label: MEMBER_TYPE_LABEL[type] }));
-			case 'activityStatus':
-				return ACTIVITY_STATUS_ORDER.map((status) => ({
-					value: status,
-					label: ACTIVITY_STATUS_LABEL[status],
-					// 수료 위험은 서버가 계산하는 값이라 일괄로 바꿀 수 없다.
-					disabled: status === 'AT_RISK',
-					disabledReason: status === 'AT_RISK' ? '출석 데이터로 자동 계산돼요' : undefined,
-				}));
+			case 'activityStatus': {
+				// 선택한 대상 중 이미 활동 정지된 멤버가 있으면, 이번 기수에서 되돌릴 수 없으므로
+				// "활동 중"으로 일괄 변경하는 선택지 자체를 막는다.
+				const hasInactiveSubject = subjects.some(
+					(subject) => subject.activityStatus === 'INACTIVE',
+				);
+				return ACTIVITY_STATUS_EDIT_ORDER.map((status) => {
+					if (status === 'NORMAL' && hasInactiveSubject) {
+						return {
+							value: status,
+							label: ACTIVITY_STATUS_LABEL[status],
+							disabled: true,
+							disabledReason: '이미 활동 정지된 계정이 포함돼 있어요',
+						};
+					}
+					return { value: status, label: ACTIVITY_STATUS_LABEL[status] };
+				});
+			}
 			case 'teamNumber':
 				return [
 					{ value: String(UNASSIGNED_TEAM_NUMBER), label: '미배정' },
@@ -84,12 +103,20 @@ export const MemberBulkEditModal = ({
 			default:
 				return [];
 		}
-	}, [displayField, teams]);
+	}, [displayField, teams, subjects]);
 
 	if (!displayField) return null;
 
 	const handleConfirm = () => {
 		if (!value || !field) return;
+
+		// 공통값에서 아무것도 바꾸지 않고 확인을 눌렀다면 변경된 것으로 표시하지 않는다.
+		const isUnchanged = currentValue !== null && String(currentValue) === value;
+		if (isUnchanged) {
+			onClose();
+			return;
+		}
+
 		if (field === 'teamNumber') onConfirm('teamNumber', Number(value));
 		else onConfirm(field, value as never);
 	};
@@ -107,7 +134,11 @@ export const MemberBulkEditModal = ({
 					변경합니다.
 				</>
 			}
-			subjects={subjects}
+			subjects={subjects.map(({ id, name, part }) => ({
+				id,
+				name,
+				imageSrc: PART_ICON[part].src,
+			}))}
 			options={options}
 			value={value}
 			onChange={setValue}

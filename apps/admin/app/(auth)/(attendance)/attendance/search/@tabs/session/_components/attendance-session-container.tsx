@@ -8,13 +8,11 @@ import {
 	useSuspenseQueries,
 	useSuspenseQuery,
 } from '@tanstack/react-query';
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { AnimatePresence } from 'motion/react';
 import type { SessionWeek } from '@dpm-core/api';
 import {
 	Button,
-	ChevronDown,
-	ChevronLeft,
-	ChevronRight,
 	cn,
 	DropdownMenu,
 	DropdownMenuContent,
@@ -109,7 +107,7 @@ function SessionRoster({ session, sessions }: SessionRosterProps) {
 											<span className="truncate">
 												{session.week}주차 | {session.eventName}
 											</span>
-											<ChevronDown className="size-5 shrink-0 text-label-assistive" />
+											<ChevronDown size={24} className="shrink-0 text-label-assistive" />
 										</Button>
 									</DropdownMenuTrigger>
 									<DropdownMenuContent
@@ -149,7 +147,7 @@ function SessionRoster({ session, sessions }: SessionRosterProps) {
 									disabled={sessionIndex === 0}
 									onClick={() => selectSession(String(sessions[sessionIndex - 1].id))}
 								>
-									<ChevronLeft className="size-5" />
+									<ChevronLeft size={24} className="text-label-assistive" />
 								</Button>
 								<Button
 									variant="text"
@@ -158,7 +156,7 @@ function SessionRoster({ session, sessions }: SessionRosterProps) {
 									disabled={sessionIndex === sessions.length - 1}
 									onClick={() => selectSession(String(sessions[sessionIndex + 1].id))}
 								>
-									<ChevronRight className="size-5" />
+									<ChevronRight size={24} className="text-label-subtle" />
 								</Button>
 							</div>
 						</div>

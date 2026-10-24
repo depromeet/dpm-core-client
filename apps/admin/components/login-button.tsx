@@ -1,7 +1,7 @@
 'use client';
 
 import { type ComponentPropsWithoutRef, forwardRef } from 'react';
-import { BASE_URL } from '@dpm-core/api';
+import { BASE_URL, clearAuthCookies } from '@dpm-core/api';
 import { type Button, KakaoLogo } from '@dpm-core/shared';
 
 import { Pressable } from './motion';
@@ -19,7 +19,12 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 		loginUrl.pathname = '/login/kakao';
 		return (
 			<Pressable ref={ref} variant={variant} size={size} className={className} asChild>
-				<a href={loginUrl.toString()} className="flex items-center gap-2 font-medium text-sm">
+				<a
+					href={loginUrl.toString()}
+					// 이전 로그인(다른 계정)의 토큰 쿠키가 남아 있으면 새 로그인 대신 그 계정으로 인증될 수 있다.
+					onClick={clearAuthCookies}
+					className="flex items-center gap-2 font-medium text-sm"
+				>
 					<KakaoLogo />
 					<p className="flex-1 text-[#000000] opacity-85">카카오로 시작하기</p>
 				</a>

@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type {
 	AbsenceReasonStatus,
@@ -32,17 +33,23 @@ export const HomeCheckAttendanceBanner = ({
 	isAttendanceOpen,
 }: HomeCheckAttendanceBannerProps) => {
 	const reduceMotion = useReducedMotion();
+	const now = dayjs();
+	const isVisible =
+		isAttendanceOpen ||
+		(dayjs(attendanceSession.absentStart).isValid() &&
+			now.isSame(dayjs(attendanceSession.date), 'day') &&
+			!now.isBefore(dayjs(attendanceSession.absentStart)));
 	const { data } = useQuery({
 		...getAttendanceMeBySessionIdOptions({ sessionId: attendanceSession.id }),
-		enabled: isAttendanceOpen,
+		enabled: isVisible,
 	});
 	const absenceReasonQuery = useQuery({
 		...getMyAbsenceReasonOptions({ sessionId: attendanceSession.id }),
-		enabled: isAttendanceOpen,
+		enabled: isVisible,
 	});
 	const absenceReasonStatus = absenceReasonQuery.data?.data?.status;
 	const visible =
-		isAttendanceOpen &&
+		isVisible &&
 		!absenceReasonQuery.isPending &&
 		(data || absenceReasonStatus === 'PENDING');
 	const transition = { duration: reduceMotion ? 0 : 0.28, ease: 'easeOut' as const };
@@ -66,7 +73,9 @@ export const HomeCheckAttendanceBanner = ({
 					>
 						<div
 							data-coachmark={
-								data?.data.attendance.status === 'PENDING' && absenceReasonStatus !== 'PENDING'
+								isAttendanceOpen &&
+								data?.data.attendance.status === 'PENDING' &&
+								absenceReasonStatus !== 'PENDING'
 									? 'attendance-check'
 									: undefined
 							}
@@ -76,6 +85,7 @@ export const HomeCheckAttendanceBanner = ({
 								attendanceSession={attendanceSession}
 								attendanceMeBySessionId={data?.data}
 								absenceReasonStatus={absenceReasonStatus}
+								isAttendanceOpen={isAttendanceOpen}
 							/>
 						</div>
 					</motion.div>
@@ -98,14 +108,17 @@ interface HomeCheckAttendanceBannerContentProps {
 	attendanceSession: CurrentWeekSessionResponse;
 	attendanceMeBySessionId?: MyAttendanceBySessionIdResponse;
 	absenceReasonStatus?: AbsenceReasonStatus;
+	isAttendanceOpen: boolean;
 }
 
 const HomeCheckAttendanceBannerContent = ({
 	attendanceSession,
 	attendanceMeBySessionId,
 	absenceReasonStatus,
+	isAttendanceOpen,
 }: HomeCheckAttendanceBannerContentProps) => {
-	const status = attendanceMeBySessionId?.attendance.status ?? 'PENDING';
+	const attendanceStatus = attendanceMeBySessionId?.attendance.status ?? 'PENDING';
+	const status = !isAttendanceOpen && attendanceStatus === 'PENDING' ? 'ABSENT' : attendanceStatus;
 	const attendedAt = attendanceMeBySessionId?.attendance.attendedAt ?? null;
 	const isReviewPending = absenceReasonStatus === 'PENDING';
 	const { absentStart } = attendanceSession;

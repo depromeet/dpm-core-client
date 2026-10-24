@@ -8,12 +8,15 @@ import { cn } from '../utils/cn';
 export interface FilterDropdownProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	label: string;
 	isSelected?: boolean;
+	/** 화살표 아이콘 크기·색 등을 화면별로 덮어쓸 때 사용한다. */
+	iconClassName?: string;
 }
 
 export const FilterDropdown = ({
 	className,
 	label,
 	isSelected = false,
+	iconClassName,
 	...props
 }: FilterDropdownProps) => {
 	return (
@@ -33,6 +36,7 @@ export const FilterDropdown = ({
 				className={cn(
 					'size-4 transition-colors',
 					isSelected ? 'text-primary-normal' : 'text-label-assistive',
+					iconClassName,
 				)}
 			/>
 		</button>

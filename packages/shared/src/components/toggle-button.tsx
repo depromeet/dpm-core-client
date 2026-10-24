@@ -8,9 +8,11 @@ import { TableCheckbox } from './ui/table-checkbox';
 
 export interface ToggleButtonProps extends React.ComponentProps<typeof CheckboxPrimitive.Root> {
 	label: string;
+	/** 라벨 글꼴을 화면별로 덮어쓸 때 사용한다. */
+	labelClassName?: string;
 }
 
-export const ToggleButton = ({ className, label, id, ...props }: ToggleButtonProps) => {
+export const ToggleButton = ({ className, label, labelClassName, id, ...props }: ToggleButtonProps) => {
 	return (
 		<label
 			htmlFor={id}
@@ -21,7 +23,7 @@ export const ToggleButton = ({ className, label, id, ...props }: ToggleButtonPro
 			)}
 		>
 			<TableCheckbox id={id} {...props} />
-			<span className="font-semibold text-body3">{label}</span>
+			<span className={cn('font-semibold text-body3', labelClassName)}>{label}</span>
 		</label>
 	);
 };

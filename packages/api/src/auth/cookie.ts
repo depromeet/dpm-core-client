@@ -60,3 +60,24 @@ export const setAuthCookies = ({
 		expires: getJwtExpiry(refreshToken),
 	});
 };
+
+// 로그아웃/탈퇴 시점을 세대(epoch)로 기록해둔다. reissue/refresh처럼 백그라운드에서 이미 진행 중이던
+// 요청이 로그아웃 이후에 뒤늦게 성공해 죽은 토큰을 되살리는(cookie를 다시 채우는) 것을 막기 위함이다.
+let authEpoch = 0;
+
+export const getAuthEpoch = () => authEpoch;
+
+export const clearAuthCookies = () => {
+	authEpoch += 1;
+
+	Cookies.remove(COOKIE_KEYS.ACCESS_TOKEN);
+	Cookies.remove(COOKIE_KEYS.REFRESH_TOKEN);
+
+	if (typeof window === 'undefined') {
+		return;
+	}
+
+	const sharedCookieOptions = getSharedAuthCookieOptions(window.location.hostname);
+	Cookies.remove(COOKIE_KEYS.ACCESS_TOKEN, sharedCookieOptions);
+	Cookies.remove(COOKIE_KEYS.REFRESH_TOKEN, sharedCookieOptions);
+};

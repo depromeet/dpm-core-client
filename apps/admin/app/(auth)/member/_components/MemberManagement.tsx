@@ -35,7 +35,7 @@ import {
 	toTeamId,
 	toUpdatableStatus,
 } from '../_lib/build-member-changes';
-import { type ApprovalPlan, planApproval } from '../_lib/duplicate-pairs';
+import { type ApprovalPlan, findDuplicatePartners, planApproval } from '../_lib/duplicate-pairs';
 import type { MemberEditableField, MemberEditableFields, MemberRow } from '../_types';
 import { ApprovedMemberTable } from './ApprovedMemberTable';
 import { MemberApprovalTabs } from './MemberApprovalTabs';
@@ -53,6 +53,7 @@ type DialogState =
 	| { type: 'reject'; targets: MemberRow[] }
 	| { type: 'delete'; targets: MemberRow[] }
 	| { type: 'merge-required'; hasOversizedGroup: boolean }
+	| { type: 'inactive-confirm'; targets: MemberRow[]; onConfirm: () => void }
 	| null;
 
 /** 멤버 관리 화면의 조립 지점. 훅에서 받은 상태를 각 UI 조각에 나눠준다. */
@@ -195,6 +196,27 @@ export const MemberManagement = () => {
 		setDialog({ type: 'approve', targets, plan });
 	};
 
+	/**
+	 * 행 안의 승인 버튼. 그 행만 처리하면 중복 의심 계정은 짝이 빠져 항상 "병합 필요" 안내만 뜨므로
+	 * - 체크한 계정이 여럿이고 이 행도 그중 하나면 체크한 계정 전체를 함께 처리하고
+	 * - 아니면 중복 의심 계정은 짝이 정확히 하나일 때 짝과 함께 처리한다.
+	 * (확인 모달에 대상 계정이 모두 표시되므로 어떤 계정이 처리되는지 확인할 수 있다.)
+	 */
+	const handleRowApprove = (row: MemberRow) => {
+		if (selection.isSelected(row.id) && selectedRows.length > 1) {
+			openApproveDialog(selectedRows);
+			return;
+		}
+		if (row.duplicateSuspected) {
+			const partners = findDuplicatePartners(row, rows);
+			if (partners.length === 1) {
+				openApproveDialog([row, partners[0]]);
+				return;
+			}
+		}
+		openApproveDialog([row]);
+	};
+
 	/* --------------------------------- 삭제 --------------------------------- */
 
 	const { mutate: deleteMembers, isPending: isDeleting } = useMutation(
@@ -223,6 +245,7 @@ export const MemberManagement = () => {
 		updateManagedMemberMutationOptions({
 			onSuccess: () => {
 				closeInlineEdit();
+				closeDialog();
 				refresh();
 				toast.success('수정을 완료했어요.');
 			},
@@ -245,7 +268,14 @@ export const MemberManagement = () => {
 			inlineEdit.close();
 			return;
 		}
-		updateMember({ memberId: editingRow.id, changes });
+
+		const commit = () => updateMember({ memberId: editingRow.id, changes });
+		// 활동 정지는 이번 기수에서 되돌릴 수 없는 결정이라, 적용 전에 한 번 더 확인받는다.
+		if (changes.status === 'INACTIVE') {
+			setDialog({ type: 'inactive-confirm', targets: [editingRow], onConfirm: commit });
+			return;
+		}
+		commit();
 	}, [inlineEdit, teams, updateMember]);
 
 	/* ------------------------------- 일괄 수정 ------------------------------- */
@@ -267,16 +297,36 @@ export const MemberManagement = () => {
 		onSuccess: () => {
 			bulkEdit.reset();
 			selection.clear();
+			closeDialog();
 			refresh();
 			toast.success('수정을 완료했어요.');
 		},
 		onError: () => toast.error('수정에 실패했어요. 잠시 후 다시 시도해 주세요.'),
 	});
 
+	const handleBulkSave = useCallback(() => {
+		const isSettingInactive =
+			bulkEdit.stagedFields.includes('activityStatus') &&
+			bulkEdit.draft.activityStatus === 'INACTIVE';
+		// 활동 정지는 이번 기수에서 되돌릴 수 없는 결정이라, 적용 전에 한 번 더 확인받는다.
+		if (isSettingInactive) {
+			setDialog({
+				type: 'inactive-confirm',
+				targets: selectedRows,
+				onConfirm: () => saveBulkEdit(),
+			});
+			return;
+		}
+		saveBulkEdit();
+	}, [bulkEdit.stagedFields, bulkEdit.draft, selectedRows, saveBulkEdit]);
+
 	/* --------------------------------- 렌더 --------------------------------- */
 
 	const isPendingTab = filters.approvalStatus === 'PENDING';
 	const showBulkEditBar = !isPendingTab && selectedRows.length > 0;
+	// 중복 의심 계정만 골랐다면 승인 전에 병합이 일어나므로 버튼 문구로 미리 알린다.
+	const isMergeOnlySelection =
+		selectedRows.length > 0 && selectedRows.every((row) => row.duplicateSuspected);
 
 	return (
 		<div className="flex w-full flex-col bg-background-normal pb-10">
@@ -308,7 +358,7 @@ export const MemberManagement = () => {
 			</div>
 
 			<div className="flex items-center justify-between gap-4 px-10 py-3">
-				<div className="flex items-center gap-4">
+				<div className="flex items-center gap-2">
 					{!isPendingTab && (
 						<MemberFilterBar
 							parts={filters.parts}
@@ -337,7 +387,7 @@ export const MemberManagement = () => {
 								disabled={selectedRows.length === 0}
 								onClick={() => openApproveDialog(selectedRows)}
 							>
-								승인하기
+								{isMergeOnlySelection ? '병합 후 승인하기' : '승인하기'}
 							</Button>
 							<Button
 								variant="assistive"
@@ -350,7 +400,8 @@ export const MemberManagement = () => {
 						</>
 					) : (
 						<Button
-							variant="assistive"
+							variant="secondary"
+							className="disabled:opacity-20"
 							size="md"
 							disabled={selectedRows.length === 0}
 							onClick={() => setDialog({ type: 'delete', targets: selectedRows })}
@@ -379,7 +430,7 @@ export const MemberManagement = () => {
 							isTogglingAll={isLoadingAllForSelection}
 							onToggle={selection.toggle}
 							onToggleAll={handleToggleAllSelection}
-							onApprove={(row) => openApproveDialog([row])}
+							onApprove={handleRowApprove}
 							onReject={(row) => setDialog({ type: 'reject', targets: [row] })}
 						/>
 					) : (
@@ -402,7 +453,7 @@ export const MemberManagement = () => {
 				</div>
 
 				{/* 끝에 닿으면 다음 페이지를 불러온다. */}
-				<div ref={loadMoreRef} className="h-10" />
+				<div ref={loadMoreRef} className={showBulkEditBar ? 'h-28' : 'h-10'} />
 				{isFetchingNextPage && (
 					<p className="py-4 text-center font-medium text-body2 text-label-assistive">
 						불러오는 중...
@@ -411,12 +462,14 @@ export const MemberManagement = () => {
 			</div>
 
 			{showBulkEditBar && (
-				<div className="px-10">
+				// 목록 길이와 상관없이 뷰포트 하단에 고정한다. 사이드바 너비만큼 비켜서 콘텐츠 영역 기준으로 배치한다.
+				<div className="pointer-events-none fixed right-0 bottom-6 left-0 z-10 px-10 md:left-(--sidebar-width)">
 					<MemberBulkEditBar
 						selectedCount={selectedRows.length}
 						currentValueOf={bulkEdit.currentValueOf}
+						stagedFields={bulkEdit.stagedFields}
 						onOpenField={bulkEdit.openModal}
-						onSave={() => saveBulkEdit()}
+						onSave={handleBulkSave}
 						canSave={bulkEdit.hasChanges}
 						isSaving={isBulkSaving}
 					/>
@@ -513,6 +566,33 @@ export const MemberManagement = () => {
 						onClick: () => {
 							if (dialog?.type !== 'delete') return;
 							deleteMembers({ memberIds: dialog.targets.map((target) => target.id) });
+						},
+					},
+				]}
+			/>
+
+			<MemberConfirmDialog
+				open={dialog?.type === 'inactive-confirm'}
+				onOpenChange={closeDialog}
+				title="활동 정지"
+				description={
+					<>
+						해당 멤버{' '}
+						<span className="text-primary-normal">
+							{dialog?.type === 'inactive-confirm' ? dialog.targets.length : 0}명
+						</span>
+						을 활동 정지로 바꿀까요? 이번 기수에서는 다시 활동 중으로 되돌릴 수 없어요.
+					</>
+				}
+				subjects={dialog?.type === 'inactive-confirm' ? dialog.targets : []}
+				isPending={isUpdating || isBulkSaving}
+				actions={[
+					{ label: '취소', onClick: closeDialog },
+					{
+						label: '활동 정지',
+						onClick: () => {
+							if (dialog?.type !== 'inactive-confirm') return;
+							dialog.onConfirm();
 						},
 					},
 				]}

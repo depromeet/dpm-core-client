@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { type PropsWithChildren, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
 	Dialog,
 	DialogContent,
@@ -21,6 +21,7 @@ import { withdrawMutationOptions } from '@/remotes/mutations/member';
 const WithdrawModal = ({ children }: PropsWithChildren) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const router = useRouter();
+	const queryClient = useQueryClient();
 
 	const handleClose = () => {
 		setIsOpen(false);
@@ -33,6 +34,7 @@ const WithdrawModal = ({ children }: PropsWithChildren) => {
 	const { mutate: withdrawMutate, isPending: isWithdrawPending } = useMutation(
 		withdrawMutationOptions({
 			onSuccess: () => {
+				queryClient.clear();
 				deleteToken();
 				clearLastLoginMethod();
 				clearAwaitingApproval();

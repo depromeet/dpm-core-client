@@ -1,4 +1,4 @@
-import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
+import { queryOptions } from '@tanstack/react-query';
 import { attendance } from '@dpm-core/api';
 
 export const ATTENDANCE_QUERY_KEY = 'ATTENDANCE';
@@ -10,27 +10,10 @@ export const getAttendanceBySessionOptions = (params: { sessionId: number }) =>
 		retry: false,
 	});
 
-interface AttendanceMemberFilters {
-	statuses?: string[];
-	teams?: number[];
-	name?: string;
-}
-
-export const getAttendanceByMemberOptions = (
-	params: AttendanceMemberFilters,
-) =>
-	infiniteQueryOptions({
-		queryKey: [ATTENDANCE_QUERY_KEY, params],
-		initialPageParam: 1,
-		queryFn: ({ pageParam }) => {
-			return attendance.getAttendanceByMember({ ...params, cursorId: pageParam, size: 100 });
-		},
-		getNextPageParam: (lastPage) => {
-			return lastPage.data.hasNext && lastPage.data.nextCursorId != null
-				? lastPage.data.nextCursorId
-				: undefined;
-		},
-		placeholderData: (previousData) => previousData,
+export const getAttendanceByMemberOptions = () =>
+	queryOptions({
+		queryKey: [ATTENDANCE_QUERY_KEY, 'people'],
+		queryFn: attendance.getAttendanceByMember,
 		retry: false,
 	});
 

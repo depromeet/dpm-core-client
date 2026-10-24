@@ -11,12 +11,13 @@ interface ProfileProps {
 	name: string;
 	teamNumber: number | null;
 	inline?: boolean;
+	badge?: React.ReactNode;
 	isAdmin?: boolean;
 	size?: number;
 }
 
 export const Profile = (props: ProfileProps) => {
-	const { part, name, teamNumber, isAdmin = false, size = 40, inline = false } = props;
+	const { part, name, teamNumber, isAdmin = false, size = 40, inline = false, badge } = props;
 
 	const teamLabel = teamNumber === null || teamNumber === 0 ? '팀 미배정' : `${teamNumber}팀`;
 	const partLabel = isExistPart(part) ? getMemberPartLabel(part) : '미배정';
@@ -34,7 +35,14 @@ export const Profile = (props: ProfileProps) => {
 				/>
 			</div>
 			<div className={cn('flex gap-0.5', inline ? 'flex-row items-center gap-4' : 'flex-col')}>
-				<span className="font-semibold text-body1">{name}</span>
+				{badge ? (
+					<div className="flex min-w-0 flex-wrap items-center gap-2">
+						<span className="break-all font-semibold text-body1">{name}</span>
+						{badge}
+					</div>
+				) : (
+					<span className="font-semibold text-body1">{name}</span>
+				)}
 				<div className="flex flex-wrap gap-1.5 font-medium text-caption1 text-label-assistive">
 					{metaItems.map((item, idx) => (
 						<div key={`${item}`} className="flex items-center gap-1.5">

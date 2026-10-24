@@ -24,9 +24,9 @@ export const MemberApprovalTabs = ({ value, onChange }: MemberApprovalTabsProps)
 						aria-selected={isActive}
 						onClick={() => onChange(tab.value)}
 						className={cn(
-							'cursor-pointer px-4 py-3 font-semibold text-body1 transition-colors',
+							'flex h-11.5 w-30 cursor-pointer items-center justify-center font-bold text-title2 transition-colors',
 							isActive
-								? 'border-label-normal border-b-2 text-label-normal'
+								? 'border-b-2 border-gray-900 text-label-normal'
 								: 'text-label-assistive hover:text-label-subtle',
 						)}
 					>
