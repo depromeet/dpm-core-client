@@ -31,7 +31,7 @@ export const HomeFeedbackCard = ({ isAttendanceOpen }: HomeFeedbackCardProps) =>
 				</p>
 			</div>
 			<Link
-				className="flex h-9 shrink-0 items-center justify-center rounded-lg bg-background-inverse font-semibold text-caption1 text-label-inverse"
+				className="flex h-10 shrink-0 items-center justify-center rounded-lg bg-background-inverse font-semibold text-caption1 text-label-inverse"
 				href={`/session/${pendingFeedback.sessionId}/feedback?returnTo=%2F`}
 			>
 				피드백 남기기 (D-{daysRemaining})

@@ -12,7 +12,7 @@ const USER_GUIDE_LINK =
 export const UserActionList = () => {
 	const { track } = useClarity();
 	return (
-		<section className="my-2 px-4">
+		<section className="px-4 pb-2">
 			<div className="flex gap-3">
 				<Link
 					href={USER_VOC_LINK}

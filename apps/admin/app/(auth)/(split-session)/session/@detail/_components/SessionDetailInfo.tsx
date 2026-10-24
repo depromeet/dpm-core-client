@@ -30,8 +30,8 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 	return (
 		<div className="flex flex-col gap-y-5">
 			<GAPageTracker type="session-detail" sessionId={String(sessionId)} />
-			<div className="flex items-center justify-between">
-				<h3 className="font-semibold text-headline2 text-label-normal md:font-bold md:text-title1">
+			<div className="flex items-start justify-between">
+				<h3 className="self-start font-bold text-title1 text-label-normal">
 					{sessionDetail.name}
 				</h3>
 				{!isMobile && <SessionDropDownMenu sessionId={sessionId} />}

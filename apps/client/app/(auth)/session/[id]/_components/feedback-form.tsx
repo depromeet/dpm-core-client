@@ -84,6 +84,7 @@ const FEEDBACK_STATUS_CONTENT = {
 	SUBMITTED: { title: '이미 피드백을 제출했어요.', icon: 'check' },
 	EXPIRED: { title: '피드백 응답 기간이 끝났어요.', icon: 'warning' },
 	NOT_TARGET: { title: '이 세션의 피드백 대상이 아니에요.', icon: 'warning' },
+	ATTENDANCE_INCOMPLETE: { title: '이번 세션에 출석하지 않았어요.', icon: 'warning' },
 } as const;
 
 const getFeedbackStepIndex = (step: FeedbackStep) => FEEDBACK_STEPS.indexOf(step);
@@ -91,6 +92,7 @@ const getFeedbackStepIndex = (step: FeedbackStep) => FEEDBACK_STEPS.indexOf(step
 interface FeedbackResultScreenProps {
 	icon: ReactNode;
 	title: string;
+	titleClassName?: string;
 	description?: ReactNode;
 	actionLabel: string;
 	onAction: () => void;
@@ -100,6 +102,7 @@ interface FeedbackResultScreenProps {
 const FeedbackResultScreen = ({
 	icon,
 	title,
+	titleClassName,
 	description,
 	actionLabel,
 	onAction,
@@ -107,10 +110,10 @@ const FeedbackResultScreen = ({
 }: FeedbackResultScreenProps) => (
 	<SafeAreaAppLayout className="h-dvh bg-background-normal">
 		<div className="flex flex-1 items-center justify-center px-4">
-			<div className="flex flex-col items-center gap-6 text-center">
+			<div className="flex flex-col items-center gap-3 text-center">
 				{icon}
 				<div className="flex flex-col items-center gap-3">
-					<h1 className="font-bold text-[#1A1C1E] text-headline2">{title}</h1>
+					<h1 className={cn('font-bold text-[#1A1C1E] text-headline2', titleClassName)}>{title}</h1>
 					{description ? (
 						<p className="font-medium text-body1 text-label-subtle">{description}</p>
 					) : null}
@@ -289,10 +292,21 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 					</div>
 				}
 				title={statusContent.title}
-				description={
-					currentFeedbackStatus === 'BEFORE_START'
-						? `${startDateTime ?? '안내된 시작 시각'}부터 작성할 수 있어요.`
+				titleClassName={
+					currentFeedbackStatus === 'ATTENDANCE_INCOMPLETE'
+						? 'leading-[136%] tracking-[-0.44px] text-center'
 						: undefined
+				}
+				description={
+					currentFeedbackStatus === 'BEFORE_START' ? (
+						`${startDateTime ?? '안내된 시작 시각'}부터 작성할 수 있어요.`
+					) : currentFeedbackStatus === 'ATTENDANCE_INCOMPLETE' ? (
+						<>
+							피드백은 세션 출석자만
+							<br />
+							남길 수 있어요.
+						</>
+					) : undefined
 				}
 				actionLabel="닫기"
 				onAction={() => router.replace('/')}
@@ -344,7 +358,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 	}
 
 	return (
-		<SafeAreaAppLayout className="h-dvh bg-background-normal">
+		<SafeAreaAppLayout hasBottomSafeArea={false} className="h-dvh bg-background-normal">
 			<header className="relative flex h-12 shrink-0 items-center justify-center px-4 py-3">
 				<button
 					type="button"
@@ -408,7 +422,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 								<label
 									key={option.value}
 									className={cn(
-										'flex h-12 cursor-pointer items-center justify-between rounded-lg border px-4 font-medium text-body2 transition-colors',
+										'flex h-[50px] cursor-pointer items-center justify-between rounded-lg border px-4 font-medium text-body2 transition-colors',
 										selected
 											? 'border-[1.5px] border-label-normal text-label-normal'
 											: 'border-line-normal text-label-assistive hover:border-line-subtle hover:bg-background-subtle',
@@ -517,18 +531,16 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 						onChange={(event) => setComment(event.target.value)}
 						placeholder="앞에서 고른 항목의 이유나 그 밖의 의견을 자유롭게 남겨주세요. (선택)"
 						maxLength={1000}
-						className="h-[100px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
+						className="h-[120px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
 					/>
 				)}
 			</main>
 
-			<footer className="shrink-0 bg-background-normal pb-safe-area">
+			<footer className="shrink-0 bg-background-normal">
 				{(step === 'satisfaction' || step === 'comment') && (
 					<div className="bg-background-subtle px-4 py-4">
 						<p className="font-medium text-body2 text-label-tertiary">
 							• 이름과 팀은 운영진 결과 화면에 표시되지 않아요.
-							<br />
-							&nbsp;&nbsp;&nbsp;제출 여부는 미응답 알림에만 활용돼요.
 						</p>
 					</div>
 				)}
@@ -558,7 +570,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 									type="button"
 									size="full"
 									variant="assistive"
-									className="rounded-lg"
+									className="h-12 rounded-lg"
 									onClick={goPrevious}
 								>
 									이전
