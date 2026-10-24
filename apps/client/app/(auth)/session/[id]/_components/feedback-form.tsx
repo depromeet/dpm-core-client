@@ -408,7 +408,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 								<label
 									key={option.value}
 									className={cn(
-										'flex h-12 cursor-pointer items-center justify-between rounded-lg border px-4 font-medium text-body2 transition-colors',
+										'flex h-[50px] cursor-pointer items-center justify-between rounded-lg border px-4 font-medium text-body2 transition-colors',
 										selected
 											? 'border-[1.5px] border-label-normal text-label-normal'
 											: 'border-line-normal text-label-assistive hover:border-line-subtle hover:bg-background-subtle',
@@ -517,7 +517,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 						onChange={(event) => setComment(event.target.value)}
 						placeholder="앞에서 고른 항목의 이유나 그 밖의 의견을 자유롭게 남겨주세요. (선택)"
 						maxLength={1000}
-						className="h-[100px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
+						className="h-[120px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
 					/>
 				)}
 			</main>
@@ -556,7 +556,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 									type="button"
 									size="full"
 									variant="assistive"
-									className="rounded-lg"
+									className="h-12 rounded-lg"
 									onClick={goPrevious}
 								>
 									이전
