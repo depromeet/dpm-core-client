@@ -358,7 +358,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 	}
 
 	return (
-		<SafeAreaAppLayout hasBottomSafeArea={false} className="h-dvh bg-background-normal">
+		<SafeAreaAppLayout hasBottomSafeArea className="h-dvh bg-background-normal">
 			<header className="relative flex h-12 shrink-0 items-center justify-center px-4 py-3">
 				<button
 					type="button"
