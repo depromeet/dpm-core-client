@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Part } from '@dpm-core/api';
 import { Button, cn, Input, toast } from '@dpm-core/shared';
 
+import { isProfileIncomplete } from '@/lib/profile-completion';
 import { memberAuthQueryKey } from '@/providers/auth-provider';
 import { updateMyProfileMutationOptions } from '@/remotes/mutations/member';
 import { getMyMemberInfoQuery, getMyProfileQuery } from '@/remotes/queries/member';
@@ -55,7 +56,7 @@ export const ProfileForm = ({ onSubmitted, alwaysEditable = false }: ProfileForm
 		<ProfileFields
 			initialName={hasPreviousSubmission ? profile.name : ''}
 			initialPart={savedPart}
-			isReadOnly={!alwaysEditable && !profile.profileCompletionRequired}
+			isReadOnly={!alwaysEditable && !isProfileIncomplete(profile)}
 			onSubmitted={onSubmitted}
 		/>
 	);

@@ -9,6 +9,7 @@ import { UnauthenticatedLayout } from '@/components/unauthenticated-layout';
 import { usePushNotification } from '@/hooks/use-push-notification';
 import { setLastLoginMethod } from '@/lib/last-login';
 import { consumeLoginReturnTo, getSafeFeedbackReturnTo } from '@/lib/login-return-to';
+import { isProfileIncomplete } from '@/lib/profile-completion';
 import { getMyMemberInfoQuery, getMyProfileQuery } from '@/remotes/queries/member';
 
 interface AuthContextType {
@@ -113,7 +114,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	if (isPending) {
 		if (isProfileLoading) return null;
 
-		const pendingPath = profile?.profileCompletionRequired ? '/profile' : '/pending';
+		const pendingPath = profile && isProfileIncomplete(profile) ? '/profile' : '/pending';
 		if (
 			pathname !== pendingPath &&
 			(pathname === '/pending' || !PENDING_ACCESSIBLE_PATHS.includes(pathname))
