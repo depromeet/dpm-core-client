@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createWebView } from '@webview-bridge/react-native';
 import Constants from 'expo-constants';
+import * as Notifications from 'expo-notifications';
 import { SplashScreen, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { BackHandler, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
@@ -9,6 +10,7 @@ import type { WebView as NativeWebView, WebViewNavigation } from 'react-native-w
 
 import { appBridge } from '@/bridge/app-bridge';
 import { useBehavior } from '@/hooks/useBehavior';
+import { getNotificationPath } from '@/lib/notification-route';
 
 export const { WebView } = createWebView({
 	bridge: appBridge,
@@ -42,12 +44,38 @@ function WebViewContainer() {
 	const insets = useSafeAreaInsets();
 
 	const [appIsReady, setAppIsReady] = useState(false);
+	const appIsReadyRef = useRef(false);
 	const [webViewUrl, setWebViewUrl] = useState(initialFeedbackUrl ?? WEBVIEW_URL);
 
 	useEffect(() => {
 		const nextFeedbackUrl = getFeedbackLink(feedbackUrl);
 		if (nextFeedbackUrl) setWebViewUrl(nextFeedbackUrl);
 	}, [feedbackUrl]);
+
+	// 알림 탭 → 앱이 꺼져 있던 경우(콜드 스타트)와 켜져 있던 경우 모두 마지막 응답으로 들어온다.
+	const lastNotificationResponse = Notifications.useLastNotificationResponse();
+	const handledNotificationIdRef = useRef<string | null>(null);
+
+	useEffect(() => {
+		if (!lastNotificationResponse) return;
+		if (lastNotificationResponse.actionIdentifier !== Notifications.DEFAULT_ACTION_IDENTIFIER) {
+			return;
+		}
+
+		const { identifier, content } = lastNotificationResponse.notification.request;
+		if (handledNotificationIdRef.current === identifier) return;
+		handledNotificationIdRef.current = identifier;
+
+		const path = getNotificationPath(content.data);
+		if (!path) return;
+
+		const url = new URL(path, WEBVIEW_URL).toString();
+		if (appIsReadyRef.current) {
+			webViewRef.current?.injectJavaScript(`window.location.assign(${JSON.stringify(url)});true;`);
+		} else {
+			setWebViewUrl(url);
+		}
+	}, [lastNotificationResponse]);
 
 	const hideSplashScreen = useCallback(async () => {
 		if (appIsReady) {
@@ -60,6 +88,7 @@ function WebViewContainer() {
 	}, [hideSplashScreen]);
 
 	const handleWebViewLoadEnd = () => {
+		appIsReadyRef.current = true;
 		setAppIsReady(true);
 	};
 
