@@ -49,8 +49,10 @@ export const useKakaoLogin = () => {
 
 			await auth.kakaoLogin({ accessToken: result.accessToken });
 			setLastLoginMethod('KAKAO');
-			// 로그인 전 reissue 실패가 AuthProvider 쿼리에 에러로 남아 있으면 이동 후에도 미로그인 상태로 보인다.
-			await queryClient.invalidateQueries({ queryKey: memberAuthQueryKey });
+			// 앱 첫 실행 때 홈에서 실패한 reissue 에러가 AuthProvider 쿼리 캐시에 남아 있다. 로그인 화면에는 이 쿼리를
+			// 보는 곳이 없어 invalidate는 stale 표시만 할 뿐 에러를 지우지 않으므로, 이동 후 첫 렌더에서
+			// 캐시된 에러 때문에 다시 로그인 화면으로 보내진다. 캐시를 제거해 새로 시작한다.
+			queryClient.removeQueries({ queryKey: memberAuthQueryKey });
 			if (options?.onSuccess) options.onSuccess();
 			else router.replace('/');
 		} catch {
