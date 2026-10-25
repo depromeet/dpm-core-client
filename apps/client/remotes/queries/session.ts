@@ -18,6 +18,6 @@ export const getSessionDetailQuery = (sessionId: number) =>
 	queryOptions({
 		queryKey: ['session-detail', sessionId],
 		queryFn: async () => {
-			return session.getSessionById(sessionId);
+			return session.getMySessionById(sessionId);
 		},
 	});
