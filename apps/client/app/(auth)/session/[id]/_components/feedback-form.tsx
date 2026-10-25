@@ -96,6 +96,8 @@ interface FeedbackResultScreenProps {
 	description?: ReactNode;
 	actionLabel: string;
 	onAction: () => void;
+	showCloseButton?: boolean;
+	onClose?: () => void;
 	disabled?: boolean;
 }
 
@@ -106,9 +108,23 @@ const FeedbackResultScreen = ({
 	description,
 	actionLabel,
 	onAction,
+	showCloseButton = false,
+	onClose,
 	disabled = false,
 }: FeedbackResultScreenProps) => (
 	<SafeAreaAppLayout className="h-dvh bg-background-normal">
+		{showCloseButton ? (
+			<header className="flex h-14 shrink-0 items-center p-4">
+				<button
+					type="button"
+					aria-label="홈으로 이동"
+					onClick={onClose}
+					className="cursor-pointer text-label-assistive"
+				>
+					<X className="size-6" aria-hidden="true" />
+				</button>
+			</header>
+		) : null}
 		<div className="flex flex-1 items-center justify-center px-4">
 			<div className="flex flex-col items-center gap-3 text-center">
 				{icon}
@@ -133,6 +149,57 @@ const FeedbackResultScreen = ({
 			</Button>
 		</div>
 	</SafeAreaAppLayout>
+);
+
+const FeedbackLoadErrorScreen = ({
+	onClose,
+	onRetry,
+}: {
+	onClose: () => void;
+	onRetry: () => void;
+}) => (
+	<FeedbackResultScreen
+		icon={
+			<div className="flex size-[52px] items-center justify-center rounded-full bg-[#FEC15E]/30">
+				<span className="flex size-5 items-center justify-center rounded-full bg-[#FEC15E]">
+					<Minus className="size-3 text-white" strokeWidth={3} aria-hidden="true" />
+				</span>
+			</div>
+		}
+		title="피드백 정보를 불러오지 못했어요."
+		description="잠시 후 다시 시도해 주세요."
+		actionLabel="다시 시도"
+		showCloseButton
+		onClose={onClose}
+		onAction={onRetry}
+	/>
+);
+
+const FeedbackSubmissionErrorScreen = ({
+	onClose,
+	onRetry,
+	isSubmitting = false,
+}: {
+	onClose: () => void;
+	onRetry: () => void;
+	isSubmitting?: boolean;
+}) => (
+	<FeedbackResultScreen
+		icon={
+			<div className="flex size-[52px] items-center justify-center rounded-full bg-[#FEC15E]/30">
+				<span className="flex size-5 items-center justify-center rounded-full bg-[#FEC15E]">
+					<Minus className="size-3 text-white" strokeWidth={3} aria-hidden="true" />
+				</span>
+			</div>
+		}
+		title="피드백을 제출하지 못했어요."
+		description="잠시 후 다시 시도해 주세요."
+		actionLabel={isSubmitting ? '제출 중...' : '다시 시도'}
+		showCloseButton
+		onClose={onClose}
+		disabled={isSubmitting}
+		onAction={onRetry}
+	/>
 );
 
 export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
@@ -243,18 +310,9 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 
 	if (feedbackQuery.isError || !feedbackInfo) {
 		return (
-			<FeedbackResultScreen
-				icon={
-					<div className="flex size-[52px] items-center justify-center rounded-full bg-[#FEC15E]/30">
-						<span className="flex size-5 items-center justify-center rounded-full bg-[#FEC15E]">
-							<Minus className="size-3 text-white" strokeWidth={3} aria-hidden="true" />
-						</span>
-					</div>
-				}
-				title="피드백 정보를 불러오지 못했어요."
-				description="잠시 후 다시 시도해 주세요."
-				actionLabel="다시 시도"
-				onAction={() => void feedbackQuery.refetch()}
+			<FeedbackLoadErrorScreen
+				onClose={() => router.replace('/')}
+				onRetry={() => void feedbackQuery.refetch()}
 			/>
 		);
 	}
@@ -316,19 +374,10 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 
 	if (submissionFailed) {
 		return (
-			<FeedbackResultScreen
-				icon={
-					<div className="flex size-[52px] items-center justify-center rounded-full bg-[#FEC15E]/30">
-						<span className="flex size-5 items-center justify-center rounded-full bg-[#FEC15E]">
-							<Minus className="size-3 text-white" strokeWidth={3} aria-hidden="true" />
-						</span>
-					</div>
-				}
-				title="피드백을 제출하지 못했어요."
-				description="잠시 후 다시 시도해 주세요."
-				actionLabel={isSubmitting ? '제출 중...' : '다시 시도'}
-				disabled={isSubmitting}
-				onAction={() => void submitFeedback()}
+			<FeedbackSubmissionErrorScreen
+				onClose={() => router.replace('/')}
+				onRetry={() => void submitFeedback()}
+				isSubmitting={isSubmitting}
 			/>
 		);
 	}
