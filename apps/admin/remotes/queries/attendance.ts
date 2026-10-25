@@ -7,6 +7,7 @@ export const getAttendanceBySessionOptions = (params: { sessionId: number }) =>
 	queryOptions({
 		queryKey: [ATTENDANCE_QUERY_KEY, 'session', params.sessionId],
 		queryFn: () => attendance.getAttendanceBySession(params),
+		staleTime: 0,
 		retry: false,
 	});
 
@@ -14,6 +15,7 @@ export const getAttendanceByMemberOptions = () =>
 	queryOptions({
 		queryKey: [ATTENDANCE_QUERY_KEY, 'people'],
 		queryFn: attendance.getAttendanceByMember,
+		staleTime: 0,
 		retry: false,
 	});
 
