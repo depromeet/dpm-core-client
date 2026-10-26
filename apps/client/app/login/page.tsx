@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import { Suspense } from 'react';
 
+import dpmLogo from '@/assets/images/dpm-logo.svg';
 import bgEllipse from '@/assets/images/login-bg-ellipse.svg';
 import bgGraphic from '@/assets/images/login-bg-graphic.svg';
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { AppleLoginButton } from '@/components/apple-login-button';
-import { DpmLogoEmailLoginTrigger } from '@/components/dpm-logo-email-login-trigger';
 import { LoginButton } from '@/components/login-button';
 import { LoginErrorToast } from '@/components/login-error-toast';
 import { LoginReturnTo } from '@/components/login-return-to';
@@ -43,7 +43,7 @@ const LoginPage = async ({
 					/>
 				</div>
 				<div className="relative flex flex-col gap-y-4.5 px-4 pt-20">
-					<DpmLogoEmailLoginTrigger />
+					<Image src={dpmLogo} alt="DPM" priority className="h-auto w-31" draggable={false} />
 					<p className="font-normal text-body1 text-label-strong">
 						출석부터 공지 확인까지,
 						<br />

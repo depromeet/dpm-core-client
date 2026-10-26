@@ -19,6 +19,7 @@ import {
 } from '@/remotes/mutations/member';
 import { getCurrentCohortQuery, getCurrentCohortTeamsQuery } from '@/remotes/queries/cohort';
 import {
+	getApprovedMergeCandidatesQuery,
 	getMemberBadgesQuery,
 	MEMBER_BADGES_QUERY_KEY,
 	MEMBER_MANAGEMENT_QUERY_KEY,
@@ -34,7 +35,14 @@ import {
 	hasChanges,
 	toTeamId,
 } from '../_lib/build-member-changes';
-import { type ApprovalPlan, findDuplicatePartners, planApproval } from '../_lib/duplicate-pairs';
+import {
+	type ApprovalPlan,
+	type ApprovedMergePair,
+	duplicateKey,
+	findDuplicatePartners,
+	planApproval,
+} from '../_lib/duplicate-pairs';
+import { mapMemberRow } from '../_lib/map-member-row';
 import type { MemberEditableField, MemberEditableFields, MemberRow } from '../_types';
 import { ApprovedMemberTable } from './ApprovedMemberTable';
 import { MemberApprovalTabs } from './MemberApprovalTabs';
@@ -43,6 +51,7 @@ import { MemberBulkEditModal } from './MemberBulkEditModal';
 import { MemberConfirmDialog } from './MemberConfirmDialog';
 import { MemberFilterBar } from './MemberFilterBar';
 import { MemberManagementHeader } from './MemberManagementHeader';
+import { MemberMergeAccountDialog } from './MemberMergeAccountDialog';
 import { MemberSelectionSummary } from './MemberSelectionSummary';
 import { MemberSummaryBoard } from './MemberSummaryBoard';
 import { PendingMemberTable } from './PendingMemberTable';
@@ -52,6 +61,8 @@ type DialogState =
 	| { type: 'reject'; targets: MemberRow[] }
 	| { type: 'delete'; targets: MemberRow[] }
 	| { type: 'merge-required'; hasOversizedGroup: boolean }
+	| { type: 'merge-approved'; plan: ApprovalPlan }
+	| { type: 'merge-conflict'; pairs: ApprovedMergePair[] }
 	| null;
 
 /** 멤버 관리 화면의 조립 지점. 훅에서 받은 상태를 각 UI 조각에 나눠준다. */
@@ -164,9 +175,19 @@ export const MemberManagement = () => {
 			]);
 			closeDialog();
 			refresh();
-			toast.success('승인을 완료했어요.');
+			toast.success(plan.approvedPairs.length > 0 ? '병합을 완료했어요.' : '승인을 완료했어요.');
 		},
-		onError: () => toast.error('승인에 실패했어요. 잠시 후 다시 시도해 주세요.'),
+		onError: (error, plan) => {
+			// 병합은 쌍마다 따로 처리되므로, 중간에 실패해도 앞 쌍은 이미 끝났을 수 있다.
+			refresh();
+			// 서버는 같은 소셜의 서로 다른 계정이면 409 로 거절한다. 다른 회원의 계정으로 보고 안내한다.
+			const status = (error as { response?: { status?: number } }).response?.status;
+			if (status === 409 && plan.approvedPairs.length > 0) {
+				setDialog({ type: 'merge-conflict', pairs: plan.approvedPairs });
+				return;
+			}
+			toast.error('승인에 실패했어요. 잠시 후 다시 시도해 주세요.');
+		},
 	});
 
 	const { mutate: runRejection, isPending: isRejecting } = useMutation({
@@ -182,16 +203,80 @@ export const MemberManagement = () => {
 		onError: () => toast.error('반려에 실패했어요. 잠시 후 다시 시도해 주세요.'),
 	});
 
-	const openApproveDialog = (targets: MemberRow[]) => {
-		if (targets.length === 0) return;
+	const [isCheckingMerge, setIsCheckingMerge] = useState(false);
+
+	/**
+	 * 짝이 선택되지 않은 중복 의심 계정마다 같은 사람의 승인된 계정을 찾는다.
+	 * 모두 하나씩 찾으면 쌍으로 돌려주고, 하나라도 못 찾거나 상대를 하나로 좁히지 못하면 null.
+	 */
+	const findApprovedPairs = async (sources: MemberRow[]): Promise<ApprovedMergePair[] | null> => {
+		const pairs: ApprovedMergePair[] = [];
+
+		for (const source of sources) {
+			const { data } = await queryClient.fetchQuery(
+				getApprovedMergeCandidatesQuery(source.name.trim(), source.part),
+			);
+			const key = duplicateKey(source);
+			const matches = data.members.map(mapMemberRow).filter((row) => duplicateKey(row) === key);
+
+			// 같은 소셜 계정끼리는 병합할 수 없으니, 다른 소셜의 승인 계정이 있으면 그쪽을 병합 상대로 본다.
+			const mergeable = matches.filter((row) => !isSameLoginMethod(source, row));
+			const candidates = mergeable.length > 0 ? mergeable : matches;
+			if (candidates.length !== 1) return null;
+
+			pairs.push({ source, approved: candidates[0] });
+		}
+
+		return pairs;
+	};
+
+	const openApproveDialog = async (targets: MemberRow[]) => {
+		if (targets.length === 0 || isCheckingMerge) return;
 
 		const plan = planApproval(targets, rows);
-		// 중복 의심 계정은 정확히 짝(2명)을 함께 골라야 병합 후 승인할 수 있다.
-		if (plan.unpaired.length > 0) {
-			setDialog({ type: 'merge-required', hasOversizedGroup: plan.hasOversizedGroup });
+		if (plan.unpaired.length === 0) {
+			setDialog({ type: 'approve', targets, plan });
 			return;
 		}
-		setDialog({ type: 'approve', targets, plan });
+		// 셋 이상이 함께 선택된 중복 의심 계정은 한 번에 병합할 수 없다.
+		if (plan.hasOversizedGroup) {
+			setDialog({ type: 'merge-required', hasOversizedGroup: true });
+			return;
+		}
+
+		// 짝이 선택되지 않은 중복 의심 계정은 이미 승인된 같은 사람의 계정이 있는지 찾아 거기에 병합한다.
+		setIsCheckingMerge(true);
+		try {
+			const approvedPairs = await findApprovedPairs(plan.unpaired);
+			if (!approvedPairs) {
+				setDialog({ type: 'merge-required', hasOversizedGroup: false });
+				return;
+			}
+			if (approvedPairs.some(({ source, approved }) => isSameLoginMethod(source, approved))) {
+				setDialog({ type: 'merge-conflict', pairs: approvedPairs });
+				return;
+			}
+
+			setDialog({
+				type: 'merge-approved',
+				plan: {
+					...plan,
+					unpaired: [],
+					approvedPairs,
+					merges: [
+						...plan.merges,
+						...approvedPairs.map(({ source, approved }) => ({
+							retainedMemberId: approved.id,
+							sourceMemberId: source.id,
+						})),
+					],
+				},
+			});
+		} catch {
+			toast.error('승인된 계정을 확인하지 못했어요. 잠시 후 다시 시도해 주세요.');
+		} finally {
+			setIsCheckingMerge(false);
+		}
 	};
 
 	/**
@@ -361,6 +446,7 @@ export const MemberManagement = () => {
 								variant="secondary"
 								size="md"
 								disabled={selectedRows.length === 0}
+								loading={isCheckingMerge}
 								onClick={() => openApproveDialog(selectedRows)}
 							>
 								{isMergeOnlySelection ? '병합 후 승인하기' : '승인하기'}
@@ -547,6 +633,37 @@ export const MemberManagement = () => {
 				]}
 			/>
 
+			<MemberMergeAccountDialog
+				open={dialog?.type === 'merge-approved'}
+				onOpenChange={closeDialog}
+				variant="confirm"
+				approvedAccounts={
+					dialog?.type === 'merge-approved' ? dialog.plan.approvedPairs.map((p) => p.approved) : []
+				}
+				note={
+					dialog?.type === 'merge-approved' &&
+					(dialog.plan.approveIds.length > 0 ||
+						dialog.plan.merges.length > dialog.plan.approvedPairs.length)
+						? '함께 선택한 다른 계정도 이어서 승인돼요.'
+						: undefined
+				}
+				isPending={isApproving}
+				onConfirm={() => {
+					if (dialog?.type !== 'merge-approved') return;
+					runApproval(dialog.plan);
+				}}
+			/>
+
+			<MemberMergeAccountDialog
+				open={dialog?.type === 'merge-conflict'}
+				onOpenChange={closeDialog}
+				variant="conflict"
+				approvedAccounts={
+					dialog?.type === 'merge-conflict' ? dialog.pairs.map((pair) => pair.approved) : []
+				}
+				onConfirm={closeDialog}
+			/>
+
 			<MemberConfirmDialog
 				open={dialog?.type === 'merge-required'}
 				onOpenChange={closeDialog}
@@ -574,6 +691,11 @@ export const MemberManagement = () => {
 		</div>
 	);
 };
+
+/** 두 계정이 같은 소셜(카카오·애플)로 가입했는지. 같은 소셜의 다른 계정은 병합할 수 없다. */
+function isSameLoginMethod(a: MemberRow, b: MemberRow) {
+	return a.loginMethod !== null && a.loginMethod === b.loginMethod;
+}
 
 /** 일괄 수정은 한 요청에 한 컬럼만 담는다. */
 function toBulkChanges(
