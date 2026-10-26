@@ -3,7 +3,7 @@ const association = {
 		details: [
 			{
 				appIDs: ['F4YNWT2PF6.com.depromeet.core.app'],
-				components: [{ '/': '/session/*/feedback' }],
+				components: [{ '/': '/session/*/feedback' }, { '/': '/' }],
 			},
 		],
 	},

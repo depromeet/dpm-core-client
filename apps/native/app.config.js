@@ -46,6 +46,7 @@ const config = {
 						action: 'VIEW',
 						autoVerify: true,
 						data: [
+							{ scheme: 'https', host: 'core.depromeet.com', path: '/' },
 							{ scheme: 'https', host: 'core.depromeet.com', pathPattern: '/session/.*/feedback' },
 						],
 						category: ['BROWSABLE', 'DEFAULT'],
