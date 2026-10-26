@@ -10,13 +10,14 @@ const LOGIN_ERROR_MESSAGE_BY_CODE: Record<string, string> = {
 
 /**
  * 소셜 로그인 콜백이 실패하면 `/login?error=...` 로 돌려보낸다.
+ * (애플 콜백은 `error`, 카카오 서버 리다이렉트는 `errorCode` 로 실패 코드를 내려준다.)
  * 사용자에게 실패를 알리고, 새로고침해도 반복되지 않도록 주소에서 값을 지운다.
  */
 export const LoginErrorToast = () => {
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
-	const errorCode = searchParams.get('error');
+	const errorCode = searchParams.get('error') ?? searchParams.get('errorCode');
 
 	useEffect(() => {
 		if (errorCode === null) return;

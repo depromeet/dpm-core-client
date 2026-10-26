@@ -17,7 +17,13 @@ interface AuthContextType {
 	user: Member | null;
 }
 
-const PENDING_ACCESSIBLE_PATHS = ['/pending', '/profile', '/my-page', '/rejected/edit'];
+const PENDING_ACCESSIBLE_PATHS = [
+	'/pending',
+	'/pending/edit',
+	'/profile',
+	'/my-page',
+	'/rejected/edit',
+];
 // '/pending'을 넣으면 검토중 화면을 보던 회원이 반려돼도 /rejected로 가지 못하고 검토중 화면에 머문다.
 // 재신청 성공 시에는 /rejected/edit 에서 상태 캐시 무효화가 끝난 뒤에 /pending 으로 이동하므로 포함하지 않아도 된다.
 const REJECTED_ACCESSIBLE_PATHS = ['/rejected', '/rejected/edit', '/my-page'];
@@ -106,8 +112,16 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
 	// 미로그인 인 경우, 접속 하자마자 홈으로 진입으로 변경, 로그인 페이지로 바로 진입아님
 	if (error && pathname !== '/login') {
-		const currentPath = `${pathname}${typeof window === 'undefined' ? '' : window.location.search}`;
-		return <UnauthenticatedLayout returnTo={getSafeFeedbackReturnTo(currentPath)} />;
+		const search = typeof window === 'undefined' ? '' : window.location.search;
+		const currentPath = `${pathname}${search}`;
+		// 소셜 로그인 실패(예: 탈퇴한 계정)로 루트에 돌아온 경우, 안내 토스트가 뜨도록 코드를 로그인 화면에 넘긴다.
+		const errorCode = new URLSearchParams(search).get('errorCode');
+		return (
+			<UnauthenticatedLayout
+				returnTo={getSafeFeedbackReturnTo(currentPath)}
+				errorCode={errorCode}
+			/>
+		);
 	}
 
 	// 승인 대기 회원은 검토중 화면, 가입정보 화면, 마이페이지(로그아웃·탈퇴)만 이용할 수 있다.

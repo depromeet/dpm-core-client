@@ -7,8 +7,6 @@ import { OptionPickerModal, type SegmentedOption } from '@dpm-core/shared';
 import { getCurrentCohortTeamsQuery } from '@/remotes/queries/cohort';
 
 import {
-	ACTIVITY_STATUS_LABEL,
-	ACTIVITY_STATUS_EDIT_ORDER,
 	MEMBER_TYPE_LABEL,
 	MEMBER_TYPE_ORDER,
 	PART_ICON,
@@ -31,7 +29,6 @@ const FIELD_TITLE: Record<MemberEditableField, string> = {
 	part: '파트 수정',
 	teamNumber: '팀 수정',
 	memberType: '멤버 타입 수정',
-	activityStatus: '활동 상태 수정',
 };
 
 interface MemberBulkEditModalProps {
@@ -74,24 +71,6 @@ export const MemberBulkEditModal = ({
 				return PART_PICKER_OPTIONS;
 			case 'memberType':
 				return MEMBER_TYPE_ORDER.map((type) => ({ value: type, label: MEMBER_TYPE_LABEL[type] }));
-			case 'activityStatus': {
-				// 선택한 대상 중 이미 활동 정지된 멤버가 있으면, 이번 기수에서 되돌릴 수 없으므로
-				// "활동 중"으로 일괄 변경하는 선택지 자체를 막는다.
-				const hasInactiveSubject = subjects.some(
-					(subject) => subject.activityStatus === 'INACTIVE',
-				);
-				return ACTIVITY_STATUS_EDIT_ORDER.map((status) => {
-					if (status === 'NORMAL' && hasInactiveSubject) {
-						return {
-							value: status,
-							label: ACTIVITY_STATUS_LABEL[status],
-							disabled: true,
-							disabledReason: '이미 활동 정지된 계정이 포함돼 있어요',
-						};
-					}
-					return { value: status, label: ACTIVITY_STATUS_LABEL[status] };
-				});
-			}
 			case 'teamNumber':
 				return [
 					{ value: String(UNASSIGNED_TEAM_NUMBER), label: '미배정' },
@@ -103,7 +82,7 @@ export const MemberBulkEditModal = ({
 			default:
 				return [];
 		}
-	}, [displayField, teams, subjects]);
+	}, [displayField, teams]);
 
 	if (!displayField) return null;
 

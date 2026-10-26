@@ -12,6 +12,8 @@ import { markAwaitingApproval } from '@/lib/approval-welcome';
 import { memberAuthQueryKey } from '@/providers/auth-provider';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
+import { WithdrawModal } from '../my-page/_components/withdraw-modal';
+
 /** 운영진의 승인·반려를 반영하기 위해 검토중 화면에서 회원 상태를 다시 확인하는 간격 */
 const MEMBER_STATUS_POLL_INTERVAL_MS = 10_000;
 
@@ -57,8 +59,14 @@ export default function PendingPage() {
 			</main>
 			<div className="flex flex-col gap-2 px-4 pb-4">
 				<Button variant="secondary" size="full" className="h-12 rounded-lg" asChild>
-					<Link href="/my-page">마이페이지</Link>
+					<Link href="/pending/edit">개인정보 수정하기</Link>
 				</Button>
+				{/* 가입 신청 취소는 현재 계정 탈퇴와 같은 처리를 한다. */}
+				<WithdrawModal>
+					<Button variant="assistive" size="full" className="h-12 rounded-lg">
+						가입 신청 취소
+					</Button>
+				</WithdrawModal>
 			</div>
 		</SafeAreaAppLayout>
 	);
