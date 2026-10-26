@@ -5,6 +5,7 @@ import {
 	type LinkableLoginMethod,
 	type MemberProfileUpdateRequest,
 	member,
+	notification,
 } from '@dpm-core/api';
 
 type WithdrawMutationOptions = MutationOptions;
@@ -13,6 +14,9 @@ export const withdrawMutationOptions = (options: WithdrawMutationOptions) =>
 	mutationOptions({
 		mutationKey: ['withdraw'],
 		mutationFn: async () => {
+			// 탈퇴하면 인증이 사라져 토큰을 지울 수 없으므로 먼저 지운다.
+			// 서버는 토큰이 없을 때도 오류를 내므로, 실패해도 탈퇴는 그대로 진행한다.
+			await notification.deleteAllPushTokens().catch(() => undefined);
 			await member.withdraw();
 			return true;
 		},
