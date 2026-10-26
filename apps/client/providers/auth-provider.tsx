@@ -17,7 +17,13 @@ interface AuthContextType {
 	user: Member | null;
 }
 
-const PENDING_ACCESSIBLE_PATHS = ['/pending', '/profile', '/my-page', '/rejected/edit'];
+const PENDING_ACCESSIBLE_PATHS = [
+	'/pending',
+	'/pending/edit',
+	'/profile',
+	'/my-page',
+	'/rejected/edit',
+];
 // '/pending'을 넣으면 검토중 화면을 보던 회원이 반려돼도 /rejected로 가지 못하고 검토중 화면에 머문다.
 // 재신청 성공 시에는 /rejected/edit 에서 상태 캐시 무효화가 끝난 뒤에 /pending 으로 이동하므로 포함하지 않아도 된다.
 const REJECTED_ACCESSIBLE_PATHS = ['/rejected', '/rejected/edit', '/my-page'];
