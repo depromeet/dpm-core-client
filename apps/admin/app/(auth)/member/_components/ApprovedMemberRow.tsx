@@ -4,8 +4,6 @@ import { Pencil } from 'lucide-react';
 import { Button, cn, TableCell, TableCheckbox, TableRow } from '@dpm-core/shared';
 
 import {
-	ACTIVITY_STATUS_LABEL,
-	ACTIVITY_STATUS_EDIT_ORDER,
 	MEMBER_TYPE_LABEL,
 	MEMBER_TYPE_ORDER,
 	PART_LABEL,
@@ -22,23 +20,6 @@ const MEMBER_TYPE_OPTIONS = MEMBER_TYPE_ORDER.map((value) => ({
 	value,
 	label: MEMBER_TYPE_LABEL[value],
 }));
-/**
- * 수료 위험은 서버가 계산하는 값이라 선택지에 두지 않는다.
- * 이미 활동 정지된 멤버는 이번 기수에서 다시 활동 중으로 되돌릴 수 없다.
- */
-const getActivityStatusOptions = (isCurrentlyInactive: boolean) =>
-	ACTIVITY_STATUS_EDIT_ORDER.map((value) => {
-		if (value === 'NORMAL' && isCurrentlyInactive) {
-			return {
-				value,
-				label: ACTIVITY_STATUS_LABEL[value],
-				disabled: true,
-				disabledReason: '이번 기수에서는 활동 정지를 되돌릴 수 없어요',
-			};
-		}
-		return { value, label: ACTIVITY_STATUS_LABEL[value] };
-	});
-
 const teamLabel = (teamNumber: number) =>
 	teamNumber === UNASSIGNED_TEAM_NUMBER ? '미배정' : `${teamNumber}팀`;
 
@@ -107,13 +88,8 @@ export const ApprovedMemberRow = ({
 			</TableCell>
 
 			<TableCell className="px-3">
-				{/* 닉네임은 서버에서 수정하지 않는 값이라 읽기 전용으로만 보여준다. */}
-				<span
-					className={cn(
-						'block truncate font-semibold text-body1 text-label-normal',
-						isEditing && 'rounded-lg bg-background-strong px-3 py-2 text-label-assistive',
-					)}
-				>
+				{/* 닉네임은 서버에서 수정하지 않는 값이라 수정 중에도 평소와 같은 모습으로 보여준다. */}
+				<span className="block truncate font-semibold text-body1 text-label-normal">
 					{row.name}
 				</span>
 			</TableCell>
@@ -147,17 +123,8 @@ export const ApprovedMemberRow = ({
 			</TableCell>
 
 			<TableCell className="w-48 px-3">
-				{isEditing ? (
-					<InlineOptionSelect
-						options={getActivityStatusOptions(row.activityStatus === 'INACTIVE')}
-						value={current.activityStatus === 'AT_RISK' ? 'NORMAL' : current.activityStatus}
-						onChange={(value) => onChange('activityStatus', value)}
-					>
-						<MemberActivityStatus status={current.activityStatus} editable />
-					</InlineOptionSelect>
-				) : (
-					<MemberActivityStatus status={row.activityStatus} />
-				)}
+				{/* 활동 상태는 수정할 수 없어, 수정 중에도 화살표 없이 보여주기만 한다. */}
+				<MemberActivityStatus status={row.activityStatus} />
 			</TableCell>
 
 			<TableCell className="w-28 px-3 text-right">

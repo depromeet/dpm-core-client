@@ -3,7 +3,6 @@
 import { Button, cn } from '@dpm-core/shared';
 
 import {
-	ACTIVITY_STATUS_LABEL,
 	MEMBER_TYPE_LABEL,
 	PART_LABEL,
 	UNASSIGNED_TEAM_NUMBER,
@@ -16,7 +15,6 @@ const FIELDS: Array<{ field: MemberEditableField; label: string }> = [
 	{ field: 'memberType', label: '멤버 타입' },
 	{ field: 'teamNumber', label: '팀' },
 	{ field: 'part', label: '파트' },
-	{ field: 'activityStatus', label: '활동 상태' },
 ];
 
 function valueLabel<K extends MemberEditableField>(
@@ -30,8 +28,6 @@ function valueLabel<K extends MemberEditableField>(
 			return PART_LABEL[value as MemberEditableFields['part']];
 		case 'memberType':
 			return MEMBER_TYPE_LABEL[value as MemberEditableFields['memberType']];
-		case 'activityStatus':
-			return ACTIVITY_STATUS_LABEL[value as MemberEditableFields['activityStatus']];
 		case 'teamNumber':
 			return value === UNASSIGNED_TEAM_NUMBER ? '미배정' : `${value}팀`;
 		default:

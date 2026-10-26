@@ -1,8 +1,4 @@
-import type {
-	CohortTeam,
-	MemberActivityStatus,
-	MemberManagementUpdateRequest,
-} from '@dpm-core/api';
+import type { CohortTeam, MemberManagementUpdateRequest } from '@dpm-core/api';
 
 import { UNASSIGNED_TEAM_NUMBER } from '../_constants';
 import type { MemberEditableFields, MemberRow } from '../_types';
@@ -13,19 +9,11 @@ export function toTeamId(teamNumber: number, teams: CohortTeam[]): number | unde
 	return teams.find((team) => team.number === teamNumber)?.id;
 }
 
-/** 화면의 활동 상태를 수정 API 가 받는 값으로 바꾼다. 수료 위험은 보낼 수 없다. */
-export function toUpdatableStatus(
-	activityStatus: MemberActivityStatus,
-): MemberManagementUpdateRequest['status'] {
-	return activityStatus === 'INACTIVE' ? 'INACTIVE' : 'ACTIVE';
-}
-
 export function toEditableFields(row: MemberRow): MemberEditableFields {
 	return {
 		part: row.part,
 		memberType: row.memberType,
 		teamNumber: row.teamNumber,
-		activityStatus: row.activityStatus,
 	};
 }
 
@@ -58,9 +46,6 @@ export function buildMemberChanges(
 		const teamId = toTeamId(draft.teamNumber, teams);
 		if (teamId === undefined) teamLookupFailed = true;
 		else changes.teamId = teamId;
-	}
-	if (draft.activityStatus !== row.activityStatus) {
-		changes.status = toUpdatableStatus(draft.activityStatus);
 	}
 
 	return { changes, teamLookupFailed };

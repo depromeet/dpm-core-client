@@ -26,16 +26,11 @@ export interface MemberRow {
 	loginMethod: LoginMethod | null;
 }
 
-/**
- * 한 행에서 수정할 수 있는 컬럼.
- * activityStatus 는 AT_RISK 도 담을 수 있지만 선택지로는 고를 수 없다.
- * (수료 위험은 서버가 계산하는 값이라 현재 상태를 보여주기만 한다.)
- */
+/** 한 행에서 수정할 수 있는 컬럼. 활동 상태는 수정할 수 없고 표시·필터링에만 쓴다. */
 export interface MemberEditableFields {
 	part: ManagedMemberPart;
 	memberType: ManagedMemberType;
 	teamNumber: number;
-	activityStatus: MemberActivityStatus;
 }
 
 export type MemberEditableField = keyof MemberEditableFields;
