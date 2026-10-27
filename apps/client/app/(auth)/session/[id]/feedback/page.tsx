@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { FeedbackForm } from '../_components/feedback-form';
 
 const FEEDBACK_TITLE = '디프만 세션 피드백';
-const FEEDBACK_DESCRIPTION = '이번 세션에 대한 만족도와 의견을 남겨주세요.';
+const FEEDBACK_DESCRIPTION = '이번 세션에 대한 만족도와 의견을 남겨주세요';
 const FEEDBACK_IMAGE = 'https://core.depromeet.com/session-feedback-og.jpg';
 
 export async function generateMetadata(): Promise<Metadata> {
