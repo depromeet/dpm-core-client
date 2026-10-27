@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import {
 	defaultShouldDehydrateQuery,
 	dehydrate,
@@ -20,6 +21,32 @@ import { HomeCoachmark } from './_components/home-coachmark';
 import { HomeHeader } from './_components/home-header';
 import { MemberStatusRedirect } from './_components/member-status-redirect';
 import { UserActionList } from './_components/user-action-list';
+
+const HOME_TITLE = '디프만 - Depromeet';
+const HOME_DESCRIPTION = '디프만 활동을 쉽고 체계적으로 관리하세요.';
+const HOME_IMAGE = 'https://core.depromeet.com/session-feedback-og.jpg';
+
+export const metadata: Metadata = {
+	title: HOME_TITLE,
+	description: HOME_DESCRIPTION,
+	openGraph: {
+		title: HOME_TITLE,
+		description: HOME_DESCRIPTION,
+		type: 'website',
+		images: [{
+			url: HOME_IMAGE,
+			width: 1200,
+			height: 600,
+			alt: '디프만 - Depromeet',
+		}],
+	},
+	twitter: {
+		card: 'summary_large_image',
+		title: HOME_TITLE,
+		description: HOME_DESCRIPTION,
+		images: [HOME_IMAGE],
+	},
+};
 
 export default function HomePage() {
 	const queryClient = new QueryClient();
