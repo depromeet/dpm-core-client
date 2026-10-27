@@ -23,7 +23,7 @@ import { MemberStatusRedirect } from './_components/member-status-redirect';
 import { UserActionList } from './_components/user-action-list';
 
 const HOME_TITLE = '디프만 - Depromeet';
-const HOME_DESCRIPTION = '디프만 활동을 쉽고 체계적으로 관리하세요.';
+const HOME_DESCRIPTION = '디프만 활동을 쉽고 체계적으로 관리하세요';
 const HOME_IMAGE = 'https://core.depromeet.com/session-feedback-og.jpg';
 
 export const metadata: Metadata = {
