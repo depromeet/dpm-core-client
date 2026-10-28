@@ -57,7 +57,9 @@ const MyPageInfoContent = () => {
 							<div className="flex items-center gap-1.5">
 								<p className="font-medium text-body2 text-label-assistive">{member.cohort}기</p>
 								<div className="h-3.5 w-px bg-line-subtle" />
-								<p className="font-medium text-body2 text-label-assistive">{member.teamNumber}팀</p>
+								<p className="font-medium text-body2 text-label-assistive">
+									{member.teamNumber === 0 ? '팀 미배정' : `${member.teamNumber}팀`}
+								</p>
 								<div className="h-3.5 w-px bg-line-subtle" />
 								<p className="font-medium text-body2 text-label-assistive">{cohort[part].label}</p>
 							</div>
