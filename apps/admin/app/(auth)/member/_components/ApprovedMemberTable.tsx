@@ -69,6 +69,7 @@ export const ApprovedMemberTable = ({
 					</TableHead>
 					<TableHead className="w-44 px-3 font-medium text-body2 text-label-subtle">파트</TableHead>
 					<TableHead className="px-3 font-medium text-body2 text-label-subtle">이름</TableHead>
+					<TableHead className="px-3 font-medium text-body2 text-label-subtle">가입 계정</TableHead>
 					<TableHead className="w-36 px-3 font-medium text-body2 text-label-subtle">
 						멤버 타입
 					</TableHead>

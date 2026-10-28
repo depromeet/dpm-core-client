@@ -15,6 +15,7 @@ import {
 
 import { toast } from '@/lib/toast';
 import { ATTENDANCE_QUERY_KEY } from '@/remotes/queries/attendance';
+import { invalidateMemberManagement } from '@/remotes/queries/member';
 
 interface AttendanceSelectionBarProps {
 	sessionId: number;
@@ -46,6 +47,7 @@ export function AttendanceSelectionBar({
 			}),
 		onSuccess: async (_, savedStatus) => {
 			await queryClient.invalidateQueries({ queryKey: [ATTENDANCE_QUERY_KEY] });
+			invalidateMemberManagement(queryClient);
 			const label =
 				savedStatus === 'EXCUSED_ABSENT' ? '인정 결석' : ATTENDANCE_LABEL_MAP[savedStatus];
 			toast.success(`${selectedIds.length}명을 ${label}으로 변경했어요.`);

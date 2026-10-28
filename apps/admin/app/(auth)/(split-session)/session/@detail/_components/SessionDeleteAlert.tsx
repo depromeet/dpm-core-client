@@ -17,6 +17,7 @@ import {
 } from '@dpm-core/shared';
 
 import { deleteSessionMutationOptions } from '@/remotes/mutations/session';
+import { invalidateMemberManagement } from '@/remotes/queries/member';
 import { getCurrentWeekSessionQuery, getSessionListQuery } from '@/remotes/queries/session';
 
 interface SessionDeleteAlertProps {
@@ -34,6 +35,7 @@ export const SessionDeleteAlert = (props: SessionDeleteAlertProps) => {
 			onSuccess: () => {
 				queryClient.invalidateQueries(getSessionListQuery);
 				queryClient.invalidateQueries(getCurrentWeekSessionQuery);
+				invalidateMemberManagement(queryClient);
 				toast.success('세션 삭제에 성공했습니다.');
 				router.replace('/session');
 			},

@@ -19,6 +19,7 @@ import {
 import { AttendanceStatusLabel, EmptyView, Profile } from '@/components/attendance';
 import { toast } from '@/lib/toast';
 import { ATTENDANCE_QUERY_KEY } from '@/remotes/queries/attendance';
+import { invalidateMemberManagement } from '@/remotes/queries/member';
 
 import { AttendanceSessionDetailDrawer } from './attendance-session-detail-drawer';
 
@@ -44,6 +45,7 @@ function AttendanceStatusSelect({ member, sessionId }: AttendanceStatusSelectPro
 			attendance.modifyAttendanceStatus({ sessionId, memberId: member.id, attendanceStatus }),
 		onSuccess: async () => {
 			await queryClient.invalidateQueries({ queryKey: [ATTENDANCE_QUERY_KEY] });
+			invalidateMemberManagement(queryClient);
 			toast.success('출석 정보를 저장했습니다.');
 		},
 		onError: () => toast.error('출석 정보 수정에 실패했습니다.'),
