@@ -182,7 +182,7 @@ export const bulkUpdateManagedMembersMutationOptions = (
 		...options,
 	});
 
-/** DELETE /v3/members/bulk - 일괄 소프트 삭제 */
+/** DELETE /v3/members/bulk - 일괄 삭제 (승인된 회원은 로그인 연결까지 영구 삭제) */
 export const bulkDeleteMembersMutationOptions = (
 	options?: MutationOptions<unknown, Error, MemberBulkDeleteRequest>,
 ) =>

@@ -1,28 +1,60 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { Button } from '@dpm-core/shared';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { ApiResponse, Member } from '@dpm-core/api';
+import { Button, toast } from '@dpm-core/shared';
 
 import bgEllipse from '@/assets/images/welcome-bg-ellipse.svg';
 import cardEllipse from '@/assets/images/welcome-card-ellipse.svg';
 import cardTexture from '@/assets/images/welcome-card-texture.png';
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { cohort } from '@/constants/cohort';
-import { clearAwaitingApproval } from '@/lib/approval-welcome';
 import { isExistPart } from '@/lib/utils';
-import { useAuth } from '@/providers/auth-provider';
+import { memberAuthQueryKey, useAuth } from '@/providers/auth-provider';
+import { confirmApprovalWelcomeMutationOptions } from '@/remotes/mutations/member';
+import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
-/** 승인(인증) 완료 후 처음 홈에 들어올 때 한 번 보여주는 화면 */
+const markApprovalWelcomeSeen = (old: ApiResponse<Member> | undefined) =>
+	old && { ...old, data: { ...old.data, hasSeenApprovalWelcome: true } };
+
+/** 승인(인증) 완료 후 계정당 한 번 보여주는 화면. 확인 여부는 서버가 계정별로 기록한다. */
 export default function WelcomePage() {
 	const { user } = useAuth();
+	const router = useRouter();
+	const queryClient = useQueryClient();
+
+	const { mutate: confirmWelcome, isPending } = useMutation(
+		confirmApprovalWelcomeMutationOptions({
+			onSuccess: () => {
+				// 홈의 리다이렉트가 이전 캐시(false)를 보고 다시 이 화면으로 되돌리지 않도록 먼저 맞춘다.
+				queryClient.setQueryData(getMyMemberInfoQuery.queryKey, markApprovalWelcomeSeen);
+				queryClient.setQueryData(memberAuthQueryKey, markApprovalWelcomeSeen);
+				router.replace('/');
+			},
+			onError: (error) => {
+				// 승인 전 회원이면 서버가 409 를 준다. 상태를 다시 받아 AuthProvider 가 알맞은 화면으로 보내게 한다.
+				if (error.response?.status === 409) {
+					void queryClient.invalidateQueries({ queryKey: memberAuthQueryKey });
+					void queryClient.invalidateQueries({ queryKey: getMyMemberInfoQuery.queryKey });
+					return;
+				}
+				toast.error('입장에 실패했어요. 다시 시도해주세요.');
+			},
+		}),
+	);
+
+	// 주소로 직접 들어오거나, 다른 기기에서 이미 확인한 경우에는 이 화면을 다시 보여주지 않는다.
+	const { data: memberResponse } = useQuery(getMyMemberInfoQuery);
+	const hasSeenApprovalWelcome = memberResponse?.data.hasSeenApprovalWelcome === true;
 
 	useEffect(() => {
-		clearAwaitingApproval();
-	}, []);
+		if (hasSeenApprovalWelcome) router.replace('/');
+	}, [hasSeenApprovalWelcome, router]);
 
-	if (!user) return null;
+	if (!user || hasSeenApprovalWelcome) return null;
 
 	const part = isExistPart(user.part) ? user.part : 'ETC';
 
@@ -79,11 +111,10 @@ export default function WelcomePage() {
 			<Button
 				variant="primary"
 				className="relative mt-12.75 h-14 w-70 rounded-lg font-semibold text-body1"
-				asChild
+				loading={isPending}
+				onClick={() => confirmWelcome()}
 			>
-				<Link href="/" replace>
-					디프만 {user.cohort}기 입장하기 →
-				</Link>
+				디프만 {user.cohort}기 입장하기 →
 			</Button>
 		</SafeAreaAppLayout>
 	);
