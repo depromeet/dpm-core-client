@@ -5,6 +5,7 @@ import { gaTrackAttendanceOverride } from '@dpm-core/shared';
 
 import { toast } from '@/lib/toast';
 import { modifyAttendanceStatusOptions } from '@/remotes/mutations/attendance';
+import { invalidateMemberManagement } from '@/remotes/queries/member';
 
 interface UseAttendanceStatusEditParams {
 	sessionId: number;
@@ -38,6 +39,7 @@ export const useAttendanceStatusEdit = ({
 					queryKey: ['ATTENDANCE'],
 				});
 
+				invalidateMemberManagement(queryClient);
 				toast.success(successMessage);
 				setIsEditMode(false);
 			},

@@ -1,4 +1,9 @@
-import { infiniteQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
+import {
+	infiniteQueryOptions,
+	keepPreviousData,
+	type QueryClient,
+	queryOptions,
+} from '@tanstack/react-query';
 import type { ManagedMemberPart, MemberManagementRequest } from '@dpm-core/api';
 import { member } from '@dpm-core/api';
 
@@ -45,6 +50,16 @@ export const getMembersRolesQuery = (memberIds: number[]) =>
 
 export const MEMBER_MANAGEMENT_QUERY_KEY = ['member-management'] as const;
 export const MEMBER_BADGES_QUERY_KEY = ['member-badges'] as const;
+
+/**
+ * 출석·세션이 바뀌면 서버가 계산하는 수료 상태(수료 위험 등)도 달라진다.
+ * 멤버 관리 목록은 캐시를 5분간 믿으므로, 출석·세션을 고친 쪽에서 함께 비워 준다.
+ */
+export const invalidateMemberManagement = (queryClient: QueryClient) =>
+	Promise.all([
+		queryClient.invalidateQueries({ queryKey: MEMBER_MANAGEMENT_QUERY_KEY }),
+		queryClient.invalidateQueries({ queryKey: MEMBER_BADGES_QUERY_KEY }),
+	]);
 
 /** 페이지마다 달라지는 page 를 뺀 나머지 조회 조건. 쿼리 키로도 쓴다. */
 export type MemberManagementFilterParams = Omit<MemberManagementRequest, 'page'>;

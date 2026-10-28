@@ -7,6 +7,7 @@ import { toast } from '@dpm-core/shared';
 
 import { SessionProivder } from '@/app/(auth)/(home)/_components/session-provider';
 import { createSessionMutationOptions } from '@/remotes/mutations/session';
+import { invalidateMemberManagement } from '@/remotes/queries/member';
 import { getCurrentWeekSessionQuery, getSessionListQuery } from '@/remotes/queries/session';
 
 import { SessionExitConfirmModal } from '../../_components/SessionExitConfirmModal';
@@ -26,6 +27,7 @@ export const CreateSessionContainer = () => {
 			onSuccess: () => {
 				queryClient.invalidateQueries(getSessionListQuery);
 				queryClient.invalidateQueries(getCurrentWeekSessionQuery);
+				invalidateMemberManagement(queryClient);
 				router.replace('/session');
 			},
 			onError: () => {

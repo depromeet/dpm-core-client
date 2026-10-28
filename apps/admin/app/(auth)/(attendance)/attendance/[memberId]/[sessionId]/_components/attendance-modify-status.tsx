@@ -20,6 +20,7 @@ import {
 
 import { Profile } from '@/components/attendance/profile';
 import { modifyAttendanceStatusOptions } from '@/remotes/mutations/attendance';
+import { invalidateMemberManagement } from '@/remotes/queries/member';
 
 interface AttendanceModifyStatusProps {
 	sessionId: number;
@@ -46,6 +47,7 @@ export const AttendanceModifyStatus = (props: AttendanceModifyStatusProps) => {
 				queryClient.invalidateQueries({
 					queryKey: ['ATTENDANCE'],
 				});
+				invalidateMemberManagement(queryClient);
 				toast.success('출석 정보를 저장했습니다.');
 			},
 		}),
