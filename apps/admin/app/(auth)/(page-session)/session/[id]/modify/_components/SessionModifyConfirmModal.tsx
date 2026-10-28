@@ -6,6 +6,7 @@ import { Button, toast } from '@dpm-core/shared';
 
 import { modifySessionMutationOptions } from '@/remotes/mutations/session';
 import { ATTENDANCE_QUERY_KEY } from '@/remotes/queries/attendance';
+import { invalidateMemberManagement } from '@/remotes/queries/member';
 import {
 	getCurrentWeekSessionQuery,
 	getSessionDetailQuery,
@@ -64,6 +65,7 @@ export const SessionModifyConfirmModal = ({
 				queryClient.invalidateQueries(getCurrentWeekSessionQuery);
 				queryClient.invalidateQueries(getSessionDetailQuery(sessionId));
 				queryClient.invalidateQueries({ queryKey: [ATTENDANCE_QUERY_KEY] });
+				invalidateMemberManagement(queryClient);
 				toast.success('세션을 수정했습니다.');
 				onOpenChange(false);
 				router.replace('/session');
