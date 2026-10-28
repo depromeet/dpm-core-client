@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Part } from '@dpm-core/api';
-import { Button, cn, Input, toast } from '@dpm-core/shared';
+import { Button, cn, Input } from '@dpm-core/shared';
 
 import { isProfileIncomplete } from '@/lib/profile-completion';
 import { memberAuthQueryKey } from '@/providers/auth-provider';
@@ -12,6 +12,7 @@ import { updateMyProfileMutationOptions } from '@/remotes/mutations/member';
 import { getMyMemberInfoQuery, getMyProfileQuery } from '@/remotes/queries/member';
 
 const MAX_NAME_LENGTH = 20;
+const NAME_FORMAT_ERROR_MESSAGE = '이름은 한글로만 입력해주세요.';
 
 /** 디자인 표기에 맞춘 직군 옵션 */
 type SelectablePart = Exclude<Part, 'ETC'>;
@@ -80,15 +81,27 @@ const ProfileFields = ({
 	const queryClient = useQueryClient();
 	const [name, setName] = useState(initialName);
 	const [part, setPart] = useState<SelectablePart | null>(initialPart);
+	/** 이름 입력 자체의 오류(형식 위반). 입력창 아래에 표시한다. */
+	const [nameError, setNameError] = useState<string | null>(null);
+	/** 이름과 무관한 저장 오류(409, 네트워크 등). 완료 버튼 위에 표시한다. */
+	const [formError, setFormError] = useState<string | null>(null);
 
 	const { mutate: updateProfile, isPending } = useMutation(updateMyProfileMutationOptions());
 
 	const trimmedName = name.trim();
 	const isValid = trimmedName.length > 0 && part !== null;
 
+	const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setName(event.target.value);
+		setNameError(null);
+	};
+
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (isReadOnly || !isValid || part === null) return;
+
+		setNameError(null);
+		setFormError(null);
 
 		updateProfile(
 			{ name: trimmedName, part },
@@ -96,7 +109,7 @@ const ProfileFields = ({
 				onSuccess: async () => {
 					await Promise.all([
 						queryClient.invalidateQueries({ queryKey: memberAuthQueryKey }),
-							queryClient.invalidateQueries({ queryKey: getMyMemberInfoQuery.queryKey }),
+						queryClient.invalidateQueries({ queryKey: getMyMemberInfoQuery.queryKey }),
 						queryClient.invalidateQueries({ queryKey: getMyProfileQuery.queryKey }),
 					]);
 					if (onSubmitted) {
@@ -108,11 +121,11 @@ const ProfileFields = ({
 				onError: (error) => {
 					const status = error.response?.status;
 					if (status === 409) {
-						toast.error('이미 등록된 정보는 변경할 수 없어요. 운영진에게 문의해주세요.');
+						setFormError('이미 등록된 정보는 변경할 수 없어요. 운영진에게 문의해주세요.');
 					} else if (status === 400) {
-						toast.error('이름은 한글 본명으로 입력해주세요.');
+						setNameError(NAME_FORMAT_ERROR_MESSAGE);
 					} else {
-						toast.error('저장에 실패했어요. 다시 시도해주세요.');
+						setFormError('저장에 실패했어요. 다시 시도해주세요.');
 					}
 				},
 			},
@@ -121,17 +134,32 @@ const ProfileFields = ({
 
 	return (
 		<form onSubmit={handleSubmit} className="flex flex-1 flex-col">
+			<div className="flex flex-col gap-1 px-4 pt-3 pb-5">
+				<h1 className="font-bold text-headline2 text-label-normal tracking-[-0.44px]">
+					회원 정보를 입력해주세요
+				</h1>
+				<p className="font-medium text-body2 text-label-assistive">
+					지원 시와 회원 정보가 다를 경우 가입 승인이 반려될 수 있어요
+				</p>
+			</div>
+
 			<div className="flex flex-col gap-4 p-4">
 				<div className="flex flex-col gap-2">
 					<span className="font-semibold text-body2 text-label-subtle">이름</span>
 					<Input
 						variant="line"
 						value={name}
-						onChange={(event) => setName(event.target.value)}
+						onChange={handleNameChange}
 						placeholder="이름을 입력해주세요"
 						maxLength={MAX_NAME_LENGTH}
 						readOnly={isReadOnly}
+						aria-invalid={nameError !== null}
 					/>
+					{nameError && (
+						<p className="font-medium text-caption1 text-red-400" role="alert">
+							{nameError}
+						</p>
+					)}
 				</div>
 
 				<div className="flex flex-col gap-2">
@@ -162,7 +190,12 @@ const ProfileFields = ({
 				</div>
 			</div>
 
-			<div className="mt-auto px-4 pb-4">
+			<div className="mt-auto flex flex-col gap-3 px-4 pb-4">
+				{formError && (
+					<p className="text-center font-medium text-caption1 text-red-400" role="alert">
+						{formError}
+					</p>
+				)}
 				{isReadOnly ? (
 					<p className="text-center font-medium text-body2 text-label-assistive">
 						이름과 직군은 변경할 수 없어요. 변경이 필요하면 운영진에게 문의해주세요.
