@@ -79,6 +79,12 @@ export const member = {
 		return res;
 	},
 
+	/** PATCH /v3/members/me/approval-welcome - 승인 완료 화면 확인 처리 (요청 본문 없음, 반복 호출 가능) */
+	confirmApprovalWelcome: async () => {
+		const res = await http.patch('v3/members/me/approval-welcome');
+		return res;
+	},
+
 	/** GET /v1/members/overview - latest 파라미터 (이번 기수만 보기, false면 미전송) */
 	getMembersOverview: async (params?: { latest?: boolean }) => {
 		const searchParams = params?.latest === true ? { latest: 'true' } : undefined;
@@ -224,13 +230,17 @@ export const member = {
 		return res;
 	},
 
-	/** DELETE /v3/members/{memberId} - 멤버 소프트 삭제 */
+	/**
+	 * DELETE /v3/members/{memberId} - 멤버 삭제
+	 * ACTIVE·INACTIVE 는 로그인 수단·세션·개인 연결 데이터를 영구 삭제하고, PENDING·REJECTED 는 소프트 삭제한다.
+	 * 공지·회식·정산·모임 소유자나 본인이면 거절(409/403)된다.
+	 */
 	deleteMember: async (memberId: number) => {
 		const res = await http.delete(`v3/members/${memberId}`);
 		return res;
 	},
 
-	/** DELETE /v3/members/bulk - 멤버 일괄 소프트 삭제 */
+	/** DELETE /v3/members/bulk - 멤버 일괄 삭제. 단건과 같은 규칙이며 하나라도 거절되면 전체 취소된다. */
 	bulkDeleteMembers: async (params: MemberBulkDeleteRequest) => {
 		const res = await http.delete('v3/members/bulk', { json: params });
 		return res;

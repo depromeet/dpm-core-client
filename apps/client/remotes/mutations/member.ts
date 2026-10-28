@@ -48,6 +48,21 @@ export const reapplyMembershipMutationOptions = (options?: ReapplyMembershipOpti
 		...options,
 	});
 
+type ConfirmApprovalWelcomeOptions = MutationOptions<
+	unknown,
+	HTTPError<ApiErrorReponse>,
+	void,
+	unknown
+>;
+
+/** 승인 완료 화면 확인을 계정에 기록한다. 다른 기기에서도 다시 표시되지 않는다. */
+export const confirmApprovalWelcomeMutationOptions = (options?: ConfirmApprovalWelcomeOptions) =>
+	mutationOptions({
+		mutationKey: ['approval-welcome-confirm'],
+		mutationFn: () => member.confirmApprovalWelcome(),
+		...options,
+	});
+
 /* --------------------------------------------------------------------- *
  * 계정 연동 (본인)
  * --------------------------------------------------------------------- */
