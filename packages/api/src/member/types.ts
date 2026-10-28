@@ -57,6 +57,8 @@ export interface Member {
 	isAdmin: boolean;
 	status: MemberStatus;
 	loginMethod: LoginMethod;
+	/** 계정 기준 승인 완료 화면 확인 여부. 승인(ACTIVE·INACTIVE) 전에는 항상 false 다. */
+	hasSeenApprovalWelcome?: boolean;
 }
 
 /**

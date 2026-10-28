@@ -310,7 +310,23 @@ export const MemberManagement = () => {
 				refresh();
 				toast.success('삭제를 완료했어요.');
 			},
-			onError: () => toast.error('삭제에 실패했어요. 잠시 후 다시 시도해 주세요.'),
+			onError: (error) => {
+				// 서버는 대상 중 하나라도 거절되면 전체를 취소한다.
+				const status = (error as { response?: { status?: number } }).response?.status;
+				if (status === 409) {
+					toast.error(
+						'공지·회식·정산·모임을 만든 멤버가 포함돼 있어 삭제할 수 없어요. 선택한 멤버를 다시 확인해 주세요.',
+					);
+				} else if (status === 403) {
+					toast.error('삭제 권한이 없거나 본인 계정이 포함돼 있어요.');
+				} else if (status === 404) {
+					// 다른 관리자가 먼저 지운 멤버가 표에 남아 있을 수 있으니 목록을 다시 받는다.
+					refresh();
+					toast.error('이미 삭제됐거나 없는 멤버가 포함돼 있어요. 목록을 새로고침해 주세요.');
+				} else {
+					toast.error('삭제에 실패했어요. 잠시 후 다시 시도해 주세요.');
+				}
+			},
 		}),
 	);
 
@@ -616,7 +632,8 @@ export const MemberManagement = () => {
 						<span className="text-primary-normal">
 							{dialog?.type === 'delete' ? dialog.targets.length : 0}명
 						</span>
-						을 삭제합니다. 삭제된 멤버는 표에서 사라집니다.
+						을 삭제합니다. 삭제된 멤버는 표에서 사라지고, 로그인 연결 정보까지 영구 삭제되어 되돌릴
+						수 없어요.
 					</>
 				}
 				subjects={dialog?.type === 'delete' ? dialog.targets : []}

@@ -8,7 +8,6 @@ import { Button } from '@dpm-core/shared';
 
 import pendingSymbol from '@/assets/images/pending-symbol.svg';
 import { SafeAreaAppLayout } from '@/components/app-layout';
-import { markAwaitingApproval } from '@/lib/approval-welcome';
 import { memberAuthQueryKey } from '@/providers/auth-provider';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
@@ -19,10 +18,6 @@ const MEMBER_STATUS_POLL_INTERVAL_MS = 10_000;
 
 export default function PendingPage() {
 	const queryClient = useQueryClient();
-
-	useEffect(() => {
-		markAwaitingApproval();
-	}, []);
 
 	// 앱 기본 staleTime(5분) 때문에 캐시가 신선하다고 판단되면 화면에 다시 들어오거나 탭에 돌아와도
 	// 재조회하지 않는다. staleTime 0 으로 두어 진입·포커스 때마다 바로 한 번 확인한다.
