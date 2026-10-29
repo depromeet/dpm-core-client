@@ -1,13 +1,15 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { MemberBadgeCard, MemberManagementUpdateRequest } from '@dpm-core/api';
 import { Button, toast } from '@dpm-core/shared';
 
 import { LoadingBox } from '@/components/loading-box';
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
 import { usePreventPageExit } from '@/hooks/use-prevent-page-exit';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useClarity } from '@/providers/admin-clarity-adapter';
 import {
 	acknowledgeMemberBadgeMutationOptions,
 	approveMembersMutationOptions,
@@ -68,6 +70,7 @@ type DialogState =
 /** 멤버 관리 화면의 조립 지점. 훅에서 받은 상태를 각 UI 조각에 나눠준다. */
 export const MemberManagement = () => {
 	const queryClient = useQueryClient();
+	const { track } = useClarity();
 	const {
 		filters,
 		queryParams,
@@ -79,6 +82,27 @@ export const MemberManagement = () => {
 		setExcludeStaff,
 		applyBadgePreset,
 	} = useMemberFilters();
+
+	// 탭 진입 기록은 탭이 바뀔 때만 남긴다. track 은 로그인 상태가 정해질 때 새로 만들어지므로
+	// 의존성에 넣으면 같은 탭에서 중복 기록되어, 최신 track 만 ref 로 들고 있는다.
+	const trackRef = useRef(track);
+	useEffect(() => {
+		trackRef.current = track;
+	}, [track]);
+	useEffect(() => {
+		trackRef.current(
+			filters.approvalStatus === 'PENDING'
+				? CLARITY_ACTION_ID.MEMBER.TAB_PENDING_VIEW
+				: CLARITY_ACTION_ID.MEMBER.TAB_APPROVED_VIEW,
+		);
+	}, [filters.approvalStatus]);
+
+	const withFilterTracking =
+		<T,>(setter: (value: T) => void) =>
+		(value: T) => {
+			track(CLARITY_ACTION_ID.MEMBER.FILTER_CHANGE);
+			setter(value);
+		};
 
 	const [searchInput, setSearchInput] = useState('');
 	const debouncedSetSearch = useDebounce(setSearch, 300);
@@ -122,6 +146,17 @@ export const MemberManagement = () => {
 
 	const [dialog, setDialog] = useState<DialogState>(null);
 	const closeDialog = useCallback(() => setDialog(null), []);
+	const showMergeNotice = useCallback(
+		(next: Extract<DialogState, { type: 'merge-required' | 'merge-conflict' }>) => {
+			track(
+				next.type === 'merge-conflict'
+					? CLARITY_ACTION_ID.MEMBER.MERGE_CONFLICT_SHOWN
+					: CLARITY_ACTION_ID.MEMBER.MERGE_REQUIRED_SHOWN,
+			);
+			setDialog(next);
+		},
+		[track],
+	);
 
 	const refresh = useCallback(() => {
 		queryClient.invalidateQueries({ queryKey: MEMBER_MANAGEMENT_QUERY_KEY });
@@ -146,6 +181,7 @@ export const MemberManagement = () => {
 		// 인라인 수정이 있으면 먼저 확인을 받아야 한다 (안 그러면 탭 버튼에서만
 		// 막히고 카드를 누르면 그대로 새 조건으로 넘어가 버린다).
 		inlineEdit.guard(() => {
+			track(CLARITY_ACTION_ID.MEMBER.SUMMARY_CARD_CLICK);
 			applyBadgePreset(card);
 			setSearchInput('');
 
@@ -183,9 +219,10 @@ export const MemberManagement = () => {
 			// 서버는 같은 소셜의 서로 다른 계정이면 409 로 거절한다. 다른 회원의 계정으로 보고 안내한다.
 			const status = (error as { response?: { status?: number } }).response?.status;
 			if (status === 409 && plan.approvedPairs.length > 0) {
-				setDialog({ type: 'merge-conflict', pairs: plan.approvedPairs });
+				showMergeNotice({ type: 'merge-conflict', pairs: plan.approvedPairs });
 				return;
 			}
+			track(CLARITY_ACTION_ID.MEMBER.APPROVE_FAIL);
 			toast.error('승인에 실패했어요. 잠시 후 다시 시도해 주세요.');
 		},
 	});
@@ -202,6 +239,20 @@ export const MemberManagement = () => {
 		},
 		onError: () => toast.error('반려에 실패했어요. 잠시 후 다시 시도해 주세요.'),
 	});
+
+	const confirmApproval = (plan: ApprovalPlan) => {
+		track(
+			plan.merges.length > 0
+				? CLARITY_ACTION_ID.MEMBER.MERGE_APPROVE_CONFIRM
+				: CLARITY_ACTION_ID.MEMBER.APPROVE_CONFIRM,
+		);
+		runApproval(plan);
+	};
+
+	const confirmRejection = (targets: MemberRow[]) => {
+		track(CLARITY_ACTION_ID.MEMBER.REJECT_CONFIRM);
+		runRejection(targets);
+	};
 
 	const [isCheckingMerge, setIsCheckingMerge] = useState(false);
 
@@ -240,7 +291,7 @@ export const MemberManagement = () => {
 		}
 		// 셋 이상이 함께 선택된 중복 의심 계정은 한 번에 병합할 수 없다.
 		if (plan.hasOversizedGroup) {
-			setDialog({ type: 'merge-required', hasOversizedGroup: true });
+			showMergeNotice({ type: 'merge-required', hasOversizedGroup: true });
 			return;
 		}
 
@@ -249,11 +300,11 @@ export const MemberManagement = () => {
 		try {
 			const approvedPairs = await findApprovedPairs(plan.unpaired);
 			if (!approvedPairs) {
-				setDialog({ type: 'merge-required', hasOversizedGroup: false });
+				showMergeNotice({ type: 'merge-required', hasOversizedGroup: false });
 				return;
 			}
 			if (approvedPairs.some(({ source, approved }) => isSameLoginMethod(source, approved))) {
-				setDialog({ type: 'merge-conflict', pairs: approvedPairs });
+				showMergeNotice({ type: 'merge-conflict', pairs: approvedPairs });
 				return;
 			}
 
@@ -286,6 +337,7 @@ export const MemberManagement = () => {
 	 * (확인 모달에 대상 계정이 모두 표시되므로 어떤 계정이 처리되는지 확인할 수 있다.)
 	 */
 	const handleRowApprove = (row: MemberRow) => {
+		track(CLARITY_ACTION_ID.MEMBER.APPROVE_ROW_CLICK);
 		if (selection.isSelected(row.id) && selectedRows.length > 1) {
 			openApproveDialog(selectedRows);
 			return;
@@ -313,6 +365,11 @@ export const MemberManagement = () => {
 			onError: (error) => {
 				// 서버는 대상 중 하나라도 거절되면 전체를 취소한다.
 				const status = (error as { response?: { status?: number } }).response?.status;
+				track(
+					status === 409
+						? CLARITY_ACTION_ID.MEMBER.DELETE_FAIL_CONFLICT
+						: CLARITY_ACTION_ID.MEMBER.DELETE_FAIL,
+				);
 				if (status === 409) {
 					toast.error(
 						'공지·회식·정산·모임을 만든 멤버가 포함돼 있어 삭제할 수 없어요. 선택한 멤버를 다시 확인해 주세요.',
@@ -348,7 +405,10 @@ export const MemberManagement = () => {
 				refresh();
 				toast.success('수정을 완료했어요.');
 			},
-			onError: () => toast.error('수정에 실패했어요. 잠시 후 다시 시도해 주세요.'),
+			onError: () => {
+				track(CLARITY_ACTION_ID.MEMBER.EDIT_FAIL);
+				toast.error('수정에 실패했어요. 잠시 후 다시 시도해 주세요.');
+			},
 		}),
 	);
 
@@ -368,8 +428,9 @@ export const MemberManagement = () => {
 			return;
 		}
 
+		track(CLARITY_ACTION_ID.MEMBER.EDIT_SAVE);
 		updateMember({ memberId: editingRow.id, changes });
-	}, [inlineEdit, teams, updateMember]);
+	}, [inlineEdit, teams, updateMember, track]);
 
 	/* ------------------------------- 일괄 수정 ------------------------------- */
 
@@ -442,10 +503,10 @@ export const MemberManagement = () => {
 							teamNumbers={filters.teamNumbers}
 							activityStatuses={filters.activityStatuses}
 							excludeStaff={filters.excludeStaff}
-							onPartsChange={setParts}
-							onTeamNumbersChange={setTeamNumbers}
-							onActivityStatusesChange={setActivityStatuses}
-							onExcludeStaffChange={setExcludeStaff}
+							onPartsChange={withFilterTracking(setParts)}
+							onTeamNumbersChange={withFilterTracking(setTeamNumbers)}
+							onActivityStatusesChange={withFilterTracking(setActivityStatuses)}
+							onExcludeStaffChange={withFilterTracking(setExcludeStaff)}
 						/>
 					)}
 					<MemberSelectionSummary
@@ -463,7 +524,10 @@ export const MemberManagement = () => {
 								size="md"
 								disabled={selectedRows.length === 0}
 								loading={isCheckingMerge}
-								onClick={() => openApproveDialog(selectedRows)}
+								onClick={() => {
+									track(CLARITY_ACTION_ID.MEMBER.APPROVE_BULK_CLICK);
+									openApproveDialog(selectedRows);
+								}}
 							>
 								{isMergeOnlySelection ? '병합 후 승인하기' : '승인하기'}
 							</Button>
@@ -471,7 +535,10 @@ export const MemberManagement = () => {
 								variant="assistive"
 								size="md"
 								disabled={selectedRows.length === 0}
-								onClick={() => setDialog({ type: 'reject', targets: selectedRows })}
+								onClick={() => {
+									track(CLARITY_ACTION_ID.MEMBER.REJECT_BULK_CLICK);
+									setDialog({ type: 'reject', targets: selectedRows });
+								}}
 							>
 								반려하기
 							</Button>
@@ -482,7 +549,10 @@ export const MemberManagement = () => {
 							className="disabled:opacity-20"
 							size="md"
 							disabled={selectedRows.length === 0}
-							onClick={() => setDialog({ type: 'delete', targets: selectedRows })}
+							onClick={() => {
+								track(CLARITY_ACTION_ID.MEMBER.DELETE_CLICK);
+								setDialog({ type: 'delete', targets: selectedRows });
+							}}
 						>
 							삭제하기
 						</Button>
@@ -509,7 +579,10 @@ export const MemberManagement = () => {
 							onToggle={selection.toggle}
 							onToggleAll={handleToggleAllSelection}
 							onApprove={handleRowApprove}
-							onReject={(row) => setDialog({ type: 'reject', targets: [row] })}
+							onReject={(row) => {
+								track(CLARITY_ACTION_ID.MEMBER.REJECT_ROW_CLICK);
+								setDialog({ type: 'reject', targets: [row] });
+							}}
 						/>
 					) : (
 						<ApprovedMemberTable
@@ -522,8 +595,14 @@ export const MemberManagement = () => {
 							editingId={inlineEdit.editingId}
 							draft={inlineEdit.draft}
 							onChange={inlineEdit.change}
-							onStartEdit={inlineEdit.start}
-							onCancelEdit={inlineEdit.cancel}
+							onStartEdit={(row) => {
+								track(CLARITY_ACTION_ID.MEMBER.EDIT_START);
+								inlineEdit.start(row);
+							}}
+							onCancelEdit={() => {
+								track(CLARITY_ACTION_ID.MEMBER.EDIT_CANCEL);
+								inlineEdit.cancel();
+							}}
 							onSaveEdit={handleInlineSave}
 							isSaving={isUpdating}
 						/>
@@ -547,7 +626,10 @@ export const MemberManagement = () => {
 						currentValueOf={bulkEdit.currentValueOf}
 						stagedFields={bulkEdit.stagedFields}
 						onOpenField={bulkEdit.openModal}
-						onSave={() => saveBulkEdit()}
+						onSave={() => {
+							track(CLARITY_ACTION_ID.MEMBER.BULK_EDIT_SAVE);
+							saveBulkEdit();
+						}}
 						canSave={bulkEdit.hasChanges}
 						isSaving={isBulkSaving}
 					/>
@@ -589,7 +671,7 @@ export const MemberManagement = () => {
 						label: '승인하기',
 						onClick: () => {
 							if (dialog?.type !== 'approve') return;
-							runApproval(dialog.plan);
+							confirmApproval(dialog.plan);
 						},
 					},
 				]}
@@ -616,7 +698,7 @@ export const MemberManagement = () => {
 						label: '반려하기',
 						onClick: () => {
 							if (dialog?.type !== 'reject') return;
-							runRejection(dialog.targets);
+							confirmRejection(dialog.targets);
 						},
 					},
 				]}
@@ -644,6 +726,7 @@ export const MemberManagement = () => {
 						label: '삭제하기',
 						onClick: () => {
 							if (dialog?.type !== 'delete') return;
+							track(CLARITY_ACTION_ID.MEMBER.DELETE_CONFIRM);
 							deleteMembers({ memberIds: dialog.targets.map((target) => target.id) });
 						},
 					},
@@ -667,7 +750,7 @@ export const MemberManagement = () => {
 				isPending={isApproving}
 				onConfirm={() => {
 					if (dialog?.type !== 'merge-approved') return;
-					runApproval(dialog.plan);
+					confirmApproval(dialog.plan);
 				}}
 			/>
 

@@ -13,7 +13,9 @@ import {
 } from '@dpm-core/shared';
 
 import { Pressable } from '@/components/motion';
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
 import { deleteToken } from '@/lib/utils';
+import { useClarity } from '@/providers/client-clarity-adapter';
 import { logoutMutationOptions } from '@/remotes/mutations/auth';
 
 const LogoutModal = ({ children }: PropsWithChildren) => {
@@ -21,6 +23,7 @@ const LogoutModal = ({ children }: PropsWithChildren) => {
 	const router = useRouter();
 
 	const queryClient = useQueryClient();
+	const { track } = useClarity();
 
 	const handleClose = () => {
 		setIsOpen(false);
@@ -64,7 +67,11 @@ const LogoutModal = ({ children }: PropsWithChildren) => {
 						disabled={isDisabled}
 						variant="secondary"
 						size="lg"
-						onClick={() => logoutMutate()}
+						onClick={() => {
+							// 로그아웃이 끝나면 캐시를 비우고 비회원이 되므로, 상태가 바뀌기 전에 기록한다.
+							track(CLARITY_ACTION_ID.MY_PAGE.LOGOUT_CONFIRM);
+							logoutMutate();
+						}}
 					>
 						로그아웃
 					</Pressable>

@@ -7,6 +7,9 @@ import z from 'zod';
 import { auth } from '@dpm-core/api';
 import { Form, toast } from '@dpm-core/shared';
 
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
+import { useClarity } from '@/providers/client-clarity-adapter';
+
 import { FormEmail } from './form/form-email';
 import { FormLoginButton } from './form/form-login-button';
 import { FormPassword } from './form/form-password';
@@ -30,12 +33,15 @@ export const LoginEamilForm = () => {
 	});
 
 	const router = useRouter();
+	const { track } = useClarity();
 
 	const handleLoginEmail = async (formData: LoginEmailSchema) => {
 		try {
 			await auth.login(formData);
+			track(CLARITY_ACTION_ID.LOGIN_EMAIL.SUBMIT_SUCCESS);
 			router.replace('/');
 		} catch {
+			track(CLARITY_ACTION_ID.LOGIN_EMAIL.SUBMIT_FAIL);
 			toast.error('이메일 또는 비밀번호가 일치하지 않습니다.');
 		}
 	};

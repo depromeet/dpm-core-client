@@ -7,7 +7,9 @@ import { toast } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
 import { SafeAreaAppLayout } from '@/components/app-layout';
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
 import { memberAuthQueryKey } from '@/providers/auth-provider';
+import { useClarity } from '@/providers/client-clarity-adapter';
 import { reapplyMembershipMutationOptions } from '@/remotes/mutations/member';
 
 import { ProfileForm } from '../../profile/_components/profile-form';
@@ -19,10 +21,12 @@ import { ProfileForm } from '../../profile/_components/profile-form';
 export default function RejectedEditPage() {
 	const router = useRouter();
 	const queryClient = useQueryClient();
+	const { track } = useClarity();
 
 	const { mutate: reapply } = useMutation(
 		reapplyMembershipMutationOptions({
 			onSuccess: async () => {
+				track(CLARITY_ACTION_ID.REJECTED_EDIT.REAPPLY_SUCCESS);
 				// 재신청 성공 시 상태는 확정적으로 PENDING이므로, 네트워크 응답을 기다리지 않고
 				// 캐시를 먼저 PENDING으로 맞춘다. 다만 setQueryData 는 구독자(AuthProvider)에게
 				// 비동기로(다음 틱에) 알림이 가므로, 바로 이어서 router.replace 를 호출하면 그
@@ -38,7 +42,10 @@ export default function RejectedEditPage() {
 				router.replace('/pending');
 				await queryClient.invalidateQueries({ queryKey: memberAuthQueryKey });
 			},
-			onError: () => toast.error('재신청에 실패했어요. 다시 시도해주세요.'),
+			onError: () => {
+				track(CLARITY_ACTION_ID.REJECTED_EDIT.REAPPLY_FAIL);
+				toast.error('재신청에 실패했어요. 다시 시도해주세요.');
+			},
 		}),
 	);
 

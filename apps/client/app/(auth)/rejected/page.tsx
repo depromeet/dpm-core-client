@@ -4,9 +4,12 @@ import { useRouter } from 'next/navigation';
 import { Button, CircleAlert } from '@dpm-core/shared';
 
 import { SafeAreaAppLayout } from '@/components/app-layout';
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
+import { useClarity } from '@/providers/client-clarity-adapter';
 
 export default function RejectedPage() {
 	const router = useRouter();
+	const { track } = useClarity();
 
 	return (
 		<SafeAreaAppLayout className="h-dvh bg-white">
@@ -33,7 +36,10 @@ export default function RejectedPage() {
 					variant="secondary"
 					size="full"
 					className="h-12 rounded-lg"
-					onClick={() => router.push('/rejected/edit')}
+					onClick={() => {
+						track(CLARITY_ACTION_ID.REJECTED.EDIT_CLICK);
+						router.push('/rejected/edit');
+					}}
 				>
 					개인정보 수정하기
 				</Button>

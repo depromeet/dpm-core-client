@@ -11,9 +11,11 @@ import bgEllipse from '@/assets/images/welcome-bg-ellipse.svg';
 import cardEllipse from '@/assets/images/welcome-card-ellipse.svg';
 import cardTexture from '@/assets/images/welcome-card-texture.png';
 import { SafeAreaAppLayout } from '@/components/app-layout';
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
 import { cohort } from '@/constants/cohort';
 import { isExistPart } from '@/lib/utils';
 import { memberAuthQueryKey, useAuth } from '@/providers/auth-provider';
+import { useClarity } from '@/providers/client-clarity-adapter';
 import { confirmApprovalWelcomeMutationOptions } from '@/remotes/mutations/member';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
@@ -25,16 +27,19 @@ export default function WelcomePage() {
 	const { user } = useAuth();
 	const router = useRouter();
 	const queryClient = useQueryClient();
+	const { track } = useClarity();
 
 	const { mutate: confirmWelcome, isPending } = useMutation(
 		confirmApprovalWelcomeMutationOptions({
 			onSuccess: () => {
+				track(CLARITY_ACTION_ID.WELCOME.ENTER_SUCCESS);
 				// 홈의 리다이렉트가 이전 캐시(false)를 보고 다시 이 화면으로 되돌리지 않도록 먼저 맞춘다.
 				queryClient.setQueryData(getMyMemberInfoQuery.queryKey, markApprovalWelcomeSeen);
 				queryClient.setQueryData(memberAuthQueryKey, markApprovalWelcomeSeen);
 				router.replace('/');
 			},
 			onError: (error) => {
+				track(CLARITY_ACTION_ID.WELCOME.ENTER_FAIL);
 				// 승인 전 회원이면 서버가 409 를 준다. 상태를 다시 받아 AuthProvider 가 알맞은 화면으로 보내게 한다.
 				if (error.response?.status === 409) {
 					void queryClient.invalidateQueries({ queryKey: memberAuthQueryKey });
@@ -112,7 +117,10 @@ export default function WelcomePage() {
 				variant="primary"
 				className="relative mt-12.75 h-14 w-70 rounded-lg font-semibold text-body1"
 				loading={isPending}
-				onClick={() => confirmWelcome()}
+				onClick={() => {
+					track(CLARITY_ACTION_ID.WELCOME.ENTER_CLICK);
+					confirmWelcome();
+				}}
 			>
 				디프만 {user.cohort}기 입장하기 →
 			</Button>
