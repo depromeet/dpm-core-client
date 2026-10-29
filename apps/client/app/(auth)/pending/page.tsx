@@ -8,7 +8,9 @@ import { Button } from '@dpm-core/shared';
 
 import pendingSymbol from '@/assets/images/pending-symbol.svg';
 import { SafeAreaAppLayout } from '@/components/app-layout';
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
 import { memberAuthQueryKey } from '@/providers/auth-provider';
+import { useClarity } from '@/providers/client-clarity-adapter';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
 import { CancelApplicationModal } from './_components/cancel-application-modal';
@@ -18,6 +20,7 @@ const MEMBER_STATUS_POLL_INTERVAL_MS = 10_000;
 
 export default function PendingPage() {
 	const queryClient = useQueryClient();
+	const { track } = useClarity();
 
 	// 앱 기본 staleTime(5분) 때문에 캐시가 신선하다고 판단되면 화면에 다시 들어오거나 탭에 돌아와도
 	// 재조회하지 않는다. staleTime 0 으로 두어 진입·포커스 때마다 바로 한 번 확인한다.
@@ -54,7 +57,12 @@ export default function PendingPage() {
 			</main>
 			<div className="flex flex-col gap-2 px-4 pb-4">
 				<Button variant="secondary" size="full" className="h-12 rounded-lg" asChild>
-					<Link href="/pending/edit">개인정보 수정하기</Link>
+					<Link
+						href="/pending/edit"
+						onClick={() => track(CLARITY_ACTION_ID.PENDING.EDIT_CLICK)}
+					>
+						개인정보 수정하기
+					</Link>
 				</Button>
 				<CancelApplicationModal>
 					<Button variant="assistive" size="full" className="h-12 rounded-lg">

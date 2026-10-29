@@ -13,17 +13,31 @@ import {
 } from '@dpm-core/shared';
 
 import { Pressable } from '@/components/motion';
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
 import { clearLastLoginMethod } from '@/lib/last-login';
 import { deleteToken } from '@/lib/utils';
+import { useClarity } from '@/providers/client-clarity-adapter';
 import { withdrawMutationOptions } from '@/remotes/mutations/member';
 
 const WithdrawModal = ({ children }: PropsWithChildren) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const router = useRouter();
 	const queryClient = useQueryClient();
+	const { track } = useClarity();
 
 	const handleClose = () => {
 		setIsOpen(false);
+	};
+
+	const handleOpenChange = (open: boolean) => {
+		if (open) track(CLARITY_ACTION_ID.MY_PAGE.WITHDRAW_OPEN);
+		setIsOpen(open);
+	};
+
+	// 탈퇴가 끝나면 캐시를 비우고 비회원이 되므로, 상태가 바뀌기 전에 기록한다.
+	const handleConfirm = () => {
+		track(CLARITY_ACTION_ID.MY_PAGE.WITHDRAW_CONFIRM);
+		withdrawMutate();
 	};
 
 	const redirectToHome = () => {
@@ -45,7 +59,7 @@ const WithdrawModal = ({ children }: PropsWithChildren) => {
 	const isDisabled = isWithdrawPending;
 
 	return (
-		<Dialog open={isOpen} onOpenChange={setIsOpen}>
+		<Dialog open={isOpen} onOpenChange={handleOpenChange}>
 			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent showCloseButton={false}>
 				<DialogHeader className="gap-y-2 text-left">
@@ -71,7 +85,7 @@ const WithdrawModal = ({ children }: PropsWithChildren) => {
 						disabled={isDisabled}
 						variant="danger"
 						size="lg"
-						onClick={() => withdrawMutate()}
+						onClick={handleConfirm}
 					>
 						탈퇴
 					</Pressable>

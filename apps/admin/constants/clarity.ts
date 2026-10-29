@@ -42,7 +42,35 @@ export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 	ANNOUNCEMENT_CREATE: {},
 	ANNOUNCEMENT_CREATE_PREVIEW: {},
 	ANNOUNCEMENT_EDIT: {},
-	MEMBER: {},
+	MEMBER: {
+		// 미승인/승인 완료 탭은 주소가 같아 페이지 ID로 구분되지 않으므로 탭 진입을 따로 기록한다.
+		TAB_PENDING_VIEW: 'tab_pending_view',
+		TAB_APPROVED_VIEW: 'tab_approved_view',
+		SUMMARY_CARD_CLICK: 'summary_card_click',
+		FILTER_CHANGE: 'filter_change',
+		// 승인·반려 (미승인 탭): row = 행 안의 버튼, bulk = 선택한 계정을 위 버튼으로 처리
+		APPROVE_ROW_CLICK: 'approve_row_click',
+		APPROVE_BULK_CLICK: 'approve_bulk_click',
+		REJECT_ROW_CLICK: 'reject_row_click',
+		REJECT_BULK_CLICK: 'reject_bulk_click',
+		APPROVE_CONFIRM: 'approve_confirm',
+		MERGE_APPROVE_CONFIRM: 'merge_approve_confirm', // 병합이 포함된 승인
+		REJECT_CONFIRM: 'reject_confirm',
+		APPROVE_FAIL: 'approve_fail',
+		MERGE_REQUIRED_SHOWN: 'merge_required_shown', // 병합이 필요하다는 안내 노출
+		MERGE_CONFLICT_SHOWN: 'merge_conflict_shown', // 같은 소셜 계정이라 병합 불가 안내 노출
+		// 수정 (승인 완료 탭)
+		EDIT_START: 'edit_start',
+		EDIT_SAVE: 'edit_save',
+		EDIT_CANCEL: 'edit_cancel',
+		EDIT_FAIL: 'edit_fail',
+		BULK_EDIT_SAVE: 'bulk_edit_save',
+		// 삭제 (승인 완료 탭, 영구 삭제)
+		DELETE_CLICK: 'delete_click',
+		DELETE_CONFIRM: 'delete_confirm',
+		DELETE_FAIL_CONFLICT: 'delete_fail_conflict', // 공지·회식·정산·모임 소유자 포함(409)
+		DELETE_FAIL: 'delete_fail',
+	},
 	MY_PAGE: {},
 	SUPER_ADMIN: {},
 	ATTENDANCE_SEARCH: {},

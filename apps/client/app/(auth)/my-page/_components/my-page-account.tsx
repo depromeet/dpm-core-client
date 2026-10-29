@@ -23,7 +23,9 @@ import {
 	toast,
 } from '@dpm-core/shared';
 
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
 import { getAccountLinkRedirectUri } from '@/lib/env';
+import { useClarity } from '@/providers/client-clarity-adapter';
 import {
 	startAccountLinkMutationOptions,
 	unlinkAccountMutationOptions,
@@ -57,6 +59,7 @@ interface MyPageAccountProps {
 /** 계정 정보. 연결된 카카오·애플·이메일 로그인 수단을 보여주고, 카카오·애플은 연동·해제할 수 있다. */
 export const MyPageAccount = ({ accounts }: MyPageAccountProps) => {
 	const queryClient = useQueryClient();
+	const { track } = useClarity();
 	const [unlinkTarget, setUnlinkTarget] = useState<ConnectedMemberAccount | null>(null);
 
 	const { mutate: startLink, isPending: isLinking } = useMutation(
@@ -118,9 +121,10 @@ export const MyPageAccount = ({ accounts }: MyPageAccountProps) => {
 							size="sm"
 							className="text-body2"
 							disabled={isLinking}
-							onClick={() =>
-								startLink({ provider, redirectUri: getAccountLinkRedirectUri(provider) })
-							}
+							onClick={() => {
+								track(CLARITY_ACTION_ID.MY_PAGE.ACCOUNT_LINK_CLICK);
+								startLink({ provider, redirectUri: getAccountLinkRedirectUri(provider) });
+							}}
 						>
 							연동
 						</Button>
@@ -151,7 +155,11 @@ export const MyPageAccount = ({ accounts }: MyPageAccountProps) => {
 							variant="danger"
 							size="lg"
 							loading={isUnlinking}
-							onClick={() => unlinkTarget && unlink(unlinkTarget.accountId)}
+							onClick={() => {
+								if (!unlinkTarget) return;
+								track(CLARITY_ACTION_ID.MY_PAGE.ACCOUNT_UNLINK_CONFIRM);
+								unlink(unlinkTarget.accountId);
+							}}
 						>
 							해제
 						</Button>
