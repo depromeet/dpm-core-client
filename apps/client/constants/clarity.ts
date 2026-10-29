@@ -11,7 +11,13 @@ export const CLARITY_PAGE_ID = defineClarityPageIds({
 	HOME: 'home', // 홈
 	LOGIN: 'login', // 로그인
 	LOGIN_EMAIL: 'login_email', // 이메일 로그인
-	AUTH: 'auth', // 회원 승인 대기
+	AUTH: 'auth', // 로고 화면 (/auth)
+	PROFILE: 'profile', // 가입정보 입력
+	PENDING: 'pending', // 승인 대기
+	PENDING_EDIT: 'pending_edit', // 승인 대기 중 개인정보 수정
+	REJECTED: 'rejected', // 가입 반려 안내
+	REJECTED_EDIT: 'rejected_edit', // 반려 후 개인정보 수정·재신청
+	WELCOME: 'welcome', // 승인 완료 안내
 	SESSION: 'session', // 세션 목록
 	SESSION_DETAIL: 'session_detail', // 세션 정보
 	ANNOUNCEMENT: 'announcement', // 공지 목록
@@ -35,14 +41,51 @@ export const CLARITY_PAGE_ID = defineClarityPageIds({
 
 export type ClarityPageId = ClarityPageIdOf<typeof CLARITY_PAGE_ID>;
 
+/**
+ * 가입정보 폼(ProfileForm) 액션. 폼을 쓰는 PROFILE·PENDING_EDIT·REJECTED_EDIT가 같은 값을 공유하고,
+ * 실제 이벤트 이름의 앞부분은 폼이 열린 페이지 ID가 정한다. (예: profile_submit_success)
+ */
+export const PROFILE_FORM_ACTION = {
+	SUBMIT_SUCCESS: 'submit_success',
+	SUBMIT_FAIL_NAME_INVALID: 'submit_fail_name_invalid', // 이름 형식 오류(400)
+	SUBMIT_FAIL_CONFLICT: 'submit_fail_conflict', // 이미 등록된 정보 변경(409)
+	SUBMIT_FAIL: 'submit_fail',
+} as const;
+
 /** client Clarity 액션 ID */
 export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 	HOME: {
 		VOC_BUTTON_CLICK: 'voc_button_click',
 	},
-	LOGIN: {},
-	LOGIN_EMAIL: {},
+	LOGIN: {
+		KAKAO_LOGIN_CLICK: 'kakao_login_click',
+		APPLE_LOGIN_CLICK: 'apple_login_click',
+	},
+	LOGIN_EMAIL: {
+		SUBMIT_SUCCESS: 'submit_success',
+		SUBMIT_FAIL: 'submit_fail',
+	},
 	AUTH: {},
+	PROFILE: { ...PROFILE_FORM_ACTION },
+	PENDING: {
+		EDIT_CLICK: 'edit_click', // 개인정보 수정하기
+		CANCEL_APPLICATION_OPEN: 'cancel_application_open', // 가입 신청 취소 모달 열기
+		CANCEL_APPLICATION_CONFIRM: 'cancel_application_confirm', // "취소할래요" (탈퇴와 같은 처리)
+	},
+	PENDING_EDIT: { ...PROFILE_FORM_ACTION },
+	REJECTED: {
+		EDIT_CLICK: 'edit_click', // 개인정보 수정하기
+	},
+	REJECTED_EDIT: {
+		...PROFILE_FORM_ACTION,
+		REAPPLY_SUCCESS: 'reapply_success',
+		REAPPLY_FAIL: 'reapply_fail',
+	},
+	WELCOME: {
+		ENTER_CLICK: 'enter_click',
+		ENTER_SUCCESS: 'enter_success',
+		ENTER_FAIL: 'enter_fail',
+	},
 	SESSION: {},
 	SESSION_DETAIL: {},
 	ANNOUNCEMENT: {},
@@ -56,7 +99,13 @@ export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 	AFTER_PARTY_CREATE_COMPLETE: {},
 	BILLS: {},
 	BILLS_DETAIL: {},
-	MY_PAGE: {},
+	MY_PAGE: {
+		LOGOUT_CONFIRM: 'logout_confirm',
+		WITHDRAW_OPEN: 'withdraw_open',
+		WITHDRAW_CONFIRM: 'withdraw_confirm',
+		ACCOUNT_LINK_CLICK: 'account_link_click',
+		ACCOUNT_UNLINK_CONFIRM: 'account_unlink_confirm',
+	},
 	ATTENDANCE_ME: {},
 	ATTENDANCE_ME_SESSION: {},
 	ATTENDANCE_POLICY: {},

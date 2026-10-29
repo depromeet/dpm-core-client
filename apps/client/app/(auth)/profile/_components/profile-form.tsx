@@ -6,8 +6,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Part } from '@dpm-core/api';
 import { Button, cn, Input } from '@dpm-core/shared';
 
+import { PROFILE_FORM_ACTION } from '@/constants/clarity';
 import { isProfileIncomplete } from '@/lib/profile-completion';
 import { memberAuthQueryKey } from '@/providers/auth-provider';
+import { useClarity } from '@/providers/client-clarity-adapter';
 import { updateMyProfileMutationOptions } from '@/remotes/mutations/member';
 import { getMyMemberInfoQuery, getMyProfileQuery } from '@/remotes/queries/member';
 
@@ -79,6 +81,7 @@ const ProfileFields = ({
 }: ProfileFieldsProps) => {
 	const router = useRouter();
 	const queryClient = useQueryClient();
+	const { track } = useClarity();
 	const [name, setName] = useState(initialName);
 	const [part, setPart] = useState<SelectablePart | null>(initialPart);
 	/** 이름 입력 자체의 오류(형식 위반). 입력창 아래에 표시한다. */
@@ -107,6 +110,7 @@ const ProfileFields = ({
 			{ name: trimmedName, part },
 			{
 				onSuccess: async () => {
+					track(PROFILE_FORM_ACTION.SUBMIT_SUCCESS);
 					await Promise.all([
 						queryClient.invalidateQueries({ queryKey: memberAuthQueryKey }),
 						queryClient.invalidateQueries({ queryKey: getMyMemberInfoQuery.queryKey }),
@@ -121,10 +125,13 @@ const ProfileFields = ({
 				onError: (error) => {
 					const status = error.response?.status;
 					if (status === 409) {
+						track(PROFILE_FORM_ACTION.SUBMIT_FAIL_CONFLICT);
 						setFormError('이미 등록된 정보는 변경할 수 없어요. 운영진에게 문의해주세요.');
 					} else if (status === 400) {
+						track(PROFILE_FORM_ACTION.SUBMIT_FAIL_NAME_INVALID);
 						setNameError(NAME_FORMAT_ERROR_MESSAGE);
 					} else {
+						track(PROFILE_FORM_ACTION.SUBMIT_FAIL);
 						setFormError('저장에 실패했어요. 다시 시도해주세요.');
 					}
 				},
