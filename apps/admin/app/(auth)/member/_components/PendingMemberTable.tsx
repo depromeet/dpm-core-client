@@ -84,10 +84,16 @@ export const PendingMemberTable = ({
 						<TableCell className="w-44 px-3">
 							<MemberPartChip part={row.part} />
 						</TableCell>
-						<TableCell className="truncate px-3 font-semibold text-body1 text-label-normal">
+						<TableCell
+							data-clarity-mask="True"
+							className="truncate px-3 font-semibold text-body1 text-label-normal"
+						>
 							{row.name}
 						</TableCell>
-						<TableCell className="truncate px-3 font-medium text-body2 text-label-subtle">
+						<TableCell
+							data-clarity-mask="True"
+							className="truncate px-3 font-medium text-body2 text-label-subtle"
+						>
 							<span className="flex items-center gap-1.5">
 								<MemberLoginMethodIcon loginMethod={row.loginMethod} />
 								<span className="truncate">{row.email ?? '-'}</span>
