@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { HTTPError } from 'ky';
@@ -220,6 +220,49 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 	const [submissionStatus, setSubmissionStatus] = useState<SessionFeedbackMyStatus | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isExitDialogOpen, setIsExitDialogOpen] = useState(false);
+	const formContentRef = useRef<HTMLElement>(null);
+
+	const keepFocusedFieldVisible = useCallback(() => {
+		const content = formContentRef.current;
+		const viewport = window.visualViewport;
+		const focusedField = document.activeElement;
+
+		if (!viewport) return;
+
+		const viewportBottom = viewport.offsetTop + viewport.height;
+
+		if (!content || !(focusedField instanceof HTMLElement) || !content.contains(focusedField)) {
+			return;
+		}
+
+		const visibleBottom = Math.min(viewportBottom, content.getBoundingClientRect().bottom) - 16;
+		const overlap = focusedField.getBoundingClientRect().bottom - visibleBottom;
+
+		if (overlap > 0) {
+			content.scrollTop += overlap;
+		}
+	}, []);
+
+	useEffect(() => {
+		const viewport = window.visualViewport;
+		if (!viewport) return;
+
+		let animationFrame = 0;
+		const handleViewportResize = () => {
+			cancelAnimationFrame(animationFrame);
+			animationFrame = requestAnimationFrame(keepFocusedFieldVisible);
+		};
+
+		viewport.addEventListener('resize', handleViewportResize);
+		viewport.addEventListener('scroll', handleViewportResize);
+		window.addEventListener('resize', handleViewportResize);
+		return () => {
+			cancelAnimationFrame(animationFrame);
+			viewport.removeEventListener('resize', handleViewportResize);
+			viewport.removeEventListener('scroll', handleViewportResize);
+			window.removeEventListener('resize', handleViewportResize);
+		};
+	}, [keepFocusedFieldVisible]);
 
 	const stepIndex = getFeedbackStepIndex(step);
 	const canMoveNext =
@@ -421,6 +464,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 			</header>
 
 			<main
+				ref={formContentRef}
 				className={cn(
 					'flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pt-5',
 					step === 'satisfaction' ? 'gap-6' : 'gap-5',
@@ -528,6 +572,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 									id="positive-etc"
 									value={positiveEtc}
 									onChange={(event) => setPositiveEtc(event.target.value)}
+									onFocus={keepFocusedFieldVisible}
 									placeholder="어떤 부분이 좋았는지 적어주세요."
 									maxLength={100}
 									className="h-[120px] w-full resize-none rounded-lg border border-line-normal bg-background-normal p-4 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
@@ -565,6 +610,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 									id="improvement-etc"
 									value={improvementEtc}
 									onChange={(event) => setImprovementEtc(event.target.value)}
+									onFocus={keepFocusedFieldVisible}
 									placeholder="어떤 부분의 개선이 필요한지 적어주세요."
 									maxLength={100}
 									className="h-[120px] w-full resize-none rounded-lg border border-line-normal bg-background-normal p-4 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
@@ -578,6 +624,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 					<textarea
 						value={comment}
 						onChange={(event) => setComment(event.target.value)}
+						onFocus={keepFocusedFieldVisible}
 						placeholder="앞에서 고른 항목의 이유나 그 밖의 의견을 자유롭게 남겨주세요. (선택)"
 						maxLength={1000}
 						className="h-[120px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
