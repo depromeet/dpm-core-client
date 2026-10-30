@@ -32,6 +32,7 @@ import {
 	getAttendanceMeBySessionIdOptions,
 	getAttendanceMeOptions,
 } from '@/remotes/queries/attendance';
+import { getMyPendingSessionFeedbackQuery } from '@/remotes/queries/session-feedback';
 
 interface AttendanceCheckBottomSheetProps {
 	sessionId: number;
@@ -83,6 +84,7 @@ export const AttendanceCheckBottomSheet = ({
 				await Promise.all([
 					queryClient.invalidateQueries(getAttendanceMeBySessionIdOptions({ sessionId })),
 					queryClient.invalidateQueries(getAttendanceMeOptions()),
+					queryClient.invalidateQueries(getMyPendingSessionFeedbackQuery()),
 				]);
 
 				handleClose();
