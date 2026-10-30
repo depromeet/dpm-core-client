@@ -6,7 +6,7 @@ import type { MemberBadgeCard, MemberManagementUpdateRequest } from '@dpm-core/a
 import { Button, toast } from '@dpm-core/shared';
 
 import { LoadingBox } from '@/components/loading-box';
-import { CLARITY_ACTION_ID } from '@/constants/clarity';
+import { CLARITY_ACTION_ID, type ClarityActionId } from '@/constants/clarity';
 import { usePreventPageExit } from '@/hooks/use-prevent-page-exit';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useClarity } from '@/providers/admin-clarity-adapter';
@@ -146,16 +146,30 @@ export const MemberManagement = () => {
 
 	const [dialog, setDialog] = useState<DialogState>(null);
 	const closeDialog = useCallback(() => setDialog(null), []);
+
+	// 모달 노출은 어느 경로로 열렸든 한 곳에서 기록한다.
+	useEffect(() => {
+		switch (dialog?.type) {
+			case 'approve':
+				trackRef.current(CLARITY_ACTION_ID.MEMBER.APPROVE_MODAL_VIEW);
+				break;
+			case 'merge-approved':
+				trackRef.current(CLARITY_ACTION_ID.MEMBER.MERGE_MODAL_VIEW);
+				break;
+			case 'merge-conflict':
+				trackRef.current(CLARITY_ACTION_ID.MEMBER.MERGE_BLOCKED_VIEW);
+				break;
+			case 'merge-required':
+				trackRef.current(CLARITY_ACTION_ID.MEMBER.MERGE_REQUIRED_SHOWN);
+				break;
+		}
+	}, [dialog]);
+
 	const showMergeNotice = useCallback(
 		(next: Extract<DialogState, { type: 'merge-required' | 'merge-conflict' }>) => {
-			track(
-				next.type === 'merge-conflict'
-					? CLARITY_ACTION_ID.MEMBER.MERGE_CONFLICT_SHOWN
-					: CLARITY_ACTION_ID.MEMBER.MERGE_REQUIRED_SHOWN,
-			);
 			setDialog(next);
 		},
-		[track],
+		[],
 	);
 
 	const refresh = useCallback(() => {
@@ -176,12 +190,18 @@ export const MemberManagement = () => {
 		}),
 	);
 
+	const DASHBOARD_CLICK_ACTION = {
+		PENDING: CLARITY_ACTION_ID.MEMBER.DASHBOARD_CLICK_PENDING,
+		INCOMPLETE: CLARITY_ACTION_ID.MEMBER.DASHBOARD_CLICK_MISSING_INFO,
+		AT_RISK: CLARITY_ACTION_ID.MEMBER.DASHBOARD_CLICK_RISK,
+	} as const satisfies Record<MemberBadgeCard, ClarityActionId>;
+
 	const handleSelectCard = (card: MemberBadgeCard) => {
 		// 탭 버튼과 마찬가지로 요약 카드도 탭·필터를 바꾸는 이동이다. 저장하지 않은
 		// 인라인 수정이 있으면 먼저 확인을 받아야 한다 (안 그러면 탭 버튼에서만
 		// 막히고 카드를 누르면 그대로 새 조건으로 넘어가 버린다).
 		inlineEdit.guard(() => {
-			track(CLARITY_ACTION_ID.MEMBER.SUMMARY_CARD_CLICK);
+			track(DASHBOARD_CLICK_ACTION[card]);
 			applyBadgePreset(card);
 			setSearchInput('');
 
@@ -211,6 +231,8 @@ export const MemberManagement = () => {
 			]);
 			closeDialog();
 			refresh();
+			if (plan.merges.length > 0) track(CLARITY_ACTION_ID.MEMBER.MERGE_SUCCESS);
+			if (plan.approveIds.length > 0) track(CLARITY_ACTION_ID.MEMBER.APPROVE_SUCCESS);
 			toast.success(plan.approvedPairs.length > 0 ? '병합을 완료했어요.' : '승인을 완료했어요.');
 		},
 		onError: (error, plan) => {
@@ -219,10 +241,15 @@ export const MemberManagement = () => {
 			// 서버는 같은 소셜의 서로 다른 계정이면 409 로 거절한다. 다른 회원의 계정으로 보고 안내한다.
 			const status = (error as { response?: { status?: number } }).response?.status;
 			if (status === 409 && plan.approvedPairs.length > 0) {
+				track(CLARITY_ACTION_ID.MEMBER.MERGE_FAIL);
 				showMergeNotice({ type: 'merge-conflict', pairs: plan.approvedPairs });
 				return;
 			}
-			track(CLARITY_ACTION_ID.MEMBER.APPROVE_FAIL);
+			track(
+				plan.merges.length > 0
+					? CLARITY_ACTION_ID.MEMBER.MERGE_FAIL
+					: CLARITY_ACTION_ID.MEMBER.APPROVE_FAIL,
+			);
 			toast.error('승인에 실패했어요. 잠시 후 다시 시도해 주세요.');
 		},
 	});
@@ -240,12 +267,8 @@ export const MemberManagement = () => {
 		onError: () => toast.error('반려에 실패했어요. 잠시 후 다시 시도해 주세요.'),
 	});
 
-	const confirmApproval = (plan: ApprovalPlan) => {
-		track(
-			plan.merges.length > 0
-				? CLARITY_ACTION_ID.MEMBER.MERGE_APPROVE_CONFIRM
-				: CLARITY_ACTION_ID.MEMBER.APPROVE_CONFIRM,
-		);
+	const confirmApproval = (plan: ApprovalPlan, action: ClarityActionId) => {
+		track(action);
 		runApproval(plan);
 	};
 
@@ -337,7 +360,11 @@ export const MemberManagement = () => {
 	 * (확인 모달에 대상 계정이 모두 표시되므로 어떤 계정이 처리되는지 확인할 수 있다.)
 	 */
 	const handleRowApprove = (row: MemberRow) => {
-		track(CLARITY_ACTION_ID.MEMBER.APPROVE_ROW_CLICK);
+		track(
+			row.duplicateSuspected
+				? CLARITY_ACTION_ID.MEMBER.MERGE_APPROVE_CLICK
+				: CLARITY_ACTION_ID.MEMBER.APPROVE_ROW_CLICK,
+		);
 		if (selection.isSelected(row.id) && selectedRows.length > 1) {
 			openApproveDialog(selectedRows);
 			return;
@@ -400,13 +427,14 @@ export const MemberManagement = () => {
 	const { mutate: updateMember, isPending: isUpdating } = useMutation(
 		updateManagedMemberMutationOptions({
 			onSuccess: () => {
+				track(CLARITY_ACTION_ID.MEMBER.EDIT_SAVE_SUCCESS);
 				closeInlineEdit();
 				closeDialog();
 				refresh();
 				toast.success('수정을 완료했어요.');
 			},
 			onError: () => {
-				track(CLARITY_ACTION_ID.MEMBER.EDIT_FAIL);
+				track(CLARITY_ACTION_ID.MEMBER.EDIT_SAVE_FAIL);
 				toast.error('수정에 실패했어요. 잠시 후 다시 시도해 주세요.');
 			},
 		}),
@@ -415,6 +443,8 @@ export const MemberManagement = () => {
 	const handleInlineSave = useCallback(() => {
 		const { editingRow, draft } = inlineEdit;
 		if (!editingRow || !draft) return;
+
+		track(CLARITY_ACTION_ID.MEMBER.EDIT_SAVE_CLICK);
 
 		const { changes, teamLookupFailed } = buildMemberChanges(editingRow, draft, teams ?? []);
 		if (teamLookupFailed) {
@@ -428,7 +458,6 @@ export const MemberManagement = () => {
 			return;
 		}
 
-		track(CLARITY_ACTION_ID.MEMBER.EDIT_SAVE);
 		updateMember({ memberId: editingRow.id, changes });
 	}, [inlineEdit, teams, updateMember, track]);
 
@@ -449,6 +478,7 @@ export const MemberManagement = () => {
 			}
 		},
 		onSuccess: () => {
+			track(CLARITY_ACTION_ID.MEMBER.BULK_EDIT_SAVE_SUCCESS);
 			bulkEdit.reset();
 			selection.clear();
 			closeDialog();
@@ -525,7 +555,7 @@ export const MemberManagement = () => {
 								disabled={selectedRows.length === 0}
 								loading={isCheckingMerge}
 								onClick={() => {
-									track(CLARITY_ACTION_ID.MEMBER.APPROVE_BULK_CLICK);
+									track(CLARITY_ACTION_ID.MEMBER.APPROVE_TOOLBAR_CLICK);
 									openApproveDialog(selectedRows);
 								}}
 							>
@@ -536,7 +566,7 @@ export const MemberManagement = () => {
 								size="md"
 								disabled={selectedRows.length === 0}
 								onClick={() => {
-									track(CLARITY_ACTION_ID.MEMBER.REJECT_BULK_CLICK);
+									track(CLARITY_ACTION_ID.MEMBER.REJECT_CLICK);
 									setDialog({ type: 'reject', targets: selectedRows });
 								}}
 							>
@@ -576,11 +606,14 @@ export const MemberManagement = () => {
 							isSelected={selection.isSelected}
 							isAllSelected={selection.isAllSelected}
 							isTogglingAll={isLoadingAllForSelection}
-							onToggle={selection.toggle}
+							onToggle={(id) => {
+								if (!selection.isSelected(id)) track(CLARITY_ACTION_ID.MEMBER.PENDING_ROW_SELECT);
+								selection.toggle(id);
+							}}
 							onToggleAll={handleToggleAllSelection}
 							onApprove={handleRowApprove}
 							onReject={(row) => {
-								track(CLARITY_ACTION_ID.MEMBER.REJECT_ROW_CLICK);
+								track(CLARITY_ACTION_ID.MEMBER.REJECT_CLICK);
 								setDialog({ type: 'reject', targets: [row] });
 							}}
 						/>
@@ -596,7 +629,7 @@ export const MemberManagement = () => {
 							draft={inlineEdit.draft}
 							onChange={inlineEdit.change}
 							onStartEdit={(row) => {
-								track(CLARITY_ACTION_ID.MEMBER.EDIT_START);
+								track(CLARITY_ACTION_ID.MEMBER.EDIT_MODE_ENTER);
 								inlineEdit.start(row);
 							}}
 							onCancelEdit={() => {
@@ -625,11 +658,11 @@ export const MemberManagement = () => {
 						selectedCount={selectedRows.length}
 						currentValueOf={bulkEdit.currentValueOf}
 						stagedFields={bulkEdit.stagedFields}
-						onOpenField={bulkEdit.openModal}
-						onSave={() => {
-							track(CLARITY_ACTION_ID.MEMBER.BULK_EDIT_SAVE);
-							saveBulkEdit();
+						onOpenField={(field) => {
+							track(CLARITY_ACTION_ID.MEMBER.BULK_EDIT_OPEN);
+							bulkEdit.openModal(field);
 						}}
+						onSave={() => saveBulkEdit()}
 						canSave={bulkEdit.hasChanges}
 						isSaving={isBulkSaving}
 					/>
@@ -646,7 +679,11 @@ export const MemberManagement = () => {
 
 			<MemberConfirmDialog
 				open={dialog?.type === 'approve'}
-				onOpenChange={closeDialog}
+				onOpenChange={(open) => {
+					if (open) return;
+					track(CLARITY_ACTION_ID.MEMBER.APPROVE_MODAL_CLOSE);
+					closeDialog();
+				}}
 				title="가입 승인"
 				description={
 					<>
@@ -664,6 +701,7 @@ export const MemberManagement = () => {
 						label: '반려하기',
 						onClick: () => {
 							if (dialog?.type !== 'approve') return;
+							track(CLARITY_ACTION_ID.MEMBER.APPROVE_MODAL_REJECT_CLICK);
 							setDialog({ type: 'reject', targets: dialog.targets });
 						},
 					},
@@ -671,7 +709,7 @@ export const MemberManagement = () => {
 						label: '승인하기',
 						onClick: () => {
 							if (dialog?.type !== 'approve') return;
-							confirmApproval(dialog.plan);
+							confirmApproval(dialog.plan, CLARITY_ACTION_ID.MEMBER.APPROVE_CONFIRM);
 						},
 					},
 				]}
@@ -735,7 +773,11 @@ export const MemberManagement = () => {
 
 			<MemberMergeAccountDialog
 				open={dialog?.type === 'merge-approved'}
-				onOpenChange={closeDialog}
+				onOpenChange={(open) => {
+					if (open) return;
+					track(CLARITY_ACTION_ID.MEMBER.MERGE_CANCEL);
+					closeDialog();
+				}}
 				variant="confirm"
 				approvedAccounts={
 					dialog?.type === 'merge-approved' ? dialog.plan.approvedPairs.map((p) => p.approved) : []
@@ -750,7 +792,7 @@ export const MemberManagement = () => {
 				isPending={isApproving}
 				onConfirm={() => {
 					if (dialog?.type !== 'merge-approved') return;
-					confirmApproval(dialog.plan);
+					confirmApproval(dialog.plan, CLARITY_ACTION_ID.MEMBER.MERGE_CONFIRM);
 				}}
 			/>
 

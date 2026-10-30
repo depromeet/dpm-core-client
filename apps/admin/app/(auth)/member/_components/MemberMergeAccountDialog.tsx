@@ -90,6 +90,7 @@ export const MemberMergeAccountDialog = ({
 					{content.approvedAccounts.map((account) => (
 						<dl
 							key={account.id}
+							data-clarity-mask="True"
 							className="grid grid-cols-[4.5rem_1fr] gap-x-8 gap-y-3 rounded-2xl bg-background-strong px-8 py-6 font-medium text-body2"
 						>
 							<dt className="text-label-assistive">이름</dt>
