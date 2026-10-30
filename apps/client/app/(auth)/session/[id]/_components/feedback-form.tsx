@@ -221,6 +221,9 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isExitDialogOpen, setIsExitDialogOpen] = useState(false);
 	const formContentRef = useRef<HTMLElement>(null);
+	const scrollTopBeforeKeyboardRef = useRef<number | null>(null);
+	const initialViewportHeightRef = useRef(0);
+	const keyboardWasOpenRef = useRef(false);
 
 	const keepFocusedFieldVisible = useCallback(() => {
 		const content = formContentRef.current;
@@ -243,12 +246,33 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 		}
 	}, []);
 
+	const handleTextAreaFocus = useCallback(() => {
+		if (scrollTopBeforeKeyboardRef.current === null) {
+			scrollTopBeforeKeyboardRef.current = formContentRef.current?.scrollTop ?? 0;
+		}
+		keepFocusedFieldVisible();
+	}, [keepFocusedFieldVisible]);
+
 	useEffect(() => {
 		const viewport = window.visualViewport;
 		if (!viewport) return;
 
+		initialViewportHeightRef.current = viewport.height;
 		let animationFrame = 0;
 		const handleViewportResize = () => {
+			const content = formContentRef.current;
+			const keyboardIsOpen = initialViewportHeightRef.current - viewport.height > 120;
+
+			if (keyboardIsOpen) {
+				keyboardWasOpenRef.current = true;
+			} else if (keyboardWasOpenRef.current) {
+				if (content && scrollTopBeforeKeyboardRef.current !== null) {
+					content.scrollTop = scrollTopBeforeKeyboardRef.current;
+				}
+				scrollTopBeforeKeyboardRef.current = null;
+				keyboardWasOpenRef.current = false;
+			}
+
 			cancelAnimationFrame(animationFrame);
 			animationFrame = requestAnimationFrame(keepFocusedFieldVisible);
 		};
@@ -572,7 +596,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 									id="positive-etc"
 									value={positiveEtc}
 									onChange={(event) => setPositiveEtc(event.target.value)}
-									onFocus={keepFocusedFieldVisible}
+									onFocus={handleTextAreaFocus}
 									placeholder="어떤 부분이 좋았는지 적어주세요."
 									maxLength={100}
 									className="h-[120px] w-full resize-none rounded-lg border border-line-normal bg-background-normal p-4 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
@@ -610,7 +634,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 									id="improvement-etc"
 									value={improvementEtc}
 									onChange={(event) => setImprovementEtc(event.target.value)}
-									onFocus={keepFocusedFieldVisible}
+									onFocus={handleTextAreaFocus}
 									placeholder="어떤 부분의 개선이 필요한지 적어주세요."
 									maxLength={100}
 									className="h-[120px] w-full resize-none rounded-lg border border-line-normal bg-background-normal p-4 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
@@ -624,7 +648,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 					<textarea
 						value={comment}
 						onChange={(event) => setComment(event.target.value)}
-						onFocus={keepFocusedFieldVisible}
+						onFocus={handleTextAreaFocus}
 						placeholder="앞에서 고른 항목의 이유나 그 밖의 의견을 자유롭게 남겨주세요. (선택)"
 						maxLength={1000}
 						className="h-[120px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
