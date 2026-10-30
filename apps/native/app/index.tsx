@@ -46,6 +46,13 @@ function WebViewContainer() {
 	const [appIsReady, setAppIsReady] = useState(false);
 	const appIsReadyRef = useRef(false);
 	const [webViewUrl, setWebViewUrl] = useState(initialFeedbackUrl ?? WEBVIEW_URL);
+	const [isFeedbackRoute, setIsFeedbackRoute] = useState(() => {
+		try {
+			return FEEDBACK_PATH_PATTERN.test(new URL(initialFeedbackUrl ?? WEBVIEW_URL).pathname);
+		} catch {
+			return false;
+		}
+	});
 
 	useEffect(() => {
 		const nextFeedbackUrl = getFeedbackLink(feedbackUrl);
@@ -108,15 +115,22 @@ function WebViewContainer() {
 
 	const handleNavigationChanage = (navState: WebViewNavigation) => {
 		setCanGoBack(navState.canGoBack);
+		try {
+			setIsFeedbackRoute(FEEDBACK_PATH_PATTERN.test(new URL(navState.url).pathname));
+		} catch {
+			setIsFeedbackRoute(false);
+		}
 	};
 
 	const platformStr = Platform.OS === 'ios' ? 'iOS' : 'Android';
 	const version = Constants.expoConfig?.version ?? '1.0.0';
 	const insetsStr = `${Math.round(insets.top)},${Math.round(insets.right)},${Math.round(insets.bottom)},${Math.round(insets.left)}`;
+	// Keep iOS keyboard avoidance active before the keyboard opens on feedback screens.
+	const keyboardBehavior = Platform.OS === 'ios' && isFeedbackRoute ? 'padding' : behavior;
 
 	return (
 		<View style={styles.container}>
-			<KeyboardAvoidingView behavior={behavior} style={styles.container}>
+			<KeyboardAvoidingView behavior={keyboardBehavior} style={styles.container}>
 				<WebView
 					style={styles.webview}
 					ref={webViewRef}
