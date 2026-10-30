@@ -69,7 +69,11 @@ export const MemberConfirmDialog = ({
 					) : null}
 				</DialogHeader>
 
-				{content.subjects.length > 0 && <SubjectChipList subjects={content.subjects} />}
+				{content.subjects.length > 0 && (
+					<div data-clarity-mask="True">
+						<SubjectChipList subjects={content.subjects} />
+					</div>
+				)}
 
 				<div className="flex gap-2">
 					{content.actions.map((action, index) => (

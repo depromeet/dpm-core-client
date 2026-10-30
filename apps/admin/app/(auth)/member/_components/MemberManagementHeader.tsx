@@ -37,6 +37,7 @@ export const MemberManagementHeader = ({
 					placeholder="멤버 검색"
 					value={search}
 					onChange={(event) => onSearchChange(event.target.value)}
+					data-clarity-mask="True"
 					className="h-10 w-67.5 bg-background-normal"
 				/>
 			</div>
