@@ -224,6 +224,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 	const scrollTopBeforeKeyboardRef = useRef<number | null>(null);
 	const initialViewportHeightRef = useRef(0);
 	const keyboardWasOpenRef = useRef(false);
+	const keyboardAdjustmentAppliedRef = useRef(false);
 
 	const keepFocusedFieldVisible = useCallback(() => {
 		const content = formContentRef.current;
@@ -250,8 +251,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 		if (scrollTopBeforeKeyboardRef.current === null) {
 			scrollTopBeforeKeyboardRef.current = formContentRef.current?.scrollTop ?? 0;
 		}
-		keepFocusedFieldVisible();
-	}, [keepFocusedFieldVisible]);
+	}, []);
 
 	useEffect(() => {
 		const viewport = window.visualViewport;
@@ -259,32 +259,47 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 
 		initialViewportHeightRef.current = viewport.height;
 		let animationFrame = 0;
-		const handleViewportResize = () => {
-			const content = formContentRef.current;
-			const keyboardIsOpen = initialViewportHeightRef.current - viewport.height > 120;
-
-			if (keyboardIsOpen) {
-				keyboardWasOpenRef.current = true;
-			} else if (keyboardWasOpenRef.current) {
-				if (content && scrollTopBeforeKeyboardRef.current !== null) {
-					content.scrollTop = scrollTopBeforeKeyboardRef.current;
-				}
-				scrollTopBeforeKeyboardRef.current = null;
-				keyboardWasOpenRef.current = false;
+		let settleTimeout: number | null = null;
+		const handleViewportChange = () => {
+			if (settleTimeout !== null) {
+				window.clearTimeout(settleTimeout);
 			}
 
-			cancelAnimationFrame(animationFrame);
-			animationFrame = requestAnimationFrame(keepFocusedFieldVisible);
+			// iOS emits multiple viewport events while the keyboard animates. Wait
+			// for that burst to settle before adjusting the form scroll position.
+			settleTimeout = window.setTimeout(() => {
+				const content = formContentRef.current;
+				const keyboardIsOpen = initialViewportHeightRef.current - viewport.height > 120;
+
+				if (keyboardIsOpen) {
+					keyboardWasOpenRef.current = true;
+					if (!keyboardAdjustmentAppliedRef.current) {
+						keyboardAdjustmentAppliedRef.current = true;
+						cancelAnimationFrame(animationFrame);
+						animationFrame = requestAnimationFrame(keepFocusedFieldVisible);
+					}
+				} else if (keyboardWasOpenRef.current) {
+					if (content && scrollTopBeforeKeyboardRef.current !== null) {
+						content.scrollTop = scrollTopBeforeKeyboardRef.current;
+					}
+					scrollTopBeforeKeyboardRef.current = null;
+					keyboardWasOpenRef.current = false;
+					keyboardAdjustmentAppliedRef.current = false;
+				}
+			}, 100);
 		};
 
-		viewport.addEventListener('resize', handleViewportResize);
-		viewport.addEventListener('scroll', handleViewportResize);
-		window.addEventListener('resize', handleViewportResize);
+		viewport.addEventListener('resize', handleViewportChange);
+		viewport.addEventListener('scroll', handleViewportChange);
+		window.addEventListener('resize', handleViewportChange);
 		return () => {
 			cancelAnimationFrame(animationFrame);
-			viewport.removeEventListener('resize', handleViewportResize);
-			viewport.removeEventListener('scroll', handleViewportResize);
-			window.removeEventListener('resize', handleViewportResize);
+			if (settleTimeout !== null) {
+				window.clearTimeout(settleTimeout);
+			}
+			viewport.removeEventListener('resize', handleViewportChange);
+			viewport.removeEventListener('scroll', handleViewportChange);
+			window.removeEventListener('resize', handleViewportChange);
 		};
 	}, [keepFocusedFieldVisible]);
 
@@ -651,7 +666,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 						onFocus={handleTextAreaFocus}
 						placeholder="앞에서 고른 항목의 이유나 그 밖의 의견을 자유롭게 남겨주세요. (선택)"
 						maxLength={1000}
-						className="h-[120px] w-full resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
+						className="h-[120px] w-full shrink-0 resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
 					/>
 				)}
 			</main>
