@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { HTTPError } from 'ky';
 import { Virtuoso } from 'react-virtuoso';
 import type { SessionListItem } from '@dpm-core/api';
 import { Aesterisk, Button, Calender, Clock, formatDotFullDate } from '@dpm-core/shared';
@@ -96,11 +97,25 @@ function SessionItem({ session }: { session: SessionListItem }) {
 	);
 }
 
+// 기수 종료 등으로 read:session 권한이 없으면 서버가 403을 내려준다.
+const SessionListErrorFallback = ({ error, reset }: ErrorBoundaryFallbackProps) => {
+	if (error instanceof HTTPError && error.response.status === 403) {
+		return (
+			<Empty className="h-full min-h-41.5">
+				<EmptyHeader>
+					<Aesterisk />
+					<EmptyTitle>활동이 종료되어 세션을 확인할 수 없어요</EmptyTitle>
+				</EmptyHeader>
+			</Empty>
+		);
+	}
+
+	return <ErrorBox onReset={reset} />;
+};
+
 export const SessionList = () => {
 	return (
-		<ErrorBoundary
-			fallback={(props: ErrorBoundaryFallbackProps) => <ErrorBox onReset={props.reset} />}
-		>
+		<ErrorBoundary fallback={SessionListErrorFallback}>
 			<Suspense fallback={<LoadingBox />}>
 				<SessionListContainer />
 			</Suspense>
