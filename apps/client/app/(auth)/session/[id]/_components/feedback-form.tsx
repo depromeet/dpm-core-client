@@ -522,6 +522,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 				className={cn(
 					'flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pt-5',
 					step === 'satisfaction' ? 'gap-6' : 'gap-5',
+					step === 'comment' && 'pb-4',
 				)}
 			>
 				<div
