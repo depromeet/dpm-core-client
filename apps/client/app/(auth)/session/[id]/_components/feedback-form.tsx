@@ -25,6 +25,7 @@ import {
 } from '@dpm-core/shared';
 
 import { SafeAreaAppLayout } from '@/components/app-layout';
+import { useAppConfig } from '@/providers/app-config-provider';
 import { submitSessionFeedbackOptions } from '@/remotes/mutations/session-feedback';
 import { getSessionFeedbackMeQuery } from '@/remotes/queries/session-feedback';
 
@@ -204,6 +205,8 @@ const FeedbackSubmissionErrorScreen = ({
 
 export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 	const router = useRouter();
+	const { isApp, platform } = useAppConfig();
+	const isIOSApp = isApp && platform === 'ios';
 	const queryClient = useQueryClient();
 	const feedbackQuery = useQuery(getSessionFeedbackMeQuery(sessionId));
 	const feedbackInfo = feedbackQuery.data?.data;
@@ -261,12 +264,24 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 		let animationFrame = 0;
 		let settleTimeout: number | null = null;
 		const handleViewportChange = () => {
+			const focusedField = document.activeElement;
+			if (
+				isIOSApp &&
+				initialViewportHeightRef.current - viewport.height > 120 &&
+				focusedField instanceof HTMLTextAreaElement &&
+				formContentRef.current?.contains(focusedField)
+			) {
+				keyboardWasOpenRef.current = true;
+				keyboardAdjustmentAppliedRef.current = true;
+				cancelAnimationFrame(animationFrame);
+				animationFrame = requestAnimationFrame(keepFocusedFieldVisible);
+			}
+
 			if (settleTimeout !== null) {
 				window.clearTimeout(settleTimeout);
 			}
 
-			// iOS emits multiple viewport events while the keyboard animates. Wait
-			// for that burst to settle before adjusting the form scroll position.
+			// Wait for viewport changes to settle before restoring the scroll position.
 			settleTimeout = window.setTimeout(() => {
 				const content = formContentRef.current;
 				const keyboardIsOpen = initialViewportHeightRef.current - viewport.height > 120;
@@ -301,7 +316,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 			viewport.removeEventListener('scroll', handleViewportChange);
 			window.removeEventListener('resize', handleViewportChange);
 		};
-	}, [keepFocusedFieldVisible]);
+	}, [isIOSApp, keepFocusedFieldVisible]);
 
 	const stepIndex = getFeedbackStepIndex(step);
 	const canMoveNext =
@@ -507,6 +522,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 				className={cn(
 					'flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pt-5',
 					step === 'satisfaction' ? 'gap-6' : 'gap-5',
+					step === 'comment' && 'pb-4',
 				)}
 			>
 				<div
