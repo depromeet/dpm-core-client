@@ -20,6 +20,8 @@ export interface MemberFilterState {
 	activityStatuses: MemberActivityStatus[];
 	/** 운영진·코어 제외. 승인 완료 탭의 기본값은 켜짐 */
 	excludeStaff: boolean;
+	/** 운영진만 보기. 켜면 운영진/코어 제외와 함께 쓸 수 없어 서로 끈다 */
+	organizerOnly: boolean;
 	missingInformationOnly: boolean;
 }
 
@@ -30,6 +32,7 @@ const INITIAL_STATE: MemberFilterState = {
 	teamNumbers: [],
 	activityStatuses: [],
 	excludeStaff: true,
+	organizerOnly: false,
 	missingInformationOnly: false,
 };
 
@@ -83,7 +86,19 @@ export const useMemberFilters = () => {
 	}, []);
 
 	const setExcludeStaff = useCallback((excludeStaff: boolean) => {
-		setFilters((prev) => ({ ...prev, excludeStaff }));
+		setFilters((prev) => ({
+			...prev,
+			excludeStaff,
+			organizerOnly: excludeStaff ? false : prev.organizerOnly,
+		}));
+	}, []);
+
+	const setOrganizerOnly = useCallback((organizerOnly: boolean) => {
+		setFilters((prev) => ({
+			...prev,
+			organizerOnly,
+			excludeStaff: organizerOnly ? false : prev.excludeStaff,
+		}));
 	}, []);
 
 	const applyBadgePreset = useCallback((card: MemberBadgeCard) => {
@@ -117,6 +132,7 @@ export const useMemberFilters = () => {
 		setTeamNumbers,
 		setActivityStatuses,
 		setExcludeStaff,
+		setOrganizerOnly,
 		applyBadgePreset,
 	};
 };
