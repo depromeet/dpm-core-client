@@ -80,6 +80,7 @@ export const MemberManagement = () => {
 		setTeamNumbers,
 		setActivityStatuses,
 		setExcludeStaff,
+		setOrganizerOnly,
 		applyBadgePreset,
 	} = useMemberFilters();
 
@@ -108,7 +109,7 @@ export const MemberManagement = () => {
 	const debouncedSetSearch = useDebounce(setSearch, 300);
 
 	const {
-		rows,
+		rows: fetchedRows,
 		summary,
 		totalElements,
 		lastUpdatedAt,
@@ -118,6 +119,15 @@ export const MemberManagement = () => {
 		isLoadingAllForSelection,
 		loadAllAndGetIds,
 	} = useMemberList(queryParams);
+
+	// 서버에 운영진만 조회하는 조건이 없어, 불러온 행에서 운영진만 걸러 보여준다.
+	const rows = useMemo(
+		() =>
+			filters.organizerOnly && filters.approvalStatus === 'APPROVED'
+				? fetchedRows.filter((row) => row.memberType === 'ORGANIZER')
+				: fetchedRows,
+		[fetchedRows, filters.organizerOnly, filters.approvalStatus],
+	);
 
 	const { data: cohortNumber } = useQuery(getCurrentCohortQuery);
 	const { data: teams } = useQuery(getCurrentCohortTeamsQuery);
@@ -533,10 +543,12 @@ export const MemberManagement = () => {
 							teamNumbers={filters.teamNumbers}
 							activityStatuses={filters.activityStatuses}
 							excludeStaff={filters.excludeStaff}
+							organizerOnly={filters.organizerOnly}
 							onPartsChange={withFilterTracking(setParts)}
 							onTeamNumbersChange={withFilterTracking(setTeamNumbers)}
 							onActivityStatusesChange={withFilterTracking(setActivityStatuses)}
 							onExcludeStaffChange={withFilterTracking(setExcludeStaff)}
+							onOrganizerOnlyChange={withFilterTracking(setOrganizerOnly)}
 						/>
 					)}
 					<MemberSelectionSummary
