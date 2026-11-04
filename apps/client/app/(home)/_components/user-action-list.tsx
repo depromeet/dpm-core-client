@@ -1,8 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-
 import { CLARITY_ACTION_ID } from '@/constants/clarity';
+import { useOpenExternalUrl } from '@/hooks/use-open-external-url';
 import { useClarity } from '@/providers/client-clarity-adapter';
 
 const USER_VOC_LINK = 'https://forms.gle/yV88T98WsADu6VNc6';
@@ -11,15 +10,19 @@ const USER_GUIDE_LINK =
 
 export const UserActionList = () => {
 	const { track } = useClarity();
+	const { openExternalUrl } = useOpenExternalUrl();
+
 	return (
 		<section className="px-4 pb-2">
 			<div className="flex gap-3">
-				<Link
-					href={USER_VOC_LINK}
+				<button
+					type="button"
 					data-coachmark="feedback"
-					target="_blank"
-					className="flex basis-1/2 rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f9faff_59.35%,#eff3ff_73.36%)] p-4 shadow-[0_0_10px_rgba(0,0,0,0.04)]"
-					onClick={() => track(CLARITY_ACTION_ID.HOME.VOC_BUTTON_CLICK)}
+					className="flex basis-1/2 cursor-pointer rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f9faff_59.35%,#eff3ff_73.36%)] p-4 text-left shadow-[0_0_10px_rgba(0,0,0,0.04)]"
+					onClick={async () => {
+						track(CLARITY_ACTION_ID.HOME.VOC_BUTTON_CLICK);
+						await openExternalUrl(USER_VOC_LINK);
+					}}
 				>
 					<div className="flex w-full flex-wrap items-center justify-between">
 						<p className="font-semibold text-body2 text-label-subtle">
@@ -83,12 +86,14 @@ export const UserActionList = () => {
 							</defs>
 						</svg>
 					</div>
-				</Link>
-				<Link
-					href={USER_GUIDE_LINK}
+				</button>
+				<button
+					type="button"
+					onClick={async () => {
+						await openExternalUrl(USER_GUIDE_LINK);
+					}}
 					data-coachmark="user-guide"
-					target="_blank"
-					className="flex basis-1/2 rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f8feff_56.78%,#effdff_73.36%)] p-4 shadow-[0_0_10px_rgba(0,0,0,0.04)]"
+					className="flex basis-1/2 cursor-pointer rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f8feff_56.78%,#effdff_73.36%)] p-4 text-left shadow-[0_0_10px_rgba(0,0,0,0.04)]"
 				>
 					<div className="flex w-full flex-wrap items-center justify-between">
 						<p className="font-semibold text-body2 text-label-subtle">
@@ -153,7 +158,7 @@ export const UserActionList = () => {
 							</defs>
 						</svg>
 					</div>
-				</Link>
+				</button>
 			</div>
 		</section>
 	);
