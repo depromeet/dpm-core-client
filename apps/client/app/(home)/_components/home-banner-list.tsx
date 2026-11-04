@@ -79,7 +79,6 @@ const HomeBannerListContainer = () => {
 
 	const isAttendanceOpen = showAttendanceBanner(
 		currentWeekSession.attendanceStart,
-		currentWeekSession.lateStart,
 		currentWeekSession.absentStart,
 	);
 
