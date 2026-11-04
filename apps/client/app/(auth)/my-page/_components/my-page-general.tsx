@@ -2,11 +2,10 @@
 
 import { useIsMutating } from '@tanstack/react-query';
 import { motion } from 'motion/react';
-import { ChevronRight, fadeInOutVariatns, toast } from '@dpm-core/shared';
+import { ChevronRight, fadeInOutVariatns } from '@dpm-core/shared';
 
 import { Pressable } from '@/components/motion';
-import { useAppConfig } from '@/providers/app-config-provider';
-import { useBridgeStatus, useBridgeStore } from '@/providers/bridge-provider';
+import { useOpenExternalUrl } from '@/hooks/use-open-external-url';
 import { logoutMutationOptions } from '@/remotes/mutations/auth';
 
 import { LogoutModal } from './logout-modal';
@@ -18,25 +17,7 @@ const USER_VOC_LINK = 'https://forms.gle/yV88T98WsADu6VNc6';
 const MyPageGeneral = () => {
 	const isMutating = useIsMutating({ mutationKey: logoutMutationOptions().mutationKey });
 
-	const { isApp } = useAppConfig();
-	const { isWebViewBridgeAvailable, isNativeMethodAvailable } = useBridgeStatus();
-	const openInAppBrowser = useBridgeStore(({ openInAppBrowser }) => openInAppBrowser);
-
-	const canUseNativeBrowser =
-		isApp && isWebViewBridgeAvailable && isNativeMethodAvailable('openInAppBrowser');
-
-	const handleOpenVoc = async () => {
-		if (canUseNativeBrowser) {
-			try {
-				await openInAppBrowser(USER_VOC_LINK);
-			} catch {
-				toast.error('의견 남기기 페이지를 열지 못했어요. 다시 시도해 주세요.');
-			}
-			return;
-		}
-
-		window.open(USER_VOC_LINK, '_blank', 'noopener,noreferrer');
-	};
+	const { openExternalUrl } = useOpenExternalUrl();
 
 	return (
 		<motion.div variants={fadeInOutVariatns.variants}>
@@ -46,7 +27,7 @@ const MyPageGeneral = () => {
 					<Pressable
 						variant="text"
 						className="flex items-center justify-between p-0 py-3 font-medium"
-						onClick={handleOpenVoc}
+						onClick={() => openExternalUrl(USER_VOC_LINK)}
 					>
 						<p className="text-body2 text-label-subtle">의견 남기기</p>
 						<ChevronRight className="h-6 w-6 text-icon-noraml" />
