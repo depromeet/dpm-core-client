@@ -28,7 +28,7 @@ const HomeAnnouncementBannerContainer = () => {
 	return (
 		<div className="px-4 pt-5 pb-2">
 			<Link
-				href={`/announcement/${announcement.announcementId}`}
+				href={`/announcement/${announcement.announcementId}?returnTo=%2F`}
 				className="flex h-10 items-center gap-2 rounded-xl bg-primary-extralight px-3 text-body2 text-label-normal"
 			>
 				<Megaphone className="size-6 shrink-0" />
