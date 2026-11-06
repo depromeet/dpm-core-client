@@ -24,7 +24,8 @@
 		"clean": "turbo clean && rm -rf node_modules && rm -rf .turbo",
 		"changeset": "changeset",
 		"changeset:version": "changeset version",
-		"changeset:publish": "changeset publish"
+		"changeset:publish": "changeset publish",
+		"generate:type": "turbo generate:type"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",

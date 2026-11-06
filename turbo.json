@@ -16,6 +16,9 @@
 		"lint": {
 			"dependsOn": ["^lint"]
 		},
+		"generate:type": {
+			"cache": false
+		},
 		"//#lint-and-format": {},
 		"//#lint-and-format:fix": {
 			"cache": false
