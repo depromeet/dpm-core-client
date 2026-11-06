@@ -35,10 +35,11 @@ export const HomeCheckAttendanceBanner = ({
 	const reduceMotion = useReducedMotion();
 	const now = dayjs();
 	const isVisible =
-		isAttendanceOpen ||
-		(dayjs(attendanceSession.absentStart).isValid() &&
-			now.isSame(dayjs(attendanceSession.date), 'day') &&
-			!now.isBefore(dayjs(attendanceSession.absentStart)));
+		attendanceSession.canRecordAttendance &&
+		(isAttendanceOpen ||
+			(dayjs(attendanceSession.absentStart).isValid() &&
+				now.isSame(dayjs(attendanceSession.date), 'day') &&
+				!now.isBefore(dayjs(attendanceSession.absentStart))));
 	const { data } = useQuery({
 		...getAttendanceMeBySessionIdOptions({ sessionId: attendanceSession.id }),
 		enabled: isVisible,
@@ -49,9 +50,7 @@ export const HomeCheckAttendanceBanner = ({
 	});
 	const absenceReasonStatus = absenceReasonQuery.data?.data?.status;
 	const visible =
-		isVisible &&
-		!absenceReasonQuery.isPending &&
-		(data || absenceReasonStatus === 'PENDING');
+		isVisible && !absenceReasonQuery.isPending && (data || absenceReasonStatus === 'PENDING');
 	const transition = { duration: reduceMotion ? 0 : 0.28, ease: 'easeOut' as const };
 
 	return (
