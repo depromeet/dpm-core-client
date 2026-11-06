@@ -1,5 +1,6 @@
 import { http } from '../http';
 import type {
+	MySessionDetail,
 	NextSessionHomeResponse,
 	SessionAttendanceStatusTime,
 	SessionDetail,
@@ -50,7 +51,7 @@ export const session = {
 
 	/** 디퍼의 세션 상세 조회 */
 	getMySessionById: async (sessionId: number) => {
-		const res = await http.get<SessionDetail>(`v1/sessions/${sessionId}/me`);
+		const res = await http.get<MySessionDetail>(`v1/sessions/${sessionId}/me`);
 		return res;
 	},
 

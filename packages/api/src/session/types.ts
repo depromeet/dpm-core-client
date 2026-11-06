@@ -130,6 +130,10 @@ export type SessionDetail = Session &
 		feedback: SessionDetailFeedback | null;
 	};
 
+export type MySessionDetail = SessionDetail & {
+	canRecordAttendance: boolean;
+};
+
 export interface SessionWeek {
 	id: Session['id'];
 	week: Session['week'];
@@ -138,6 +142,7 @@ export interface SessionWeek {
 	place: string;
 	isOnline: boolean;
 	attendanceStatus: 'NOT_STARTED' | 'IN_PROGRESS' | 'CLOSED';
+	canRecordAttendance: boolean;
 }
 
 export interface SessionTargeted {
@@ -155,7 +160,9 @@ export interface SessionUnTargeted {
 
 export type CurrentWeekSessionResponse = Session &
 	SessionAttendanceStatusTime &
-	SessionAttendanceCode;
+	SessionAttendanceCode & {
+		canRecordAttendance: boolean;
+	};
 
 export type NextSessionHomeStatus = 'AVAILABLE' | 'NOT_REGISTERED' | 'COHORT_ENDED';
 
