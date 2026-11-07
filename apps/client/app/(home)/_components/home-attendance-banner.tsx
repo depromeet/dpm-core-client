@@ -117,9 +117,12 @@ const HomeCheckAttendanceBannerContent = ({
 	const isReviewPending = absenceReasonStatus === 'PENDING';
 	const { absentStart } = attendanceSession;
 	const isPastAbsentStart = !dayjs().isBefore(dayjs(absentStart));
+	const canCheckAttendance = isPastAbsentStart
+		? attendanceMeBySessionId?.attendance.canRegisterLateParticipation
+		: attendanceStatus === 'PENDING';
 
 	// 출석체크 전
-	if (attendanceStatus === 'PENDING') {
+	if (canCheckAttendance) {
 		return (
 			<>
 				<div className="flex justify-between">
@@ -129,7 +132,7 @@ const HomeCheckAttendanceBannerContent = ({
 						</p>
 						<p className="font-bold text-headline2 text-white">
 							{isPastAbsentStart ? (
-								completedAttendanceCopy.LATE.title
+								completedAttendanceCopy.ABSENT.title
 							) : (
 								<>
 									출석체크를
@@ -177,7 +180,7 @@ const HomeCheckAttendanceBannerContent = ({
 		if (isExcusedAbsent) {
 			return { title: '인정 결석', buttonLabel: null };
 		}
-		return completedAttendanceCopy[attendanceStatus];
+		return completedAttendanceCopy[attendanceStatus === 'PENDING' ? 'ABSENT' : attendanceStatus];
 	})();
 
 	return (
