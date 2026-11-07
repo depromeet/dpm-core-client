@@ -8,7 +8,6 @@ import { Button, toast } from '@dpm-core/shared';
 import { LoadingBox } from '@/components/loading-box';
 import { CLARITY_ACTION_ID, type ClarityActionId } from '@/constants/clarity';
 import { usePreventPageExit } from '@/hooks/use-prevent-page-exit';
-import { useDebounce } from '@/hooks/useDebounce';
 import { useClarity } from '@/providers/admin-clarity-adapter';
 import {
 	acknowledgeMemberBadgeMutationOptions,
@@ -32,11 +31,7 @@ import { useInlineMemberEdit } from '../_hooks/useInlineMemberEdit';
 import { useMemberFilters } from '../_hooks/useMemberFilters';
 import { useMemberList } from '../_hooks/useMemberList';
 import { useMemberSelection } from '../_hooks/useMemberSelection';
-import {
-	buildMemberChanges,
-	hasChanges,
-	toTeamId,
-} from '../_lib/build-member-changes';
+import { buildMemberChanges, hasChanges, toTeamId } from '../_lib/build-member-changes';
 import {
 	type ApprovalPlan,
 	type ApprovedMergePair,
@@ -106,7 +101,6 @@ export const MemberManagement = () => {
 		};
 
 	const [searchInput, setSearchInput] = useState('');
-	const debouncedSetSearch = useDebounce(setSearch, 300);
 
 	const {
 		rows,
@@ -118,10 +112,7 @@ export const MemberManagement = () => {
 		isFetchingNextPage,
 		isLoadingAllForSelection,
 		loadAllAndGetIds,
-	} = useMemberList(
-		queryParams,
-		filters.organizerOnly && filters.approvalStatus === 'APPROVED',
-	);
+	} = useMemberList(queryParams, filters.organizerOnly && filters.approvalStatus === 'APPROVED');
 
 	const { data: cohortNumber } = useQuery(getCurrentCohortQuery);
 	const { data: teams } = useQuery(getCurrentCohortTeamsQuery);
@@ -508,7 +499,7 @@ export const MemberManagement = () => {
 				search={searchInput}
 				onSearchChange={(value) => {
 					setSearchInput(value);
-					debouncedSetSearch(value);
+					setSearch(value);
 				}}
 			/>
 
