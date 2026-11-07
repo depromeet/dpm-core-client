@@ -1,6 +1,6 @@
 'use client';
 
-import { SearchInputOutlined } from '@dpm-core/shared';
+import { DebouncedSearchInput } from '@/components/debounced-search-input';
 
 import { formatLastUpdated } from '../_lib/format-last-updated';
 
@@ -33,12 +33,12 @@ export const MemberManagementHeader = ({
 
 			<div className="flex w-full items-center justify-between px-10 pt-6">
 				<h2 className="font-bold text-label-normal text-title2">요약</h2>
-				<SearchInputOutlined
-					placeholder="멤버 검색"
+				<DebouncedSearchInput
 					value={search}
-					onChange={(event) => onSearchChange(event.target.value)}
-					data-clarity-mask="True"
-					className="h-10 w-67.5 bg-background-normal"
+					onChange={onSearchChange}
+					onClear={() => onSearchChange('')}
+					placeholder="멤버 검색"
+					containerClassName="w-67.5"
 				/>
 			</div>
 		</>
