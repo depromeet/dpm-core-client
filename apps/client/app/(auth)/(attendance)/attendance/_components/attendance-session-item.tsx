@@ -23,6 +23,9 @@ export const SessionItem = (props: SessionItemProps) => {
 		attendanceStatus === 'EXCUSED_ABSENT' ||
 		Boolean(absenceReason);
 
+	const canEditReason = absenceReason?.status !== 'APPROVED';
+	const canSubmitPendingReason = attendanceStatus === 'PENDING' && canEditReason;
+
 	return (
 		<AccordionItem value={id.toString()} className="border-line-normal px-3">
 			<AccordionTrigger className="items-center py-0">
@@ -62,15 +65,17 @@ export const SessionItem = (props: SessionItemProps) => {
 								<p className="wrap-break-word">{absenceReason?.contents || '-'}</p>
 								<AbsenceEvidenceFiles images={absenceReason?.images ?? []} />
 							</div>
-							<Link
-								href={`/attendance/me/${id}/absence-reason`}
-								aria-label={`${week}주차 결석 사유 ${absenceReason ? '수정' : '작성'}`}
-							>
-								<Pencil />
-							</Link>
+							{canEditReason ? (
+								<Link
+									href={`/attendance/me/${id}/absence-reason`}
+									aria-label={`${week}주차 결석 사유 ${absenceReason ? '수정' : '작성'}`}
+								>
+									<Pencil />
+								</Link>
+							) : null}
 						</div>
 					) : null}
-					{attendanceStatus === 'PENDING' ? (
+					{canSubmitPendingReason ? (
 						<Link
 							className="font-medium text-caption1 text-label-assistive"
 							href={`/attendance/me/${id}/absence-reason`}

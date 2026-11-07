@@ -1,5 +1,5 @@
 import { type MutationOptions, mutationOptions } from '@tanstack/react-query';
-import { type AttendanceStatus, attendance } from '@dpm-core/api';
+import { type AttendanceStatus, attendance, type ReviewAbsenceReasonRequest } from '@dpm-core/api';
 
 const MUTATE_KEY = 'ATTENDANCE';
 
@@ -25,4 +25,11 @@ export const modifyAttendanceStatusOptions = (
 		mutationFn: (params: ModifyAttendanceStatusParams) =>
 			attendance.modifyAttendanceStatus({ sessionId, memberId, ...params }),
 		...options,
+	});
+
+export const reviewAbsenceReasonOptions = (sessionId: number, memberId: number) =>
+	mutationOptions({
+		mutationKey: [MUTATE_KEY, 'absence-review', sessionId, memberId],
+		mutationFn: (params: Pick<ReviewAbsenceReasonRequest, 'approved'>) =>
+			attendance.reviewAbsenceReason({ sessionId, memberId, ...params }),
 	});
