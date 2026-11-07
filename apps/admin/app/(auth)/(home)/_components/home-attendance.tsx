@@ -54,9 +54,7 @@ export const HomeAttendance = () => {
 				</div>
 			)}
 			<div className="flex justify-between">
-				<div className="max-w-[270px] flex-1">
-					<SearchInput id="search" placeholder="디퍼 검색" />
-				</div>
+				<SearchInput />
 				<AttendanceFilter />
 			</div>
 

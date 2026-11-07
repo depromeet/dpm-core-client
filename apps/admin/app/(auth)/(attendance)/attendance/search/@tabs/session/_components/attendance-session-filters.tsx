@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, X } from 'lucide-react';
 import type {
 	AttendanceBySessionMember,
 	AttendanceStatus,
@@ -19,6 +18,7 @@ import {
 } from '@dpm-core/shared';
 
 import { AttendanceFilterPopover, RotateCwIcon } from '@/components/attendance';
+import { DebouncedSearchInput } from '@/components/debounced-search-input';
 import { getMemberPartLabel } from '@/lib/member/part';
 
 interface AttendanceSessionFiltersProps {
@@ -122,28 +122,11 @@ export function AttendanceSessionFilters({
 						);
 					})}
 				</div>
-				<div className="flex h-10 w-50 items-center gap-2 rounded-lg border border-line-normal bg-background-normal px-4">
-					<input
-						value={filters.name ?? ''}
-						onChange={(event) => onChange({ name: event.target.value })}
-						placeholder="디퍼 검색"
-						className="min-w-0 flex-1 bg-transparent font-medium text-body2 outline-none placeholder:text-label-assistive"
-					/>
-					{filters.name ? (
-						<Button
-							type="button"
-							variant="none"
-							size="none"
-							title="검색 초기화"
-							onClick={() => onChange({ name: '' })}
-							className="size-4 rounded-full bg-background-strong text-label-assistive"
-						>
-							<X className="size-3" />
-						</Button>
-					) : (
-						<Search className="size-4 shrink-0 text-label-assistive" />
-					)}
-				</div>
+				<DebouncedSearchInput
+					value={filters.name}
+					onChange={(name) => onChange({ name })}
+					onClear={() => onChange({ name: '' })}
+				/>
 			</div>
 			<div className="flex items-center gap-2">
 				{hasFilters ? (
