@@ -10,6 +10,7 @@ import type {
 	MyAbsenceReasonResponse,
 	MyAttendanceBySessionIdResponse,
 	MyAttendanceResponse,
+	ReviewAbsenceReasonRequest,
 	SubmitAbsenceReasonRequest,
 } from './types';
 
@@ -98,6 +99,12 @@ export const attendance = {
 	// 결석 사유서 제출
 	submitAbsenceReason: ({ sessionId, ...json }: SubmitAbsenceReasonRequest) => {
 		return http.post(`v3/sessions/${sessionId}/absence-reasons`, { json });
+	},
+
+	reviewAbsenceReason: ({ sessionId, memberId, ...json }: ReviewAbsenceReasonRequest) => {
+		return http.patch<null>(`v2/sessions/${sessionId}/absence-reasons/${memberId}/review`, {
+			json,
+		});
 	},
 
 	// 세션 결석 사유서 목록 조회 (운영진)

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import type { AttendanceStatus } from '@dpm-core/api';
 import { ATTENDANCE_STATUS_OPTIONS, Button } from '@dpm-core/shared';
@@ -18,6 +19,8 @@ interface AttendanceStatusSectionProps {
 	isSaveDisabled: boolean;
 	isSaving: boolean;
 	absenceReason?: string | null;
+	absenceReasonReview?: ReactNode;
+	absenceReasonBadge?: ReactNode;
 }
 
 export const AttendanceStatusSection = ({
@@ -33,6 +36,8 @@ export const AttendanceStatusSection = ({
 	isSaveDisabled,
 	isSaving,
 	absenceReason,
+	absenceReasonReview,
+	absenceReasonBadge,
 }: AttendanceStatusSectionProps) => {
 	return (
 		<section className="mb-6">
@@ -89,7 +94,10 @@ export const AttendanceStatusSection = ({
 					<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-4">
 						<div className="flex items-center gap-4">
 							<p className="w-20 font-medium text-body2 text-label-assistive">출석 상태</p>
-							<AttendanceStatusLabel status={originalStatus} />
+							<div className="flex items-center gap-2">
+								<AttendanceStatusLabel status={originalStatus} />
+								{absenceReasonBadge}
+							</div>
 						</div>
 						<div className="flex items-center gap-4">
 							<p className="w-20 font-medium text-body2 text-label-assistive">출석 시간</p>
@@ -99,7 +107,12 @@ export const AttendanceStatusSection = ({
 						</div>
 						<div className="flex gap-4">
 							<p className="w-20 shrink-0 font-medium text-body2 text-label-assistive">결석 사유</p>
-							<p className="font-medium text-body2 text-label-normal">{absenceReason ?? '-'}</p>
+							<div className="min-w-0 flex-1">
+								<p className="wrap-break-word font-medium text-body2 text-label-normal">
+									{absenceReason ?? '-'}
+								</p>
+								{absenceReasonReview}
+							</div>
 						</div>
 					</div>
 					<Button
