@@ -77,9 +77,10 @@ const HomeCoachmarkSession = ({ member }: HomeCoachmarkSessionProps) => {
 			if (shell.querySelector('output, [data-slot="drawer-content"]')) return;
 			if (current.status === 'AVAILABLE' && current.session) {
 				if (!shell.querySelector('[data-coachmark="session-info"]')) return;
-				const { attendanceStart, lateStart, absentStart, id, canRecordAttendance } =
-					current.session;
-				if (canRecordAttendance && showAttendanceBanner(attendanceStart, lateStart, absentStart)) {
+				const { attendanceStart, absentStart, id, canRecordAttendance } = current.session;
+				const isAttendanceOpen =
+					canRecordAttendance && showAttendanceBanner(attendanceStart, absentStart);
+				if (isAttendanceOpen) {
 					const attendanceQueryKey = getAttendanceMeBySessionIdOptions({ sessionId: id }).queryKey;
 					const attendance = queryClient.getQueryState(attendanceQueryKey);
 					if (!attendance || attendance.status === 'pending') return;

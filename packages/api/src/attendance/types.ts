@@ -47,6 +47,7 @@ export interface MyAttendanceBySessionIdResponse {
 	attendance: {
 		status: AttendanceStatus;
 		attendedAt: string | null;
+		canRegisterLateParticipation: boolean;
 	};
 	session: {
 		week: number;
