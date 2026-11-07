@@ -31,9 +31,7 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 		<div className="flex flex-col gap-y-5">
 			<GAPageTracker type="session-detail" sessionId={String(sessionId)} />
 			<div className="flex items-start justify-between">
-				<h3 className="self-start font-bold text-title1 text-label-normal">
-					{sessionDetail.name}
-				</h3>
+				<h3 className="self-start font-bold text-label-normal text-title1">{sessionDetail.name}</h3>
 				{!isMobile && <SessionDropDownMenu sessionId={sessionId} />}
 			</div>
 
@@ -45,6 +43,10 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 				<p className="font-semibold text-body2 text-label-assistive">세션 날짜</p>
 				<p className="font-medium text-body2 text-label-subtle">
 					{formatISOStringToFullDateString(sessionDetail.date)}
+				</p>
+				<p className="font-semibold text-body2 text-label-assistive">세션 장소</p>
+				<p className="font-medium text-body2 text-label-subtle">
+					{sessionDetail.isOnline ? '온라인' : sessionDetail.place}
 				</p>
 			</SessionDetailInfoBox>
 

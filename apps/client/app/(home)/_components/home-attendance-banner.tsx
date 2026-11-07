@@ -35,10 +35,11 @@ export const HomeCheckAttendanceBanner = ({
 	const reduceMotion = useReducedMotion();
 	const now = dayjs();
 	const isVisible =
-		isAttendanceOpen ||
-		(dayjs(attendanceSession.absentStart).isValid() &&
-			now.isSame(dayjs(attendanceSession.date), 'day') &&
-			!now.isBefore(dayjs(attendanceSession.absentStart)));
+		attendanceSession.canRecordAttendance &&
+		(isAttendanceOpen ||
+			(dayjs(attendanceSession.absentStart).isValid() &&
+				now.isSame(dayjs(attendanceSession.date), 'day') &&
+				!now.isBefore(dayjs(attendanceSession.absentStart))));
 	const { data } = useQuery({
 		...getAttendanceMeBySessionIdOptions({ sessionId: attendanceSession.id }),
 		enabled: isVisible,

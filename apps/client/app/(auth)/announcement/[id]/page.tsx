@@ -13,6 +13,7 @@ import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringToDotDate, formatISOStringToKoreanDate } from '@/lib/date';
 import { getAnnouncementDetailQuery } from '@/remotes/queries/announcement';
 
+import { AnnouncementDetailBackButton } from './components/announcement-detail-back-button';
 import { AssignmentInfoCard } from './components/assignment-info-card';
 import { ReadButton } from './components/read-button';
 
@@ -112,16 +113,23 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 
 interface NoticeDetailPageProps {
 	params: Promise<{ id: string }>;
+	searchParams: Promise<{ returnTo?: string | string[] }>;
 }
 
-const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
+const NoticeDetailPage = ({ params: paramsPromise, searchParams }: NoticeDetailPageProps) => {
 	const params = use(paramsPromise);
+	const { returnTo } = use(searchParams);
+	const safeReturnTo = returnTo === '/' ? '/' : '/announcement';
 	const announcementId = Number(params.id);
 
 	if (Number.isNaN(announcementId)) {
 		return (
 			<SafeAreaAppLayout className="bg-background-normal">
-				<AppHeader title="공지 상세" className="mb-0" />
+				<AppHeader
+					title="공지 상세"
+					className="mb-0"
+					leftIcon={<AnnouncementDetailBackButton returnTo={safeReturnTo} />}
+				/>
 				<ErrorBox onReset={() => {}} />
 			</SafeAreaAppLayout>
 		);
@@ -129,7 +137,11 @@ const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
 
 	return (
 		<SafeAreaAppLayout className="bg-background-normal">
-			<AppHeader title="공지 상세" className="mb-0" />
+			<AppHeader
+				title="공지 상세"
+				className="mb-0"
+				leftIcon={<AnnouncementDetailBackButton returnTo={safeReturnTo} />}
+			/>
 			<ErrorBoundary
 				fallback={(props: ErrorBoundaryFallbackProps) => <ErrorBox onReset={() => props.reset()} />}
 			>

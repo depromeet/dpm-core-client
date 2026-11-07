@@ -58,7 +58,7 @@ function SessionItem({ session }: { session: SessionListItem }) {
 					className="flex w-full cursor-pointer flex-col items-start text-left"
 					asChild
 				>
-					<Link href={`/session/${session.id}`}>
+					<Link href={`/session/${session.id}?returnTo=%2Fsession`}>
 						<div className="flex w-full flex-col gap-1.5">
 							<div className="flex flex-col gap-0.5">
 								<p className="font-medium text-caption1 text-label-assistive">
