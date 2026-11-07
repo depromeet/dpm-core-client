@@ -47,6 +47,7 @@ export interface MyAttendanceBySessionIdResponse {
 	attendance: {
 		status: AttendanceStatus;
 		attendedAt: string | null;
+		canRegisterLateParticipation: boolean;
 	};
 	session: {
 		week: number;
@@ -83,6 +84,12 @@ export interface AttendanceBySessionResponse {
 export type ExcuseDocumentStatus = 'SUBMITTED' | 'PENDING' | null;
 
 export type AbsenceReasonStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+
+export interface ReviewAbsenceReasonRequest {
+	sessionId: number;
+	memberId: number;
+	approved: boolean;
+}
 
 export interface SubmitAbsenceReasonRequest {
 	sessionId: number;

@@ -77,11 +77,10 @@ const HomeBannerListContainer = () => {
 		);
 	}
 
-	const isAttendanceOpen = showAttendanceBanner(
-		currentWeekSession.attendanceStart,
-		currentWeekSession.lateStart,
-		currentWeekSession.absentStart,
-	);
+	const { canRecordAttendance, attendanceStart, absentStart } = currentWeekSession;
+
+	const isAttendanceOpen =
+		canRecordAttendance && showAttendanceBanner(attendanceStart, absentStart);
 
 	return (
 		<section className="px-4 pb-5">

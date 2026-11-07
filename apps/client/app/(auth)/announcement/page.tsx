@@ -62,7 +62,7 @@ const NoticeListContainer = ({ selectedType }: NoticeListContainerProps) => {
 	);
 
 	const handleNoticeClick = (announcementId: number) =>
-		router.push(`/announcement/${announcementId}`);
+		router.push(`/announcement/${announcementId}?returnTo=%2Fannouncement`);
 
 	if (filteredAnnouncements.length === 0) {
 		return (

@@ -39,6 +39,11 @@ import { useAttendanceStatusEdit } from '@/hooks';
 import { getAttendanceMemberStatusLabel } from '@/lib/attendance/status';
 import { getAttendanceByMemberDetailOptions } from '@/remotes/queries/attendance';
 
+import {
+	AbsenceReasonReview,
+	AbsenceReasonStatusBadge,
+} from '../../../_components/absence-reason-review';
+
 interface AttendanceMemberDetailDrawerProps {
 	memberId: number;
 	open: boolean;
@@ -123,6 +128,7 @@ function MemberSession({ memberId, session }: MemberSessionProps) {
 		initialStatus: session.attendanceStatus,
 		successMessage: '출석 상태를 변경했어요.',
 	});
+	const isReviewDisabled = isEditMode || isLoading;
 	return (
 		<AccordionItem
 			value={String(session.id)}
@@ -149,8 +155,11 @@ function MemberSession({ memberId, session }: MemberSessionProps) {
 							{formatDotFullDate(session.date, { withTime: true })}
 						</p>
 					</div>
-					<span className="mr-6 shrink-0">
+					<span className="mr-6 flex shrink-0 items-center gap-2">
 						<AttendanceStatusLabel status={session.attendanceStatus} />
+						{session.absenceReason ? (
+							<AbsenceReasonStatusBadge status={session.absenceReason.status} />
+						) : null}
 					</span>
 				</AccordionTrigger>
 				<Tooltip>
@@ -202,6 +211,14 @@ function MemberSession({ memberId, session }: MemberSessionProps) {
 							</>
 						) : null}
 					</dl>
+					{session.absenceReason ? (
+						<AbsenceReasonReview
+							sessionId={session.id}
+							memberId={memberId}
+							status={session.absenceReason.status}
+							disabled={isReviewDisabled}
+						/>
+					) : null}
 				</div>
 			</AccordionContent>
 			<Dialog

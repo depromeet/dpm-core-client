@@ -14,6 +14,10 @@ import {
 	getAttendanceBySessionDetailOptions,
 } from '@/remotes/queries/attendance';
 
+import {
+	AbsenceReasonReview,
+	AbsenceReasonStatusBadge,
+} from '../../../_components/absence-reason-review';
 import { AttendanceDetailHeader } from '../../../_components/attendance-detail-header';
 import { AttendanceStatusSection } from '../../../_components/attendance-status-section';
 import { ProfileSection } from '../../../_components/profile-section';
@@ -53,6 +57,7 @@ function AttendanceSessionDetailContent({
 		handleCancel,
 		isLoading,
 	} = useAttendanceStatusEdit({ sessionId, memberId, initialStatus: data.attendance.status });
+	const isReviewDisabled = isEditMode || isLoading;
 
 	return (
 		<div className="flex-1 overflow-y-auto px-10 py-6">
@@ -75,6 +80,18 @@ function AttendanceSessionDetailContent({
 				isSaveDisabled={isLoading || selectedStatus === data.attendance.status}
 				isSaving={isLoading}
 				absenceReason={reason?.contents ?? null}
+				absenceReasonBadge={reason ? <AbsenceReasonStatusBadge status={reason.status} /> : null}
+				absenceReasonReview={
+					reason ? (
+						<AbsenceReasonReview
+							key={`${sessionId}-${memberId}`}
+							sessionId={sessionId}
+							memberId={memberId}
+							status={reason.status}
+							disabled={isReviewDisabled}
+						/>
+					) : null
+				}
 			/>
 			{reason && reason.images.length > 0 ? (
 				<section className="mb-6">

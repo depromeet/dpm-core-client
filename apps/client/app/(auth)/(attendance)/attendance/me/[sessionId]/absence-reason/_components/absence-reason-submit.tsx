@@ -51,6 +51,7 @@ const AbsenceReasonSubmitContainer = ({ sessionId }: AbsenceReasonSubmitProps) =
 
 	const session = sessionDetail.data;
 	const myAbsenceReasonData = myAbsenceReason.data;
+	const isApproved = myAbsenceReasonData?.status === 'APPROVED';
 
 	return (
 		// 제출 버튼을 위한 하단 여백
@@ -66,6 +67,7 @@ const AbsenceReasonSubmitContainer = ({ sessionId }: AbsenceReasonSubmitProps) =
 			<AbsenceSubmitForm
 				key={sessionId}
 				isEditing={myAbsenceReasonData != null}
+				isApproved={isApproved}
 				defaultContents={myAbsenceReasonData?.contents ?? ''}
 				defaultImages={myAbsenceReasonData?.images ?? []}
 				sessionId={sessionId}
@@ -104,6 +106,7 @@ function SessionInfoCard({ week, name, date, place, isOnline }: SessionInfoCardP
 
 interface AbsenceSubmitFormProps {
 	isEditing: boolean;
+	isApproved: boolean;
 	sessionId: number;
 	defaultContents: string;
 	defaultImages: ImageResponse[];
@@ -115,6 +118,7 @@ const ABSENCE_TEXTAREA_LABEL = 'absence-textarea-label';
 
 function AbsenceSubmitForm({
 	isEditing,
+	isApproved,
 	sessionId,
 	defaultContents,
 	defaultImages,
@@ -146,7 +150,10 @@ function AbsenceSubmitForm({
 		onError: async (error) => {
 			if (error instanceof HTTPError) {
 				try {
-					const { message } = (await error.response.json()) as ApiErrorReponse;
+					const { message, code } = (await error.response.json()) as ApiErrorReponse;
+					if (code === 'ATTENDANCE-409-03') {
+						await queryClient.invalidateQueries({ queryKey: ['ATTENDANCE'] });
+					}
 					toast.error(message || '결석 사유서 제출에 실패했어요.');
 				} catch {
 					toast.error('운영진에게 문의해 주세요.');
@@ -159,7 +166,8 @@ function AbsenceSubmitForm({
 	});
 
 	const trimmedContents = contents.trim();
-	const isInvalid = trimmedContents.length === 0 || !isReady || isPending;
+	const isDisabled = isPending || isApproved;
+	const isInvalid = trimmedContents.length === 0 || !isReady || isDisabled;
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -187,7 +195,7 @@ function AbsenceSubmitForm({
 					<Textarea
 						id={ABSENCE_TEXTAREA_LABEL}
 						value={contents}
-						disabled={isPending}
+						disabled={isDisabled}
 						onChange={(event) => setContents(event.target.value)}
 						variant="line"
 						required
@@ -200,7 +208,7 @@ function AbsenceSubmitForm({
 					onAddFiles={addFiles}
 					onRemove={remove}
 					onRetry={retry}
-					disabled={isPending}
+					disabled={isDisabled}
 				/>
 			</form>
 			<div className="fixed right-0 bottom-0 left-0 z-10 mx-auto max-w-lg bg-background-normal px-5 pt-3 pb-[max(20px,env(safe-area-inset-bottom))]">

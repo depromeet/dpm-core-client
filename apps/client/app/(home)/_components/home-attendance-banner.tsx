@@ -35,10 +35,11 @@ export const HomeCheckAttendanceBanner = ({
 	const reduceMotion = useReducedMotion();
 	const now = dayjs();
 	const isVisible =
-		isAttendanceOpen ||
-		(dayjs(attendanceSession.absentStart).isValid() &&
-			now.isSame(dayjs(attendanceSession.date), 'day') &&
-			!now.isBefore(dayjs(attendanceSession.absentStart)));
+		attendanceSession.canRecordAttendance &&
+		(isAttendanceOpen ||
+			(dayjs(attendanceSession.absentStart).isValid() &&
+				now.isSame(dayjs(attendanceSession.date), 'day') &&
+				!now.isBefore(dayjs(attendanceSession.absentStart))));
 	const { data } = useQuery({
 		...getAttendanceMeBySessionIdOptions({ sessionId: attendanceSession.id }),
 		enabled: isVisible,
@@ -49,9 +50,7 @@ export const HomeCheckAttendanceBanner = ({
 	});
 	const absenceReasonStatus = absenceReasonQuery.data?.data?.status;
 	const visible =
-		isVisible &&
-		!absenceReasonQuery.isPending &&
-		(data || absenceReasonStatus === 'PENDING');
+		isVisible && !absenceReasonQuery.isPending && (data || absenceReasonStatus === 'PENDING');
 	const transition = { duration: reduceMotion ? 0 : 0.28, ease: 'easeOut' as const };
 
 	return (
@@ -85,7 +84,6 @@ export const HomeCheckAttendanceBanner = ({
 								attendanceSession={attendanceSession}
 								attendanceMeBySessionId={data?.data}
 								absenceReasonStatus={absenceReasonStatus}
-								isAttendanceOpen={isAttendanceOpen}
 							/>
 						</div>
 					</motion.div>
@@ -97,7 +95,7 @@ export const HomeCheckAttendanceBanner = ({
 
 const completedAttendanceCopy = {
 	PRESENT: { title: '출석 완료 !', buttonLabel: '출석을 완료했어요' }, // 정상 출석
-	LATE: { title: '오늘은 지각이네요', buttonLabel: '출석을 완료했어요' }, // 지각
+	LATE: { title: '오늘은 지각이에요', buttonLabel: '출석을 완료했어요' }, // 지각
 	ABSENT: { title: '결석 처리됐어요', buttonLabel: '출석을 마감했어요' }, // 결석
 } satisfies Record<
 	Exclude<AttendanceStatus, 'PENDING' | 'EXCUSED_ABSENT'>,
@@ -108,23 +106,24 @@ interface HomeCheckAttendanceBannerContentProps {
 	attendanceSession: CurrentWeekSessionResponse;
 	attendanceMeBySessionId?: MyAttendanceBySessionIdResponse;
 	absenceReasonStatus?: AbsenceReasonStatus;
-	isAttendanceOpen: boolean;
 }
 
 const HomeCheckAttendanceBannerContent = ({
 	attendanceSession,
 	attendanceMeBySessionId,
 	absenceReasonStatus,
-	isAttendanceOpen,
 }: HomeCheckAttendanceBannerContentProps) => {
 	const attendanceStatus = attendanceMeBySessionId?.attendance.status ?? 'PENDING';
-	const status = !isAttendanceOpen && attendanceStatus === 'PENDING' ? 'ABSENT' : attendanceStatus;
 	const attendedAt = attendanceMeBySessionId?.attendance.attendedAt ?? null;
 	const isReviewPending = absenceReasonStatus === 'PENDING';
 	const { absentStart } = attendanceSession;
+	const isPastAbsentStart = !dayjs().isBefore(dayjs(absentStart));
+	const canCheckAttendance = isPastAbsentStart
+		? attendanceMeBySessionId?.attendance.canRegisterLateParticipation
+		: attendanceStatus === 'PENDING';
 
 	// 출석체크 전
-	if (status === 'PENDING' && !isReviewPending) {
+	if (canCheckAttendance) {
 		return (
 			<>
 				<div className="flex justify-between">
@@ -133,9 +132,15 @@ const HomeCheckAttendanceBannerContent = ({
 							{attendanceSession.week}주차
 						</p>
 						<p className="font-bold text-headline2 text-white">
-							출석체크를
-							<br />
-							진행해 주세요.
+							{isPastAbsentStart ? (
+								completedAttendanceCopy.ABSENT.title
+							) : (
+								<>
+									출석체크를
+									<br />
+									진행해 주세요.
+								</>
+							)}
 						</p>
 					</div>
 					<Image
@@ -164,14 +169,20 @@ const HomeCheckAttendanceBannerContent = ({
 		);
 	}
 
-	const isExcusedAbsent = status === 'EXCUSED_ABSENT';
-	const { title, buttonLabel } = isReviewPending
-		? { title: '인정 결석 대기', buttonLabel: null }
-		: isExcusedAbsent
-			? { title: '인정 결석', buttonLabel: null }
-			: completedAttendanceCopy[status === 'PENDING' ? 'ABSENT' : status];
-	const timeLabel = status === 'ABSENT' ? '출석 마감' : '출석 시간';
-	const time = status === 'ABSENT' ? absentStart : attendedAt;
+	const isExcusedAbsent = attendanceStatus === 'EXCUSED_ABSENT';
+
+	const timeLabel = attendanceStatus === 'ABSENT' ? '출석 마감' : '출석 시간';
+	const time = attendanceStatus === 'ABSENT' ? absentStart : attendedAt;
+
+	const { title, buttonLabel } = (() => {
+		if (isReviewPending) {
+			return { title: '인정 결석 대기', buttonLabel: null };
+		}
+		if (isExcusedAbsent) {
+			return { title: '인정 결석', buttonLabel: null };
+		}
+		return completedAttendanceCopy[attendanceStatus === 'PENDING' ? 'ABSENT' : attendanceStatus];
+	})();
 
 	return (
 		<>

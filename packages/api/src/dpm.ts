@@ -115,7 +115,7 @@ export interface paths {
 		put?: never;
 		/**
 		 * 가입 대기 계정 병합 및 승인
-		 * @description create:member, delete:member 권한이 필요합니다. sourceMemberId는 현재 기수 또는 기수 없는 PENDING이어야 합니다. 병합 대상의 PENDING 회원은 모두 이름·파트 제출을 완료해야 합니다. retainedMemberId는 같은 조건의 PENDING 또는 현재 기수 ACTIVE를 지정합니다. PENDING은 이름·파트를 보존하고 현재 기수 디퍼·팀 미배정으로 승인하며, ACTIVE는 기존 이름·파트·기수·역할·팀·활동 기록을 그대로 유지합니다. 원본의 소셜 로그인 연결을 옮기고 원본은 soft delete합니다. 원본의 refresh 세션과 임시 연동 요청을 정리합니다. 같은 provider의 서로 다른 계정과 비밀번호 로그인 정보가 있는 계정은 통합할 수 없습니다. 처리자·대상·시점을 기록하며 모든 변경을 한 트랜잭션으로 처리합니다. 실패하면 전체 취소하고 이미 처리된 대상은 거절합니다. 중복 의심은 병합을 강제하지 않습니다. 다른 사람이라면 일반 승인 API, 승인 불가라면 반려 API를 사용합니다. 확인 화면의 후보는 GET /v3/members/overview에서 approvalStatus=APPROVED/PENDING을 각각 조회합니다. 운영진·코어도 포함하려면 excludeStaff=false를 사용하고 search와 페이지를 확인합니다. 이름·이메일은 name, email을 표시하고 기수는 GET /v1/cohorts의 cohortId와 cohortNumber를 매핑합니다. cohortId 자체는 기수 번호가 아닙니다. 이름·파트 일치만으로 자동 병합하지 말고 동일인 여부와 남길 회원을 확인해야 합니다.
+		 * @description create:member, delete:member 권한이 필요합니다. sourceMemberId는 현재 기수 또는 기수 없는 PENDING이어야 합니다. 병합 대상의 PENDING 회원은 모두 이름·파트 제출을 완료해야 합니다. retainedMemberId는 같은 조건의 PENDING 또는 현재 기수 ACTIVE를 지정합니다. PENDING은 이름·파트를 보존하고 현재 기수 디퍼·팀 미배정으로 승인하며, ACTIVE는 기존 이름·파트·기수·역할·팀·활동 기록을 그대로 유지합니다. 원본의 소셜 로그인 연결을 옮기고 원본은 soft delete합니다. 원본의 refresh 세션은 유지 회원에게 이전하고 임시 연동 요청은 정리합니다. 기존 소셜 로그인은 양방향 병합 후에도 유지됩니다. 같은 provider의 서로 다른 계정과 비밀번호 로그인 정보가 있는 계정은 통합할 수 없습니다. 처리자·대상·시점을 기록하며 모든 변경을 한 트랜잭션으로 처리합니다. 실패하면 전체 취소하고 이미 처리된 대상은 거절합니다. 중복 의심은 병합을 강제하지 않습니다. 다른 사람이라면 일반 승인 API, 승인 불가라면 반려 API를 사용합니다. 확인 화면의 후보는 GET /v3/members/overview에서 approvalStatus=APPROVED/PENDING을 각각 조회합니다. 운영진·코어도 포함하려면 excludeStaff=false를 사용하고 search와 페이지를 확인합니다. 이름·이메일은 name, email을 표시하고 기수는 GET /v1/cohorts의 cohortId와 cohortNumber를 매핑합니다. cohortId 자체는 기수 번호가 아닙니다. 이름·파트 일치만으로 자동 병합하지 말고 동일인 여부와 남길 회원을 확인해야 합니다.
 		 */
 		post: operations['mergeAndApprove'];
 		delete?: never;
@@ -407,7 +407,7 @@ export interface paths {
 		put?: never;
 		/**
 		 * 세션 출석
-		 * @description 서버가 요청을 받은 시각으로 출석을 판정합니다. 인증 시작부터 PRESENT, 지각 시작부터 LATE 이며 인증 마감 시각부터는 저장하지 않고 거절합니다(SESSION-400-06). 마감 전에 접수된 요청은 자동 결석보다 늦게 저장돼도 정상 판정으로 저장됩니다.
+		 * @description 서버가 요청을 받은 시각으로 출석을 판정합니다. 인증 시작부터 PRESENT, 지각 시작부터 LATE 이며 인증 마감 시각부터는 저장하지 않고 거절합니다(SESSION-400-06). 마감 전에 접수된 요청은 자동 결석보다 늦게 저장돼도 정상 판정으로 저장됩니다. 운영진(ORGANIZER/CORE/MASTER)은 출석 인증을 할 수 없습니다(ATTENDANCE-403-01).
 		 */
 		post: operations['createAttendance-do30IsE'];
 		delete?: never;
@@ -1379,7 +1379,7 @@ export interface paths {
 		};
 		/**
 		 * 세션 전체 출석 명단 조회 (운영진)
-		 * @description 현재 활성 기수 세션의 출석 명단을 필터와 페이지 없이 전부 조회합니다. 이름, 상태, 팀, 파트, 내 팀 필터는 프론트에서 하며 내 팀은 myTeamNumber(현재 기수 팀, 없으면 null)로 고릅니다. totalElements 는 members 전체 인원(결석·미인증 포함)입니다. 상태별 인원은 이 명단으로 프론트에서 계산합니다. 팀 선택지(멤버가 없는 팀 포함)는 GET /v3/cohorts/current/teams, 파트 선택지는 GET /v3/members/parts 로 조회합니다. members 는 팀 번호(팀 없음은 마지막), 이름, ID 순이고 teamNumber 는 팀이 없으면 null 입니다. 운영진이 상태를 바꾼 기록은 isManuallyUpdated 가 true 이고 attendedAt 은 null 입니다. absenceReason 은 이 세션에 제출한 가장 최근 결석 사유서 내용(없으면 null)이며 첨부 이미지는 주지 않습니다. 없거나 삭제됐거나 현재 기수가 아닌 세션이면 404 입니다. 날짜/시각은 Asia/Seoul 기준 오프셋 없는 ISO-8601 문자열(예: 2025-08-09T14:00:00)이며 표시 형식은 프론트에서 정한다.
+		 * @description 현재 활성 기수 세션의 출석 명단을 필터와 페이지 없이 전부 조회합니다. 대상은 해당 기수 DEEPER만이며 signupEmail 이 @dpm.test 인 QA 계정은 제외합니다(로그인·마이페이지는 가능). 이름, 상태, 팀, 파트, 내 팀 필터는 프론트에서 하며 내 팀은 myTeamNumber(현재 기수 팀, 없으면 null)로 고릅니다. totalElements 는 members 전체 인원(결석·미인증 포함)입니다. 상태별 인원은 이 명단으로 프론트에서 계산합니다. 팀 선택지(멤버가 없는 팀 포함)는 GET /v3/cohorts/current/teams, 파트 선택지는 GET /v3/members/parts 로 조회합니다. members 는 팀 번호(팀 없음은 마지막), 이름, ID 순이고 teamNumber 는 팀이 없으면 null 입니다. 운영진이 상태를 바꾼 기록은 isManuallyUpdated 가 true 이고 attendedAt 은 null 입니다. absenceReason 은 이 세션에 제출한 가장 최근 결석 사유서 내용(없으면 null)이며 첨부 이미지는 주지 않습니다. 없거나 삭제됐거나 현재 기수가 아닌 세션이면 404 입니다. 날짜/시각은 Asia/Seoul 기준 오프셋 없는 ISO-8601 문자열(예: 2025-08-09T14:00:00)이며 표시 형식은 프론트에서 정한다.
 		 */
 		get: operations['getSessionRoster-SkxgsI4'];
 		put?: never;
@@ -1459,9 +1459,9 @@ export interface paths {
 		};
 		/**
 		 * 세션 선택 목록 조회 (v3)
-		 * @description 현재 활성 기수의 세션을 세션 일시 오름차순, 같으면 세션 ID 오름차순으로 조회합니다. week 는 표시용이며 정렬에 쓰지 않습니다. 이전/다음 세션 이동은 이 목록의 순서를 사용합니다. attendanceStatus 는 서버 현재 시각 기준 출석 인증 상태로, 출석 시작 전 NOT_STARTED, 출석 시작부터 인증 마감(결석 시작) 전까지 IN_PROGRESS(지각 구간 포함), 마감 정각부터 CLOSED 입니다. 기존 GET /v1/sessions/weeks(id, week, date, ID 순)는 그대로 둡니다. 로그인만 있으면 되고 read:session 권한은 필요 없다(GUEST·승인 대기 유저도 홈 진입용).
+		 * @description 현재 활성 기수의 세션을 세션 일시 오름차순, 같으면 세션 ID 오름차순으로 조회합니다. week 는 표시용이며 정렬에 쓰지 않습니다. 이전/다음 세션 이동은 이 목록의 순서를 사용합니다. attendanceStatus 는 서버 현재 시각 기준 출석 인증 상태로, 출석 시작 전 NOT_STARTED, 출석 시작부터 인증 마감(결석 시작) 전까지 IN_PROGRESS(지각 구간 포함), 마감 정각부터 CLOSED 입니다. 운영진(ORGANIZER/CORE/MASTER)은 IN_PROGRESS 대신 CLOSED 와 canRecordAttendance=false 를 받아 출석 배너가 뜨지 않는다. 기존 GET /v1/sessions/weeks(id, week, date, ID 순)는 그대로 둡니다. 로그인만 있으면 되고 read:session 권한은 필요 없다(GUEST·승인 대기 유저도 홈 진입용).
 		 */
-		get: operations['getSessionSelector'];
+		get: operations['getSessionSelector-KYnTANU'];
 		put?: never;
 		post?: never;
 		delete?: never;
@@ -1519,7 +1519,7 @@ export interface paths {
 		};
 		/**
 		 * 멤버 관리 목록 및 요약 조회
-		 * @description 현재 기수와 기수 없는 가입 대기자를 조회합니다. PENDING 회원은 이름·파트 제출을 완료한 경우만 포함합니다. 요약은 검색·필터와 무관하며 미승인(PENDING) 목록은 최근 가입·재신청 요청순입니다. 재신청 이력이 있으면 최신 재신청 시각, 없으면 최초 프로필 제출 시각을 사용하며 동률은 회원 ID 내림차순입니다. 시각 없는 기존 회원은 마지막에 표시합니다. 이름·파트 수정은 순서에 영향을 주지 않습니다. 승인(APPROVED) 목록은 닉네임, 회원 ID 오름차순입니다. 필터·정렬 후 페이지를 나누며 페이지는 1부터 시작합니다. parts·teamNumbers·activityStatuses는 반복 파라미터 또는 쉼표로 여러 값을 전달합니다. 같은 필터 안에서는 OR, 필터 사이는 AND이며 생략하거나 빈 리스트면 적용하지 않습니다. 활동 상태는 activityStatus로 구분하며 SUSPENDED/ENDED는 수료 위험 인원에서 제외합니다. INACTIVE 필터는 ENDED의 호환 별칭입니다. 중복 의심은 탭·검색·필터 적용 전 관리 대상 중 닉네임과 파트가 같은 다른 회원이 있으면 true입니다.
+		 * @description 현재 기수와 기수 없는 가입 대기자를 조회합니다. PENDING 회원은 이름·파트 제출을 완료한 경우만 포함합니다. signupEmail 이 @dpm.test 인 QA 계정은 목록·요약에서 제외합니다(로그인·마이페이지는 가능). 요약은 검색·필터와 무관하며 미승인(PENDING) 목록은 최근 가입·재신청 요청순입니다. 재신청 이력이 있으면 최신 재신청 시각, 없으면 최초 프로필 제출 시각을 사용하며 동률은 회원 ID 내림차순입니다. 시각 없는 기존 회원은 마지막에 표시합니다. 이름·파트 수정은 순서에 영향을 주지 않습니다. 승인(APPROVED) 목록은 닉네임, 회원 ID 오름차순입니다. 필터·정렬 후 페이지를 나누며 페이지는 1부터 시작합니다. parts·teamNumbers·activityStatuses는 반복 파라미터 또는 쉼표로 여러 값을 전달합니다. 같은 필터 안에서는 OR, 필터 사이는 AND이며 생략하거나 빈 리스트면 적용하지 않습니다. 활동 상태는 activityStatus로 구분하며 SUSPENDED/ENDED는 수료 위험 인원에서 제외합니다. INACTIVE 필터는 ENDED의 호환 별칭입니다. 중복 의심은 탭·검색·필터 적용 전 관리 대상 중 닉네임과 파트가 같은 다른 회원이 있으면 true입니다.
 		 */
 		get: operations['getOverview'];
 		put?: never;
@@ -1619,7 +1619,7 @@ export interface paths {
 		};
 		/**
 		 * 사람별 출석 조회
-		 * @description 현재 활성 기수에 소속된 멤버 전원(출석 기록이 없어도 포함)의 수료 판정을 페이지 없이 조회합니다. teams 로 현재 기수 최신 배정 팀 번호를 여러 개 고를 수 있으며(teams=1&teams=2 또는 teams=1,2), 없거나 비면 전원입니다. 이름, 상태, 파트, 내 팀 필터와 필터별 인원 수 계산은 프론트에서 합니다. myTeamNumber 는 조회한 운영진의 현재 기수 팀 번호이며 없으면 null 입니다. totalElements 는 teams 와 무관하게 현재 기수에 소속된 삭제되지 않은 멤버 전체 수입니다(출석 기록이 없거나 팀이 없는 멤버 포함). members 는 팀 번호(팀 없음은 마지막), 이름, ID 순이고 팀이 없는 멤버의 teamNumber 는 0 입니다. members[].attendanceStatus 는 조회 시점에 계산한 수료 판정(NORMAL/AT_RISK/IMPOSSIBLE)이며 분모는 현재 기수의 삭제되지 않은 전체 세션 수입니다.
+		 * @description 현재 활성 기수 DEEPER(출석 기록이 없어도 포함, signupEmail @dpm.test 제외)의 수료 판정을 페이지 없이 조회합니다. teams 로 현재 기수 최신 배정 팀 번호를 여러 개 고를 수 있으며(teams=1&teams=2 또는 teams=1,2), 없거나 비면 전원입니다. 이름, 상태, 파트, 내 팀 필터와 필터별 인원 수 계산은 프론트에서 합니다. myTeamNumber 는 조회한 운영진의 현재 기수 팀 번호이며 없으면 null 입니다. totalElements 는 teams 와 무관하게 현재 기수 DEEPER(삭제되지 않음, QA 제외) 수입니다(출석 기록이 없거나 팀이 없는 멤버 포함). members 는 팀 번호(팀 없음은 마지막), 이름, ID 순이고 팀이 없는 멤버의 teamNumber 는 0 입니다. members[].attendanceStatus 는 조회 시점에 계산한 수료 판정(NORMAL/AT_RISK/IMPOSSIBLE)이며 분모는 현재 기수의 삭제되지 않은 전체 세션 수입니다.
 		 */
 		get: operations['getMemberAttendances-JQby75s'];
 		put?: never;
@@ -1779,7 +1779,7 @@ export interface paths {
 		};
 		/**
 		 * (디퍼)세션 상세 조회
-		 * @description 세션 ID를 통해 세션에 대한 디퍼의 상세 정보를 조회합니다.
+		 * @description 세션 ID를 통해 세션에 대한 디퍼의 상세 정보를 조회합니다. 운영진(ORGANIZER/CORE/MASTER)은 canRecordAttendance=false.
 		 */
 		get: operations['getSessionByIdForDeeper-SkxgsI4'];
 		put?: never;
@@ -1879,7 +1879,7 @@ export interface paths {
 		};
 		/**
 		 * 홈 다음 세션 조회
-		 * @description 로그인 멤버 기수 기준으로 홈 세션 카드 상태를 조회합니다. AVAILABLE(다음 세션 있음) / NOT_REGISTERED(활성 기수·세션 미등록) / COHORT_ENDED(기수 종료). 로그인만 있으면 되고 read:session 권한은 필요 없다 (과거 기수 유저도 COHORT_ENDED를 받을 수 있게).
+		 * @description 로그인 멤버 기수 기준으로 홈 세션 카드 상태를 조회합니다. AVAILABLE(다음 세션 있음) / NOT_REGISTERED(활성 기수·세션 미등록) / COHORT_ENDED(기수 종료). 운영진(ORGANIZER/CORE/MASTER)은 session.canRecordAttendance=false. 로그인만 있으면 되고 read:session 권한은 필요 없다 (과거 기수 유저도 COHORT_ENDED를 받을 수 있게).
 		 */
 		get: operations['getNextSession-KYnTANU'];
 		put?: never;
@@ -4822,6 +4822,7 @@ export interface components {
 			/** Format: date-time */
 			absentStart: string;
 			attendanceCode: string;
+			canRecordAttendance: boolean;
 		};
 		CustomResponseRoleListResponse: {
 			/** @enum {string} */
@@ -7338,13 +7339,13 @@ export interface operations {
 		};
 		requestBody?: never;
 		responses: {
-			/** @description 세션 목록 조회 성공 */
+			/** @description 세션 목록 조회 성공 (CustomResponse<SessionListResponse>) */
 			200: {
 				headers: {
 					[name: string]: unknown;
 				};
 				content: {
-					'application/json': components['schemas']['CustomResponse'];
+					'*/*': components['schemas']['CustomResponseSessionListResponse'];
 				};
 			};
 			/** @description Bad Request */
@@ -7362,7 +7363,7 @@ export interface operations {
 					[name: string]: unknown;
 				};
 				content: {
-					'*/*': components['schemas']['CustomResponseSessionListResponse'];
+					'*/*': components['schemas']['CustomResponse'];
 				};
 			};
 			/** @description 세션 조회 권한 없음 또는 비로그인 (GLOBAL-403-01) */
@@ -7371,7 +7372,7 @@ export interface operations {
 					[name: string]: unknown;
 				};
 				content: {
-					'*/*': components['schemas']['CustomResponseVoid'];
+					'*/*': components['schemas']['CustomResponse'];
 				};
 			};
 			/** @description Internal Server Error */
@@ -7604,7 +7605,7 @@ export interface operations {
 					'*/*': components['schemas']['CustomResponseVoid'];
 				};
 			};
-			/** @description Forbidden */
+			/** @description ATTENDANCE-403-01 운영진은 출석 인증 불가 */
 			403: {
 				headers: {
 					[name: string]: unknown;
@@ -10866,7 +10867,7 @@ export interface operations {
 			};
 		};
 	};
-	getSessionSelector: {
+	'getSessionSelector-KYnTANU': {
 		parameters: {
 			query?: never;
 			header?: never;
@@ -11806,13 +11807,13 @@ export interface operations {
 		};
 		requestBody?: never;
 		responses: {
-			/** @description 인사이트 조회 성공 */
+			/** @description 인사이트 조회 성공 (CustomResponse<SessionFeedbackInsightResponse>) */
 			200: {
 				headers: {
 					[name: string]: unknown;
 				};
 				content: {
-					'application/json': components['schemas']['CustomResponse'];
+					'*/*': components['schemas']['CustomResponseSessionFeedbackInsightResponse'];
 				};
 			};
 			/** @description SESSION_FEEDBACK-400-03 피드백 OFF */
@@ -11821,7 +11822,7 @@ export interface operations {
 					[name: string]: unknown;
 				};
 				content: {
-					'*/*': components['schemas']['CustomResponseVoid'];
+					'*/*': components['schemas']['CustomResponse'];
 				};
 			};
 			/** @description GLOBAL-403-01 권한 없음 */
@@ -11830,7 +11831,7 @@ export interface operations {
 					[name: string]: unknown;
 				};
 				content: {
-					'*/*': components['schemas']['CustomResponseVoid'];
+					'*/*': components['schemas']['CustomResponse'];
 				};
 			};
 			/** @description SESSION-404-01 세션 없음 */
@@ -11839,7 +11840,7 @@ export interface operations {
 					[name: string]: unknown;
 				};
 				content: {
-					'*/*': components['schemas']['CustomResponseSessionFeedbackInsightResponse'];
+					'*/*': components['schemas']['CustomResponse'];
 				};
 			};
 			/** @description Internal Server Error */

@@ -59,9 +59,11 @@ const AttendanceSessionDetailContainer = ({ sessionId }: AttendanceSessionDetail
 	const { session, attendance } = attendanceData.data;
 
 	const canSubmitReason =
-		attendance.status === 'PENDING' ||
-		attendance.status === 'ABSENT' ||
-		attendance.status === 'EXCUSED_ABSENT';
+		absenceReasonData.data?.status !== 'APPROVED' &&
+		(absenceReasonData.data ||
+			attendance.status === 'PENDING' ||
+			attendance.status === 'ABSENT' ||
+			attendance.status === 'EXCUSED_ABSENT');
 
 	return (
 		<>
