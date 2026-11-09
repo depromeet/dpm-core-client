@@ -12,6 +12,7 @@ import { CLARITY_ACTION_ID } from '@/constants/clarity';
 import { memberAuthQueryKey } from '@/providers/auth-provider';
 import { useClarity } from '@/providers/client-clarity-adapter';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
+import { getMemberPartLabel } from '@/lib/member/part';
 
 import { CancelApplicationModal } from './_components/cancel-application-modal';
 
@@ -40,6 +41,10 @@ export default function PendingPage() {
 		}
 	}, [status, queryClient]);
 
+	const reload = () => {
+		console.log(memberResponse?.data);
+	};
+
 	return (
 		<SafeAreaAppLayout className="h-dvh bg-[linear-gradient(158.06deg,#FFFFFF_20.54%,#CFD9FF_60.84%,#E6F9FF_99%)]">
 			<main className="flex flex-1 flex-col items-center justify-center gap-6 px-4 text-center">
@@ -51,17 +56,41 @@ export default function PendingPage() {
 						검토하고 있어요
 					</h1>
 					<p className="bg-linear-to-r from-label-subtle to-[#7A98C2] bg-clip-text font-medium text-body1 text-transparent">
-						승인이 완료되면 홈화면에 접속할 수 있어요
+						승인이 완료되면 홈 화면에 접속할 수 있어요
 					</p>
 				</div>
-			</main>
-			<div className="flex flex-col gap-2 px-4 pb-4">
-				<Button variant="secondary" size="full" className="h-12 rounded-lg" asChild>
+				<div className="flex flex-col gap-4">
+					<div className="flex flex-col w-[239px] gap-4 bg-[#FFFFFF]/60 rounded-xl px-8 py-6">
+						<dl className="flex flex-col">
+							<dt className="text-body2 font-medium text-label-tertiary">
+								이름
+							</dt>
+							<dd className="text-title2 font-bold text-label-normal">
+								{memberResponse?.data.name}
+							</dd>
+						</dl>
+						<dl className="flex flex-col">
+							<dt className="text-body2 font-medium text-label-tertiary">
+								직군
+							</dt>
+							<dd className="text-title2 font-bold text-label-normal">
+								{getMemberPartLabel(memberResponse?.data.part)}
+							</dd>
+						</dl>
+					</div>
 					<Link
+						className="self-center text-body2 font-semibold text-label-subtle"
 						href="/pending/edit"
 						onClick={() => track(CLARITY_ACTION_ID.PENDING.EDIT_CLICK)}
 					>
 						개인정보 수정하기
+					</Link>
+				</div>
+			</main>
+			<div className="flex flex-col gap-2 px-4 pb-4">
+				<Button variant="secondary" size="full" className="h-12 rounded-lg" asChild>
+					<Link href="" onClick={reload}>
+						새로고침
 					</Link>
 				</Button>
 				<CancelApplicationModal>
