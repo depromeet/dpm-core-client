@@ -154,6 +154,9 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		memberInfo.status !== 'REJECTED' &&
 		pathname === '/pending'
 	) {
+		if (memberInfo.hasSeenApprovalWelcome === false) {
+			return redirect('/welcome');
+		}
 		return redirect('/');
 	}
 
