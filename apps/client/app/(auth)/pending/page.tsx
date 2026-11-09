@@ -16,20 +16,12 @@ import { getMemberPartLabel } from '@/lib/member/part';
 
 import { CancelApplicationModal } from './_components/cancel-application-modal';
 
-/** 운영진의 승인·반려를 반영하기 위해 검토중 화면에서 회원 상태를 다시 확인하는 간격 */
-const MEMBER_STATUS_POLL_INTERVAL_MS = 10_000;
-
 export default function PendingPage() {
 	const queryClient = useQueryClient();
 	const { track } = useClarity();
 
-	// 앱 기본 staleTime(5분) 때문에 캐시가 신선하다고 판단되면 화면에 다시 들어오거나 탭에 돌아와도
-	// 재조회하지 않는다. staleTime 0 으로 두어 진입·포커스 때마다 바로 한 번 확인한다.
-	// 탭이 백그라운드이면 폴링은 멈춘다.
-	const { data: memberResponse } = useQuery({
+	const { data: memberResponse, refetch } = useQuery({
 		...getMyMemberInfoQuery,
-		staleTime: 0,
-		refetchInterval: MEMBER_STATUS_POLL_INTERVAL_MS,
 		refetchIntervalInBackground: false,
 	});
 	const status = memberResponse?.data.status;
@@ -42,7 +34,7 @@ export default function PendingPage() {
 	}, [status, queryClient]);
 
 	const reload = () => {
-		console.log(memberResponse?.data);
+		window.location.reload();
 	};
 
 	return (
@@ -88,10 +80,13 @@ export default function PendingPage() {
 				</div>
 			</main>
 			<div className="flex flex-col gap-2 px-4 pb-4">
-				<Button variant="secondary" size="full" className="h-12 rounded-lg" asChild>
-					<Link href="" onClick={reload}>
-						새로고침
-					</Link>
+				<Button 
+					variant="secondary" 
+					size="full" 
+					className="h-12 rounded-lg"
+					onClick={() => refetch()}
+				>
+					새로고침
 				</Button>
 				<CancelApplicationModal>
 					<Button variant="assistive" size="full" className="h-12 rounded-lg">
