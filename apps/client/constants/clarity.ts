@@ -20,6 +20,7 @@ export const CLARITY_PAGE_ID = defineClarityPageIds({
 	WELCOME: 'welcome', // 승인 완료 안내
 	SESSION: 'session', // 세션 목록
 	SESSION_DETAIL: 'session_detail', // 세션 정보
+	SESSION_FEEDBACK: 'session_feedback', // 세션 피드백
 	ANNOUNCEMENT: 'announcement', // 공지 목록
 	ANNOUNCEMENT_DETAIL: 'announcement_detail', // 공지 상세
 	AFTER_PARTY: 'after_party', // 회식 목록
@@ -56,6 +57,8 @@ export const PROFILE_FORM_ACTION = {
 export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 	HOME: {
 		VOC_BUTTON_CLICK: 'voc_button_click',
+		FEEDBACK_CARD_VIEW: 'feedback_card_view',
+		FEEDBACK_BUTTON_CLICK: 'feedback_button_click',
 	},
 	LOGIN: {
 		KAKAO_LOGIN_CLICK: 'kakao_login_click',
@@ -86,8 +89,33 @@ export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 		ENTER_SUCCESS: 'enter_success',
 		ENTER_FAIL: 'enter_fail',
 	},
-	SESSION: {},
+	SESSION: {
+		FEEDBACK_BUTTON_VIEW: 'feedback_button_view',
+		FEEDBACK_BUTTON_CLICK: 'feedback_button_click',
+	},
 	SESSION_DETAIL: {},
+	SESSION_FEEDBACK: {
+		ENTRY_VIEW: 'entry_view',
+		ENTRY_SOURCE_HOME: 'entry_source_home',
+		ENTRY_SOURCE_SESSION: 'entry_source_session',
+		ENTRY_SOURCE_SHARED: 'entry_source_shared',
+		ENTRY_SOURCE_UNKNOWN: 'entry_source_unknown',
+		AVAILABLE_VIEW: 'available_view',
+		SATISFACTION_VIEW: 'satisfaction_view',
+		POSITIVE_VIEW: 'positive_view',
+		IMPROVEMENT_VIEW: 'improvement_view',
+		COMMENT_VIEW: 'comment_view',
+		SUBMIT_CLICK: 'submit_click',
+		SUBMIT_SUCCESS: 'submit_success',
+		SUBMIT_FAIL: 'submit_fail',
+		EXIT_CONFIRM: 'exit_confirm',
+		ATTENDANCE_INCOMPLETE_VIEW: 'attendance_incomplete_view',
+		NOT_TARGET_VIEW: 'not_target_view',
+		BEFORE_START_VIEW: 'before_start_view',
+		EXPIRED_VIEW: 'expired_view',
+		SUBMITTED_VIEW: 'submitted_view',
+		LOAD_FAIL: 'load_fail',
+	},
 	ANNOUNCEMENT: {},
 	ANNOUNCEMENT_DETAIL: {},
 	AFTER_PARTY: {},

@@ -67,3 +67,6 @@ app-example
 # generated native folders
 /ios
 /android
+
+# Local feedback analytics draft
+/docs/session-feedback/

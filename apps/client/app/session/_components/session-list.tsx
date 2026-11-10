@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Suspense } from 'react';
+import { Suspense, useCallback, useRef } from 'react';
 import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -13,15 +13,32 @@ import { Aesterisk, Button, Calender, Clock, formatDotFullDate } from '@dpm-core
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
+import { useFeedbackImpression } from '@/hooks/use-feedback-impression';
 import { formatISOStringHHMM } from '@/lib/date';
 import { getFeedbackDaysRemaining } from '@/lib/session/feedback';
 import { formatSessionWeekString } from '@/lib/session/format';
+import { useClarity } from '@/providers/client-clarity-adapter';
 import { getSessionListQuery } from '@/remotes/queries/session';
 
 const SessionListContainer = () => {
 	const {
 		data: { data: sessionResponse },
 	} = useSuspenseQuery(getSessionListQuery);
+	const { track } = useClarity();
+	const viewedSessionIdsRef = useRef(new Set<number>());
+	const handleFeedbackView = useCallback(
+		(sessionId: number) => {
+			if (viewedSessionIdsRef.current.has(sessionId)) return;
+			viewedSessionIdsRef.current.add(sessionId);
+			try {
+				track(CLARITY_ACTION_ID.SESSION.FEEDBACK_BUTTON_VIEW);
+			} catch {
+				// 분석 이벤트가 실패해도 세션 목록 이용을 방해하지 않는다.
+			}
+		},
+		[track],
+	);
 
 	if (sessionResponse.sessions.length === 0) {
 		return (
@@ -37,17 +54,31 @@ const SessionListContainer = () => {
 	return (
 		<Virtuoso
 			data={sessionResponse.sessions}
-			itemContent={(_, session) => <SessionItem key={session.id} session={session} />}
+			itemContent={(_, session) => (
+				<SessionItem key={session.id} session={session} onFeedbackView={handleFeedbackView} />
+			)}
 			className="scrollbar-hide flex-1"
 		/>
 	);
 };
 
-function SessionItem({ session }: { session: SessionListItem }) {
+function SessionItem({
+	session,
+	onFeedbackView,
+}: {
+	session: SessionListItem;
+	onFeedbackView: (sessionId: number) => void;
+}) {
+	const { track } = useClarity();
+	const handleView = useCallback(() => onFeedbackView(session.id), [onFeedbackView, session.id]);
+	const feedbackRef = useFeedbackImpression<HTMLAnchorElement>(
+		Boolean(session.feedback?.canSubmit),
+		handleView,
+	);
 	const feedbackDaysRemaining = session.feedback
 		? getFeedbackDaysRemaining(session.feedback.endAt)
 		: null;
-	const feedbackSearchParams = '?returnTo=%2Fsession';
+	const feedbackSearchParams = '?returnTo=%2Fsession&source=session';
 
 	return (
 		<div className="px-4">
@@ -87,7 +118,17 @@ function SessionItem({ session }: { session: SessionListItem }) {
 						className="h-9 w-full rounded-lg border border-primary-normal bg-background-normal font-semibold text-caption1 text-primary-normal hover:bg-primary-extralight"
 						asChild
 					>
-						<Link href={`/session/${session.id}/feedback${feedbackSearchParams}`}>
+						<Link
+							ref={feedbackRef}
+							href={`/session/${session.id}/feedback${feedbackSearchParams}`}
+							onClick={() => {
+								try {
+									track(CLARITY_ACTION_ID.SESSION.FEEDBACK_BUTTON_CLICK);
+								} catch {
+									// 분석 이벤트가 실패해도 링크 이동을 방해하지 않는다.
+								}
+							}}
+						>
 							피드백 남기기 (D-{feedbackDaysRemaining})
 						</Link>
 					</Button>

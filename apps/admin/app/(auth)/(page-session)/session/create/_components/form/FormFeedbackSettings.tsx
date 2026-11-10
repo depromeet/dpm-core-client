@@ -32,8 +32,10 @@ import type { SessionSchema } from '../SessionForm';
 
 export const FormFeedbackSettings = ({
 	feedbackSettingsLocked = false,
+	onFeedbackEnable,
 }: {
 	feedbackSettingsLocked?: boolean;
+	onFeedbackEnable?: () => void;
 }) => {
 	const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 	const form = useFormContext<SessionSchema>();
@@ -61,7 +63,10 @@ export const FormFeedbackSettings = ({
 							<FormControl>
 								<Switch
 									checked={field.value}
-									onCheckedChange={field.onChange}
+									onCheckedChange={(checked) => {
+										field.onChange(checked);
+										if (checked) onFeedbackEnable?.();
+									}}
 									disabled={feedbackSettingsLocked}
 									className="h-[22px] w-[42px] rounded-[12px] border-0 bg-background-heavy p-[2px] data-[state=checked]:bg-background-inverse data-[state=unchecked]:bg-background-heavy [&>span]:size-[18px] [&>span]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
 								/>

@@ -1,11 +1,15 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useRef } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@dpm-core/shared';
 
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
+import { useClarity } from '@/providers/admin-clarity-adapter';
 import { getSessionDetailQuery } from '@/remotes/queries/session';
 
+import { getInsightClarityTracker } from './insight-clarity-tracker';
 import { SessionDetailInfo } from './SessionDetailInfo';
 import { SessionFeedbackInsights } from './SessionFeedbackInsights';
 
@@ -20,6 +24,28 @@ export const SessionDetailTabs = ({ sessionId }: SessionDetailTabsProps) => {
 	const { data: sessionDetailResponse } = useQuery(getSessionDetailQuery(sessionId));
 	const hasFeedback = Boolean(sessionDetailResponse?.data.feedback);
 	const activeTab = hasFeedback && searchParams.get('tab') === 'feedback' ? 'feedback' : 'info';
+	const { track } = useClarity();
+	const queryClient = useQueryClient();
+	const insightTracker =
+		activeTab === 'feedback' ? getInsightClarityTracker(queryClient, sessionId, track) : null;
+	const viewedSessionIdRef = useRef<number | null>(null);
+
+	useEffect(() => {
+		if (!insightTracker) {
+			viewedSessionIdRef.current = null;
+			return;
+		}
+		if (viewedSessionIdRef.current !== sessionId) {
+			viewedSessionIdRef.current = sessionId;
+			try {
+				track(CLARITY_ACTION_ID.SESSION_DETAIL.INSIGHT_TAB_VIEW);
+			} catch {
+				// 분석 이벤트가 실패해도 탭을 표시한다.
+			}
+		}
+		insightTracker.activate();
+		return () => insightTracker.release();
+	}, [insightTracker, sessionId, track]);
 
 	const handleTabChange = (tab: string) => {
 		if (tab === 'feedback' && !hasFeedback) return;
@@ -56,7 +82,9 @@ export const SessionDetailTabs = ({ sessionId }: SessionDetailTabsProps) => {
 			</TabsContent>
 			{hasFeedback && (
 				<TabsContent value="feedback" className="min-h-0 flex-1 overflow-y-auto px-4 py-5 md:px-10">
-					<SessionFeedbackInsights sessionId={sessionId} />
+					{insightTracker && (
+						<SessionFeedbackInsights sessionId={sessionId} insightTracker={insightTracker} />
+					)}
 				</TabsContent>
 			)}
 		</Tabs>

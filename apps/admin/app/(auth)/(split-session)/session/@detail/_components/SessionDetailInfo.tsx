@@ -95,7 +95,7 @@ const getSessionFeedbackUrl = (sessionId: number) => {
 			? 'https://core.depromeet.com'
 			: 'https://dev.depromeet.com';
 
-	return `${clientOrigin}/session/${sessionId}/feedback`;
+	return `${clientOrigin}/session/${sessionId}/feedback?source=shared`;
 };
 
 interface SessionDetailInfoBoxProps {

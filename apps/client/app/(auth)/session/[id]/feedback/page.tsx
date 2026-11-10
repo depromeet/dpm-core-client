@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 
+import { getFeedbackEntrySource } from '@/lib/session/feedback-source';
+
 import { FeedbackForm } from '../_components/feedback-form';
 
 const FEEDBACK_TITLE = '디프만 세션 피드백';
@@ -14,12 +16,14 @@ export async function generateMetadata(): Promise<Metadata> {
 			title: FEEDBACK_TITLE,
 			description: FEEDBACK_DESCRIPTION,
 			type: 'website',
-			images: [{
-				url: FEEDBACK_IMAGE,
-				width: 1200,
-				height: 600,
-				alt: '디프만 19기 세션 피드백',
-			}],
+			images: [
+				{
+					url: FEEDBACK_IMAGE,
+					width: 1200,
+					height: 600,
+					alt: '디프만 19기 세션 피드백',
+				},
+			],
 		},
 		twitter: {
 			card: 'summary_large_image',
@@ -37,11 +41,18 @@ export default async function SessionFeedbackPage({
 	params: Promise<{ id: string }>;
 	searchParams: Promise<{
 		returnTo?: string | string[];
+		source?: string | string[];
 	}>;
 }) {
-	const [{ id }, { returnTo }] = await Promise.all([params, searchParams]);
+	const [{ id }, { returnTo, source }] = await Promise.all([params, searchParams]);
 	const sessionId = Number(id);
 	const feedbackReturnTo = returnTo === '/' ? '/' : '/session';
 
-	return <FeedbackForm sessionId={sessionId} returnTo={feedbackReturnTo} />;
+	return (
+		<FeedbackForm
+			sessionId={sessionId}
+			returnTo={feedbackReturnTo}
+			entrySource={getFeedbackEntrySource(source)}
+		/>
+	);
 }
