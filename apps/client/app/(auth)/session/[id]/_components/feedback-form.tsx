@@ -100,6 +100,14 @@ const FEEDBACK_STATUS_CONTENT = {
 	ATTENDANCE_INCOMPLETE: { title: '이번 세션에 출석하지 않았어요.', icon: 'warning' },
 } as const;
 
+const FEEDBACK_STATUS_VIEW_ACTION = {
+	BEFORE_START: CLARITY_ACTION_ID.SESSION_FEEDBACK.BEFORE_START_VIEW,
+	SUBMITTED: CLARITY_ACTION_ID.SESSION_FEEDBACK.SUBMITTED_VIEW,
+	EXPIRED: CLARITY_ACTION_ID.SESSION_FEEDBACK.EXPIRED_VIEW,
+	NOT_TARGET: CLARITY_ACTION_ID.SESSION_FEEDBACK.NOT_TARGET_VIEW,
+	ATTENDANCE_INCOMPLETE: CLARITY_ACTION_ID.SESSION_FEEDBACK.ATTENDANCE_INCOMPLETE_VIEW,
+} satisfies Record<Exclude<SessionFeedbackMyStatus, 'AVAILABLE'>, FeedbackClarityAction>;
+
 const getFeedbackStepIndex = (step: FeedbackStep) => FEEDBACK_STEPS.indexOf(step);
 
 interface FeedbackResultScreenProps {
@@ -244,6 +252,9 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 	const trackedEntrySessionIdRef = useRef<number | null>(null);
 	const trackedFormViewRef = useRef<{ sessionId: number; visible: boolean } | null>(null);
 	const trackedStepViewRef = useRef<{ sessionId: number; step: FeedbackStep } | null>(null);
+	const trackedStatusViewRef = useRef<{ sessionId: number; action: FeedbackClarityAction } | null>(
+		null,
+	);
 
 	const trackFeedbackAction = useCallback(
 		(action: FeedbackClarityAction) => {
@@ -269,6 +280,32 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 		(submissionStatus ?? feedbackInfo?.myStatus) === 'AVAILABLE' &&
 		!submitted &&
 		!submissionFailed;
+	const feedbackStatus = feedbackInfo ? (submissionStatus ?? feedbackInfo.myStatus) : undefined;
+	const statusViewAction = feedbackQuery.isPending
+		? null
+		: feedbackQuery.isError || !feedbackInfo
+			? CLARITY_ACTION_ID.SESSION_FEEDBACK.LOAD_FAIL
+			: feedbackStatus && feedbackStatus !== 'AVAILABLE'
+				? FEEDBACK_STATUS_VIEW_ACTION[feedbackStatus]
+				: null;
+
+	useEffect(() => {
+		if (!statusViewAction) {
+			trackedStatusViewRef.current = null;
+			return;
+		}
+
+		const previous = trackedStatusViewRef.current;
+		if (
+			previous &&
+			Object.is(previous.sessionId, sessionId) &&
+			previous.action === statusViewAction
+		) {
+			return;
+		}
+		trackedStatusViewRef.current = { sessionId, action: statusViewAction };
+		trackFeedbackAction(statusViewAction);
+	}, [sessionId, statusViewAction, trackFeedbackAction]);
 
 	useEffect(() => {
 		const previous = trackedFormViewRef.current;
