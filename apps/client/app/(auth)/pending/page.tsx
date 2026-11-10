@@ -20,10 +20,7 @@ export default function PendingPage() {
 	const queryClient = useQueryClient();
 	const { track } = useClarity();
 
-	const { data: memberResponse, refetch } = useQuery({
-		...getMyMemberInfoQuery,
-		refetchIntervalInBackground: false,
-	});
+	const { data: memberResponse } = useQuery(getMyMemberInfoQuery);
 	const status = memberResponse?.data.status;
 
 	// 승인(ACTIVE)·반려(REJECTED)로 바뀌면 AuthProvider가 보는 상태 캐시를 갱신해 해당 화면으로 보낸다.
@@ -33,7 +30,7 @@ export default function PendingPage() {
 		}
 	}, [status, queryClient]);
 
-	const reload = () => {
+	const handleReload = () => {
 		window.location.reload();
 	};
 
@@ -84,7 +81,7 @@ export default function PendingPage() {
 					variant="secondary" 
 					size="full" 
 					className="h-12 rounded-lg"
-					onClick={() => refetch()}
+					onClick={handleReload}
 				>
 					새로고침
 				</Button>
