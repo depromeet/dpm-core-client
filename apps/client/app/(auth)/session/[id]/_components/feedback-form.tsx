@@ -40,6 +40,16 @@ type FeedbackStep = 'satisfaction' | 'positive' | 'improvement' | 'comment';
 
 const FEEDBACK_STEPS: FeedbackStep[] = ['satisfaction', 'positive', 'improvement', 'comment'];
 
+const FEEDBACK_STEP_VIEW_ACTION = {
+	satisfaction: CLARITY_ACTION_ID.SESSION_FEEDBACK.SATISFACTION_VIEW,
+	positive: CLARITY_ACTION_ID.SESSION_FEEDBACK.POSITIVE_VIEW,
+	improvement: CLARITY_ACTION_ID.SESSION_FEEDBACK.IMPROVEMENT_VIEW,
+	comment: CLARITY_ACTION_ID.SESSION_FEEDBACK.COMMENT_VIEW,
+} satisfies Record<FeedbackStep, string>;
+
+type FeedbackClarityAction =
+	(typeof CLARITY_ACTION_ID.SESSION_FEEDBACK)[keyof typeof CLARITY_ACTION_ID.SESSION_FEEDBACK];
+
 const SATISFACTION_OPTIONS = [
 	{ value: 'VERY_SATISFIED', label: '매우 만족했어요.' },
 	{ value: 'SATISFIED', label: '만족했어요.' },
@@ -232,17 +242,56 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 	const keyboardWasOpenRef = useRef(false);
 	const keyboardAdjustmentAppliedRef = useRef(false);
 	const trackedEntrySessionIdRef = useRef<number | null>(null);
+	const trackedFormViewRef = useRef<{ sessionId: number; visible: boolean } | null>(null);
+	const trackedStepViewRef = useRef<{ sessionId: number; step: FeedbackStep } | null>(null);
+
+	const trackFeedbackAction = useCallback(
+		(action: FeedbackClarityAction) => {
+			try {
+				track(action);
+			} catch {
+				// 분석 이벤트가 실패해도 피드백 이용을 방해하지 않는다.
+			}
+		},
+		[track],
+	);
 
 	useEffect(() => {
 		if (Object.is(trackedEntrySessionIdRef.current, sessionId)) return;
 		trackedEntrySessionIdRef.current = sessionId;
+		trackFeedbackAction(CLARITY_ACTION_ID.SESSION_FEEDBACK.ENTRY_VIEW);
+	}, [sessionId, trackFeedbackAction]);
 
-		try {
-			track(CLARITY_ACTION_ID.SESSION_FEEDBACK.ENTRY_VIEW);
-		} catch {
-			// 분석 이벤트가 실패해도 피드백 이용을 방해하지 않는다.
+	const isFeedbackFormVisible =
+		!feedbackQuery.isPending &&
+		!feedbackQuery.isError &&
+		Boolean(feedbackInfo) &&
+		(submissionStatus ?? feedbackInfo?.myStatus) === 'AVAILABLE' &&
+		!submitted &&
+		!submissionFailed;
+
+	useEffect(() => {
+		const previous = trackedFormViewRef.current;
+		if (
+			isFeedbackFormVisible &&
+			(!previous || !Object.is(previous.sessionId, sessionId) || !previous.visible)
+		) {
+			trackFeedbackAction(CLARITY_ACTION_ID.SESSION_FEEDBACK.AVAILABLE_VIEW);
 		}
-	}, [sessionId, track]);
+		trackedFormViewRef.current = { sessionId, visible: isFeedbackFormVisible };
+	}, [isFeedbackFormVisible, sessionId, trackFeedbackAction]);
+
+	useEffect(() => {
+		if (!isFeedbackFormVisible) {
+			trackedStepViewRef.current = null;
+			return;
+		}
+
+		const previous = trackedStepViewRef.current;
+		if (previous && Object.is(previous.sessionId, sessionId) && previous.step === step) return;
+		trackedStepViewRef.current = { sessionId, step };
+		trackFeedbackAction(FEEDBACK_STEP_VIEW_ACTION[step]);
+	}, [isFeedbackFormVisible, sessionId, step, trackFeedbackAction]);
 
 	const keepFocusedFieldVisible = useCallback(() => {
 		const content = formContentRef.current;
@@ -377,13 +426,19 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 		};
 
 		setIsSubmitting(true);
+		let submissionSucceeded = false;
 		try {
 			await submitFeedbackMutation.mutateAsync(payload);
+			submissionSucceeded = true;
+			trackFeedbackAction(CLARITY_ACTION_ID.SESSION_FEEDBACK.SUBMIT_SUCCESS);
 			void queryClient.invalidateQueries({ queryKey: ['session-list'] });
 			void queryClient.invalidateQueries({ queryKey: ['session-feedback-pending'] });
 			setSubmissionFailed(false);
 			setSubmitted(true);
 		} catch (error) {
+			if (!submissionSucceeded) {
+				trackFeedbackAction(CLARITY_ACTION_ID.SESSION_FEEDBACK.SUBMIT_FAIL);
+			}
 			if (error instanceof HTTPError && error.response.status === 401) return;
 
 			const errorCode = await getErrorCode(error);
@@ -407,6 +462,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 			return;
 		}
 
+		trackFeedbackAction(CLARITY_ACTION_ID.SESSION_FEEDBACK.SUBMIT_CLICK);
 		void submitFeedback();
 	};
 
@@ -789,7 +845,10 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 								size="full"
 								variant="secondary"
 								className="h-12 rounded-lg"
-								onClick={() => router.replace(returnTo)}
+								onClick={() => {
+									trackFeedbackAction(CLARITY_ACTION_ID.SESSION_FEEDBACK.EXIT_CONFIRM);
+									router.replace(returnTo);
+								}}
 							>
 								그만두기
 							</Button>
