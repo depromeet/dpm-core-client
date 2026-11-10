@@ -14,8 +14,10 @@ import { Button, Calender, ChevronRight, Clock, cn, formatDotFullDate } from '@d
 import { ErrorBox } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { Pressable } from '@/components/motion';
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
 import { formatISOStringHHMM } from '@/lib/date';
 import { formatSessionWeekString } from '@/lib/session/format';
+import { useClarity } from '@/providers/admin-clarity-adapter';
 import { getSessionListQuery } from '@/remotes/queries/session';
 
 const FEEDBACK_STATUS_LABEL = {
@@ -57,6 +59,7 @@ const SessionListContainer = () => {
 function SessionItem({ session }: { session: SessionListItem }) {
 	const params = useParams();
 	const router = useRouter();
+	const { track } = useClarity();
 
 	const handleClickSession = (tab: 'info' | 'feedback' = 'info') => {
 		const query = tab === 'feedback' ? '?tab=feedback' : '';
@@ -121,7 +124,14 @@ function SessionItem({ session }: { session: SessionListItem }) {
 							? 'w-[116px]'
 							: 'w-[104px]',
 					)}
-					onClick={() => handleClickSession('feedback')}
+					onClick={() => {
+						try {
+							track(CLARITY_ACTION_ID.SESSION.INSIGHT_BUTTON_CLICK);
+						} catch {
+							// 분석 이벤트가 실패해도 피드백 탭으로 이동한다.
+						}
+						handleClickSession('feedback');
+					}}
 				>
 					{feedbackLabel}
 				</Button>

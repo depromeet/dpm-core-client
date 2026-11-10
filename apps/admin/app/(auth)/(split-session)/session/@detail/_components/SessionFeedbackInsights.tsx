@@ -9,8 +9,11 @@ import { Button } from '@dpm-core/shared';
 import { EmptyView } from '@/components/attendance/EmptyView';
 import { getSessionFeedbackInsightQuery } from '@/remotes/queries/session';
 
+import type { InsightClarityTracker } from './insight-clarity-tracker';
+
 interface SessionFeedbackInsightsProps {
 	sessionId: number;
+	insightTracker: InsightClarityTracker;
 }
 
 const FeedbackSectionTitle = ({ children }: { children: ReactNode }) => (
@@ -178,10 +181,35 @@ const FreeComment = ({ id, text }: { id: number; text: string }) => {
 	);
 };
 
-export const SessionFeedbackInsights = ({ sessionId }: SessionFeedbackInsightsProps) => {
+export const SessionFeedbackInsights = ({
+	sessionId,
+	insightTracker,
+}: SessionFeedbackInsightsProps) => {
+	const insightQuery = getSessionFeedbackInsightQuery(sessionId);
+	const recordQueryOutcome = (outcome: 'success' | 'fail') => {
+		try {
+			insightTracker.record(outcome);
+		} catch {
+			// 분석 처리 오류가 원래 조회 결과에 영향을 주지 않는다.
+		}
+	};
 	const {
 		data: { data: insight },
-	} = useSuspenseQuery(getSessionFeedbackInsightQuery(sessionId));
+	} = useSuspenseQuery({
+		...insightQuery,
+		queryFn: async (context) => {
+			const queryFn = insightQuery.queryFn;
+			if (!queryFn) throw new Error('인사이트 조회 함수가 없습니다.');
+			try {
+				const response = await queryFn(context);
+				recordQueryOutcome('success');
+				return response;
+			} catch (error) {
+				recordQueryOutcome('fail');
+				throw error;
+			}
+		},
+	});
 	const feedbackStatusLabel = {
 		SCHEDULED: '수집 예정',
 		IN_PROGRESS: '수집 중',
