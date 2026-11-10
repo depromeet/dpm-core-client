@@ -757,6 +757,7 @@ export const FeedbackForm = ({
 									기타 의견 <span className="text-primary-normal">*</span>
 								</label>
 								<textarea
+									data-clarity-mask="true"
 									id="positive-etc"
 									value={positiveEtc}
 									onChange={(event) => setPositiveEtc(event.target.value)}
@@ -795,6 +796,7 @@ export const FeedbackForm = ({
 									기타 의견 <span className="text-primary-normal">*</span>
 								</label>
 								<textarea
+									data-clarity-mask="true"
 									id="improvement-etc"
 									value={improvementEtc}
 									onChange={(event) => setImprovementEtc(event.target.value)}
@@ -810,6 +812,7 @@ export const FeedbackForm = ({
 
 				{step === 'comment' && (
 					<textarea
+						data-clarity-mask="true"
 						value={comment}
 						onChange={(event) => setComment(event.target.value)}
 						onFocus={handleTextAreaFocus}

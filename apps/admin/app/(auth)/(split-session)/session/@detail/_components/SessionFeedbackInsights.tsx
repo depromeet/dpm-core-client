@@ -116,6 +116,7 @@ const ReasonGroup = ({
 			</div>
 			{etcComments.length > 0 && (
 				<ul
+					data-clarity-mask="true"
 					id={`feedback-etc-${variant}`}
 					aria-hidden={!isEtcExpanded}
 					className={`${isEtcExpanded ? 'flex' : 'hidden'} list-disc flex-col gap-2 rounded-lg bg-background-subtle px-8 py-3 text-body2 text-label-subtle`}
@@ -155,6 +156,7 @@ const FreeComment = ({ id, text }: { id: number; text: string }) => {
 		<li className="flex flex-col items-start gap-1 rounded-lg bg-background-subtle p-4">
 			<p
 				ref={contentRef}
+				data-clarity-mask="true"
 				id={`feedback-comment-${id}`}
 				className={
 					isExpanded
