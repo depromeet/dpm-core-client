@@ -25,7 +25,9 @@ import {
 } from '@dpm-core/shared';
 
 import { SafeAreaAppLayout } from '@/components/app-layout';
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
 import { useAppConfig } from '@/providers/app-config-provider';
+import { useClarity } from '@/providers/client-clarity-adapter';
 import { submitSessionFeedbackOptions } from '@/remotes/mutations/session-feedback';
 import { getSessionFeedbackMeQuery } from '@/remotes/queries/session-feedback';
 
@@ -205,6 +207,7 @@ const FeedbackSubmissionErrorScreen = ({
 
 export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 	const router = useRouter();
+	const { track } = useClarity();
 	const { isApp, platform } = useAppConfig();
 	const isIOSApp = isApp && platform === 'ios';
 	const queryClient = useQueryClient();
@@ -228,6 +231,18 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 	const initialViewportHeightRef = useRef(0);
 	const keyboardWasOpenRef = useRef(false);
 	const keyboardAdjustmentAppliedRef = useRef(false);
+	const trackedEntrySessionIdRef = useRef<number | null>(null);
+
+	useEffect(() => {
+		if (Object.is(trackedEntrySessionIdRef.current, sessionId)) return;
+		trackedEntrySessionIdRef.current = sessionId;
+
+		try {
+			track(CLARITY_ACTION_ID.SESSION_FEEDBACK.ENTRY_VIEW);
+		} catch {
+			// 분석 이벤트가 실패해도 피드백 이용을 방해하지 않는다.
+		}
+	}, [sessionId, track]);
 
 	const keepFocusedFieldVisible = useCallback(() => {
 		const content = formContentRef.current;

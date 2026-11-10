@@ -20,6 +20,7 @@ export const CLARITY_PAGE_ID = defineClarityPageIds({
 	WELCOME: 'welcome', // 승인 완료 안내
 	SESSION: 'session', // 세션 목록
 	SESSION_DETAIL: 'session_detail', // 세션 정보
+	SESSION_FEEDBACK: 'session_feedback', // 세션 피드백
 	ANNOUNCEMENT: 'announcement', // 공지 목록
 	ANNOUNCEMENT_DETAIL: 'announcement_detail', // 공지 상세
 	AFTER_PARTY: 'after_party', // 회식 목록
@@ -88,6 +89,9 @@ export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 	},
 	SESSION: {},
 	SESSION_DETAIL: {},
+	SESSION_FEEDBACK: {
+		ENTRY_VIEW: 'entry_view',
+	},
 	ANNOUNCEMENT: {},
 	ANNOUNCEMENT_DETAIL: {},
 	AFTER_PARTY: {},
