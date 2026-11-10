@@ -214,10 +214,12 @@ export const SessionForm = ({
 	feedbackStartAtInitialValue,
 	excludeSessionId,
 	onDirtyChange,
+	onFeedbackEnable,
 	onSubmit,
 }: Readonly<{
 	onSubmit: (formData: SessionSchema) => void;
 	onDirtyChange?: (isDirty: boolean) => void;
+	onFeedbackEnable?: () => void;
 	defaultValues?: Partial<SessionSchema>;
 	showFeedbackSettings?: boolean;
 	feedbackSettingsLocked?: boolean;
@@ -285,7 +287,10 @@ export const SessionForm = ({
 					</div>
 				</section>
 				{showFeedbackSettings && (
-					<FormFeedbackSettings feedbackSettingsLocked={feedbackSettingsLocked} />
+					<FormFeedbackSettings
+						feedbackSettingsLocked={feedbackSettingsLocked}
+						onFeedbackEnable={onFeedbackEnable}
+					/>
 				)}
 			</form>
 		</Form>
