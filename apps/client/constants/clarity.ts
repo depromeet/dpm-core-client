@@ -57,6 +57,8 @@ export const PROFILE_FORM_ACTION = {
 export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 	HOME: {
 		VOC_BUTTON_CLICK: 'voc_button_click',
+		FEEDBACK_CARD_VIEW: 'feedback_card_view',
+		FEEDBACK_BUTTON_CLICK: 'feedback_button_click',
 	},
 	LOGIN: {
 		KAKAO_LOGIN_CLICK: 'kakao_login_click',
@@ -87,10 +89,17 @@ export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 		ENTER_SUCCESS: 'enter_success',
 		ENTER_FAIL: 'enter_fail',
 	},
-	SESSION: {},
+	SESSION: {
+		FEEDBACK_BUTTON_VIEW: 'feedback_button_view',
+		FEEDBACK_BUTTON_CLICK: 'feedback_button_click',
+	},
 	SESSION_DETAIL: {},
 	SESSION_FEEDBACK: {
 		ENTRY_VIEW: 'entry_view',
+		ENTRY_SOURCE_HOME: 'entry_source_home',
+		ENTRY_SOURCE_SESSION: 'entry_source_session',
+		ENTRY_SOURCE_SHARED: 'entry_source_shared',
+		ENTRY_SOURCE_UNKNOWN: 'entry_source_unknown',
 		AVAILABLE_VIEW: 'available_view',
 		SATISFACTION_VIEW: 'satisfaction_view',
 		POSITIVE_VIEW: 'positive_view',

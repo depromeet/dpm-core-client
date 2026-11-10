@@ -26,6 +26,7 @@ import {
 
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { CLARITY_ACTION_ID } from '@/constants/clarity';
+import type { FeedbackEntrySource } from '@/lib/session/feedback-source';
 import { useAppConfig } from '@/providers/app-config-provider';
 import { useClarity } from '@/providers/client-clarity-adapter';
 import { submitSessionFeedbackOptions } from '@/remotes/mutations/session-feedback';
@@ -34,6 +35,7 @@ import { getSessionFeedbackMeQuery } from '@/remotes/queries/session-feedback';
 interface FeedbackFormProps {
 	sessionId: number;
 	returnTo: '/' | '/session';
+	entrySource?: FeedbackEntrySource;
 }
 
 type FeedbackStep = 'satisfaction' | 'positive' | 'improvement' | 'comment';
@@ -46,6 +48,13 @@ const FEEDBACK_STEP_VIEW_ACTION = {
 	improvement: CLARITY_ACTION_ID.SESSION_FEEDBACK.IMPROVEMENT_VIEW,
 	comment: CLARITY_ACTION_ID.SESSION_FEEDBACK.COMMENT_VIEW,
 } satisfies Record<FeedbackStep, string>;
+
+const FEEDBACK_ENTRY_SOURCE_ACTION = {
+	home: CLARITY_ACTION_ID.SESSION_FEEDBACK.ENTRY_SOURCE_HOME,
+	session: CLARITY_ACTION_ID.SESSION_FEEDBACK.ENTRY_SOURCE_SESSION,
+	shared: CLARITY_ACTION_ID.SESSION_FEEDBACK.ENTRY_SOURCE_SHARED,
+	unknown: CLARITY_ACTION_ID.SESSION_FEEDBACK.ENTRY_SOURCE_UNKNOWN,
+} satisfies Record<FeedbackEntrySource, string>;
 
 type FeedbackClarityAction =
 	(typeof CLARITY_ACTION_ID.SESSION_FEEDBACK)[keyof typeof CLARITY_ACTION_ID.SESSION_FEEDBACK];
@@ -223,7 +232,11 @@ const FeedbackSubmissionErrorScreen = ({
 	/>
 );
 
-export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
+export const FeedbackForm = ({
+	sessionId,
+	returnTo,
+	entrySource = 'unknown',
+}: FeedbackFormProps) => {
 	const router = useRouter();
 	const { track } = useClarity();
 	const { isApp, platform } = useAppConfig();
@@ -250,6 +263,9 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 	const keyboardWasOpenRef = useRef(false);
 	const keyboardAdjustmentAppliedRef = useRef(false);
 	const trackedEntrySessionIdRef = useRef<number | null>(null);
+	const trackedEntrySourceRef = useRef<{ sessionId: number; source: FeedbackEntrySource } | null>(
+		null,
+	);
 	const trackedFormViewRef = useRef<{ sessionId: number; visible: boolean } | null>(null);
 	const trackedStepViewRef = useRef<{ sessionId: number; step: FeedbackStep } | null>(null);
 	const trackedStatusViewRef = useRef<{ sessionId: number; action: FeedbackClarityAction } | null>(
@@ -272,6 +288,15 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 		trackedEntrySessionIdRef.current = sessionId;
 		trackFeedbackAction(CLARITY_ACTION_ID.SESSION_FEEDBACK.ENTRY_VIEW);
 	}, [sessionId, trackFeedbackAction]);
+
+	useEffect(() => {
+		const previous = trackedEntrySourceRef.current;
+		if (previous && Object.is(previous.sessionId, sessionId) && previous.source === entrySource) {
+			return;
+		}
+		trackedEntrySourceRef.current = { sessionId, source: entrySource };
+		trackFeedbackAction(FEEDBACK_ENTRY_SOURCE_ACTION[entrySource]);
+	}, [sessionId, entrySource, trackFeedbackAction]);
 
 	const isFeedbackFormVisible =
 		!feedbackQuery.isPending &&
