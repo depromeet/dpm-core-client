@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import type {
 	ManagedMemberPart,
+	ManagedMemberType,
 	MemberActivityStatus,
 	MemberApprovalStatus,
 	MemberBadgeCard,
@@ -17,6 +18,7 @@ export interface MemberFilterState {
 	search: string;
 	parts: ManagedMemberPart[];
 	teamNumbers: number[];
+	memberTypes: ManagedMemberType[];
 	activityStatuses: MemberActivityStatus[];
 	/** 운영진·코어 제외. 승인 완료 탭의 기본값은 켜짐 */
 	excludeStaff: boolean;
@@ -30,6 +32,7 @@ const INITIAL_STATE: MemberFilterState = {
 	search: '',
 	parts: [],
 	teamNumbers: [],
+	memberTypes: ['DEEPER'],
 	activityStatuses: [],
 	excludeStaff: true,
 	organizerOnly: false,
@@ -81,6 +84,10 @@ export const useMemberFilters = () => {
 		setFilters((prev) => ({ ...prev, teamNumbers }));
 	}, []);
 
+	const setMemberTypes = useCallback((memberTypes: ManagedMemberType[]) => {
+		setFilters((prev) => ({ ...prev, memberTypes }));
+	}, []);
+
 	const setActivityStatuses = useCallback((activityStatuses: MemberActivityStatus[]) => {
 		setFilters((prev) => ({ ...prev, activityStatuses }));
 	}, []);
@@ -130,6 +137,7 @@ export const useMemberFilters = () => {
 		setSearch,
 		setParts,
 		setTeamNumbers,
+		setMemberTypes,
 		setActivityStatuses,
 		setExcludeStaff,
 		setOrganizerOnly,

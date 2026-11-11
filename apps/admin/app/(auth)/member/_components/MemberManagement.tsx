@@ -73,6 +73,7 @@ export const MemberManagement = () => {
 		setSearch,
 		setParts,
 		setTeamNumbers,
+		setMemberTypes,
 		setActivityStatuses,
 		setExcludeStaff,
 		setOrganizerOnly,
@@ -526,11 +527,13 @@ export const MemberManagement = () => {
 						<MemberFilterBar
 							parts={filters.parts}
 							teamNumbers={filters.teamNumbers}
+							memberTypes={filters.memberTypes}
 							activityStatuses={filters.activityStatuses}
 							excludeStaff={filters.excludeStaff}
 							organizerOnly={filters.organizerOnly}
 							onPartsChange={withFilterTracking(setParts)}
 							onTeamNumbersChange={withFilterTracking(setTeamNumbers)}
+							onMemberTypesChange={withFilterTracking(setMemberTypes)}
 							onActivityStatusesChange={withFilterTracking(setActivityStatuses)}
 							onExcludeStaffChange={withFilterTracking(setExcludeStaff)}
 							onOrganizerOnlyChange={withFilterTracking(setOrganizerOnly)}

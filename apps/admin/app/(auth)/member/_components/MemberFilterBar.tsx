@@ -2,12 +2,12 @@
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { CohortTeam, ManagedMemberPart, MemberActivityStatus } from '@dpm-core/api';
+import type { CohortTeam, ManagedMemberPart, ManagedMemberType, MemberActivityStatus } from '@dpm-core/api';
 import { ToggleButton } from '@dpm-core/shared';
 
 import { getCurrentCohortTeamsQuery } from '@/remotes/queries/cohort';
 
-import { ACTIVITY_STATUS_OPTIONS, PART_OPTIONS, UNASSIGNED_TEAM_NUMBER } from '../_constants';
+import { MEMBER_TYPE_OPTIONS, ACTIVITY_STATUS_OPTIONS, PART_OPTIONS, UNASSIGNED_TEAM_NUMBER } from '../_constants';
 import { toRealTeamNumbers } from '../_lib/team-options';
 import { MultiSelectFilter } from './MultiSelectFilter';
 
@@ -21,11 +21,13 @@ function toTeamOptions(teams: CohortTeam[]) {
 interface MemberFilterBarProps {
 	parts: ManagedMemberPart[];
 	teamNumbers: number[];
+	memberTypes: ManagedMemberType[];
 	activityStatuses: MemberActivityStatus[];
 	excludeStaff: boolean;
 	organizerOnly: boolean;
 	onPartsChange: (next: ManagedMemberPart[]) => void;
 	onTeamNumbersChange: (next: number[]) => void;
+	onMemberTypesChange: (next: ManagedMemberType[]) => void;
 	onActivityStatusesChange: (next: MemberActivityStatus[]) => void;
 	onExcludeStaffChange: (next: boolean) => void;
 	onOrganizerOnlyChange: (next: boolean) => void;
@@ -35,11 +37,13 @@ interface MemberFilterBarProps {
 export const MemberFilterBar = ({
 	parts,
 	teamNumbers,
+	memberTypes,
 	activityStatuses,
 	excludeStaff,
 	organizerOnly,
 	onPartsChange,
 	onTeamNumbersChange,
+	onMemberTypesChange,
 	onActivityStatusesChange,
 	onExcludeStaffChange,
 	onOrganizerOnlyChange,
@@ -66,6 +70,12 @@ export const MemberFilterBar = ({
 				options={ACTIVITY_STATUS_OPTIONS}
 				value={activityStatuses}
 				onChange={onActivityStatusesChange}
+			/>
+			<MultiSelectFilter
+				title="멤버 타입별"
+				options={MEMBER_TYPE_OPTIONS}
+				value={memberTypes}
+				onChange={onMemberTypesChange}
 			/>
 			<ToggleButton
 				id="exclude-staff"
