@@ -33,9 +33,21 @@ export type ClarityPageId = ClarityPageIdOf<typeof CLARITY_PAGE_ID>;
 /** admin Clarity 액션 ID */
 export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 	HOME: {},
-	SESSION: {},
-	SESSION_DETAIL: {},
-	SESSION_CREATE: {},
+	SESSION: {
+		INSIGHT_BUTTON_CLICK: 'insight_button_click',
+	},
+	SESSION_DETAIL: {
+		INSIGHT_TAB_VIEW: 'insight_tab_view',
+		INSIGHT_LOAD_SUCCESS: 'insight_load_success',
+		INSIGHT_LOAD_FAIL: 'insight_load_fail',
+	},
+	SESSION_CREATE: {
+		FEEDBACK_ENABLE: 'feedback_enable',
+		FEEDBACK_START_TIME_VALID: 'feedback_start_time_valid',
+		SAVE_CLICK: 'save_click',
+		SAVE_SUCCESS: 'save_success',
+		SAVE_FAIL: 'save_fail',
+	},
 	SESSION_MODIFY: {},
 	ANNOUNCEMENT: {},
 	ANNOUNCEMENT_DETAIL: {},

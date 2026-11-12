@@ -12,25 +12,15 @@ import { CLARITY_ACTION_ID } from '@/constants/clarity';
 import { memberAuthQueryKey } from '@/providers/auth-provider';
 import { useClarity } from '@/providers/client-clarity-adapter';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
+import { getMemberPartLabel } from '@/lib/member/part';
 
 import { CancelApplicationModal } from './_components/cancel-application-modal';
-
-/** 운영진의 승인·반려를 반영하기 위해 검토중 화면에서 회원 상태를 다시 확인하는 간격 */
-const MEMBER_STATUS_POLL_INTERVAL_MS = 10_000;
 
 export default function PendingPage() {
 	const queryClient = useQueryClient();
 	const { track } = useClarity();
 
-	// 앱 기본 staleTime(5분) 때문에 캐시가 신선하다고 판단되면 화면에 다시 들어오거나 탭에 돌아와도
-	// 재조회하지 않는다. staleTime 0 으로 두어 진입·포커스 때마다 바로 한 번 확인한다.
-	// 탭이 백그라운드이면 폴링은 멈춘다.
-	const { data: memberResponse } = useQuery({
-		...getMyMemberInfoQuery,
-		staleTime: 0,
-		refetchInterval: MEMBER_STATUS_POLL_INTERVAL_MS,
-		refetchIntervalInBackground: false,
-	});
+	const { data: memberResponse } = useQuery(getMyMemberInfoQuery);
 	const status = memberResponse?.data.status;
 
 	// 승인(ACTIVE)·반려(REJECTED)로 바뀌면 AuthProvider가 보는 상태 캐시를 갱신해 해당 화면으로 보낸다.
@@ -39,6 +29,10 @@ export default function PendingPage() {
 			void queryClient.invalidateQueries({ queryKey: memberAuthQueryKey });
 		}
 	}, [status, queryClient]);
+
+	const handleReload = () => {
+		window.location.reload();
+	};
 
 	return (
 		<SafeAreaAppLayout className="h-dvh bg-[linear-gradient(158.06deg,#FFFFFF_20.54%,#CFD9FF_60.84%,#E6F9FF_99%)]">
@@ -51,18 +45,45 @@ export default function PendingPage() {
 						검토하고 있어요
 					</h1>
 					<p className="bg-linear-to-r from-label-subtle to-[#7A98C2] bg-clip-text font-medium text-body1 text-transparent">
-						승인이 완료되면 홈화면에 접속할 수 있어요
+						승인이 완료되면 홈 화면에 접속할 수 있어요
 					</p>
 				</div>
-			</main>
-			<div className="flex flex-col gap-2 px-4 pb-4">
-				<Button variant="secondary" size="full" className="h-12 rounded-lg" asChild>
+				<div className="flex flex-col gap-4">
+					<div className="flex flex-col w-[239px] gap-4 bg-[#FFFFFF]/60 rounded-xl px-8 py-6">
+						<dl className="flex flex-col">
+							<dt className="text-body2 font-medium text-label-tertiary">
+								이름
+							</dt>
+							<dd className="text-title2 font-bold text-label-normal">
+								{memberResponse?.data.name}
+							</dd>
+						</dl>
+						<dl className="flex flex-col">
+							<dt className="text-body2 font-medium text-label-tertiary">
+								직군
+							</dt>
+							<dd className="text-title2 font-bold text-label-normal">
+								{getMemberPartLabel(memberResponse?.data.part)}
+							</dd>
+						</dl>
+					</div>
 					<Link
+						className="self-center text-body2 font-semibold text-label-subtle"
 						href="/pending/edit"
 						onClick={() => track(CLARITY_ACTION_ID.PENDING.EDIT_CLICK)}
 					>
 						개인정보 수정하기
 					</Link>
+				</div>
+			</main>
+			<div className="flex flex-col gap-2 px-4 pb-4">
+				<Button 
+					variant="secondary" 
+					size="full" 
+					className="h-12 rounded-lg"
+					onClick={handleReload}
+				>
+					새로고침
 				</Button>
 				<CancelApplicationModal>
 					<Button variant="assistive" size="full" className="h-12 rounded-lg">

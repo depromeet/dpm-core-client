@@ -25,18 +25,39 @@ import {
 } from '@dpm-core/shared';
 
 import { SafeAreaAppLayout } from '@/components/app-layout';
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
+import type { FeedbackEntrySource } from '@/lib/session/feedback-source';
 import { useAppConfig } from '@/providers/app-config-provider';
+import { useClarity } from '@/providers/client-clarity-adapter';
 import { submitSessionFeedbackOptions } from '@/remotes/mutations/session-feedback';
 import { getSessionFeedbackMeQuery } from '@/remotes/queries/session-feedback';
 
 interface FeedbackFormProps {
 	sessionId: number;
 	returnTo: '/' | '/session';
+	entrySource?: FeedbackEntrySource;
 }
 
 type FeedbackStep = 'satisfaction' | 'positive' | 'improvement' | 'comment';
 
 const FEEDBACK_STEPS: FeedbackStep[] = ['satisfaction', 'positive', 'improvement', 'comment'];
+
+const FEEDBACK_STEP_VIEW_ACTION = {
+	satisfaction: CLARITY_ACTION_ID.SESSION_FEEDBACK.SATISFACTION_VIEW,
+	positive: CLARITY_ACTION_ID.SESSION_FEEDBACK.POSITIVE_VIEW,
+	improvement: CLARITY_ACTION_ID.SESSION_FEEDBACK.IMPROVEMENT_VIEW,
+	comment: CLARITY_ACTION_ID.SESSION_FEEDBACK.COMMENT_VIEW,
+} satisfies Record<FeedbackStep, string>;
+
+const FEEDBACK_ENTRY_SOURCE_ACTION = {
+	home: CLARITY_ACTION_ID.SESSION_FEEDBACK.ENTRY_SOURCE_HOME,
+	session: CLARITY_ACTION_ID.SESSION_FEEDBACK.ENTRY_SOURCE_SESSION,
+	shared: CLARITY_ACTION_ID.SESSION_FEEDBACK.ENTRY_SOURCE_SHARED,
+	unknown: CLARITY_ACTION_ID.SESSION_FEEDBACK.ENTRY_SOURCE_UNKNOWN,
+} satisfies Record<FeedbackEntrySource, string>;
+
+type FeedbackClarityAction =
+	(typeof CLARITY_ACTION_ID.SESSION_FEEDBACK)[keyof typeof CLARITY_ACTION_ID.SESSION_FEEDBACK];
 
 const SATISFACTION_OPTIONS = [
 	{ value: 'VERY_SATISFIED', label: '매우 만족했어요.' },
@@ -87,6 +108,14 @@ const FEEDBACK_STATUS_CONTENT = {
 	NOT_TARGET: { title: '이 세션의 피드백 대상이 아니에요.', icon: 'warning' },
 	ATTENDANCE_INCOMPLETE: { title: '이번 세션에 출석하지 않았어요.', icon: 'warning' },
 } as const;
+
+const FEEDBACK_STATUS_VIEW_ACTION = {
+	BEFORE_START: CLARITY_ACTION_ID.SESSION_FEEDBACK.BEFORE_START_VIEW,
+	SUBMITTED: CLARITY_ACTION_ID.SESSION_FEEDBACK.SUBMITTED_VIEW,
+	EXPIRED: CLARITY_ACTION_ID.SESSION_FEEDBACK.EXPIRED_VIEW,
+	NOT_TARGET: CLARITY_ACTION_ID.SESSION_FEEDBACK.NOT_TARGET_VIEW,
+	ATTENDANCE_INCOMPLETE: CLARITY_ACTION_ID.SESSION_FEEDBACK.ATTENDANCE_INCOMPLETE_VIEW,
+} satisfies Record<Exclude<SessionFeedbackMyStatus, 'AVAILABLE'>, FeedbackClarityAction>;
 
 const getFeedbackStepIndex = (step: FeedbackStep) => FEEDBACK_STEPS.indexOf(step);
 
@@ -203,8 +232,13 @@ const FeedbackSubmissionErrorScreen = ({
 	/>
 );
 
-export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
+export const FeedbackForm = ({
+	sessionId,
+	returnTo,
+	entrySource = 'unknown',
+}: FeedbackFormProps) => {
 	const router = useRouter();
+	const { track } = useClarity();
 	const { isApp, platform } = useAppConfig();
 	const isIOSApp = isApp && platform === 'ios';
 	const queryClient = useQueryClient();
@@ -228,6 +262,98 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 	const initialViewportHeightRef = useRef(0);
 	const keyboardWasOpenRef = useRef(false);
 	const keyboardAdjustmentAppliedRef = useRef(false);
+	const trackedEntrySessionIdRef = useRef<number | null>(null);
+	const trackedEntrySourceRef = useRef<{ sessionId: number; source: FeedbackEntrySource } | null>(
+		null,
+	);
+	const trackedFormViewRef = useRef<{ sessionId: number; visible: boolean } | null>(null);
+	const trackedStepViewRef = useRef<{ sessionId: number; step: FeedbackStep } | null>(null);
+	const trackedStatusViewRef = useRef<{ sessionId: number; action: FeedbackClarityAction } | null>(
+		null,
+	);
+
+	const trackFeedbackAction = useCallback(
+		(action: FeedbackClarityAction) => {
+			try {
+				track(action);
+			} catch {
+				// 분석 이벤트가 실패해도 피드백 이용을 방해하지 않는다.
+			}
+		},
+		[track],
+	);
+
+	useEffect(() => {
+		if (Object.is(trackedEntrySessionIdRef.current, sessionId)) return;
+		trackedEntrySessionIdRef.current = sessionId;
+		trackFeedbackAction(CLARITY_ACTION_ID.SESSION_FEEDBACK.ENTRY_VIEW);
+	}, [sessionId, trackFeedbackAction]);
+
+	useEffect(() => {
+		const previous = trackedEntrySourceRef.current;
+		if (previous && Object.is(previous.sessionId, sessionId) && previous.source === entrySource) {
+			return;
+		}
+		trackedEntrySourceRef.current = { sessionId, source: entrySource };
+		trackFeedbackAction(FEEDBACK_ENTRY_SOURCE_ACTION[entrySource]);
+	}, [sessionId, entrySource, trackFeedbackAction]);
+
+	const isFeedbackFormVisible =
+		!feedbackQuery.isPending &&
+		!feedbackQuery.isError &&
+		Boolean(feedbackInfo) &&
+		(submissionStatus ?? feedbackInfo?.myStatus) === 'AVAILABLE' &&
+		!submitted &&
+		!submissionFailed;
+	const feedbackStatus = feedbackInfo ? (submissionStatus ?? feedbackInfo.myStatus) : undefined;
+	const statusViewAction = feedbackQuery.isPending
+		? null
+		: feedbackQuery.isError || !feedbackInfo
+			? CLARITY_ACTION_ID.SESSION_FEEDBACK.LOAD_FAIL
+			: feedbackStatus && feedbackStatus !== 'AVAILABLE'
+				? FEEDBACK_STATUS_VIEW_ACTION[feedbackStatus]
+				: null;
+
+	useEffect(() => {
+		if (!statusViewAction) {
+			trackedStatusViewRef.current = null;
+			return;
+		}
+
+		const previous = trackedStatusViewRef.current;
+		if (
+			previous &&
+			Object.is(previous.sessionId, sessionId) &&
+			previous.action === statusViewAction
+		) {
+			return;
+		}
+		trackedStatusViewRef.current = { sessionId, action: statusViewAction };
+		trackFeedbackAction(statusViewAction);
+	}, [sessionId, statusViewAction, trackFeedbackAction]);
+
+	useEffect(() => {
+		const previous = trackedFormViewRef.current;
+		if (
+			isFeedbackFormVisible &&
+			(!previous || !Object.is(previous.sessionId, sessionId) || !previous.visible)
+		) {
+			trackFeedbackAction(CLARITY_ACTION_ID.SESSION_FEEDBACK.AVAILABLE_VIEW);
+		}
+		trackedFormViewRef.current = { sessionId, visible: isFeedbackFormVisible };
+	}, [isFeedbackFormVisible, sessionId, trackFeedbackAction]);
+
+	useEffect(() => {
+		if (!isFeedbackFormVisible) {
+			trackedStepViewRef.current = null;
+			return;
+		}
+
+		const previous = trackedStepViewRef.current;
+		if (previous && Object.is(previous.sessionId, sessionId) && previous.step === step) return;
+		trackedStepViewRef.current = { sessionId, step };
+		trackFeedbackAction(FEEDBACK_STEP_VIEW_ACTION[step]);
+	}, [isFeedbackFormVisible, sessionId, step, trackFeedbackAction]);
 
 	const keepFocusedFieldVisible = useCallback(() => {
 		const content = formContentRef.current;
@@ -362,13 +488,19 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 		};
 
 		setIsSubmitting(true);
+		let submissionSucceeded = false;
 		try {
 			await submitFeedbackMutation.mutateAsync(payload);
+			submissionSucceeded = true;
+			trackFeedbackAction(CLARITY_ACTION_ID.SESSION_FEEDBACK.SUBMIT_SUCCESS);
 			void queryClient.invalidateQueries({ queryKey: ['session-list'] });
 			void queryClient.invalidateQueries({ queryKey: ['session-feedback-pending'] });
 			setSubmissionFailed(false);
 			setSubmitted(true);
 		} catch (error) {
+			if (!submissionSucceeded) {
+				trackFeedbackAction(CLARITY_ACTION_ID.SESSION_FEEDBACK.SUBMIT_FAIL);
+			}
 			if (error instanceof HTTPError && error.response.status === 401) return;
 
 			const errorCode = await getErrorCode(error);
@@ -392,6 +524,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 			return;
 		}
 
+		trackFeedbackAction(CLARITY_ACTION_ID.SESSION_FEEDBACK.SUBMIT_CLICK);
 		void submitFeedback();
 	};
 
@@ -624,6 +757,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 									기타 의견 <span className="text-primary-normal">*</span>
 								</label>
 								<textarea
+									data-clarity-mask="true"
 									id="positive-etc"
 									value={positiveEtc}
 									onChange={(event) => setPositiveEtc(event.target.value)}
@@ -662,6 +796,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 									기타 의견 <span className="text-primary-normal">*</span>
 								</label>
 								<textarea
+									data-clarity-mask="true"
 									id="improvement-etc"
 									value={improvementEtc}
 									onChange={(event) => setImprovementEtc(event.target.value)}
@@ -677,6 +812,7 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 
 				{step === 'comment' && (
 					<textarea
+						data-clarity-mask="true"
 						value={comment}
 						onChange={(event) => setComment(event.target.value)}
 						onFocus={handleTextAreaFocus}
@@ -774,7 +910,10 @@ export const FeedbackForm = ({ sessionId, returnTo }: FeedbackFormProps) => {
 								size="full"
 								variant="secondary"
 								className="h-12 rounded-lg"
-								onClick={() => router.replace(returnTo)}
+								onClick={() => {
+									trackFeedbackAction(CLARITY_ACTION_ID.SESSION_FEEDBACK.EXIT_CONFIRM);
+									router.replace(returnTo);
+								}}
 							>
 								그만두기
 							</Button>

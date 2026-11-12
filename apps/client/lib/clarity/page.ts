@@ -25,6 +25,7 @@ const STATIC_PAGE_ID_BY_PATHNAME: Partial<Record<string, ClarityPageId>> = {
 };
 
 const DYNAMIC_PAGE_IDS: ReadonlyArray<ClarityDynamicPageRoute<ClarityPageId>> = [
+	{ pattern: /^\/session\/[^/]+\/feedback$/, pageId: CLARITY_PAGE_ID.SESSION_FEEDBACK },
 	{ pattern: /^\/session\/[^/]+$/, pageId: CLARITY_PAGE_ID.SESSION_DETAIL },
 	{ pattern: /^\/announcement\/[^/]+$/, pageId: CLARITY_PAGE_ID.ANNOUNCEMENT_DETAIL },
 	{
