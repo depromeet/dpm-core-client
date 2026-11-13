@@ -86,9 +86,9 @@ export const MemberPartChip = forwardRef<HTMLButtonElement | HTMLDivElement, Mem
 		);
 		const label = part === 'UNASSIGNED' ? '미입력' : PART_LABEL[part];
 		const partChipClassName = cn(
-			"inline-flex h-8 items-center gap-1 rounded-lg", 
-			"px-3 font-medium text-body2 hover:border-line-subtle", 
-			PART_CHIP_CLASS[part]
+			'inline-flex h-8 items-center gap-1 rounded-lg',
+			'px-3 font-medium text-body2 hover:border-line-subtle',
+			PART_CHIP_CLASS[part],
 		);
 
 		if (!editable) {

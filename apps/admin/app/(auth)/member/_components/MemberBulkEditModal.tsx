@@ -15,7 +15,6 @@ import {
 import { toRealTeamNumbers } from '../_lib/team-options';
 import type { MemberEditableField, MemberEditableFields, MemberRow } from '../_types';
 
-/** 파트 수정 모달은 Figma 기준으로 영문 라벨과 이 순서로 노출한다. (표·필터의 한글 라벨과 다르다.) */
 const PART_PICKER_OPTIONS: SegmentedOption[] = [
 	{ value: 'UNASSIGNED', label: '미배정' },
 	{ value: 'DESIGN', label: '디자이너' },
