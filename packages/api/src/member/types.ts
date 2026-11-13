@@ -212,8 +212,6 @@ export interface MemberManagementRequest {
 	teamNumbers?: number[];
 	memberTypes?: ManagedMemberType[];
 	activityStatuses?: MemberActivityStatus[];
-	/** 운영진·코어 제외. 기본 true */
-	excludeStaff: boolean;
 	/** 파트·팀·타입 중 하나라도 미배정인 멤버만 조회 */
 	missingInformationOnly: boolean;
 	graduationStatuses?: MemberGraduationStatus[];

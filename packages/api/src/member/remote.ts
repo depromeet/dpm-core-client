@@ -41,7 +41,6 @@ function toMemberManagementSearchParams(params: MemberManagementRequest) {
 	const searchParams = new URLSearchParams();
 
 	searchParams.set('approvalStatus', params.approvalStatus);
-	searchParams.set('excludeStaff', String(params.excludeStaff));
 	searchParams.set('missingInformationOnly', String(params.missingInformationOnly));
 	searchParams.set('page', String(params.page));
 	searchParams.set('size', String(params.size));

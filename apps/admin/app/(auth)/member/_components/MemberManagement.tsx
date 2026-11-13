@@ -75,8 +75,6 @@ export const MemberManagement = () => {
 		setTeamNumbers,
 		setMemberTypes,
 		setActivityStatuses,
-		setExcludeStaff,
-		setOrganizerOnly,
 		applyBadgePreset,
 	} = useMemberFilters();
 
@@ -113,7 +111,7 @@ export const MemberManagement = () => {
 		isFetchingNextPage,
 		isLoadingAllForSelection,
 		loadAllAndGetIds,
-	} = useMemberList(queryParams, filters.organizerOnly && filters.approvalStatus === 'APPROVED');
+	} = useMemberList(queryParams);
 
 	const { data: cohortNumber } = useQuery(getCurrentCohortQuery);
 	const { data: teams } = useQuery(getCurrentCohortTeamsQuery);
@@ -529,14 +527,10 @@ export const MemberManagement = () => {
 							teamNumbers={filters.teamNumbers}
 							memberTypes={filters.memberTypes}
 							activityStatuses={filters.activityStatuses}
-							excludeStaff={filters.excludeStaff}
-							organizerOnly={filters.organizerOnly}
 							onPartsChange={withFilterTracking(setParts)}
 							onTeamNumbersChange={withFilterTracking(setTeamNumbers)}
 							onMemberTypesChange={withFilterTracking(setMemberTypes)}
 							onActivityStatusesChange={withFilterTracking(setActivityStatuses)}
-							onExcludeStaffChange={withFilterTracking(setExcludeStaff)}
-							onOrganizerOnlyChange={withFilterTracking(setOrganizerOnly)}
 						/>
 					)}
 					<MemberSelectionSummary

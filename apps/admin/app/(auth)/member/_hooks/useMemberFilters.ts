@@ -20,10 +20,6 @@ export interface MemberFilterState {
 	teamNumbers: number[];
 	memberTypes: ManagedMemberType[];
 	activityStatuses: MemberActivityStatus[];
-	/** 운영진·코어 제외. 승인 완료 탭의 기본값은 켜짐 */
-	excludeStaff: boolean;
-	/** 운영진만 보기. 켜면 운영진/코어 제외와 함께 쓸 수 없어 서로 끈다 */
-	organizerOnly: boolean;
 	missingInformationOnly: boolean;
 }
 
@@ -34,8 +30,6 @@ const INITIAL_STATE: MemberFilterState = {
 	teamNumbers: [],
 	memberTypes: ['DEEPER'],
 	activityStatuses: [],
-	excludeStaff: true,
-	organizerOnly: false,
 	missingInformationOnly: false,
 };
 
@@ -92,22 +86,6 @@ export const useMemberFilters = () => {
 		setFilters((prev) => ({ ...prev, activityStatuses }));
 	}, []);
 
-	const setExcludeStaff = useCallback((excludeStaff: boolean) => {
-		setFilters((prev) => ({
-			...prev,
-			excludeStaff,
-			organizerOnly: excludeStaff ? false : prev.organizerOnly,
-		}));
-	}, []);
-
-	const setOrganizerOnly = useCallback((organizerOnly: boolean) => {
-		setFilters((prev) => ({
-			...prev,
-			organizerOnly,
-			excludeStaff: organizerOnly ? false : prev.excludeStaff,
-		}));
-	}, []);
-
 	const applyBadgePreset = useCallback((card: MemberBadgeCard) => {
 		setFilters(presetForCard(card));
 	}, []);
@@ -126,7 +104,6 @@ export const useMemberFilters = () => {
 				isApprovedTab && filters.memberTypes.length > 0 ? filters.memberTypes : undefined,
 			activityStatuses:
 				isApprovedTab && filters.activityStatuses.length > 0 ? filters.activityStatuses : undefined,
-			excludeStaff: isApprovedTab ? filters.excludeStaff : false,
 			missingInformationOnly: isApprovedTab ? filters.missingInformationOnly : false,
 			size: MEMBER_PAGE_SIZE,
 		};
@@ -141,8 +118,6 @@ export const useMemberFilters = () => {
 		setTeamNumbers,
 		setMemberTypes,
 		setActivityStatuses,
-		setExcludeStaff,
-		setOrganizerOnly,
 		applyBadgePreset,
 	};
 };

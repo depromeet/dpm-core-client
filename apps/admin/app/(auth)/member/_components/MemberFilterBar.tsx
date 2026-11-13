@@ -23,14 +23,10 @@ interface MemberFilterBarProps {
 	teamNumbers: number[];
 	memberTypes: ManagedMemberType[];
 	activityStatuses: MemberActivityStatus[];
-	excludeStaff: boolean;
-	organizerOnly: boolean;
 	onPartsChange: (next: ManagedMemberPart[]) => void;
 	onTeamNumbersChange: (next: number[]) => void;
 	onMemberTypesChange: (next: ManagedMemberType[]) => void;
 	onActivityStatusesChange: (next: MemberActivityStatus[]) => void;
-	onExcludeStaffChange: (next: boolean) => void;
-	onOrganizerOnlyChange: (next: boolean) => void;
 }
 
 /** 승인 완료 탭의 필터 묶음. 각 필터는 자기 값만 알고 서로를 모른다. */
@@ -39,14 +35,10 @@ export const MemberFilterBar = ({
 	teamNumbers,
 	memberTypes,
 	activityStatuses,
-	excludeStaff,
-	organizerOnly,
 	onPartsChange,
 	onTeamNumbersChange,
 	onMemberTypesChange,
 	onActivityStatusesChange,
-	onExcludeStaffChange,
-	onOrganizerOnlyChange,
 }: MemberFilterBarProps) => {
 	const { data: teams } = useQuery(getCurrentCohortTeamsQuery);
 	const teamOptions = useMemo(() => toTeamOptions(teams ?? []), [teams]);
@@ -76,22 +68,6 @@ export const MemberFilterBar = ({
 				options={MEMBER_TYPE_OPTIONS}
 				value={memberTypes}
 				onChange={onMemberTypesChange}
-			/>
-			<ToggleButton
-				id="exclude-staff"
-				label="운영진/코어 제외"
-					className="gap-[5px] border border-line-subtle has-checked:text-label-assistive"
-					labelClassName="font-medium text-body2"
-				checked={excludeStaff}
-				onCheckedChange={(checked) => onExcludeStaffChange(checked === true)}
-			/>
-			<ToggleButton
-				id="organizer-only"
-				label="운영진만 보기"
-				className="gap-[5px] border border-line-subtle has-checked:text-label-assistive"
-				labelClassName="font-medium text-body2"
-				checked={organizerOnly}
-				onCheckedChange={(checked) => onOrganizerOnlyChange(checked === true)}
 			/>
 		</div>
 	);
