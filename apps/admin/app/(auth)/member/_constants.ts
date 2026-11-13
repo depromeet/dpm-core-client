@@ -28,9 +28,18 @@ export const PART_LABEL: Record<ManagedMemberPart, string> = {
 	UNASSIGNED: '미배정',
 	DESIGN: '디자이너',
 	WEB: '웹',
-	ANDROID: '안드로이드',
+	ANDROID: 'AOS',
 	IOS: 'IOS',
 	SERVER: '서버',
+};
+
+export const PART_CHIP_CLASS: Record<ManagedMemberPart, string> = {
+	UNASSIGNED: 'border border-line-normal',
+	DESIGN: 'border-none bg-[#FFECF4] text-[#FF89BE]',
+	WEB: 'border-none bg-[#FFF2D3] text-[#E5A400]',
+	ANDROID: 'border-none bg-[#F0FFE1] text-[#5CAC10]',
+	IOS: 'border-none bg-[#DDF1FF] text-[#1D8CDB]',
+	SERVER: 'border-none bg-[#F7EEFF] text-[#A661DE]',
 };
 
 /** 파트 선택지 노출 순서 (Figma 필터·수정 모달 기준) */
@@ -59,7 +68,12 @@ export const MEMBER_TYPE_LABEL: Record<ManagedMemberType, string> = {
 	CORE: '코어',
 };
 
-export const MEMBER_TYPE_ORDER: ManagedMemberType[] = ['UNASSIGNED', 'DEEPER', 'ORGANIZER', 'CORE'];
+export const MEMBER_TYPE_ORDER: ManagedMemberType[] = [
+	'UNASSIGNED', 
+	'DEEPER', 
+	'ORGANIZER', 
+	'CORE'
+];
 
 export const ACTIVITY_STATUS_LABEL: Record<MemberActivityStatus, string> = {
 	NORMAL: '활동 중',
