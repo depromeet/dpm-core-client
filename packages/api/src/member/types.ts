@@ -210,6 +210,7 @@ export interface MemberManagementRequest {
 	parts?: ManagedMemberPart[];
 	/** 팀 번호. 미배정은 0 */
 	teamNumbers?: number[];
+	memberTypes?: ManagedMemberType[];
 	activityStatuses?: MemberActivityStatus[];
 	/** 운영진·코어 제외. 기본 true */
 	excludeStaff: boolean;

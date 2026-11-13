@@ -52,6 +52,7 @@ function toMemberManagementSearchParams(params: MemberManagementRequest) {
 	for (const part of params.parts ?? []) searchParams.append('parts', part);
 	for (const teamNumber of params.teamNumbers ?? [])
 		searchParams.append('teamNumbers', String(teamNumber));
+	for (const type of params.memberTypes ?? []) searchParams.append('memberTypes', type);
 	for (const status of params.activityStatuses ?? [])
 		searchParams.append('activityStatuses', status);
 	for (const status of params.graduationStatuses ?? [])

@@ -122,6 +122,8 @@ export const useMemberFilters = () => {
 			parts: filters.parts.length > 0 ? filters.parts : undefined,
 			teamNumbers:
 				isApprovedTab && filters.teamNumbers.length > 0 ? filters.teamNumbers : undefined,
+			memberTypes:
+				isApprovedTab && filters.memberTypes.length > 0 ? filters.memberTypes : undefined,
 			activityStatuses:
 				isApprovedTab && filters.activityStatuses.length > 0 ? filters.activityStatuses : undefined,
 			excludeStaff: isApprovedTab ? filters.excludeStaff : false,
