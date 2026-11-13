@@ -107,8 +107,6 @@ export const getApprovedMergeCandidatesQuery = (name: string, part: ManagedMembe
 				approvalStatus: 'APPROVED',
 				search: name,
 				parts: [part],
-				// 병합 상대가 운영진·코어 계정일 수도 있어 함께 조회한다.
-				excludeStaff: false,
 				missingInformationOnly: false,
 				page: 1,
 				size: 30,

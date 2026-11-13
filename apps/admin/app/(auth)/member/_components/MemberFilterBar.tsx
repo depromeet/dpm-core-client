@@ -2,12 +2,12 @@
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { CohortTeam, ManagedMemberPart, MemberActivityStatus } from '@dpm-core/api';
+import type { CohortTeam, ManagedMemberPart, ManagedMemberType, MemberActivityStatus } from '@dpm-core/api';
 import { ToggleButton } from '@dpm-core/shared';
 
 import { getCurrentCohortTeamsQuery } from '@/remotes/queries/cohort';
 
-import { ACTIVITY_STATUS_OPTIONS, PART_OPTIONS, UNASSIGNED_TEAM_NUMBER } from '../_constants';
+import { MEMBER_TYPE_OPTIONS, ACTIVITY_STATUS_OPTIONS, PART_OPTIONS, UNASSIGNED_TEAM_NUMBER } from '../_constants';
 import { toRealTeamNumbers } from '../_lib/team-options';
 import { MultiSelectFilter } from './MultiSelectFilter';
 
@@ -21,28 +21,24 @@ function toTeamOptions(teams: CohortTeam[]) {
 interface MemberFilterBarProps {
 	parts: ManagedMemberPart[];
 	teamNumbers: number[];
+	memberTypes: ManagedMemberType[];
 	activityStatuses: MemberActivityStatus[];
-	excludeStaff: boolean;
-	organizerOnly: boolean;
 	onPartsChange: (next: ManagedMemberPart[]) => void;
 	onTeamNumbersChange: (next: number[]) => void;
+	onMemberTypesChange: (next: ManagedMemberType[]) => void;
 	onActivityStatusesChange: (next: MemberActivityStatus[]) => void;
-	onExcludeStaffChange: (next: boolean) => void;
-	onOrganizerOnlyChange: (next: boolean) => void;
 }
 
 /** 승인 완료 탭의 필터 묶음. 각 필터는 자기 값만 알고 서로를 모른다. */
 export const MemberFilterBar = ({
 	parts,
 	teamNumbers,
+	memberTypes,
 	activityStatuses,
-	excludeStaff,
-	organizerOnly,
 	onPartsChange,
 	onTeamNumbersChange,
+	onMemberTypesChange,
 	onActivityStatusesChange,
-	onExcludeStaffChange,
-	onOrganizerOnlyChange,
 }: MemberFilterBarProps) => {
 	const { data: teams } = useQuery(getCurrentCohortTeamsQuery);
 	const teamOptions = useMemo(() => toTeamOptions(teams ?? []), [teams]);
@@ -67,21 +63,11 @@ export const MemberFilterBar = ({
 				value={activityStatuses}
 				onChange={onActivityStatusesChange}
 			/>
-			<ToggleButton
-				id="exclude-staff"
-				label="운영진/코어 제외"
-					className="gap-[5px] border border-line-subtle has-checked:text-label-assistive"
-					labelClassName="font-medium text-body2"
-				checked={excludeStaff}
-				onCheckedChange={(checked) => onExcludeStaffChange(checked === true)}
-			/>
-			<ToggleButton
-				id="organizer-only"
-				label="운영진만 보기"
-				className="gap-[5px] border border-line-subtle has-checked:text-label-assistive"
-				labelClassName="font-medium text-body2"
-				checked={organizerOnly}
-				onCheckedChange={(checked) => onOrganizerOnlyChange(checked === true)}
+			<MultiSelectFilter
+				title="멤버 타입별"
+				options={MEMBER_TYPE_OPTIONS}
+				value={memberTypes}
+				onChange={onMemberTypesChange}
 			/>
 		</div>
 	);
