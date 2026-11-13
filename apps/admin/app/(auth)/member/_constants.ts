@@ -28,7 +28,7 @@ export const PART_LABEL: Record<ManagedMemberPart, string> = {
 	UNASSIGNED: '미배정',
 	DESIGN: '디자이너',
 	WEB: '웹',
-	ANDROID: '안드로이드',
+	ANDROID: 'AOS',
 	IOS: 'IOS',
 	SERVER: '서버',
 };
