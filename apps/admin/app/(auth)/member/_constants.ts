@@ -35,11 +35,11 @@ export const PART_LABEL: Record<ManagedMemberPart, string> = {
 
 export const PART_CHIP_CLASS: Record<ManagedMemberPart, string> = {
 	UNASSIGNED: 'border border-line-normal',
-	DESIGN: 'border-none bg-[#FFECF4] text-[#FF89BE]',
-	WEB: 'border-none bg-[#FFF2D3] text-[#E5A400]',
-	ANDROID: 'border-none bg-[#F0FFE1] text-[#5CAC10]',
-	IOS: 'border-none bg-[#DDF1FF] text-[#1D8CDB]',
-	SERVER: 'border-none bg-[#F7EEFF] text-[#A661DE]',
+	DESIGN: 'border-none bg-part-design-bg text-part-design-text',
+	WEB: 'border-none bg-part-web-bg text-part-web-text',
+	ANDROID: 'border-none bg-part-aos-bg text-part-aos-text',
+	IOS: 'border-none bg-part-ios-bg text-part-ios-text',
+	SERVER: 'border-none bg-part-server-bg text-part-server-text',
 };
 
 /** 파트 선택지 노출 순서 (Figma 필터·수정 모달 기준) */
