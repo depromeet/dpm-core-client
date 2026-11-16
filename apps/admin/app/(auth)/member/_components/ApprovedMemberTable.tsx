@@ -11,7 +11,7 @@ import {
 	TableRow,
 } from '@dpm-core/shared';
 
-import { getCurrentCohortTeamsQuery } from '@/remotes/queries/cohort';
+import { getCurrentCohortTeamsQuery, getCohortListQuery } from '@/remotes/queries/cohort';
 
 import { toRealTeamNumbers } from '../_lib/team-options';
 import type { MemberEditableField, MemberEditableFields, MemberRow } from '../_types';
@@ -51,6 +51,10 @@ export const ApprovedMemberTable = ({
 	isSaving,
 }: ApprovedMemberTableProps) => {
 	const { data: teams } = useQuery(getCurrentCohortTeamsQuery);
+	const { data: cohortsData } = useQuery(getCohortListQuery);
+
+	const cohorts = cohortsData?.data.cohorts ?? [];
+
 	const teamNumbers = useMemo(() => toRealTeamNumbers(teams ?? []), [teams]);
 
 	if (rows.length === 0) return <MemberEmptyView />;
@@ -73,6 +77,7 @@ export const ApprovedMemberTable = ({
 					<TableHead className="w-36 px-3 font-medium text-body2 text-label-subtle">
 						멤버 타입
 					</TableHead>
+					<TableHead className="w-32 px-3 font-medium text-body2 text-label-subtle">기수</TableHead>
 					<TableHead className="w-32 px-3 font-medium text-body2 text-label-subtle">팀</TableHead>
 					<TableHead className="w-48 px-3 font-medium text-body2 text-label-subtle">
 						활동 상태
@@ -88,6 +93,7 @@ export const ApprovedMemberTable = ({
 						key={row.id}
 						row={row}
 						teamNumbers={teamNumbers}
+						cohorts={cohorts}
 						isSelected={isSelected(row.id)}
 						onToggle={() => onToggle(row.id)}
 						isEditing={editingId === row.id}
