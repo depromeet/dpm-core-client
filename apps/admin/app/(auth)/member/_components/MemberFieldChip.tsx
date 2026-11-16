@@ -6,7 +6,7 @@ import { ChevronDown } from 'lucide-react';
 import type { ManagedMemberPart } from '@dpm-core/api';
 import { cn } from '@dpm-core/shared';
 
-import { PART_ICON, PART_LABEL } from '../_constants';
+import { PART_CHIP_CLASS, PART_ICON, PART_LABEL } from '../_constants';
 
 interface MemberFieldChipProps {
 	label: string;
@@ -85,16 +85,20 @@ export const MemberPartChip = forwardRef<HTMLButtonElement | HTMLDivElement, Mem
 			<Image src={PART_ICON[part]} alt="" width={28} height={28} className="size-7 shrink-0" />
 		);
 		const label = part === 'UNASSIGNED' ? '미입력' : PART_LABEL[part];
+		const partChipClassName = cn(
+			'inline-flex h-8 items-center gap-1 rounded-lg',
+			'px-3 font-medium text-body2 hover:border-line-subtle',
+			PART_CHIP_CLASS[part],
+		);
 
 		if (!editable) {
 			return (
 				<div ref={ref as React.Ref<HTMLDivElement>} className="flex items-center gap-2">
 					{icon}
-					<MemberFieldChip label={label} />
+					<MemberFieldChip className={partChipClassName} label={label} />
 				</div>
 			);
 		}
-
 		return (
 			<button
 				ref={ref as React.Ref<HTMLButtonElement>}
@@ -104,7 +108,7 @@ export const MemberPartChip = forwardRef<HTMLButtonElement | HTMLDivElement, Mem
 				{...props}
 			>
 				{icon}
-				<span className="inline-flex h-8 items-center gap-1 rounded-lg border border-line-normal px-3 font-medium text-body2 text-label-subtle hover:border-line-subtle">
+				<span className={partChipClassName}>
 					<span className="truncate">{label}</span>
 					<ChevronDown className="size-4 shrink-0 text-label-assistive" />
 				</span>

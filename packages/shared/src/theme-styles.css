@@ -93,6 +93,18 @@
 	--color-background-hover: --alpha(var(--color-gray-500) / 6%);
 	--color-background-dimmer: --alpha(var(--color-gray-800) / 30%);
 
+	/* Part colors */
+	--color-part-design-bg: #ffecf4;
+	--color-part-design-text: #ff89be;
+	--color-part-web-bg: #fff2d3;
+	--color-part-web-text: #e5a400;
+	--color-part-aos-bg: #f0ffe1;
+	--color-part-aos-text: #5cac10;
+	--color-part-ios-bg: #ddf1ff;
+	--color-part-ios-text: #1d8cdb;
+	--color-part-server-bg: #f7eeff;
+	--color-part-server-text: #a661de;
+
 	/* TypoGraphy */
 	--text-headline1: 24px;
 	--text-headline1--line-height: 32px;
