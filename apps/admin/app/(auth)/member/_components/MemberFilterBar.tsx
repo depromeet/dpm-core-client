@@ -2,8 +2,12 @@
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { CohortTeam, ManagedMemberPart, ManagedMemberType, MemberActivityStatus } from '@dpm-core/api';
-import { ToggleButton } from '@dpm-core/shared';
+import type {
+	CohortTeam,
+	ManagedMemberPart,
+	ManagedMemberType,
+	MemberActivityStatus,
+} from '@dpm-core/api';
 
 import { getCurrentCohortTeamsQuery } from '@/remotes/queries/cohort';
 
