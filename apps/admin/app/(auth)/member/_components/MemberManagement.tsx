@@ -28,7 +28,7 @@ import {
 
 import { useBulkMemberEdit } from '../_hooks/useBulkMemberEdit';
 import { useInlineMemberEdit } from '../_hooks/useInlineMemberEdit';
-import { useMemberFilters } from '../_hooks/useMemberFilters';
+import { type MemberFilterState, useMemberFilters } from '../_hooks/useMemberFilters';
 import { useMemberList } from '../_hooks/useMemberList';
 import { useMemberSelection } from '../_hooks/useMemberSelection';
 import { buildMemberChanges, hasChanges, toTeamId } from '../_lib/build-member-changes';
@@ -70,11 +70,7 @@ export const MemberManagement = () => {
 		filters,
 		queryParams,
 		setApprovalStatus,
-		setSearch,
-		setParts,
-		setTeamNumbers,
-		setMemberTypes,
-		setActivityStatuses,
+		updateFilter,
 		applyBadgePreset,
 	} = useMemberFilters();
 
@@ -93,10 +89,10 @@ export const MemberManagement = () => {
 	}, [filters.approvalStatus]);
 
 	const withFilterTracking =
-		<T,>(setter: (value: T) => void) =>
-		(value: T) => {
+		<K extends keyof MemberFilterState>(key: K) =>
+		(value: MemberFilterState[K]) => {
 			track(CLARITY_ACTION_ID.MEMBER.FILTER_CHANGE);
-			setter(value);
+			updateFilter(key, value);
 		};
 
 	const [searchInput, setSearchInput] = useState('');
@@ -498,7 +494,7 @@ export const MemberManagement = () => {
 				search={searchInput}
 				onSearchChange={(value) => {
 					setSearchInput(value);
-					setSearch(value);
+					updateFilter('search', value);
 				}}
 			/>
 
@@ -527,10 +523,10 @@ export const MemberManagement = () => {
 							teamNumbers={filters.teamNumbers}
 							memberTypes={filters.memberTypes}
 							activityStatuses={filters.activityStatuses}
-							onPartsChange={withFilterTracking(setParts)}
-							onTeamNumbersChange={withFilterTracking(setTeamNumbers)}
-							onMemberTypesChange={withFilterTracking(setMemberTypes)}
-							onActivityStatusesChange={withFilterTracking(setActivityStatuses)}
+							onPartsChange={withFilterTracking('parts')}
+							onTeamNumbersChange={withFilterTracking('teamNumbers')}
+							onMemberTypesChange={withFilterTracking('memberTypes')}
+							onActivityStatusesChange={withFilterTracking('activityStatuses')}
 						/>
 					)}
 					<MemberSelectionSummary

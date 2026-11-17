@@ -66,24 +66,9 @@ export const useMemberFilters = () => {
 		);
 	}, []);
 
-	const setSearch = useCallback((search: string) => {
-		setFilters((prev) => ({ ...prev, search }));
-	}, []);
-
-	const setParts = useCallback((parts: ManagedMemberPart[]) => {
-		setFilters((prev) => ({ ...prev, parts }));
-	}, []);
-
-	const setTeamNumbers = useCallback((teamNumbers: number[]) => {
-		setFilters((prev) => ({ ...prev, teamNumbers }));
-	}, []);
-
-	const setMemberTypes = useCallback((memberTypes: ManagedMemberType[]) => {
-		setFilters((prev) => ({ ...prev, memberTypes }));
-	}, []);
-
-	const setActivityStatuses = useCallback((activityStatuses: MemberActivityStatus[]) => {
-		setFilters((prev) => ({ ...prev, activityStatuses }));
+	const updateFilter = useCallback(
+		<K extends keyof MemberFilterState>(key: K, value: MemberFilterState[K]) => {
+			setFilters((prev) => ({ ...prev, [key]: value }));
 	}, []);
 
 	const applyBadgePreset = useCallback((card: MemberBadgeCard) => {
@@ -113,11 +98,7 @@ export const useMemberFilters = () => {
 		filters,
 		queryParams,
 		setApprovalStatus,
-		setSearch,
-		setParts,
-		setTeamNumbers,
-		setMemberTypes,
-		setActivityStatuses,
+		updateFilter,
 		applyBadgePreset,
 	};
 };
