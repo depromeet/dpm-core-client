@@ -21,7 +21,6 @@ const STATIC_PAGE_ID_BY_PATHNAME: Partial<Record<string, ClarityPageId>> = {
 	'/bills': CLARITY_PAGE_ID.BILLS,
 	'/my-page': CLARITY_PAGE_ID.MY_PAGE,
 	'/attendance/me': CLARITY_PAGE_ID.ATTENDANCE_ME,
-	'/attendance/policy': CLARITY_PAGE_ID.ATTENDANCE_POLICY,
 };
 
 const DYNAMIC_PAGE_IDS: ReadonlyArray<ClarityDynamicPageRoute<ClarityPageId>> = [

@@ -35,7 +35,6 @@ export const CLARITY_PAGE_ID = defineClarityPageIds({
 	MY_PAGE: 'my_page', // 마이페이지
 	ATTENDANCE_ME: 'attendance_me', // 내 출석 현황
 	ATTENDANCE_ME_SESSION: 'attendance_me_session', // 내 출석 상세
-	ATTENDANCE_POLICY: 'attendance_policy', // 출석 규정
 	ATTENDANCE_SESSION: 'attendance_session', // 출석 체크
 	ATTENDANCE_SESSION_RESULT: 'attendance_session_result', // 출석 체크 결과
 });
@@ -134,9 +133,10 @@ export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 		ACCOUNT_LINK_CLICK: 'account_link_click',
 		ACCOUNT_UNLINK_CONFIRM: 'account_unlink_confirm',
 	},
-	ATTENDANCE_ME: {},
+	ATTENDANCE_ME: {
+		POLICY_BUTTON_CLICK: 'policy_button_click',
+	},
 	ATTENDANCE_ME_SESSION: {},
-	ATTENDANCE_POLICY: {},
 	ATTENDANCE_SESSION: {},
 	ATTENDANCE_SESSION_RESULT: {},
 });
