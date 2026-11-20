@@ -14,6 +14,7 @@ export function toEditableFields(row: MemberRow): MemberEditableFields {
 		part: row.part,
 		memberType: row.memberType,
 		teamNumber: row.teamNumber,
+		cohortId: row.cohortId,
 	};
 }
 

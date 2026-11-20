@@ -13,6 +13,7 @@ export interface MemberRow {
 	email: string | null;
 	part: ManagedMemberPart;
 	memberType: ManagedMemberType;
+	cohortId: number;
 	/** 미배정은 0 */
 	teamNumber: number;
 	status: ManagedMemberStatus;
@@ -31,6 +32,7 @@ export interface MemberEditableFields {
 	part: ManagedMemberPart;
 	memberType: ManagedMemberType;
 	teamNumber: number;
+	cohortId: number;
 }
 
 export type MemberEditableField = keyof MemberEditableFields;
