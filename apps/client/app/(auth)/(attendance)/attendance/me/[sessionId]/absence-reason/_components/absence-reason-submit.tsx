@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Suspense, useState } from 'react';
+import { Fragment, Suspense, useState } from 'react';
 import { ErrorBoundary } from '@suspensive/react';
 import {
 	QueryErrorResetBoundary,
@@ -13,7 +13,20 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import { HTTPError } from 'ky';
 import type { ApiErrorReponse, ImageResponse, Session } from '@dpm-core/api';
-import { Button, Divider, Label, Textarea, toast } from '@dpm-core/shared';
+import {
+	Button,
+	Divider,
+	Label,
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectSeparator,
+	SelectTrigger,
+	SelectValue,
+	toast,
+} from '@dpm-core/shared';
 
 import { LoadingBox } from '@/components/loading-box';
 import { useImageUploads } from '@/hooks/use-image-uploads';
@@ -112,9 +125,21 @@ interface AbsenceSubmitFormProps {
 	defaultImages: ImageResponse[];
 }
 
-const MAX_CONTENTS_LENGTH = 50;
+const ABSENCE_REASON_GROUPS = [
+	{
+		label: '출석 인정',
+		reasons: ['가족 결혼', '가족 장례', '본인 상견례'],
+		guidance: '증빙을 제출하면 출석으로 인정돼요.',
+	},
+	{
+		label: '지각 인정',
+		reasons: ['코딩 테스트·취업 활동', '회사 출장·워크숍'],
+		guidance:
+			'증빙을 제출하면 취업 활동과 회사 출장·워크숍을 합쳐 2회까지 지각으로 처리돼요. 3회째부터는 결석으로 처리돼요.',
+	},
+];
 const FORM_ID = 'absence-submit-form';
-const ABSENCE_TEXTAREA_LABEL = 'absence-textarea-label';
+const ABSENCE_REASON_ID = 'absence-reason';
 
 function AbsenceSubmitForm({
 	isEditing,
@@ -165,9 +190,18 @@ function AbsenceSubmitForm({
 		},
 	});
 
-	const trimmedContents = contents.trim();
+	const selectedReasonGroup = ABSENCE_REASON_GROUPS.find(({ reasons }) =>
+		reasons.includes(contents),
+	);
 	const isDisabled = isPending || isApproved;
-	const isInvalid = trimmedContents.length === 0 || !isReady || isDisabled;
+	const isInvalid = contents === '' || !isReady || isDisabled;
+
+	// DCQ-280
+	// 기존에는 자유 형식의 입력 방식이었으나, 선택형이면 좋을 것 같다는 운영진 측 니즈에 따라 Select 형식으로 변경됨
+	// 이에 따라 기존에 자유 형식으로 받았던 결석 사유인지 판단하는 로직임
+	const hasLegacyReason =
+		defaultContents !== '' &&
+		!ABSENCE_REASON_GROUPS.some(({ reasons }) => reasons.includes(defaultContents));
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -176,32 +210,57 @@ function AbsenceSubmitForm({
 			return;
 		}
 
-		mutate({ sessionId, contents: trimmedContents, imageIds });
+		mutate({ sessionId, contents, imageIds });
 	};
 
 	return (
 		<section>
 			<form id={FORM_ID} onSubmit={handleSubmit} className="flex flex-col gap-4 px-4 py-5">
 				<div className="flex flex-col gap-2">
-					<div className="flex items-center justify-between">
-						<Label htmlFor={ABSENCE_TEXTAREA_LABEL} className="items-start gap-0.5">
-							결석 사유
-							<span aria-hidden="true" className="mt-0.5 size-1 rounded-full bg-red-400" />
-						</Label>
-						<p className="font-medium text-caption1 text-label-subtle">
-							{contents.length} / {MAX_CONTENTS_LENGTH}
-						</p>
-					</div>
-					<Textarea
-						id={ABSENCE_TEXTAREA_LABEL}
-						value={contents}
-						disabled={isDisabled}
-						onChange={(event) => setContents(event.target.value)}
-						variant="line"
-						required
-						placeholder="ex) 독감, 코딩테스트 등"
-						maxLength={MAX_CONTENTS_LENGTH}
-					/>
+					<Label htmlFor={ABSENCE_REASON_ID} className="items-start gap-0.5">
+						결석 사유
+						<span aria-hidden="true" className="mt-0.5 size-1 rounded-full bg-red-400" />
+					</Label>
+					<Select value={contents} onValueChange={setContents} disabled={isDisabled} required>
+						<SelectTrigger id={ABSENCE_REASON_ID} className="w-full">
+							<SelectValue className="min-w-0" placeholder="결석 사유를 선택해 주세요">
+								{contents && <span className="truncate">{contents}</span>}
+							</SelectValue>
+						</SelectTrigger>
+						<SelectContent className="w-(--radix-select-trigger-width)">
+							{ABSENCE_REASON_GROUPS.map(({ label, reasons }, index) => (
+								<Fragment key={label}>
+									{index > 0 && <SelectSeparator className="mx-0 my-2 bg-line-normal" />}
+									<SelectGroup>
+										<SelectLabel className="font-semibold text-label-assistive">
+											{label}
+										</SelectLabel>
+										{reasons.map((reason) => (
+											<SelectItem key={reason} value={reason}>
+												{reason}
+											</SelectItem>
+										))}
+									</SelectGroup>
+								</Fragment>
+							))}
+							{hasLegacyReason && (
+								<>
+									<SelectSeparator className="mx-0 my-2 bg-line-normal" />
+									<SelectGroup>
+										<SelectLabel className="font-semibold text-label-assistive">
+											기존 사유
+										</SelectLabel>
+										<SelectItem className="wrap-anywhere whitespace-normal" value={defaultContents}>
+											{defaultContents}
+										</SelectItem>
+									</SelectGroup>
+								</>
+							)}
+						</SelectContent>
+					</Select>
+					{selectedReasonGroup && (
+						<p className="text-caption1 text-label-assistive">{selectedReasonGroup.guidance}</p>
+					)}
 				</div>
 				<AbsenceEvidenceField
 					items={items}
