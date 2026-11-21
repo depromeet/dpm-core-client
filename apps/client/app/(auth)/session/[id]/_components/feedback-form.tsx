@@ -32,8 +32,6 @@ import { useClarity } from '@/providers/client-clarity-adapter';
 import { submitSessionFeedbackOptions } from '@/remotes/mutations/session-feedback';
 import { getSessionFeedbackMeQuery } from '@/remotes/queries/session-feedback';
 
-import { FeedbackVirtualViewport } from './feedback-virtual-viewport';
-
 interface FeedbackFormProps {
 	sessionId: number;
 	returnTo: '/' | '/session';
@@ -241,7 +239,7 @@ export const FeedbackForm = ({
 }: FeedbackFormProps) => {
 	const router = useRouter();
 	const { track } = useClarity();
-	const { isApp, platform } = useAppConfig();
+	const { isApp, platform, safeAreaInsets } = useAppConfig();
 	const isIOSApp = isApp && platform === 'ios';
 	const queryClient = useQueryClient();
 	const feedbackQuery = useQuery(getSessionFeedbackMeQuery(sessionId));
@@ -259,7 +257,7 @@ export const FeedbackForm = ({
 	const [submissionStatus, setSubmissionStatus] = useState<SessionFeedbackMyStatus | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isExitDialogOpen, setIsExitDialogOpen] = useState(false);
-	const [isIOSKeyboardOpen, setIsIOSKeyboardOpen] = useState(false);
+	const formLayoutRef = useRef<HTMLDivElement>(null);
 	const formContentRef = useRef<HTMLElement>(null);
 	const scrollTopBeforeKeyboardRef = useRef<number | null>(null);
 	const initialViewportHeightRef = useRef(0);
@@ -391,17 +389,34 @@ export const FeedbackForm = ({
 
 		initialViewportHeightRef.current = viewport.height;
 		let animationFrame = 0;
+		let keyboardViewportHeight: number | null = null;
 		let settleTimeout: number | null = null;
 		const handleViewportChange = () => {
 			const focusedField = document.activeElement;
 			const isEditingFeedback =
 				focusedField instanceof HTMLTextAreaElement &&
 				Boolean(formContentRef.current?.contains(focusedField));
-			if (isIOSApp) {
-				setIsIOSKeyboardOpen(
-					initialViewportHeightRef.current - viewport.height > 120 &&
-						(isEditingFeedback || keyboardWasOpenRef.current),
-				);
+			if (isIOSApp && viewport.scale === 1) {
+				const layout = formLayoutRef.current;
+				const fullHeight = initialViewportHeightRef.current;
+				if (isEditingFeedback && fullHeight - viewport.height > 120) {
+					keyboardViewportHeight = Math.min(
+						keyboardViewportHeight ?? viewport.height,
+						viewport.height,
+					);
+				}
+				if (layout && keyboardViewportHeight !== null) {
+					const keyboardHeight = fullHeight - keyboardViewportHeight;
+					const remaining = Math.max(
+						0,
+						Math.min(1, (window.innerHeight - keyboardViewportHeight) / keyboardHeight),
+					);
+					layout.style.paddingBottom = `${safeAreaInsets.bottom * remaining}px`;
+					if (viewport.height >= fullHeight - 1 && window.innerHeight >= fullHeight - 1) {
+						layout.style.removeProperty('padding-bottom');
+						keyboardViewportHeight = null;
+					}
+				}
 			}
 			if (
 				isIOSApp &&
@@ -447,6 +462,7 @@ export const FeedbackForm = ({
 		window.addEventListener('resize', handleViewportChange);
 		return () => {
 			cancelAnimationFrame(animationFrame);
+			formLayoutRef.current?.style.removeProperty('padding-bottom');
 			if (settleTimeout !== null) {
 				window.clearTimeout(settleTimeout);
 			}
@@ -454,7 +470,7 @@ export const FeedbackForm = ({
 			viewport.removeEventListener('scroll', handleViewportChange);
 			window.removeEventListener('resize', handleViewportChange);
 		};
-	}, [isIOSApp, keepFocusedFieldVisible]);
+	}, [isIOSApp, keepFocusedFieldVisible, safeAreaInsets.bottom]);
 
 	const stepIndex = getFeedbackStepIndex(step);
 	const canMoveNext =
@@ -649,11 +665,8 @@ export const FeedbackForm = ({
 	}
 
 	return (
-		<FeedbackVirtualViewport
-			enabled={isIOSApp && (step === 'positive' || step === 'improvement')}
-			hasBottomSafeArea={!isIOSKeyboardOpen}
-		>
-			<header className="relative flex h-12 shrink-0 items-center justify-center px-4 py-3">
+		<SafeAreaAppLayout ref={formLayoutRef} hasBottomSafeArea className="h-dvh bg-background-normal">
+			<header className="sticky top-[var(--safe-area-inset-top)] z-10 flex h-12 shrink-0 items-center justify-center bg-background-normal px-4 py-3">
 				<button
 					type="button"
 					aria-label="피드백 닫기"
@@ -936,6 +949,6 @@ export const FeedbackForm = ({
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
-		</FeedbackVirtualViewport>
+		</SafeAreaAppLayout>
 	);
 };
