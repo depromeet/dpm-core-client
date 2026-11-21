@@ -259,6 +259,7 @@ export const FeedbackForm = ({
 	const [submissionStatus, setSubmissionStatus] = useState<SessionFeedbackMyStatus | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isExitDialogOpen, setIsExitDialogOpen] = useState(false);
+	const [isIOSKeyboardOpen, setIsIOSKeyboardOpen] = useState(false);
 	const formContentRef = useRef<HTMLElement>(null);
 	const scrollTopBeforeKeyboardRef = useRef<number | null>(null);
 	const initialViewportHeightRef = useRef(0);
@@ -393,6 +394,15 @@ export const FeedbackForm = ({
 		let settleTimeout: number | null = null;
 		const handleViewportChange = () => {
 			const focusedField = document.activeElement;
+			const isEditingFeedback =
+				focusedField instanceof HTMLTextAreaElement &&
+				Boolean(formContentRef.current?.contains(focusedField));
+			if (isIOSApp) {
+				setIsIOSKeyboardOpen(
+					initialViewportHeightRef.current - viewport.height > 120 &&
+						(isEditingFeedback || keyboardWasOpenRef.current),
+				);
+			}
 			if (
 				isIOSApp &&
 				initialViewportHeightRef.current - viewport.height > 120 &&
@@ -639,7 +649,10 @@ export const FeedbackForm = ({
 	}
 
 	return (
-		<FeedbackVirtualViewport enabled={isIOSApp && (step === 'positive' || step === 'improvement')}>
+		<FeedbackVirtualViewport
+			enabled={isIOSApp && (step === 'positive' || step === 'improvement')}
+			hasBottomSafeArea={!isIOSKeyboardOpen}
+		>
 			<header className="relative flex h-12 shrink-0 items-center justify-center px-4 py-3">
 				<button
 					type="button"

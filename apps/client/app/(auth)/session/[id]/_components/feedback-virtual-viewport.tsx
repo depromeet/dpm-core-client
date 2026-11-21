@@ -7,9 +7,14 @@ import { SafeAreaAppLayout } from '@/components/app-layout';
 interface FeedbackVirtualViewportProps {
 	children: ReactNode;
 	enabled: boolean;
+	hasBottomSafeArea: boolean;
 }
 
-export const FeedbackVirtualViewport = ({ children, enabled }: FeedbackVirtualViewportProps) => {
+export const FeedbackVirtualViewport = ({
+	children,
+	enabled,
+	hasBottomSafeArea,
+}: FeedbackVirtualViewportProps) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -45,7 +50,7 @@ export const FeedbackVirtualViewport = ({ children, enabled }: FeedbackVirtualVi
 	return (
 		<SafeAreaAppLayout
 			ref={containerRef}
-			hasBottomSafeArea
+			hasBottomSafeArea={hasBottomSafeArea}
 			className="h-dvh bg-background-normal"
 		>
 			{children}
