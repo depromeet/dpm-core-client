@@ -119,8 +119,8 @@ export const CohortManagement = () => {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
-					<span className="font-bold text-label-normal text-title1">기수 목록</span>
-					<span className="font-medium text-body1 text-primary-normal">{cohorts.length}</span>
+					<span className="text-title1 font-bold text-label-normal">기수 목록</span>
+					<span className="text-body1 font-medium text-primary-normal">{cohorts.length}</span>
 				</div>
 				<Button
 					onClick={() => {
@@ -143,7 +143,7 @@ export const CohortManagement = () => {
 					{['sk-1', 'sk-2', 'sk-3'].map((key) => (
 						<div
 							key={key}
-							className="flex h-14 items-center gap-3 border-line-subtle border-b px-3"
+							className="flex h-14 items-center gap-3 border-b border-line-subtle px-3"
 						>
 							<Skeleton className="h-4 w-10" />
 							<Skeleton className="h-4 w-20" />
@@ -153,19 +153,19 @@ export const CohortManagement = () => {
 				</div>
 			) : cohorts.length === 0 ? (
 				<div className="flex min-h-[200px] w-full items-center justify-center py-12">
-					<p className="font-medium text-body1 text-label-assistive">등록된 기수가 없습니다</p>
+					<p className="text-body1 font-medium text-label-assistive">등록된 기수가 없습니다</p>
 				</div>
 			) : (
 				<Table className="w-full">
 					<TableHeader>
 						<TableRow className="h-10 border-0 bg-background-strong hover:bg-background-strong">
-							<TableHead className="px-3 font-medium text-body2 text-label-subtle">
+							<TableHead className="px-3 text-body2 font-medium text-label-subtle">
 								기수 ID
 							</TableHead>
-							<TableHead className="px-3 font-medium text-body2 text-label-subtle">
+							<TableHead className="px-3 text-body2 font-medium text-label-subtle">
 								기수명
 							</TableHead>
-							<TableHead className="w-[200px] px-3 text-right font-medium text-body2 text-label-subtle">
+							<TableHead className="w-[200px] px-3 text-right text-body2 font-medium text-label-subtle">
 								관리
 							</TableHead>
 						</TableRow>
@@ -173,23 +173,23 @@ export const CohortManagement = () => {
 					<TableBody>
 						{cohorts.map((c) => (
 							<TableRow key={c.cohortId} className="h-[56px] border-line-subtle">
-								<TableCell className="px-3 font-medium text-body1 text-label-normal">
+								<TableCell className="px-3 text-body1 font-medium text-label-normal">
 									{c.cohortId}
 								</TableCell>
-								<TableCell className="px-3 font-medium text-body1 text-label-normal">
+								<TableCell className="px-3 text-body1 font-medium text-label-normal">
 									{c.cohortNumber}
 								</TableCell>
 								<TableCell className="flex items-center justify-end gap-2 px-3">
 									<button
 										type="button"
-										className="cursor-pointer rounded-md px-3 py-1.5 font-medium text-body2 text-label-normal hover:bg-background-strong"
+										className="cursor-pointer rounded-md px-3 py-1.5 text-body2 font-medium text-label-normal hover:bg-background-strong"
 										onClick={() => openEditDialog(c)}
 									>
 										수정
 									</button>
 									<button
 										type="button"
-										className="cursor-pointer rounded-md px-3 py-1.5 font-medium text-body2 text-status-danger hover:bg-red-50"
+										className="text-status-danger cursor-pointer rounded-md px-3 py-1.5 text-body2 font-medium hover:bg-red-50"
 										onClick={() => openDeleteDialog(c)}
 									>
 										삭제
@@ -215,7 +215,7 @@ export const CohortManagement = () => {
 						placeholder="기수명 (예: 19기)"
 						value={inputValue}
 						onChange={(e) => setInputValue(e.target.value)}
-						className="w-full rounded-lg border border-line-normal bg-background-normal px-4 py-3 font-medium text-body1 text-label-normal outline-none focus:border-primary-normal"
+						className="w-full rounded-lg border border-line-normal bg-background-normal px-4 py-3 text-body1 font-medium text-label-normal outline-none focus:border-primary-normal"
 					/>
 					<DialogFooter>
 						<DialogClose asChild>
@@ -242,7 +242,7 @@ export const CohortManagement = () => {
 						placeholder="기수명"
 						value={inputValue}
 						onChange={(e) => setInputValue(e.target.value)}
-						className="w-full rounded-lg border border-line-normal bg-background-normal px-4 py-3 font-medium text-body1 text-label-normal outline-none focus:border-primary-normal"
+						className="w-full rounded-lg border border-line-normal bg-background-normal px-4 py-3 text-body1 font-medium text-label-normal outline-none focus:border-primary-normal"
 					/>
 					<DialogFooter>
 						<DialogClose asChild>

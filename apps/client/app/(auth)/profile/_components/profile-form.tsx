@@ -142,17 +142,17 @@ const ProfileFields = ({
 	return (
 		<form onSubmit={handleSubmit} className="flex flex-1 flex-col">
 			<div className="flex flex-col gap-1 px-4 pt-3 pb-5">
-				<h1 className="font-bold text-headline2 text-label-normal tracking-[-0.44px]">
+				<h1 className="text-headline2 font-bold tracking-[-0.44px] text-label-normal">
 					회원 정보를 입력해주세요
 				</h1>
-				<p className="font-medium text-body2 text-label-assistive">
+				<p className="text-body2 font-medium text-label-assistive">
 					지원 시와 회원 정보가 다를 경우 가입 승인이 반려될 수 있어요
 				</p>
 			</div>
 
 			<div className="flex flex-col gap-4 p-4">
 				<div className="flex flex-col gap-2">
-					<span className="font-semibold text-body2 text-label-subtle">이름</span>
+					<span className="text-body2 font-semibold text-label-subtle">이름</span>
 					<Input
 						variant="line"
 						value={name}
@@ -163,14 +163,14 @@ const ProfileFields = ({
 						aria-invalid={nameError !== null}
 					/>
 					{nameError && (
-						<p className="font-medium text-caption1 text-red-400" role="alert">
+						<p className="text-caption1 font-medium text-red-400" role="alert">
 							{nameError}
 						</p>
 					)}
 				</div>
 
 				<div className="flex flex-col gap-2">
-					<span className="font-semibold text-body2 text-label-subtle">직군</span>
+					<span className="text-body2 font-semibold text-label-subtle">직군</span>
 					<div className="flex flex-wrap gap-2">
 						{PART_OPTIONS.map(({ value, label }) => {
 							const isSelected = part === value;
@@ -199,12 +199,12 @@ const ProfileFields = ({
 
 			<div className="mt-auto flex flex-col gap-3 px-4 pb-4">
 				{formError && (
-					<p className="text-center font-medium text-caption1 text-red-400" role="alert">
+					<p className="text-center text-caption1 font-medium text-red-400" role="alert">
 						{formError}
 					</p>
 				)}
 				{isReadOnly ? (
-					<p className="text-center font-medium text-body2 text-label-assistive">
+					<p className="text-center text-body2 font-medium text-label-assistive">
 						이름과 직군은 변경할 수 없어요. 변경이 필요하면 운영진에게 문의해주세요.
 					</p>
 				) : (

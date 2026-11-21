@@ -60,6 +60,8 @@ function padTimeValue(value: string, placeholder: string): string {
 	return (value + placeholder.slice(value.length)).slice(0, 4);
 }
 
+const today = new Date();
+
 export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeFormProps) => {
 	const router = useRouter();
 	const [scheduledDateOpen, setScheduledDateOpen] = useState(false);
@@ -88,7 +90,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 	return (
 		<AppLayout className="bg-background-normal">
 			{/* 상단 헤더 */}
-			<header className="sticky top-0 z-20 border-line-normal border-b bg-background-normal">
+			<header className="sticky top-0 z-20 border-b border-line-normal bg-background-normal">
 				<div className="mx-auto flex w-full max-w-300 items-center justify-between px-4 py-3 md:px-10 md:py-4">
 					<button type="button" onClick={() => router.back()} className="flex items-center gap-2">
 						<ChevronLeft className="text-icon-noraml" />
@@ -124,7 +126,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 									<FormItem>
 										<div className="flex flex-col gap-1">
 											<FormLabel className="text-body1">카테고리</FormLabel>
-											<p className="font-medium text-caption1 text-label-assistive">
+											<p className="text-caption1 font-medium text-label-assistive">
 												카테고리는 공지 등록 이후에 다시 수정할 수 없어요.
 											</p>
 										</div>
@@ -143,7 +145,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 														key={value}
 														value={value}
 														disabled={mode === 'edit'}
-														className="w-fit flex-none cursor-pointer rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 disabled:cursor-not-allowed disabled:opacity-60 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
+														className="w-fit flex-none cursor-pointer rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 text-body2 font-medium text-label-assistive focus:z-0 focus-visible:z-0 disabled:cursor-not-allowed disabled:opacity-60 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
 													>
 														{label}
 													</ToggleGroupItem>
@@ -175,7 +177,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 														<ToggleGroupItem
 															key={value}
 															value={value}
-															className="w-fit flex-none cursor-pointer rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 font-medium text-body2 text-label-assistive focus:z-0 focus-visible:z-0 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
+															className="w-fit flex-none cursor-pointer rounded-[170px]! border border-line-normal bg-background-normal px-3 py-1 text-body2 font-medium text-label-assistive focus:z-0 focus-visible:z-0 data-[state=on]:border-primary-normal data-[state=on]:text-primary-normal"
 														>
 															{label}
 														</ToggleGroupItem>
@@ -247,7 +249,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 
 							{isAssignment && (
 								<div className="flex flex-col gap-2">
-									<span className="font-semibold text-body1 text-label-subtle">제출 기한</span>
+									<span className="text-body1 font-semibold text-label-subtle">제출 기한</span>
 									{/* 제출 시작 (부터) */}
 									<div className="flex items-start gap-2">
 										<FormField
@@ -268,7 +270,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 																		variant="none"
 																		type="button"
 																		className={cn(
-																			'h-12 w-full justify-between border bg-background-normal p-4 font-medium text-body2 aria-invalid:border-red-400',
+																			'h-12 w-full justify-between border bg-background-normal p-4 text-body2 font-medium aria-invalid:border-red-400',
 																			submissionDeadlineError
 																				? 'border-red-400'
 																				: 'border-line-normal',
@@ -278,7 +280,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 																			formatDateWithDay(field.value)
 																		) : (
 																			<span className="text-label-assistive">
-																				{formatDateWithDay(new Date())}
+																				{formatDateWithDay(today)}
 																			</span>
 																		)}
 																		<CalendarIcon size={20} className="text-icon-noraml" />
@@ -302,7 +304,6 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 																		setSubmissionStartDateOpen(false);
 																	}}
 																	disabled={(date) => {
-																		const today = new Date();
 																		today.setHours(0, 0, 0, 0);
 																		const d = new Date(date);
 																		d.setHours(0, 0, 0, 0);
@@ -327,7 +328,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 															<InputOTP
 																pattern={REGEXP_ONLY_DIGITS}
 																containerClassName={cn(
-																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400',
+																	'h-12 rounded-lg border px-4 focus:border-gray-900 disabled:pointer-events-none has-focus:border-gray-900 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-disabled:opacity-100 has-aria-invalid:border-red-400',
 																	field.value
 																		? '[&_[data-slot=input-otp-slot]]:text-label-normal'
 																		: '[&_[data-slot=input-otp-slot]]:text-label-assistive',
@@ -351,29 +352,29 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 															>
 																<InputOTPGroup className="gap-0">
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2"
+																		className="size-2.5 bg-inherit text-body2 font-medium"
 																		index={0}
 																		placeholderChar="0"
 																	/>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2"
+																		className="size-2.5 bg-inherit text-body2 font-medium"
 																		index={1}
 																		placeholderChar="0"
 																	/>
-																	<p className="mx-2 font-medium text-body2 text-label-assistive">
+																	<p className="mx-2 text-body2 font-medium text-label-assistive">
 																		시
 																	</p>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2"
+																		className="size-2.5 bg-inherit text-body2 font-medium"
 																		index={2}
 																		placeholderChar="0"
 																	/>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2"
+																		className="size-2.5 bg-inherit text-body2 font-medium"
 																		index={3}
 																		placeholderChar="0"
 																	/>
-																	<p className="ml-2 font-medium text-body2 text-label-assistive">
+																	<p className="ml-2 text-body2 font-medium text-label-assistive">
 																		분 부터
 																	</p>
 																</InputOTPGroup>
@@ -404,7 +405,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 																		variant="none"
 																		type="button"
 																		className={cn(
-																			'h-12 w-full justify-between border bg-background-normal p-4 font-medium text-body2 aria-invalid:border-red-400',
+																			'h-12 w-full justify-between border bg-background-normal p-4 text-body2 font-medium aria-invalid:border-red-400',
 																			submissionDeadlineError
 																				? 'border-red-400'
 																				: 'border-line-normal',
@@ -414,7 +415,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 																			formatDateWithDay(field.value)
 																		) : (
 																			<span className="text-label-assistive">
-																				{formatDateWithDay(new Date())}
+																				{formatDateWithDay(today)}
 																			</span>
 																		)}
 																		<CalendarIcon size={20} className="text-icon-noraml" />
@@ -438,7 +439,6 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 																		setSubmissionEndDateOpen(false);
 																	}}
 																	disabled={(date) => {
-																		const today = new Date();
 																		today.setHours(0, 0, 0, 0);
 																		const d = new Date(date);
 																		d.setHours(0, 0, 0, 0);
@@ -448,7 +448,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 															</PopoverContent>
 														</Popover>
 														{form.formState.errors.submissionStartDate && (
-															<p className="font-medium text-caption1 text-red-400" role="alert">
+															<p className="text-caption1 font-medium text-red-400" role="alert">
 																{form.formState.errors.submissionStartDate.message}
 															</p>
 														)}
@@ -468,7 +468,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 															<InputOTP
 																pattern={REGEXP_ONLY_DIGITS}
 																containerClassName={cn(
-																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400',
+																	'h-12 rounded-lg border px-4 focus:border-gray-900 disabled:pointer-events-none has-focus:border-gray-900 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-disabled:opacity-100 has-aria-invalid:border-red-400',
 																	field.value
 																		? '[&_[data-slot=input-otp-slot]]:text-label-normal'
 																		: '[&_[data-slot=input-otp-slot]]:text-label-assistive',
@@ -486,29 +486,29 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 															>
 																<InputOTPGroup className="gap-0">
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2"
+																		className="size-2.5 bg-inherit text-body2 font-medium"
 																		index={0}
 																		placeholderChar="2"
 																	/>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2"
+																		className="size-2.5 bg-inherit text-body2 font-medium"
 																		index={1}
 																		placeholderChar="3"
 																	/>
-																	<p className="mx-2 font-medium text-body2 text-label-assistive">
+																	<p className="mx-2 text-body2 font-medium text-label-assistive">
 																		시
 																	</p>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2"
+																		className="size-2.5 bg-inherit text-body2 font-medium"
 																		index={2}
 																		placeholderChar="5"
 																	/>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2"
+																		className="size-2.5 bg-inherit text-body2 font-medium"
 																		index={3}
 																		placeholderChar="9"
 																	/>
-																	<p className="ml-2 font-medium text-body2 text-label-assistive">
+																	<p className="ml-2 text-body2 font-medium text-label-assistive">
 																		분 까지
 																	</p>
 																</InputOTPGroup>
@@ -554,13 +554,13 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 																<Button
 																	variant="none"
 																	type="button"
-																	className="h-12 w-full justify-between border border-line-normal bg-background-normal p-4 font-medium text-body2 aria-invalid:border-red-400"
+																	className="h-12 w-full justify-between border border-line-normal bg-background-normal p-4 text-body2 font-medium aria-invalid:border-red-400"
 																>
 																	{field.value ? (
 																		formatDateWithDay(field.value)
 																	) : (
 																		<span className="text-label-assistive">
-																			{formatDateWithDay(new Date())}
+																			{formatDateWithDay(today)}
 																		</span>
 																	)}
 																	<CalendarIcon size={20} className="text-icon-noraml" />
@@ -584,7 +584,6 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 																	setScheduledDateOpen(false);
 																}}
 																disabled={(date) => {
-																	const today = new Date();
 																	today.setHours(0, 0, 0, 0);
 																	const d = new Date(date);
 																	d.setHours(0, 0, 0, 0);
@@ -609,7 +608,7 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 															<InputOTP
 																pattern={REGEXP_ONLY_DIGITS}
 																containerClassName={cn(
-																	'h-12 rounded-lg border px-4 has-focus:border-gray-900 focus:border-gray-900 disabled:pointer-events-none has-disabled:opacity-100 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-aria-invalid:border-red-400',
+																	'h-12 rounded-lg border px-4 focus:border-gray-900 disabled:pointer-events-none has-focus:border-gray-900 has-disabled:cursor-not-allowed has-disabled:bg-background-strong has-disabled:opacity-100 has-aria-invalid:border-red-400',
 																	field.value
 																		? '[&_[data-slot=input-otp-slot]]:text-label-normal'
 																		: '[&_[data-slot=input-otp-slot]]:text-label-assistive',
@@ -627,29 +626,29 @@ export const NoticeForm = ({ mode, form, onSubmit, isSubmitPending }: NoticeForm
 															>
 																<InputOTPGroup className="gap-0">
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2"
+																		className="size-2.5 bg-inherit text-body2 font-medium"
 																		index={0}
 																		placeholderChar="0"
 																	/>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2"
+																		className="size-2.5 bg-inherit text-body2 font-medium"
 																		index={1}
 																		placeholderChar="0"
 																	/>
-																	<p className="mx-2.5 font-medium text-body2 text-label-assistive">
+																	<p className="mx-2.5 text-body2 font-medium text-label-assistive">
 																		시
 																	</p>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2"
+																		className="size-2.5 bg-inherit text-body2 font-medium"
 																		index={2}
 																		placeholderChar="0"
 																	/>
 																	<InputOTPSlot
-																		className="size-2.5 bg-inherit font-medium text-body2"
+																		className="size-2.5 bg-inherit text-body2 font-medium"
 																		index={3}
 																		placeholderChar="0"
 																	/>
-																	<p className="ml-2.5 font-medium text-body2 text-label-assistive">
+																	<p className="ml-2.5 text-body2 font-medium text-label-assistive">
 																		분
 																	</p>
 																</InputOTPGroup>

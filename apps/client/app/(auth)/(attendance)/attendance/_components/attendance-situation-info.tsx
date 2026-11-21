@@ -43,19 +43,19 @@ export const AttendanceMeInfo = (props: AttendanceMeInfoProps) => {
 	return (
 		<section className="mt-5 mb-4 px-4">
 			<div className="mb-4 flex items-center gap-1.5">
-				<p className="font-semibold text-body1 text-label-normal">{member.name}</p>
+				<p className="text-body1 font-semibold text-label-normal">{member.name}</p>
 				{member.attendanceStatus !== 'NORMAL' && (
 					<Badge variant={member.attendanceStatus}>
 						{attendanceStatusLabelMap[member.attendanceStatus]}
 					</Badge>
 				)}
 			</div>
-			<ul className="flex justify-between gap-2 rounded-xl bg-background-subtle px-3 py-2 font-medium text-body2 text-label-assistive">
-				{attendanceList.map((attendance) => (
-					<Fragment key={attendance.status}>
+			<ul className="flex justify-between gap-2 rounded-xl bg-background-subtle px-3 py-2 text-body2 font-medium text-label-assistive">
+				{attendanceList.map((entry) => (
+					<Fragment key={entry.status}>
 						<li className="flex flex-1 flex-col items-center gap-1 py-2">
-							<p>{attendance.status}</p>
-							<p className={cn('font-semibold', attendance.textColor)}>{attendance.value ?? 0}</p>
+							<p>{entry.status}</p>
+							<p className={cn('font-semibold', entry.textColor)}>{entry.value ?? 0}</p>
 						</li>
 						<Divider className="h-12 w-px shrink-0 self-center bg-line-normal last:hidden" />
 					</Fragment>

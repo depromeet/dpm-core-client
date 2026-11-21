@@ -4,8 +4,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 export const useCustomSearchParams = () => {
 	const router = useRouter();
-	const _searchParams = useSearchParams();
-	const searchParams = new URLSearchParams(_searchParams);
+	const currentSearchParams = useSearchParams();
+	const searchParams = new URLSearchParams(currentSearchParams);
 
 	const get = (name: string): string | null => {
 		return searchParams.get(name);

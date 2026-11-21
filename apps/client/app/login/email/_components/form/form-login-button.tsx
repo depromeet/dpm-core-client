@@ -4,9 +4,9 @@ import { createPortal } from 'react-dom';
 import { Button, type ButtonProps, useAppShell } from '@dpm-core/shared';
 
 export const FormLoginButton = (props: ButtonProps) => {
-	const { ref } = useAppShell();
+	const { container } = useAppShell();
 
-	if (!ref.current) return null;
+	if (!container) return null;
 
 	return createPortal(
 		<Button
@@ -18,6 +18,6 @@ export const FormLoginButton = (props: ButtonProps) => {
 		>
 			로그인
 		</Button>,
-		ref.current,
+		container,
 	);
 };

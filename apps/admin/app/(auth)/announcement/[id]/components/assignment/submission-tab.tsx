@@ -120,7 +120,8 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 
 	// enrichedMembers 데이터에서 팀 목록 동적 추출
 	const teamTabs = useMemo(() => {
-		const teamIds = [...new Set(enrichedMembers.map((m) => m.teamNumber))].sort((a, b) => a - b);
+		const teamIds = [...new Set(enrichedMembers.map((m) => m.teamNumber))];
+		teamIds.sort((a, b) => a - b);
 		return [
 			{ id: 'all', label: '전체' },
 			...teamIds.map((id) => ({ id: String(id), label: `${id}팀` })),
@@ -399,18 +400,18 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 							<th className="w-10 px-3 text-left">
 								<TableCheckbox checked={isAllSelected} onCheckedChange={handleSelectAll} />
 							</th>
-							<th className="px-3 text-left font-medium text-body2 text-label-subtle">멤버 정보</th>
-							<th className="w-35 px-3 text-left font-medium text-body2 text-label-subtle">
+							<th className="px-3 text-left text-body2 font-medium text-label-subtle">멤버 정보</th>
+							<th className="w-35 px-3 text-left text-body2 font-medium text-label-subtle">
 								제출 상태
 							</th>
-							<th className="w-35 px-3 text-left font-medium text-body2 text-label-subtle">
+							<th className="w-35 px-3 text-left text-body2 font-medium text-label-subtle">
 								과제 점수
 							</th>
 						</tr>
 					</thead>
 					<tbody>
 						{filteredMembers.map(({ id, name, team, role, submitStatus, isAdmin }) => (
-							<tr key={id} className="h-17.5 border-line-subtle border-b bg-background-normal">
+							<tr key={id} className="h-17.5 border-b border-line-subtle bg-background-normal">
 								<td className="px-3">
 									<TableCheckbox
 										checked={selectedMembers.has(id)}
@@ -425,8 +426,8 @@ export const SubmissionStatusTab = ({ announcementId, members }: SubmissionStatu
 											className="size-10 shrink-0 rounded-full bg-gray-200"
 										/>
 										<div className="flex flex-col gap-0.75">
-											<p className="font-semibold text-body1 text-label-normal">{name}</p>
-											<div className="flex items-center gap-1.5 font-medium text-caption1 text-label-assistive">
+											<p className="text-body1 font-semibold text-label-normal">{name}</p>
+											<div className="flex items-center gap-1.5 text-caption1 font-medium text-label-assistive">
 												{isAdmin && (
 													<>
 														<span>운영진</span>

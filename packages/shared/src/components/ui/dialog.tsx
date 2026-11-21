@@ -6,6 +6,8 @@ import { XIcon } from 'lucide-react';
 
 import { cn } from '../../utils/cn';
 
+const DIALOG_FADEOUT_DURATION = 200;
+
 function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
 	return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
@@ -30,7 +32,7 @@ function DialogOverlay({
 		<DialogPrimitive.Overlay
 			data-slot="dialog-overlay"
 			className={cn(
-				'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-background-dimmer data-[state=closed]:animate-out data-[state=open]:animate-in',
+				'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=open]:animate-in fixed inset-0 z-50 bg-background-dimmer',
 				className,
 			)}
 			{...props}
@@ -54,7 +56,7 @@ function DialogContent({
 			<DialogPrimitive.Content
 				data-slot="dialog-content"
 				className={cn(
-					'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-5 rounded-2xl bg-background p-8 pb-7 shadow-[0_8px_24px_0_rgba(0,0,0,0.08),0_0_4px_0_rgba(0,0,0,0.12)] duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in sm:max-w-lg',
+					'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=open]:animate-in fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-5 rounded-2xl bg-background p-8 pb-7 shadow-[0_8px_24px_0_rgba(0,0,0,0.08),0_0_4px_0_rgba(0,0,0,0.12)] duration-200 sm:max-w-lg',
 					className,
 				)}
 				{...props}
@@ -98,7 +100,7 @@ function DialogTitle({ className, ...props }: React.ComponentProps<typeof Dialog
 	return (
 		<DialogPrimitive.Title
 			data-slot="dialog-title"
-			className={cn('font-bold text-headline1', className)}
+			className={cn('text-headline1 font-bold', className)}
 			{...props}
 		/>
 	);
@@ -111,7 +113,7 @@ function DialogDescription({
 	return (
 		<DialogPrimitive.Description
 			data-slot="dialog-description"
-			className={cn('font-medium text-body2 text-label-assistive', className)}
+			className={cn('text-body2 font-medium text-label-assistive', className)}
 			{...props}
 		/>
 	);
@@ -128,4 +130,5 @@ export {
 	DialogPortal,
 	DialogTitle,
 	DialogTrigger,
+	DIALOG_FADEOUT_DURATION,
 };

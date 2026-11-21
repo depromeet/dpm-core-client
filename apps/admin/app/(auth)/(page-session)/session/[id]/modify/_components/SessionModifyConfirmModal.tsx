@@ -86,12 +86,12 @@ export const SessionModifyConfirmModal = ({
 	const needsPolicyCheck = attendanceTimesChanged;
 	const hasTargetedAttendanceChanges = needsPolicyCheck && (policy?.targeted.length ?? 0) > 0;
 	const policyCheckContent = policyQuery.isPending ? (
-		<p className="py-6 text-center font-medium text-body2 text-label-assistive">
+		<p className="py-6 text-center text-body2 font-medium text-label-assistive">
 			출석 상태 변경 대상을 확인하고 있어요.
 		</p>
 	) : policyQuery.isError ? (
 		<div className="flex flex-col items-center gap-3 py-6">
-			<p className="font-medium text-body2 text-label-assistive">
+			<p className="text-body2 font-medium text-label-assistive">
 				출석 상태 변경 대상을 확인하지 못했어요.
 			</p>
 			<Button variant="secondary" size="sm" onClick={() => void policyQuery.refetch()}>

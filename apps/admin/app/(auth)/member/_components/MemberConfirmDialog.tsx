@@ -1,7 +1,5 @@
-'use client';
-
 import type React from 'react';
-import { useRef } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import {
 	Button,
 	Dialog,
@@ -19,9 +17,7 @@ interface DialogAction {
 	variant?: 'secondary' | 'assistive';
 }
 
-interface MemberConfirmDialogProps {
-	open: boolean;
-	onOpenChange: (open: boolean) => void;
+interface ContentProps {
 	title: string;
 	description?: React.ReactNode;
 	subjects?: SubjectChip[];
@@ -30,40 +26,50 @@ interface MemberConfirmDialogProps {
 	isPending?: boolean;
 }
 
+interface MemberConfirmDialogProps extends ContentProps {
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+}
+
+const EMPTY_SUBJECTS: SubjectChip[] = [];
+
 /** 대상을 확인시키고 동작을 고르게 하는 모달. 승인·반려·삭제가 같은 틀을 쓴다. */
 export const MemberConfirmDialog = ({
 	open,
 	onOpenChange,
 	title,
 	description,
-	subjects = [],
+	subjects = EMPTY_SUBJECTS,
 	actions,
 	isPending = false,
 }: MemberConfirmDialogProps) => {
-	/**
-	 * 이 모달은 항상 마운트돼 있고 open 으로만 여닫는다 (Radix 가 닫힘 애니메이션을
-	 * 끝까지 재생하게 하려면 그래야 한다). 그런데 호출하는 쪽은 "대상이 이 모달과
-	 * 맞을 때만" subjects/description 을 채우고 그 외엔 빈 값을 넘기는 경우가 많아서,
-	 * open 이 false 로 바뀌는 바로 그 렌더에서 내용이 먼저 비어버리고 그다음에 모달이
-	 * 페이드아웃된다. 그래서 열려 있던 마지막 내용을 기억해두고, 닫히는 동안에는
-	 * 그 내용을 계속 보여준다.
-	 */
-	const lastContentRef = useRef({ title, description, subjects, actions, isPending });
-	// open 일 때는 최신 값으로 갱신하고, 닫히는 동안에는 방금 갱신해둔 마지막 값을 그대로 쓴다.
-	if (open) {
-		lastContentRef.current = { title, description, subjects, actions, isPending };
+	const currentContent = { title, description, subjects, actions, isPending };
+	const [lastOpenContent, setLastOpenContent] = useState<typeof currentContent | null>(null);
+
+	useLayoutEffect(() => {
+		if (!open) return;
+
+		function rememberOpenContent() {
+			setLastOpenContent({ title, description, subjects, actions, isPending });
+		}
+
+		rememberOpenContent();
+	}, [open, title, description, subjects, actions, isPending]);
+
+	const content = open ? currentContent : lastOpenContent;
+	if (!content) {
+		return null;
 	}
-	const content = lastContentRef.current;
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="gap-6 sm:max-w-[505px]">
+			<DialogContent className="gap-6 sm:max-w-126.25">
 				<DialogHeader className="gap-2">
-					<DialogTitle className="text-left font-bold text-headline2 text-label-normal">
+					<DialogTitle className="text-left text-headline2 font-bold text-label-normal">
 						{content.title}
 					</DialogTitle>
 					{content.description ? (
-						<DialogDescription className="text-left font-medium text-body2 text-label-assistive">
+						<DialogDescription className="text-left text-body2 font-medium text-label-assistive">
 							{content.description}
 						</DialogDescription>
 					) : null}
@@ -85,7 +91,7 @@ export const MemberConfirmDialog = ({
 							size="lg"
 							className="flex-1"
 							loading={content.isPending && index === content.actions.length - 1}
-							onClick={action.onClick}
+							onClick={open ? action.onClick : undefined}
 						>
 							{action.label}
 						</Button>

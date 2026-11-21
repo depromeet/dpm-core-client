@@ -25,7 +25,7 @@ export const SearchInput = ({ type = 'search', className, ref, ...props }: Input
 				variant="none"
 				size="none"
 				tabIndex={-1}
-				className="-translate-y-1/2 absolute top-1/2 right-4"
+				className="absolute top-1/2 right-4 -translate-y-1/2"
 			>
 				<SearchIcon className="size-5 text-icon-noraml" />
 			</Button>

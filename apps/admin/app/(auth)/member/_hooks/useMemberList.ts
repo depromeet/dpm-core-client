@@ -68,8 +68,9 @@ export const useMemberList = (params: MemberManagementFilterParams) => {
 				result = await fetchNextPage();
 			}
 
-			return (result.data?.pages ?? [])
-				.flatMap((page) => page.data.members.map((member) => member.memberId));
+			return (result.data?.pages ?? []).flatMap((page) =>
+				page.data.members.map((member) => member.memberId),
+			);
 		} finally {
 			setIsLoadingAllForSelection(false);
 		}

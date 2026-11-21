@@ -51,7 +51,7 @@ export const InlineOptionSelect = <T extends string | number>({
 									setOpen(false);
 								}}
 								className={cn(
-									'flex h-10 w-full cursor-pointer items-center whitespace-nowrap rounded-lg px-3 text-left font-medium text-body2 transition-colors',
+									'flex h-10 w-full cursor-pointer items-center rounded-lg px-3 text-left text-body2 font-medium whitespace-nowrap transition-colors',
 									option.value === value
 										? 'font-semibold text-primary-normal'
 										: 'text-label-subtle hover:bg-background-strong',

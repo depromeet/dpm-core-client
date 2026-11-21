@@ -8,11 +8,11 @@ const port = 3020;
 const hostname = 'local-admin.depromeet.com';
 const dev = process.env.NODE_ENV !== 'production';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const scriptPath = fileURLToPath(import.meta.url);
+const scriptDir = path.dirname(scriptPath);
 
 // 어드민 앱 디렉토리 지정 (상위 디렉토리)
-const appDir = path.join(__dirname, '..');
+const appDir = path.join(scriptDir, '..');
 
 const app = next({
 	port,
@@ -28,10 +28,10 @@ app.prepare().then(() => {
 	const localServer = createServer(
 		{
 			key: fs.readFileSync(
-				path.join(__dirname, '..', '..', '..', 'local-admin.depromeet.com-key.pem'),
+				path.join(scriptDir, '..', '..', '..', 'local-admin.depromeet.com-key.pem'),
 			),
 			cert: fs.readFileSync(
-				path.join(__dirname, '..', '..', '..', 'local-admin.depromeet.com.pem'),
+				path.join(scriptDir, '..', '..', '..', 'local-admin.depromeet.com.pem'),
 			),
 		},
 		(req, res) => {

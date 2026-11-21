@@ -53,15 +53,15 @@ const MyPageInfoContent = () => {
 							/>
 						</div>
 						<div className="flex flex-col gap-1">
-							<p className="font-semibold text-body1 text-label-normal">{member.name}</p>
+							<p className="text-body1 font-semibold text-label-normal">{member.name}</p>
 							<div className="flex items-center gap-1.5">
-								<p className="font-medium text-body2 text-label-assistive">{member.cohort}기</p>
+								<p className="text-body2 font-medium text-label-assistive">{member.cohort}기</p>
 								<div className="h-3.5 w-px bg-line-subtle" />
-								<p className="font-medium text-body2 text-label-assistive">
+								<p className="text-body2 font-medium text-label-assistive">
 									{member.teamNumber === 0 ? '팀 미배정' : `${member.teamNumber}팀`}
 								</p>
 								<div className="h-3.5 w-px bg-line-subtle" />
-								<p className="font-medium text-body2 text-label-assistive">{cohort[part].label}</p>
+								<p className="text-body2 font-medium text-label-assistive">{cohort[part].label}</p>
 							</div>
 						</div>
 					</div>
@@ -76,8 +76,8 @@ const MyPageInfoContent = () => {
 					<div className="flex items-center justify-between gap-2 rounded-xl bg-gray-50 px-5 py-4.5">
 						{counts.map(({ label, value }) => (
 							<div key={label} className="flex items-center gap-2">
-								<p className="font-medium text-body2 text-label-assistive">{label}:</p>
-								<p className="font-semibold text-body2 text-label-subtle">{value}회</p>
+								<p className="text-body2 font-medium text-label-assistive">{label}:</p>
+								<p className="text-body2 font-semibold text-label-subtle">{value}회</p>
 							</div>
 						))}
 					</div>

@@ -37,13 +37,13 @@ const AppHeader = ({
 	return (
 		<header
 			className={cn(
-				'relative mb-5 h-12 w-full bg-background-normal md:mb-0 md:h-auto md:border-line-normal md:border-b',
+				'relative mb-5 h-12 w-full bg-background-normal md:mb-0 md:h-auto md:border-b md:border-line-normal',
 				className,
 			)}
 		>
 			<div className="relative mx-auto flex w-full max-w-[1200px] items-center justify-center px-4 py-3 md:justify-between md:px-10 md:py-6">
 				{leftIcon}
-				<h3 className="font-semibold text-body1 text-label-strong md:font-bold md:text-headline1">
+				<h3 className="text-body1 font-semibold text-label-strong md:text-headline1 md:font-bold">
 					{title}
 				</h3>
 				<div className="absolute right-4 md:right-10">{rightIcon}</div>

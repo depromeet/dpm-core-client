@@ -13,7 +13,7 @@ import {
 
 import { cn } from '../utils/cn';
 
-const statusBadgeVariants = cva('inline-flex items-center gap-1 font-semibold text-body2', {
+const statusBadgeVariants = cva('inline-flex items-center gap-1 text-body2 font-semibold', {
 	variants: {
 		status: {
 			success: 'text-label-subtle',
@@ -45,8 +45,7 @@ const iconColorMap: Record<string, string> = {
 };
 
 export interface StatusBadgeProps
-	extends React.HTMLAttributes<HTMLDivElement>,
-		VariantProps<typeof statusBadgeVariants> {
+	extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof statusBadgeVariants> {
 	icon?: LucideIcon;
 	iconColor?: string;
 }

@@ -46,7 +46,7 @@ export const ProfileStack = ({
 			</div>
 
 			{showCount && remaining > 0 && (
-				<p className="font-semibold text-body2 text-label-assistive">+{remaining}명 읽음</p>
+				<p className="text-body2 font-semibold text-label-assistive">+{remaining}명 읽음</p>
 			)}
 		</div>
 	);

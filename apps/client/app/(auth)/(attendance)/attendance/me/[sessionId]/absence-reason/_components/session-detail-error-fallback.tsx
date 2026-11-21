@@ -41,8 +41,8 @@ export function SessionDetailErrorFallback({ error, reset }: ErrorBoundaryFallba
 	return (
 		<section className="relative flex w-full flex-1 flex-col items-center justify-center px-4 pb-24 text-center">
 			<CircleAlert size={40} color="#E5E7EB" aria-hidden="true" />
-			<h1 className="mt-8 mb-4 text-center font-bold text-label-strong text-title1">{title}</h1>
-			<p className="whitespace-pre-line text-center font-medium text-body2 text-label-assistive">
+			<h1 className="mt-8 mb-4 text-center text-title1 font-bold text-label-strong">{title}</h1>
+			<p className="text-center text-body2 font-medium whitespace-pre-line text-label-assistive">
 				{description}
 			</p>
 			<div className="fixed right-0 bottom-0 left-0 z-10 mx-auto max-w-lg bg-background-normal px-5 pt-3 pb-5">

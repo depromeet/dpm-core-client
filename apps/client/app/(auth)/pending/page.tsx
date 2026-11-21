@@ -9,12 +9,16 @@ import { Button } from '@dpm-core/shared';
 import pendingSymbol from '@/assets/images/pending-symbol.svg';
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { CLARITY_ACTION_ID } from '@/constants/clarity';
+import { getMemberPartLabel } from '@/lib/member/part';
 import { memberAuthQueryKey } from '@/providers/auth-provider';
 import { useClarity } from '@/providers/client-clarity-adapter';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
-import { getMemberPartLabel } from '@/lib/member/part';
 
 import { CancelApplicationModal } from './_components/cancel-application-modal';
+
+const handleReload = () => {
+	window.location.reload();
+};
 
 export default function PendingPage() {
 	const queryClient = useQueryClient();
@@ -30,38 +34,30 @@ export default function PendingPage() {
 		}
 	}, [status, queryClient]);
 
-	const handleReload = () => {
-		window.location.reload();
-	};
-
 	return (
 		<SafeAreaAppLayout className="h-dvh bg-[linear-gradient(158.06deg,#FFFFFF_20.54%,#CFD9FF_60.84%,#E6F9FF_99%)]">
 			<main className="flex flex-1 flex-col items-center justify-center gap-6 px-4 text-center">
 				<Image src={pendingSymbol} alt="" priority />
 				<div className="flex flex-col gap-4">
-					<h1 className="bg-[linear-gradient(110.25deg,#5359D6_30.58%,#0D1A34_60.1%,#737EAE_77.43%)] bg-clip-text font-bold text-headline2 text-transparent tracking-[-0.44px]">
+					<h1 className="bg-[linear-gradient(110.25deg,#5359D6_30.58%,#0D1A34_60.1%,#737EAE_77.43%)] bg-clip-text text-headline2 font-bold tracking-[-0.44px] text-transparent">
 						운영진이 회원 정보를
 						<br />
 						검토하고 있어요
 					</h1>
-					<p className="bg-linear-to-r from-label-subtle to-[#7A98C2] bg-clip-text font-medium text-body1 text-transparent">
+					<p className="bg-linear-to-r from-label-subtle to-[#7A98C2] bg-clip-text text-body1 font-medium text-transparent">
 						승인이 완료되면 홈 화면에 접속할 수 있어요
 					</p>
 				</div>
 				<div className="flex flex-col gap-4">
-					<div className="flex flex-col w-[239px] gap-4 bg-[#FFFFFF]/60 rounded-xl px-8 py-6">
+					<div className="flex w-[239px] flex-col gap-4 rounded-xl bg-[#FFFFFF]/60 px-8 py-6">
 						<dl className="flex flex-col">
-							<dt className="text-body2 font-medium text-label-tertiary">
-								이름
-							</dt>
+							<dt className="text-body2 font-medium text-label-tertiary">이름</dt>
 							<dd className="text-title2 font-bold text-label-normal">
 								{memberResponse?.data.name}
 							</dd>
 						</dl>
 						<dl className="flex flex-col">
-							<dt className="text-body2 font-medium text-label-tertiary">
-								직군
-							</dt>
+							<dt className="text-body2 font-medium text-label-tertiary">직군</dt>
 							<dd className="text-title2 font-bold text-label-normal">
 								{getMemberPartLabel(memberResponse?.data.part)}
 							</dd>
@@ -77,12 +73,7 @@ export default function PendingPage() {
 				</div>
 			</main>
 			<div className="flex flex-col gap-2 px-4 pb-4">
-				<Button 
-					variant="secondary" 
-					size="full" 
-					className="h-12 rounded-lg"
-					onClick={handleReload}
-				>
+				<Button variant="secondary" size="full" className="h-12 rounded-lg" onClick={handleReload}>
 					새로고침
 				</Button>
 				<CancelApplicationModal>

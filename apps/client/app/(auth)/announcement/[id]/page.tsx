@@ -1,14 +1,14 @@
 'use client';
 
 import { Suspense, use, useState } from 'react';
-import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { type AnnouncementDetail, announcement } from '@dpm-core/api';
 import { NoticeInfo } from '@dpm-core/shared';
 
 import { AppHeader } from '@/components/app-header';
 import { SafeAreaAppLayout } from '@/components/app-layout';
-import { ErrorBox } from '@/components/error-box';
+import { ErrorBox, ErrorBoxFallback } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringToDotDate, formatISOStringToKoreanDate } from '@/lib/date';
 import { getAnnouncementDetailQuery } from '@/remotes/queries/announcement';
@@ -78,7 +78,7 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 		: undefined;
 
 	return (
-		<div className="flex flex-1 flex-col gap-5 p-4 min-w-0">
+		<div className="flex min-w-0 flex-1 flex-col gap-5 p-4">
 			<NoticeInfo
 				title={detail.title}
 				date={formattedDate}
@@ -97,7 +97,7 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 			)}
 
 			<div
-				className="ProseMirror font-medium text-body2 text-label-normal break-words"
+				className="ProseMirror text-body2 font-medium wrap-break-word text-label-normal"
 				dangerouslySetInnerHTML={{ __html: detail.content }}
 			/>
 
@@ -142,9 +142,7 @@ const NoticeDetailPage = ({ params: paramsPromise, searchParams }: NoticeDetailP
 				className="mb-0"
 				leftIcon={<AnnouncementDetailBackButton returnTo={safeReturnTo} />}
 			/>
-			<ErrorBoundary
-				fallback={(props: ErrorBoundaryFallbackProps) => <ErrorBox onReset={() => props.reset()} />}
-			>
+			<ErrorBoundary fallback={ErrorBoxFallback}>
 				<Suspense
 					fallback={
 						<div className="flex flex-1 items-center justify-center">
@@ -152,7 +150,7 @@ const NoticeDetailPage = ({ params: paramsPromise, searchParams }: NoticeDetailP
 						</div>
 					}
 				>
-					<div className="flex flex-1 overflow-y-auto min-w-0">
+					<div className="flex min-w-0 flex-1 overflow-y-auto">
 						<NoticeDetailContent announcementId={announcementId} />
 					</div>
 				</Suspense>

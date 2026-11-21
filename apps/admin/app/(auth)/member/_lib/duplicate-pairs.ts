@@ -93,10 +93,12 @@ export function planApproval(selected: MemberRow[], allRows: MemberRow[]): Appro
 			continue;
 		}
 
-		const [retained, source] = [...group].sort((a, b) => {
+		const candidates = [...group];
+		candidates.sort((a, b) => {
 			const emailDiff = Number(Boolean(b.email)) - Number(Boolean(a.email));
 			return emailDiff !== 0 ? emailDiff : a.id - b.id;
 		});
+		const [retained, source] = candidates;
 
 		merges.push({ retainedMemberId: retained.id, sourceMemberId: source.id });
 	}

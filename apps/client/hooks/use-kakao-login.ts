@@ -7,8 +7,8 @@ import { auth, BASE_URL } from '@dpm-core/api';
 import { toast } from '@dpm-core/shared';
 
 import { setLastLoginMethod } from '@/lib/last-login';
-import { memberAuthQueryKey } from '@/providers/auth-provider';
 import { useAppConfig } from '@/providers/app-config-provider';
+import { memberAuthQueryKey } from '@/providers/auth-provider';
 import { useBridgeStatus, useBridgeStore } from '@/providers/bridge-provider';
 
 /**
@@ -20,7 +20,7 @@ export const useKakaoLogin = () => {
 	const queryClient = useQueryClient();
 	const { isApp } = useAppConfig();
 	const { isWebViewBridgeAvailable, isNativeMethodAvailable } = useBridgeStatus();
-	const kakaoLogin = useBridgeStore(({ kakaoLogin }) => kakaoLogin);
+	const kakaoLogin = useBridgeStore((state) => state.kakaoLogin);
 	const [isPending, setIsPending] = useState(false);
 
 	const canUseNativeKakao =

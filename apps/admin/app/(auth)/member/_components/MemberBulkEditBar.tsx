@@ -2,11 +2,7 @@
 
 import { Button, cn } from '@dpm-core/shared';
 
-import {
-	MEMBER_TYPE_LABEL,
-	PART_LABEL,
-	UNASSIGNED_TEAM_NUMBER,
-} from '../_constants';
+import { MEMBER_TYPE_LABEL, PART_LABEL, UNASSIGNED_TEAM_NUMBER } from '../_constants';
 import type { MemberEditableField, MemberEditableFields } from '../_types';
 
 const MIXED_LABEL = '혼합됨';
@@ -78,7 +74,7 @@ export const MemberBulkEditBar = ({
 	return (
 		<div className="pointer-events-auto flex items-center justify-between gap-4 overflow-clip rounded-[20px] bg-background-inverse px-6 py-4">
 			<div className="flex shrink-0 items-center gap-2">
-				<p className="font-bold text-label-inverse text-title1">정보 수정</p>
+				<p className="text-title1 font-bold text-label-inverse">정보 수정</p>
 				<p className="flex items-center gap-1 text-body1">
 					<span className="font-semibold text-primary-normal">{selectedCount}명</span>
 					<span className="font-medium text-label-assistive">선택됨</span>
@@ -92,7 +88,7 @@ export const MemberBulkEditBar = ({
 						type="button"
 						onClick={() => onOpenField(field)}
 						className={cn(
-							'flex h-10 cursor-pointer items-center gap-2.5 rounded-lg border bg-[#303d50] px-4 font-medium text-body1 transition-opacity hover:opacity-80',
+							'flex h-10 cursor-pointer items-center gap-2.5 rounded-lg border bg-[#303d50] px-4 text-body1 font-medium transition-opacity hover:opacity-80',
 							stagedFields.includes(field) ? 'border-blue-400' : 'border-transparent',
 						)}
 					>

@@ -1,6 +1,4 @@
-import '@/lib/api-setup';
 import './globals.css';
-
 import type { Metadata, Viewport } from 'next';
 import { headers } from 'next/headers';
 import NextScript from 'next/script';
@@ -15,12 +13,15 @@ import {
 	Toaster,
 } from '@dpm-core/shared';
 
+import { configureApiTokenProvider } from '@/lib/api-setup';
 import { AppConfigProvider } from '@/providers/app-config-provider';
 import { BridgeProvider } from '@/providers/bridge-provider';
 import { ClientClarityAdapter } from '@/providers/client-clarity-adapter';
 
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
+
+configureApiTokenProvider();
 
 export const metadata: Metadata = {
 	title: 'Dpmcore',

@@ -30,7 +30,7 @@ export const NoticeContent = ({ title, date, readCount, content, tags }: NoticeC
 
 			{/* Content Section */}
 			<div
-				className="ProseMirror font-medium text-body2 text-label-normal"
+				className="ProseMirror text-body2 font-medium text-label-normal"
 				dangerouslySetInnerHTML={{ __html: content }}
 			/>
 		</div>

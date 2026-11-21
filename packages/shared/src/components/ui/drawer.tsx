@@ -30,7 +30,7 @@ function DrawerOverlay({
 		<DrawerPrimitive.Overlay
 			data-slot="drawer-overlay"
 			className={cn(
-				'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-background-dimmer data-[state=closed]:animate-out data-[state=open]:animate-in',
+				'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=open]:animate-in fixed inset-0 z-50 bg-background-dimmer',
 				className,
 			)}
 			{...props}
@@ -105,7 +105,7 @@ function DrawerTitle({ className, ...props }: React.ComponentProps<typeof Drawer
 	return (
 		<DrawerPrimitive.Title
 			data-slot="drawer-title"
-			className={cn('text-left font-semibold text-title2', className)}
+			className={cn('text-left text-title2 font-semibold', className)}
 			{...props}
 		/>
 	);

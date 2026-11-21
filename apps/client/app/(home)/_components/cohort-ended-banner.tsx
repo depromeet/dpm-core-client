@@ -15,9 +15,9 @@ export const CohortEndedBanner = ({ cohortValue }: CohortEndedBannerProps) => {
 				alt=""
 				width={453}
 				height={255}
-				className="-top-15 -left-26.5 absolute h-auto w-[calc(100%+110px)] max-w-none"
+				className="absolute -top-15 -left-26.5 h-auto w-[calc(100%+110px)] max-w-none"
 			/>
-			<h2 className="relative w-fit pt-5.5 pl-5.75 text-left font-semibold text-headline1 text-label-inverse">
+			<h2 className="relative w-fit pt-5.5 pl-5.75 text-left text-headline1 font-semibold text-label-inverse">
 				{cohortValue ? `${cohortValue}기 활동을` : '기수 활동을'}
 				<br />
 				모두 마쳤어요!

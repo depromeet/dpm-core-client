@@ -36,7 +36,7 @@ export const WeekFilter = (props: WeekFilterProps) => {
 						key={week.id}
 						value={week.id.toString()}
 						className={cn(
-							'flex h-7 cursor-pointer items-center rounded-lg border px-3 py-1 font-medium text-body2',
+							'flex h-7 cursor-pointer items-center rounded-lg border px-3 py-1 text-body2 font-medium',
 							'border-gray-200',
 							'transition duration-150 ease-out',
 							'data-[state=on]:border-transparent data-[state=on]:bg-gray-900 data-[state=on]:text-white',

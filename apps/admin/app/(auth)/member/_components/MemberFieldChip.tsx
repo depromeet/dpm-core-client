@@ -37,7 +37,7 @@ export const MemberFieldChip = forwardRef<
 	);
 
 	const chipClassName = cn(
-		'inline-flex h-8 items-center gap-1 rounded-lg border border-line-normal px-3 font-medium text-body2 text-label-subtle',
+		'inline-flex h-8 items-center gap-1 rounded-lg border border-line-normal px-3 text-body2 font-medium text-label-subtle',
 		editable && 'cursor-pointer hover:border-line-subtle hover:bg-background-strong',
 		className,
 	);
@@ -87,7 +87,7 @@ export const MemberPartChip = forwardRef<HTMLButtonElement | HTMLDivElement, Mem
 		const label = part === 'UNASSIGNED' ? '미입력' : PART_LABEL[part];
 		const partChipClassName = cn(
 			'inline-flex h-8 items-center gap-1 rounded-lg',
-			'px-3 font-medium text-body2 hover:border-line-subtle',
+			'px-3 text-body2 font-medium hover:border-line-subtle',
 			PART_CHIP_CLASS[part],
 		);
 

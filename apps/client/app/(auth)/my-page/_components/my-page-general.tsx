@@ -22,7 +22,7 @@ const MyPageGeneral = () => {
 	return (
 		<motion.div variants={fadeInOutVariatns.variants}>
 			<MyPageBox className="flex flex-col gap-y-2">
-				<p className="font-semibold text-body2 text-label-assistive">일반</p>
+				<p className="text-body2 font-semibold text-label-assistive">일반</p>
 				<div className="flex flex-col">
 					<Pressable
 						variant="text"

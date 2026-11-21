@@ -18,6 +18,7 @@ export const UserActionList = () => {
 				<button
 					type="button"
 					data-coachmark="feedback"
+					aria-label="디프만 코어 VOC 수집중!"
 					className="flex basis-1/2 cursor-pointer rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f9faff_59.35%,#eff3ff_73.36%)] p-4 text-left shadow-[0_0_10px_rgba(0,0,0,0.04)]"
 					onClick={async () => {
 						track(CLARITY_ACTION_ID.HOME.VOC_BUTTON_CLICK);
@@ -25,7 +26,7 @@ export const UserActionList = () => {
 					}}
 				>
 					<div className="flex w-full flex-wrap items-center justify-between">
-						<p className="font-semibold text-body2 text-label-subtle">
+						<p className="text-body2 font-semibold text-label-subtle">
 							디프만 코어 <br />
 							VOC 수집중!
 						</p>
@@ -93,10 +94,11 @@ export const UserActionList = () => {
 						await openExternalUrl(USER_GUIDE_LINK);
 					}}
 					data-coachmark="user-guide"
+					aria-label="사용 가이드 보러가기"
 					className="flex basis-1/2 cursor-pointer rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f8feff_56.78%,#effdff_73.36%)] p-4 text-left shadow-[0_0_10px_rgba(0,0,0,0.04)]"
 				>
 					<div className="flex w-full flex-wrap items-center justify-between">
-						<p className="font-semibold text-body2 text-label-subtle">
+						<p className="text-body2 font-semibold text-label-subtle">
 							사용 가이드
 							<br />
 							보러가기

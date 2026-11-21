@@ -54,16 +54,16 @@ export const PendingMemberTable = ({
 							aria-label="전체 선택"
 						/>
 					</TableHead>
-					<TableHead className="w-44 px-3 font-medium text-body2 text-label-subtle">파트</TableHead>
-					<TableHead className="px-3 font-medium text-body2 text-label-subtle">이름</TableHead>
-					<TableHead className="px-3 font-medium text-body2 text-label-subtle">가입 계정</TableHead>
-					<TableHead className="w-36 px-3 text-right font-medium text-body2 text-label-subtle">
+					<TableHead className="w-44 px-3 text-body2 font-medium text-label-subtle">파트</TableHead>
+					<TableHead className="px-3 text-body2 font-medium text-label-subtle">이름</TableHead>
+					<TableHead className="px-3 text-body2 font-medium text-label-subtle">가입 계정</TableHead>
+					<TableHead className="w-36 px-3 text-right text-body2 font-medium text-label-subtle">
 						계정 이상 여부
 					</TableHead>
-					<TableHead className="w-32 px-3 font-medium text-body2 text-label-subtle">
+					<TableHead className="w-32 px-3 text-body2 font-medium text-label-subtle">
 						가입 승인
 					</TableHead>
-					<TableHead className="w-24 px-3 text-right font-medium text-body2 text-label-subtle">
+					<TableHead className="w-24 px-3 text-right text-body2 font-medium text-label-subtle">
 						가입 반려
 					</TableHead>
 				</TableRow>
@@ -86,13 +86,13 @@ export const PendingMemberTable = ({
 						</TableCell>
 						<TableCell
 							data-clarity-mask="True"
-							className="truncate px-3 font-semibold text-body1 text-label-normal"
+							className="truncate px-3 text-body1 font-semibold text-label-normal"
 						>
 							{row.name}
 						</TableCell>
 						<TableCell
 							data-clarity-mask="True"
-							className="truncate px-3 font-medium text-body2 text-label-subtle"
+							className="truncate px-3 text-body2 font-medium text-label-subtle"
 						>
 							<span className="flex items-center gap-1.5">
 								<MemberLoginMethodIcon loginMethod={row.loginMethod} />
@@ -101,7 +101,7 @@ export const PendingMemberTable = ({
 						</TableCell>
 						<TableCell className="w-36 px-3 text-right">
 							{row.duplicateSuspected && (
-								<span className="inline-flex items-center gap-1 font-medium text-body2 text-red-500">
+								<span className="inline-flex items-center gap-1 text-body2 font-medium text-red-500">
 									<CircleAlert className="size-4" />
 									중복 의심
 								</span>

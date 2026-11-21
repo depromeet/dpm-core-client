@@ -13,8 +13,8 @@ interface SummaryStatProps {
 /** 라벨과 숫자 한 쌍. 도메인은 모르고 넘겨받은 값만 그린다. */
 const SummaryStat = ({ label, value, className }: SummaryStatProps) => (
 	<div className={cn('flex min-w-15 flex-col gap-1', className)}>
-		<span className="font-medium text-body2 text-label-assistive">{label}</span>
-		<span className="font-bold text-headline1 text-label-normal">{value}</span>
+		<span className="text-body2 font-medium text-label-assistive">{label}</span>
+		<span className="text-headline1 font-bold text-label-normal">{value}</span>
 	</div>
 );
 
@@ -30,7 +30,7 @@ const SummaryActionCard = ({ label, value, hasNew, onClick }: SummaryActionCardP
 		onClick={onClick}
 		className="flex flex-1 cursor-pointer flex-col items-start gap-1 rounded-xl bg-background-strong px-5 py-5 text-left transition-colors hover:bg-background-heavy"
 	>
-		<span className="flex items-center gap-0.5 font-medium text-body2 text-primary-normal">
+		<span className="flex items-center gap-0.5 text-body2 font-medium text-primary-normal">
 			{label}
 			<ChevronRight className="size-4" />
 			{hasNew && (
@@ -40,7 +40,7 @@ const SummaryActionCard = ({ label, value, hasNew, onClick }: SummaryActionCardP
 				</>
 			)}
 		</span>
-		<span className="font-bold text-headline1 text-label-normal">{value}</span>
+		<span className="text-headline1 font-bold text-label-normal">{value}</span>
 	</button>
 );
 

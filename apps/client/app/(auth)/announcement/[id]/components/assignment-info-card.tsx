@@ -18,18 +18,18 @@ export const AssignmentInfoCard = ({
 }: AssignmentInfoCardProps) => {
 	return (
 		<div className="flex flex-col gap-3 rounded-xl bg-background-subtle p-4">
-			<div className="flex gap-6 font-medium text-body2">
+			<div className="flex gap-6 text-body2 font-medium">
 				<span className="shrink-0 text-label-subtle">제출 기한</span>
 				<span className="text-label-normal">{dueAt || '-'}</span>
 			</div>
-			<div className="flex gap-6 font-medium text-body2">
+			<div className="flex gap-6 text-body2 font-medium">
 				<span className="shrink-0 text-label-subtle">과제 유형</span>
 				<span className="text-label-normal">
 					{assignmentType ? (ASSIGNMENT_TYPE_LABEL[assignmentType] ?? '-') : '-'}
 				</span>
 			</div>
 			{submitLink && (
-				<div className="flex items-center gap-6 font-medium text-body2">
+				<div className="flex items-center gap-6 text-body2 font-medium">
 					<span className="shrink-0 text-label-subtle">과제 링크</span>
 					<a
 						href={submitLink}

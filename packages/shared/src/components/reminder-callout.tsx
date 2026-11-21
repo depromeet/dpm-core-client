@@ -23,10 +23,10 @@ export const ReminderCallout = ({
 		>
 			<div className="flex items-center gap-2">
 				<Notification className="size-5 text-icon-strong" />
-				<h4 className="font-medium text-body1 text-label-strong">{title}</h4>
+				<h4 className="text-body1 font-medium text-label-strong">{title}</h4>
 			</div>
 			<div className="flex items-center pl-7">
-				<p className="font-medium text-body2 text-label-subtle">{description}</p>
+				<p className="text-body2 font-medium text-label-subtle">{description}</p>
 			</div>
 		</div>
 	);

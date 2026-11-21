@@ -32,7 +32,7 @@ export const SubjectChipList = ({ subjects, className }: SubjectChipListProps) =
 							{name.charAt(0)}
 						</AvatarFallback>
 					</Avatar>
-					<span className="font-medium text-body2 text-label-normal">{name}</span>
+					<span className="text-body2 font-medium text-label-normal">{name}</span>
 				</li>
 			))}
 		</ul>

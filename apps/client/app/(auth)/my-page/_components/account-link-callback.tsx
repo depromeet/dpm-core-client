@@ -64,7 +64,9 @@ export const AccountLinkCallback = ({
 						? ((await error.response.json().catch(() => null)) as ApiErrorReponse | null)
 						: null;
 				const guidance = body?.code ? LINK_ERROR_MESSAGE_BY_CODE[body.code]?.(provider) : undefined;
-				setErrorMessage(guidance ?? body?.message ?? `${PROVIDER_LABEL[provider]} 연동에 실패했어요.`);
+				setErrorMessage(
+					guidance ?? body?.message ?? `${PROVIDER_LABEL[provider]} 연동에 실패했어요.`,
+				);
 			},
 		}),
 	);
@@ -85,7 +87,7 @@ export const AccountLinkCallback = ({
 					<LoadingBox />
 				) : isSuccess ? (
 					<>
-						<p className="font-semibold text-body1 text-label-normal">
+						<p className="text-body1 font-semibold text-label-normal">
 							{PROVIDER_LABEL[provider]} 계정을 연동했어요.
 						</p>
 						<Button variant="secondary" size="lg" onClick={() => router.replace('/my-page')}>
@@ -94,7 +96,7 @@ export const AccountLinkCallback = ({
 					</>
 				) : (
 					<>
-						<p className="font-semibold text-body1 text-label-normal">
+						<p className="text-body1 font-semibold text-label-normal">
 							{errorMessage ?? (missingParams ? '잘못된 접근이에요.' : '계정을 연동하지 못했어요.')}
 						</p>
 						<Button variant="secondary" size="lg" onClick={() => router.replace('/my-page')}>
