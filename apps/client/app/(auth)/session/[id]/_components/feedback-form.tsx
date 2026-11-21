@@ -32,6 +32,8 @@ import { useClarity } from '@/providers/client-clarity-adapter';
 import { submitSessionFeedbackOptions } from '@/remotes/mutations/session-feedback';
 import { getSessionFeedbackMeQuery } from '@/remotes/queries/session-feedback';
 
+import { FeedbackVirtualViewport } from './feedback-virtual-viewport';
+
 interface FeedbackFormProps {
 	sessionId: number;
 	returnTo: '/' | '/session';
@@ -637,7 +639,7 @@ export const FeedbackForm = ({
 	}
 
 	return (
-		<SafeAreaAppLayout hasBottomSafeArea className="h-dvh bg-background-normal">
+		<FeedbackVirtualViewport enabled={isIOSApp && (step === 'positive' || step === 'improvement')}>
 			<header className="relative flex h-12 shrink-0 items-center justify-center px-4 py-3">
 				<button
 					type="button"
@@ -921,6 +923,6 @@ export const FeedbackForm = ({
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
-		</SafeAreaAppLayout>
+		</FeedbackVirtualViewport>
 	);
 };
