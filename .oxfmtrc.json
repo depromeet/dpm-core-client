@@ -1,0 +1,46 @@
+{
+	"$schema": "./node_modules/oxfmt/configuration_schema.json",
+	"printWidth": 100,
+	"useTabs": true,
+	"tabWidth": 2,
+	"singleQuote": true,
+	"sortPackageJson": false,
+	"sortImports": {
+		"customGroups": [
+			{
+				"groupName": "framework",
+				"elementNamePattern": ["react", "react/**", "next", "next/**"]
+			},
+			{
+				"groupName": "workspace",
+				"elementNamePattern": ["@dpm-core/**"]
+			}
+		],
+		"internalPattern": ["@/", "#"],
+		"groups": [
+			"builtin",
+			{ "newlinesBetween": false },
+			"framework",
+			{ "newlinesBetween": false },
+			"external",
+			{ "newlinesBetween": false },
+			"workspace",
+			["internal", "subpath"],
+			["parent", "sibling", "index"],
+			"unknown"
+		]
+	},
+	"sortTailwindcss": {
+		"stylesheet": "./packages/shared/src/theme-styles.css",
+		"attributes": ["classList"],
+		"functions": ["cn", "clsx", "cva", "tw"]
+	},
+	"ignorePatterns": [
+		"pnpm-lock.yaml",
+		"**/.next/**",
+		"**/next-env.d.ts",
+		"packages/api/src/dpm.ts",
+		".codegraph/**",
+		"WORKING_STATE.md"
+	]
+}

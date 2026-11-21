@@ -19,8 +19,6 @@
 		"format": "turbo format",
 		"lint": "turbo lint",
 		"check-types": "turbo check-types",
-		"format-and-lint": "biome check .",
-		"format-and-lint:fix": "biome check . --write",
 		"clean": "turbo clean && rm -rf node_modules && rm -rf .turbo",
 		"changeset": "changeset",
 		"changeset:version": "changeset version",
@@ -28,13 +26,17 @@
 		"generate:type": "turbo generate:type"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.5",
 		"@changesets/cli": "^2.29.5",
+		"@commitlint/cli": "^21.2.4",
+		"@commitlint/config-conventional": "^21.2.4",
+		"lefthook": "^2.2.2",
+		"oxfmt": "^0.77.0",
+		"oxlint": "^1.92.0",
 		"turbo": "^2.3.5"
 	},
 	"packageManager": "pnpm@10.27.0",
 	"engines": {
-		"node": ">=18"
+		"node": ">=22.12.0"
 	},
 	"dependencies": {
 		"@tiptap/core": "^3.18.0",

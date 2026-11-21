@@ -3,8 +3,8 @@
 	"version": "0.1.0",
 	"description": "DPM Core API client and utilities",
 	"scripts": {
-		"format": "biome format --write .",
-		"lint": "biome lint --write .",
+		"format": "oxfmt --config ../../.oxfmtrc.json .",
+		"lint": "oxlint --config ../../.oxlintrc.json --fix .",
 		"check-types": "tsc --noEmit",
 		"clean": "rm -rf node_modules",
 		"generate:type": "pnpx openapi-typescript https://dev-api.depromeet.com/v3/api-docs -o ./src/dpm.ts"
