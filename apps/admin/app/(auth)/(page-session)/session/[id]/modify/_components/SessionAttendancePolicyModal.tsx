@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import 'dayjs/locale/ko';
+import koreanLocale from 'dayjs/locale/ko';
 import type { AttendanceStatus, SessionTargeted, SessionUnTargeted } from '@dpm-core/api';
 import {
 	ATTENDANCE_STATUS_MAP,
@@ -24,7 +24,7 @@ interface SessionAttendancePolicyModalProps {
 }
 
 const formatAttendanceTime = (value: string) =>
-	dayjs(value).locale('ko').format('YY년 MM월 DD일(ddd) HH:mm');
+	dayjs(value).locale(koreanLocale.name).format('YY년 MM월 DD일(ddd) HH:mm');
 
 const AttendancePolicyStatusLabel = ({ status }: { status: AttendanceStatus }) => {
 	const { icon, label } = ATTENDANCE_STATUS_MAP[status];
@@ -32,7 +32,7 @@ const AttendancePolicyStatusLabel = ({ status }: { status: AttendanceStatus }) =
 	return (
 		<span className="flex h-5 items-center gap-0.5 whitespace-nowrap">
 			<span className="[&>svg]:size-4">{icon}</span>
-			<strong className="font-semibold text-body2 text-label-subtle">{label}</strong>
+			<strong className="text-body2 font-semibold text-label-subtle">{label}</strong>
 		</span>
 	);
 };
@@ -52,23 +52,23 @@ export const SessionAttendancePolicyModal = ({
 		>
 			<DialogHeader className="gap-3 text-left">
 				<div className="flex items-center justify-between gap-4">
-					<DialogTitle className="font-bold text-headline2 text-label-normal">
+					<DialogTitle className="text-headline2 font-bold text-label-normal">
 						출석 상태 변경
 					</DialogTitle>
 					<DialogClose asChild>
 						<Button variant="none" size="none" className="size-6 shrink-0">
-							<XCircle className="size-6 text-icon-normal" />
+							<XCircle className="text-icon-normal size-6" />
 						</Button>
 					</DialogClose>
 				</div>
-				<DialogDescription className="font-medium text-body2 text-label-assistive">
+				<DialogDescription className="text-body2 font-medium text-label-assistive">
 					수정된 출석/지각 시간에 따라 출석 상태가 자동으로 변경됩니다.
 				</DialogDescription>
 			</DialogHeader>
 
 			<div className="flex flex-col gap-5 pt-6">
 				<section className="flex flex-col gap-3">
-					<h3 className="font-semibold text-body1 text-label-subtle">상태 변경 대상</h3>
+					<h3 className="text-body1 font-semibold text-label-subtle">상태 변경 대상</h3>
 					<ul className="flex flex-col gap-2 rounded-lg bg-background-subtle px-5 py-3">
 						{targeted.map((member, index) => (
 							<li
@@ -94,7 +94,7 @@ export const SessionAttendancePolicyModal = ({
 									</svg>
 									<AttendancePolicyStatusLabel status={member.targetStatus} />
 								</span>
-								<span className="whitespace-nowrap text-right text-label-assistive max-sm:col-span-2">
+								<span className="text-right whitespace-nowrap text-label-assistive max-sm:col-span-2">
 									출석 시간: {formatAttendanceTime(member.attendedAt)}
 								</span>
 							</li>
@@ -105,8 +105,8 @@ export const SessionAttendancePolicyModal = ({
 				{untargeted.length > 0 && (
 					<section className="flex flex-col gap-3">
 						<div className="flex flex-col gap-1">
-							<h3 className="font-semibold text-body1 text-label-subtle">미적용 대상</h3>
-							<p className="font-normal text-body2 text-label-assistive">
+							<h3 className="text-body1 font-semibold text-label-subtle">미적용 대상</h3>
+							<p className="text-body2 font-normal text-label-assistive">
 								출석 시간이 지난 후 운영진이 상태를 직접 변경한 경우, 자동 변경 대상에서 제외됩니다.
 							</p>
 						</div>
@@ -118,7 +118,7 @@ export const SessionAttendancePolicyModal = ({
 								>
 									<span className="truncate font-medium text-label-normal">{member.name}</span>
 									<AttendancePolicyStatusLabel status={member.status} />
-									<span className="whitespace-nowrap text-right text-label-assistive max-sm:col-span-2">
+									<span className="text-right whitespace-nowrap text-label-assistive max-sm:col-span-2">
 										마지막 수정 시간: {formatAttendanceTime(member.updatedAt)}
 									</span>
 								</li>

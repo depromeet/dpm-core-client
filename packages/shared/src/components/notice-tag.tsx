@@ -6,7 +6,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../utils/cn';
 
 const noticeTagVariants = cva(
-	'inline-flex items-center justify-center overflow-hidden rounded px-[5px] py-[3px] font-semibold text-caption1',
+	'inline-flex items-center justify-center overflow-hidden rounded px-[5px] py-[3px] text-caption1 font-semibold',
 	{
 		variants: {
 			type: {
@@ -32,8 +32,7 @@ const labelMap: Record<string, string> = {
 };
 
 export interface NoticeTagProps
-	extends React.HTMLAttributes<HTMLDivElement>,
-		VariantProps<typeof noticeTagVariants> {
+	extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof noticeTagVariants> {
 	label?: string;
 }
 

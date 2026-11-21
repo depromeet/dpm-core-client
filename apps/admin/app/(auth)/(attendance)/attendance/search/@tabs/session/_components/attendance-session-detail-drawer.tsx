@@ -95,7 +95,7 @@ function AttendanceSessionDetailContent({
 			/>
 			{reason && reason.images.length > 0 ? (
 				<section className="mb-6">
-					<h3 className="mb-3 font-semibold text-body1">첨부 자료</h3>
+					<h3 className="mb-3 text-body1 font-semibold">첨부 자료</h3>
 					<ul className="flex flex-wrap gap-2">
 						{reason.images.map((image, index) => (
 							<li
@@ -121,6 +121,10 @@ function AttendanceSessionDetailContent({
 	);
 }
 
+const AttendanceSessionDetailErrorFallback = ({ reset: resetError }: ErrorBoundaryFallbackProps) => (
+	<ErrorBox onReset={resetError} />
+);
+
 export function AttendanceSessionDetailDrawer({
 	memberId,
 	sessionId,
@@ -135,9 +139,7 @@ export function AttendanceSessionDetailDrawer({
 				<AttendanceDetailHeader title="출석 상세" />
 				<ErrorBoundary
 					onReset={reset}
-					fallback={({ reset: resetError }: ErrorBoundaryFallbackProps) => (
-						<ErrorBox onReset={resetError} />
-					)}
+					fallback={AttendanceSessionDetailErrorFallback}
 				>
 					<Suspense fallback={<LoadingBox />}>
 						<AttendanceSessionDetailContent memberId={memberId} sessionId={sessionId} />

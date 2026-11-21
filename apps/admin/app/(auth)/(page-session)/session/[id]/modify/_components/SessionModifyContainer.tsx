@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { SessionProivder } from '@/app/(auth)/(home)/_components/session-provider';
@@ -24,10 +24,10 @@ export const SessionModifyContainer = (props: SessionModifyContainerProps) => {
 
 	const [isModifyConfirmModalOpen, setIsModifyConfirmModalOpen] = useState(false);
 
-	const SessionFormData = useRef<SessionSchema | null>(null);
+	const [sessionFormData, setSessionFormData] = useState<SessionSchema | null>(null);
 
 	const handleOpenModifyConfirmModal = (formData: SessionSchema) => {
-		SessionFormData.current = formData;
+		setSessionFormData(formData);
 		setIsModifyConfirmModalOpen(true);
 	};
 
@@ -68,9 +68,9 @@ export const SessionModifyContainer = (props: SessionModifyContainerProps) => {
 					},
 				}}
 			/>
-			{isModifyConfirmModalOpen && SessionFormData.current && (
+			{isModifyConfirmModalOpen && sessionFormData && (
 				<SessionModifyConfirmModal
-					formData={SessionFormData.current}
+					formData={sessionFormData}
 					initialAttendanceTimes={{
 						attendanceStart: sessionDetail.attendanceStart,
 						lateStart: sessionDetail.lateStart,

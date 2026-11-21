@@ -53,20 +53,20 @@ const SessionBannerContainer = () => {
 	);
 };
 
+const SessionBannerErrorFallback = ({ reset }: ErrorBoundaryFallbackProps) => {
+	return (
+		<div className="flex flex-col items-center justify-center">
+			<p className="text-body2 font-semibold">진행중인 세션 정보 조회에 실패했어요.</p>
+			<button type="button" onClick={() => reset()}>
+				다시 시도
+			</button>
+		</div>
+	);
+};
+
 export const SessionBanner = () => {
 	return (
-		<ErrorBoundary
-			fallback={({ reset }: ErrorBoundaryFallbackProps) => {
-				return (
-					<div className="flex flex-col items-center justify-center">
-						<p className="font-semibold text-body2">진행중인 세션 정보 조회에 실패했어요.</p>
-						<button type="button" onClick={() => reset()}>
-							다시 시도
-						</button>
-					</div>
-				);
-			}}
-		>
+		<ErrorBoundary fallback={SessionBannerErrorFallback}>
 			<Suspense>
 				<SessionBannerContainer />
 			</Suspense>
@@ -90,12 +90,12 @@ const AttendanceCodeBanner = (props: AttendanceBannerProps) => {
 			asChild
 		>
 			<Link href={`/session/${sessionId}`} className="relative">
-				<p className="flex font-medium text-caption1 text-white md:flex-col md:font-semibold">
+				<p className="flex text-caption1 font-medium text-white md:flex-col md:font-semibold">
 					<span>{formatSessionWeekString(week)}</span>
-					<span className="max-md:after:m-1 max-md:after:content-[':'] md:font-bold md:text-headline2">
+					<span className="max-md:after:m-1 max-md:after:content-[':'] md:text-headline2 md:font-bold">
 						출석 코드
 					</span>
-					<strong className="md:font-bold md:text-headline2">{attendanceCode}</strong>
+					<strong className="md:text-headline2 md:font-bold">{attendanceCode}</strong>
 				</p>
 				<div className="absolute right-5 bottom-5 rounded-full bg-blue-300 p-2.5 max-md:hidden">
 					<ArrowRight />
@@ -117,25 +117,23 @@ const CurrentSessionBanner = (props: CurrentSessionBannerProps) => {
 	const isMobile = useIsMobile();
 	const router = useRouter();
 
-	const handleGoToAttendance = (sessionId: number) => {
+	const handleGoToAttendance = () => {
 		if (isMobile) return;
 		router.push(`/attendance/search/session/?week=${sessionId}`);
 	};
 
 	return (
-		// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
-		// biome-ignore lint/a11y/noStaticElementInteractions: <explanation>
 		<div
-			onClick={() => handleGoToAttendance(sessionId)}
+			onClick={handleGoToAttendance}
 			className="relative mx-4 mt-3 mb-8 block rounded-[10px] bg-background-inverse px-4 pt-5 pb-7.5 md:m-0 md:h-33.5 md:flex-1 md:cursor-pointer md:p-5"
 		>
 			<div>
-				<p className="font-semibold text-caption1 text-label-assistive">
+				<p className="text-caption1 font-semibold text-label-assistive">
 					{formatSessionWeekString(week)} 출석
 				</p>
 				<div className="flex justify-between">
 					<div>
-						<p className="font-bold text-headline2 text-white">
+						<p className="text-headline2 font-bold text-white">
 							멤버들의 출석 현황을
 							<br />
 							확인해 주세요.

@@ -72,7 +72,7 @@ export const ReadStatusSidebar = ({
 			</div>
 
 			{/* Footer */}
-			<div className="border-line-normal border-t bg-background-normal p-5">
+			<div className="border-t border-line-normal bg-background-normal p-5">
 				<div className="flex flex-col gap-4">
 					<ReminderCallout
 						title="리마인드 알림 일괄 전송"

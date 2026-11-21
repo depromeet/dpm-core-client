@@ -10,7 +10,7 @@ const SessionEventCard = () => {
 	return (
 		<div className="rounded-[10px] bg-background-inverse p-5">
 			<div className="flex justify-between">
-				<p className="font-bold text-headline2 text-white">
+				<p className="text-headline2 font-bold text-white">
 					멤버들의 출석 현황을
 					<br />
 					확인해 주세요.

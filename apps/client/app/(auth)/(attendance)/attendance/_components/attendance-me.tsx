@@ -1,14 +1,13 @@
 'use client';
 
 import { Suspense } from 'react';
-import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import type { ApiResponse, MyAttendanceResponse } from '@dpm-core/api';
 import { Aesterisk } from '@dpm-core/shared';
 
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
-import { ErrorBox } from '@/components/error-box';
+import { ErrorBoxFallback } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { getAttendanceMeOptions } from '@/remotes/queries/attendance';
 
@@ -41,9 +40,7 @@ const AttendanceMeContainer = () => {
 
 export const AttendanceMe = () => {
 	return (
-		<ErrorBoundary
-			fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
-		>
+		<ErrorBoundary fallback={ErrorBoxFallback}>
 			<Suspense fallback={<LoadingBox />}>
 				<AttendanceMeContainer />
 			</Suspense>

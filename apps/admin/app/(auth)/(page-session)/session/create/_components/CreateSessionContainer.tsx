@@ -37,25 +37,24 @@ export const CreateSessionContainer = () => {
 	const exitGuard = useSessionExitGuard(isDirty);
 
 	const router = useRouter();
-	const { mutate: createSession, isPending } = useMutation(
-		createSessionMutationOptions({
-			onSuccess: (_data, variables) => {
-				successfulRequestsRef.current.add(variables);
-				if (variables.feedbackEnabled)
-					trackSessionAction(CLARITY_ACTION_ID.SESSION_CREATE.SAVE_SUCCESS);
-				queryClient.invalidateQueries(getSessionListQuery);
-				queryClient.invalidateQueries(getCurrentWeekSessionQuery);
-				invalidateMemberManagement(queryClient);
-				router.replace('/session');
-			},
-			onError: (_error, variables) => {
-				if (variables.feedbackEnabled && !successfulRequestsRef.current.has(variables)) {
-					trackSessionAction(CLARITY_ACTION_ID.SESSION_CREATE.SAVE_FAIL);
-				}
-				toast.error('세션 추가에 실패하였습니다.');
-			},
-		}),
-	);
+	const { mutate: createSession, isPending } = useMutation({
+		...createSessionMutationOptions(),
+		onSuccess: (_data, variables) => {
+			successfulRequestsRef.current.add(variables);
+			if (variables.feedbackEnabled)
+				trackSessionAction(CLARITY_ACTION_ID.SESSION_CREATE.SAVE_SUCCESS);
+			queryClient.invalidateQueries(getSessionListQuery);
+			queryClient.invalidateQueries(getCurrentWeekSessionQuery);
+			invalidateMemberManagement(queryClient);
+			router.replace('/session');
+		},
+		onError: (_error, variables) => {
+			if (variables.feedbackEnabled && !successfulRequestsRef.current.has(variables)) {
+				trackSessionAction(CLARITY_ACTION_ID.SESSION_CREATE.SAVE_FAIL);
+			}
+			toast.error('세션 추가에 실패하였습니다.');
+		},
+	});
 
 	const handleCreateSession = (formData: SessionSchema) => {
 		setFormDataToCreate(formData);

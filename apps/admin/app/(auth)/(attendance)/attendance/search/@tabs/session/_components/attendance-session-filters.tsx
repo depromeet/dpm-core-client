@@ -111,7 +111,7 @@ export function AttendanceSessionFilters({
 								disabled={count === 0}
 								onClick={() => onChange({ status: status.value })}
 								className={cn(
-									'h-10 w-17.5 shrink-0 whitespace-nowrap border-line-normal border-r font-medium text-body2 last:border-0 disabled:cursor-not-allowed disabled:opacity-40',
+									'h-10 w-17.5 shrink-0 border-r border-line-normal text-body2 font-medium whitespace-nowrap last:border-0 disabled:cursor-not-allowed disabled:opacity-40',
 									(filters.status ?? '') === status.value
 										? 'bg-primary-extralight text-primary-normal'
 										: 'text-label-assistive',
@@ -143,7 +143,7 @@ export function AttendanceSessionFilters({
 				) : null}
 				<label
 					htmlFor="attendance-my-team"
-					className="flex h-10 cursor-pointer items-center gap-1.5 rounded-md border border-line-normal px-3 font-medium text-body2 text-label-assistive"
+					className="flex h-10 cursor-pointer items-center gap-1.5 rounded-md border border-line-normal px-3 text-body2 font-medium text-label-assistive"
 				>
 					<TableCheckbox
 						className="size-4"
@@ -170,7 +170,7 @@ export function AttendanceSessionFilters({
 								<button
 									type="button"
 									className={cn(
-										'flex h-10 items-center gap-1 rounded-lg border border-line-normal px-3 font-medium text-body2 text-label-assistive',
+										'flex h-10 items-center gap-1 rounded-lg border border-line-normal px-3 text-body2 font-medium text-label-assistive',
 										values.length > 0 && 'border-primary-normal text-primary-normal',
 									)}
 								>

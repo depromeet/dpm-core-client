@@ -20,7 +20,7 @@ const HomePage = () => {
 				<SessionProivder>
 					<SessionBanner />
 					<MemberApprovalBanner />
-					<Section className="mt-5 border-background-strong border-b-8 pb-10 md:hidden">
+					<Section className="mt-5 border-b-8 border-background-strong pb-10 md:hidden">
 						<MobileNav />
 					</Section>
 					<Section>
@@ -33,7 +33,7 @@ const HomePage = () => {
 							className="flex items-center justify-between rounded-lg bg-primary-extralight p-5"
 						>
 							<div>
-								<h3 className="font-bold text-primary-normal text-title2">
+								<h3 className="text-title2 font-bold text-primary-normal">
 									디프만 코어 VOC 수집중!
 								</h3>
 								<p className="mt-2 text-body2 text-label-assistive">

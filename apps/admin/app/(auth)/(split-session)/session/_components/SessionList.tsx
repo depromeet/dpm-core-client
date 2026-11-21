@@ -26,6 +26,8 @@ const FEEDBACK_STATUS_LABEL = {
 	CLOSED: '피드백 결과 보기',
 } as const;
 
+const renderSessionItem = (_: number, session: SessionListItem) => <SessionItem key={session.id} session={session} />;
+
 const SessionListContainer = () => {
 	const {
 		data: { data: sessionResponse },
@@ -35,7 +37,7 @@ const SessionListContainer = () => {
 		<div className="flex h-full w-full flex-col pb-15">
 			<div className="mt-6 mb-5 hidden justify-between md:flex">
 				<h3 className="flex items-center">
-					<span className="mr-2 font-bold text-title1">세션 목록</span>
+					<span className="mr-2 text-title1 font-bold">세션 목록</span>
 					<span className="text-primary-normal">{sessionResponse.sessions.length}</span>
 				</h3>
 				<div className="flex gap-4">
@@ -49,8 +51,8 @@ const SessionListContainer = () => {
 			</div>
 			<Virtuoso
 				data={sessionResponse.sessions}
-				className="[&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar]:w-2"
-				itemContent={(_, session) => <SessionItem key={session.id} session={session} />}
+				className="[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100"
+				itemContent={renderSessionItem}
 			/>
 		</div>
 	);
@@ -79,7 +81,7 @@ function SessionItem({ session }: { session: SessionListItem }) {
 	return (
 		<div
 			className={cn(
-				'group flex w-full items-center border-line-subtle border-b px-3 py-4 hover:bg-background-strong',
+				'group flex w-full items-center border-b border-line-subtle px-3 py-4 hover:bg-background-strong',
 				selected && 'bg-background-strong',
 			)}
 		>
@@ -90,21 +92,21 @@ function SessionItem({ session }: { session: SessionListItem }) {
 				onClick={() => handleClickSession('info')}
 			>
 				<div className="flex min-w-0 flex-1 flex-col">
-					<p className="mb-0.5 font-medium text-caption1 text-label-assistive">
+					<p className="mb-0.5 text-caption1 font-medium text-label-assistive">
 						{formatSessionWeekString(session.week)}
 					</p>
-					<h3 className="mb-1.5 truncate font-semibold text-body1 text-label-normal">
+					<h3 className="mb-1.5 truncate text-body1 font-semibold text-label-normal">
 						{session.name}
 					</h3>
 					<div className="flex items-center gap-x-1">
 						<Calender />
-						<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
+						<p className="ml-0.5 text-caption1 font-medium text-label-assistive">
 							{formatDotFullDate(session.date)}
 						</p>
 
 						<Clock className="ml-2" />
 
-						<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
+						<p className="ml-0.5 text-caption1 font-medium text-label-assistive">
 							{formatISOStringHHMM(session.date)}
 						</p>
 					</div>
@@ -116,7 +118,7 @@ function SessionItem({ session }: { session: SessionListItem }) {
 					variant="none"
 					size="none"
 					className={cn(
-						'ml-5 h-9 flex-none cursor-pointer justify-center rounded-md px-2 font-medium text-body2',
+						'ml-5 h-9 flex-none cursor-pointer justify-center rounded-md px-2 text-body2 font-medium',
 						feedbackStatus === 'CLOSED'
 							? 'w-[116px] bg-primary-extralight text-primary-normal hover:bg-primary-light hover:text-primary-strong'
 							: 'bg-background-strong text-label-assistive hover:bg-background-heavy hover:text-label-subtle',
@@ -151,11 +153,11 @@ function SessionItem({ session }: { session: SessionListItem }) {
 	);
 }
 
+const SessionErrorFallback = ({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />;
+
 export const SessionList = () => {
 	return (
-		<ErrorBoundary
-			fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
-		>
+		<ErrorBoundary fallback={SessionErrorFallback}>
 			<Suspense
 				fallback={
 					<div className="flex h-full flex-col">

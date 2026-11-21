@@ -16,11 +16,10 @@ interface FilterSection {
 	options: FilterOption[];
 }
 
-interface AttendanceFilterPopoverProps
-	extends Pick<
-		FilterPopoverProps,
-		'title' | 'selectedValues' | 'onClose' | 'onReset' | 'onApply' | 'onFilterChange'
-	> {
+interface AttendanceFilterPopoverProps extends Pick<
+	FilterPopoverProps,
+	'title' | 'selectedValues' | 'onClose' | 'onReset' | 'onApply' | 'onFilterChange'
+> {
 	sections: FilterSection[];
 }
 
@@ -35,7 +34,7 @@ export const AttendanceFilterPopover = ({
 }: AttendanceFilterPopoverProps) => (
 	<div className="relative flex w-90 flex-col overflow-hidden rounded-xl bg-background-normal shadow-[0px_-4px_21.1px_0px_rgba(0,0,0,0.12)]">
 		<div className="flex items-center gap-2 px-4 py-5">
-			<h3 className="flex-1 pr-9 font-semibold text-label-normal text-title2">{title}</h3>
+			<h3 className="flex-1 pr-9 text-title2 font-semibold text-label-normal">{title}</h3>
 			<IconButton
 				variant="ghost"
 				size="sm"
@@ -59,7 +58,7 @@ export const AttendanceFilterPopover = ({
 							disabled={option.disabled}
 							onClick={() => onFilterChange?.(label, option.value)}
 							className={cn(
-								'h-8 rounded-full border px-3 py-1 font-medium text-body2 transition-colors disabled:cursor-not-allowed disabled:opacity-40',
+								'h-8 rounded-full border px-3 py-1 text-body2 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40',
 								selectedValues[label]?.includes(option.value)
 									? 'border-primary-normal font-semibold text-primary-normal'
 									: 'border-line-normal text-label-assistive',

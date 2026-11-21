@@ -11,10 +11,11 @@ export const useMemberSelection = (visibleIds: number[], resetKey: unknown) => {
 	const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
 	// resetKey 는 effect 안에서 쓰지 않지만, 값이 바뀌었다는 사실 자체가 선택을 비우는 신호다.
-	// biome-ignore lint/correctness/useExhaustiveDependencies: resetKey 변경을 감지하기 위한 의존성
+	// oxlint-disable react/exhaustive-effect-dependencies, react/set-state-in-effect
 	useEffect(() => {
 		setSelectedIds(new Set());
 	}, [resetKey]);
+	// oxlint-enable react/exhaustive-effect-dependencies, react/set-state-in-effect
 
 	const toggle = useCallback((id: number) => {
 		setSelectedIds((prev) => {

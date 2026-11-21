@@ -31,11 +31,11 @@ export const SessionItem = (props: SessionItemProps) => {
 			<AccordionTrigger className="items-center py-0">
 				<div className="flex w-full items-center justify-between gap-[5.5px] pt-4 pb-3.25">
 					<div className="min-w-0">
-						<p className="mb-0.5 font-medium text-body2 text-label-assistive">{week}주차</p>
-						<p className="wrap-break-word mb-1 font-semibold text-body1 text-label-normal">
+						<p className="mb-0.5 text-body2 font-medium text-label-assistive">{week}주차</p>
+						<p className="mb-1 text-body1 font-semibold wrap-break-word text-label-normal">
 							{eventName}
 						</p>
-						<p className="font-medium text-body2 text-label-assistive">
+						<p className="text-body2 font-medium text-label-assistive">
 							{formatDotFullDate(date, { withTime: true })}
 						</p>
 					</div>
@@ -50,13 +50,13 @@ export const SessionItem = (props: SessionItemProps) => {
 				<div className="space-y-3 rounded-lg bg-background-subtle px-5 py-3 text-body2">
 					<div className="flex gap-4">
 						<p className="w-17.5 shrink-0 font-semibold text-label-assistive">출석 시간</p>
-						<p className="wrap-break-word min-w-0 flex-1 text-label-subtle">
+						<p className="min-w-0 flex-1 wrap-break-word text-label-subtle">
 							{attendedAt ? `${formatKoreanDate(attendedAt)} ${formatTimeOnly(attendedAt)}` : '-'}
 						</p>
 					</div>
 					<div className="flex gap-4">
 						<p className="w-17.5 shrink-0 font-semibold text-label-assistive">세션 장소</p>
-						<p className="wrap-break-word min-w-0 flex-1 text-label-subtle">{place || '-'}</p>
+						<p className="min-w-0 flex-1 wrap-break-word text-label-subtle">{place || '-'}</p>
 					</div>
 					{showReason ? (
 						<div className="flex gap-4">
@@ -77,7 +77,7 @@ export const SessionItem = (props: SessionItemProps) => {
 					) : null}
 					{canSubmitPendingReason ? (
 						<Link
-							className="font-medium text-caption1 text-label-assistive"
+							className="text-caption1 font-medium text-label-assistive"
 							href={`/attendance/me/${id}/absence-reason`}
 						>
 							세션 참석이 어렵다면 &gt;

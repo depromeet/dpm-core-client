@@ -1,7 +1,6 @@
 'use client';
 
 import { type PropsWithChildren, Suspense } from 'react';
-import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
@@ -10,7 +9,7 @@ import { attendance as attendanceApi } from '@dpm-core/api';
 import { GAPageTracker } from '@dpm-core/shared';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
-import { ErrorBox } from '@/components/error-box';
+import { ErrorBoxFallback } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringHHMM, formatISOStringToFullDateString } from '@/lib/date';
 import { getMyAbsenceReasonOptions } from '@/remotes/queries/attendance';
@@ -53,35 +52,35 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 		<div className="scrollbar-hide flex flex-1 flex-col gap-y-5 overflow-auto px-4 pb-5">
 			<GAPageTracker type="session-detail" sessionId={String(sessionId)} />
 			<div className="flex items-center justify-between md:mt-6">
-				<h3 className="font-semibold text-headline2 text-label-normal md:font-bold md:text-title1">
+				<h3 className="text-headline2 font-semibold text-label-normal md:text-title1 md:font-bold">
 					{sessionDetail.name}
 				</h3>
 			</div>
 
 			<SessionDetailInfoBox label="세션 정보">
-				<p className="font-semibold text-body2 text-label-assistive">세션 주차</p>
-				<p className="font-medium text-body2 text-label-subtle">{`${sessionDetail.week}주차`}</p>
-				<p className="font-semibold text-body2 text-label-assistive">세션명</p>
-				<p className="font-medium text-body2 text-label-subtle">{sessionDetail.name}</p>
-				<p className="font-semibold text-body2 text-label-assistive">세션 날짜</p>
-				<p className="font-medium text-body2 text-label-subtle">
+				<p className="text-body2 font-semibold text-label-assistive">세션 주차</p>
+				<p className="text-body2 font-medium text-label-subtle">{`${sessionDetail.week}주차`}</p>
+				<p className="text-body2 font-semibold text-label-assistive">세션명</p>
+				<p className="text-body2 font-medium text-label-subtle">{sessionDetail.name}</p>
+				<p className="text-body2 font-semibold text-label-assistive">세션 날짜</p>
+				<p className="text-body2 font-medium text-label-subtle">
 					{formatISOStringToFullDateString(sessionDetail.date)}
 				</p>
-				<p className="font-semibold text-body2 text-label-assistive">세션 장소</p>
-				<p className="font-medium text-body2 text-label-subtle">
+				<p className="text-body2 font-semibold text-label-assistive">세션 장소</p>
+				<p className="text-body2 font-medium text-label-subtle">
 					{sessionDetail.isOnline ? '온라인' : sessionDetail.place}
 				</p>
 			</SessionDetailInfoBox>
 
 			<SessionDetailInfoBox label="출석/지각 시간">
-				<p className="font-semibold text-body2 text-label-assistive">출석 시간</p>
-				<p className="font-medium text-body2 text-label-subtle">
+				<p className="text-body2 font-semibold text-label-assistive">출석 시간</p>
+				<p className="text-body2 font-medium text-label-subtle">
 					{formatISOStringHHMM(sessionDetail.attendanceStart)} -{' '}
 					{dayjs(sessionDetail.lateStart).subtract(1, 'minute').format('HH:mm')}
 				</p>
 
-				<p className="font-semibold text-body2 text-label-assistive">지각 시간</p>
-				<p className="font-medium text-body2 text-label-subtle">
+				<p className="text-body2 font-semibold text-label-assistive">지각 시간</p>
+				<p className="text-body2 font-medium text-label-subtle">
 					{formatISOStringHHMM(sessionDetail.lateStart)} -{' '}
 					{dayjs(sessionDetail.absentStart).subtract(1, 'minute').format('HH:mm')}
 				</p>
@@ -93,7 +92,7 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 					attendanceQuery.isError ? (
 						<button
 							type="button"
-							className="cursor-pointer font-medium text-caption1 text-primary-normal"
+							className="cursor-pointer text-caption1 font-medium text-primary-normal"
 							onClick={async () => {
 								await attendanceQuery.refetch();
 							}}
@@ -103,14 +102,14 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 					) : undefined
 				}
 			>
-				<p className="font-semibold text-body2 text-label-assistive">출석 상태</p>
+				<p className="text-body2 font-semibold text-label-assistive">출석 상태</p>
 				{attendance || absenceReasonStatus === 'PENDING' ? (
 					<AttendanceStatusLabel
 						status={attendance?.status ?? 'PENDING'}
 						absenceReasonStatus={absenceReasonStatus}
 					/>
 				) : (
-					<p className="font-medium text-body2 text-label-subtle">
+					<p className="text-body2 font-medium text-label-subtle">
 						{attendanceQuery.isPending
 							? '확인 중'
 							: attendanceQuery.isError
@@ -118,8 +117,8 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 								: '출석 기록이 없어요'}
 					</p>
 				)}
-				<p className="font-semibold text-body2 text-label-assistive">출석 시간</p>
-				<p className="font-medium text-body2 text-label-subtle">
+				<p className="text-body2 font-semibold text-label-assistive">출석 시간</p>
+				<p className="text-body2 font-medium text-label-subtle">
 					{attendance ? formatISOStringToFullDateString(attendance.attendedAt) : '-'}
 				</p>
 			</SessionDetailInfoBox>
@@ -140,7 +139,7 @@ const SessionDetailInfoBox = ({
 	return (
 		<div className="flex flex-col">
 			<div className="mb-2 flex items-center justify-between">
-				<span className="font-semibold text-body1 text-label-subtle">{label}</span>
+				<span className="text-body1 font-semibold text-label-subtle">{label}</span>
 				{actions}
 			</div>
 
@@ -153,9 +152,7 @@ const SessionDetailInfoBox = ({
 
 export const SessionDetailInfo = ({ sessionId }: SessionDetailInfoProps) => {
 	return (
-		<ErrorBoundary
-			fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
-		>
+		<ErrorBoundary fallback={ErrorBoxFallback}>
 			<Suspense fallback={<LoadingBox />}>
 				<SessionDetailInfoContainer sessionId={sessionId} />
 			</Suspense>

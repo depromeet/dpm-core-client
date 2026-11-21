@@ -27,7 +27,7 @@ const AppleLoginButton = ({ className }: AppleLoginButtonProps) => {
 			<a
 				href={getAppleAuthUrl()}
 				onClick={handleClick}
-				className="flex items-center justify-center gap-3.75 font-medium text-body1"
+				className="flex items-center justify-center gap-3.75 text-body1 font-medium"
 			>
 				<AppleLogo />
 				<p>Apple로 시작하기</p>

@@ -37,12 +37,15 @@ export const getMyMemberInfoQuery = queryOptions({
 });
 
 /** GET /v1/roles/members?memberIds=... - 멤버 기수별 역할 목록 조회 */
-export const getMembersRolesQuery = (memberIds: number[]) =>
-	queryOptions({
-		queryKey: ['members-roles', [...memberIds].sort((a, b) => a - b)] as const,
+export const getMembersRolesQuery = (memberIds: number[]) => {
+	const sortedMemberIds = [...memberIds];
+	sortedMemberIds.sort((a, b) => a - b);
+	return queryOptions({
+		queryKey: ['members-roles', sortedMemberIds] as const,
 		queryFn: () => member.getMembersRoles(memberIds),
 		enabled: memberIds.length > 0,
 	});
+};
 
 /* -------------------------------------------------------------------------- *
  * 멤버 관리 (v3)

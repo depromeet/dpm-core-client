@@ -11,7 +11,7 @@ export const MemberInfoCell = ({ className, isHeader = false, ...props }: Member
 	if (isHeader) {
 		return (
 			<div className={cn('flex h-14 items-center bg-background-strong px-3', className)}>
-				<p className="font-medium text-body2 text-label-subtle">멤버 정보</p>
+				<p className="text-body2 font-medium text-label-subtle">멤버 정보</p>
 			</div>
 		);
 	}

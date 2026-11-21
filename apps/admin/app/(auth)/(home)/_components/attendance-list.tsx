@@ -95,16 +95,16 @@ export const TableProfile = (props: TableProfileProps) => {
 				/>
 			</div>
 			<figcaption className="flex">
-				<strong className="mr-3 font-semibold text-body1 text-foreground">{name}</strong>
+				<strong className="text-foreground mr-3 text-body1 font-semibold">{name}</strong>
 				<p className="flex items-center gap-1.5 text-caption1 text-label-assistive">
 					{isAdmin && (
 						<>
 							<span>운영진</span>
-							<span aria-hidden="true" className="h-3 border-line-subtle border-l" />
+							<span aria-hidden="true" className="h-3 border-l border-line-subtle" />
 						</>
 					)}
 					<span>{teamNumber > 0 ? `${teamNumber}팀` : '팀 미배정'}</span>
-					<span aria-hidden="true" className="h-3 border-line-subtle border-l" />
+					<span aria-hidden="true" className="h-3 border-l border-line-subtle" />
 					<span>{isExistPart(part) ? getMemberPartLabel(part) : '미배정'}</span>
 				</p>
 			</figcaption>

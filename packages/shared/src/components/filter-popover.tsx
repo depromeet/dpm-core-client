@@ -49,7 +49,7 @@ export const FilterPopover = ({
 		>
 			{/* Header */}
 			<div className="flex h-16 items-center gap-2 p-4">
-				<h3 className="flex-1 font-semibold text-label-normal text-title2">{title}</h3>
+				<h3 className="flex-1 text-title2 font-semibold text-label-normal">{title}</h3>
 				<IconButton variant="ghost" size="sm" onClick={onClose}>
 					<X className="size-4" />
 				</IconButton>
@@ -82,7 +82,7 @@ export const FilterPopover = ({
 									type="button"
 									onClick={() => onFilterChange?.(label, option.value)}
 									className={cn(
-										'h-7 rounded-full border px-3 py-1 font-medium text-body2 transition-colors',
+										'h-7 rounded-full border px-3 py-1 text-body2 font-medium transition-colors',
 										isSelected
 											? 'border-primary-normal font-semibold text-primary-normal'
 											: 'border-line-normal text-label-assistive',

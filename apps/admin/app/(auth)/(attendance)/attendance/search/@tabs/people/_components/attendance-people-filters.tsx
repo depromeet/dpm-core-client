@@ -80,7 +80,7 @@ export function AttendancePeopleFilters({
 								disabled={availableCount === 0}
 								onClick={() => onChange({ status: value })}
 								className={cn(
-									'h-full min-w-0 flex-1 whitespace-nowrap border-line-normal border-r font-medium text-body2 first:rounded-l-md last:rounded-r-md last:border-0 disabled:cursor-not-allowed disabled:opacity-40',
+									'h-full min-w-0 flex-1 border-r border-line-normal text-body2 font-medium whitespace-nowrap first:rounded-l-md last:rounded-r-md last:border-0 disabled:cursor-not-allowed disabled:opacity-40',
 									(filters.status ?? '') === value
 										? 'bg-primary-extralight text-primary-normal'
 										: 'text-label-assistive',
@@ -111,7 +111,7 @@ export function AttendancePeopleFilters({
 				<label
 					htmlFor="people-my-team"
 					className={cn(
-						'flex h-10 w-30.25 cursor-pointer items-center gap-1.25 whitespace-nowrap rounded-lg border border-line-subtle px-3.75 font-medium text-body2 text-label-assistive',
+						'flex h-10 w-30.25 cursor-pointer items-center gap-1.25 rounded-lg border border-line-subtle px-3.75 text-body2 font-medium whitespace-nowrap text-label-assistive',
 						myTeamNumber === null && 'cursor-not-allowed opacity-40',
 					)}
 				>
@@ -135,7 +135,7 @@ export function AttendancePeopleFilters({
 						<button
 							type="button"
 							className={cn(
-								'flex h-10 items-center gap-1 rounded-lg border border-line-normal px-3.75 font-medium text-body2 text-label-assistive',
+								'flex h-10 items-center gap-1 rounded-lg border border-line-normal px-3.75 text-body2 font-medium text-label-assistive',
 								selectedTeams.length > 0 && 'border-primary-normal text-primary-normal',
 							)}
 						>

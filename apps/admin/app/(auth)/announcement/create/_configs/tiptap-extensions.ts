@@ -1,9 +1,9 @@
 import { textblockTypeInputRule } from '@tiptap/core';
-import BulletList from '@tiptap/extension-bullet-list';
-import Heading from '@tiptap/extension-heading';
-import Link from '@tiptap/extension-link';
-import Underline from '@tiptap/extension-underline';
-import StarterKit from '@tiptap/starter-kit';
+import { BulletList } from '@tiptap/extension-bullet-list';
+import { Heading } from '@tiptap/extension-heading';
+import { Link } from '@tiptap/extension-link';
+import { Underline } from '@tiptap/extension-underline';
+import { StarterKit } from '@tiptap/starter-kit';
 
 export const CustomStarterKit = StarterKit.configure({
 	listItem: {

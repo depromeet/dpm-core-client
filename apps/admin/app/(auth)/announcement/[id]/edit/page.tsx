@@ -110,6 +110,12 @@ interface EditNoticePageProps {
 	params: Promise<{ id: string }>;
 }
 
+const AnnouncementErrorFallback = (props: ErrorBoundaryFallbackProps) => (
+	<SidebarInset>
+		<ErrorBox onReset={() => props.reset()} />
+	</SidebarInset>
+);
+
 const EditNoticePage = ({ params: paramsPromise }: EditNoticePageProps) => {
 	const params = use(paramsPromise);
 	const announcementId = Number(params.id);
@@ -123,13 +129,7 @@ const EditNoticePage = ({ params: paramsPromise }: EditNoticePageProps) => {
 	}
 
 	return (
-		<ErrorBoundary
-			fallback={(props: ErrorBoundaryFallbackProps) => (
-				<SidebarInset>
-					<ErrorBox onReset={() => props.reset()} />
-				</SidebarInset>
-			)}
-		>
+		<ErrorBoundary fallback={AnnouncementErrorFallback}>
 			<Suspense
 				fallback={
 					<div className="flex h-screen w-full items-center justify-center">

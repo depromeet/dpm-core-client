@@ -66,13 +66,8 @@ type DialogState =
 export const MemberManagement = () => {
 	const queryClient = useQueryClient();
 	const { track } = useClarity();
-	const {
-		filters,
-		queryParams,
-		setApprovalStatus,
-		updateFilter,
-		applyBadgePreset,
-	} = useMemberFilters();
+	const { filters, queryParams, setApprovalStatus, updateFilter, applyBadgePreset } =
+		useMemberFilters();
 
 	// 탭 진입 기록은 탭이 바뀔 때만 남긴다. track 은 로그인 상태가 정해질 때 새로 만들어지므로
 	// 의존성에 넣으면 같은 탭에서 중복 기록되어, 최신 track 만 ref 로 들고 있는다.
@@ -635,7 +630,7 @@ export const MemberManagement = () => {
 				{/* 끝에 닿으면 다음 페이지를 불러온다. */}
 				<div ref={loadMoreRef} className={showBulkEditBar ? 'h-28' : 'h-10'} />
 				{isFetchingNextPage && (
-					<p className="py-4 text-center font-medium text-body2 text-label-assistive">
+					<p className="py-4 text-center text-body2 font-medium text-label-assistive">
 						불러오는 중...
 					</p>
 				)}

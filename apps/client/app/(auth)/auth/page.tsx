@@ -46,12 +46,12 @@ export default function SignupPage() {
 					</linearGradient>
 				</defs>
 			</svg>
-			<h1 className="mt-6 mb-4 bg-[linear-gradient(95deg,#5359D6_30.58%,#0D1A34_60.1%,#737EAE_77.42%)] bg-clip-text text-center font-bold text-headline2 text-transparent">
+			<h1 className="mt-6 mb-4 bg-[linear-gradient(95deg,#5359D6_30.58%,#0D1A34_60.1%,#737EAE_77.42%)] bg-clip-text text-center text-headline2 font-bold text-transparent">
 				운영진이 회원 정보를
 				<br />
 				검토하고 있어요
 			</h1>
-			<p className="bg-[linear-gradient(90deg,var(--Label-Subtle,#4B5563)_0%,#7A98C2_100%)] bg-clip-text text-center font-medium text-body1 text-transparent">
+			<p className="bg-[linear-gradient(90deg,var(--Label-Subtle,#4B5563)_0%,#7A98C2_100%)] bg-clip-text text-center text-body1 font-medium text-transparent">
 				승인이 완료되면 홈화면에 접속할 수 있어요
 			</p>
 		</SafeAreaAppLayout>

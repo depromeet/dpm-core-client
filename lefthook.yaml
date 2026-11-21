@@ -1,0 +1,24 @@
+glob_matcher: doublestar
+
+# 커밋에 포함된 파일을 포맷하고 린트한다. TypeScript 변경이 있으면 타입도 검사한다.
+pre-commit:
+  piped: true
+  jobs:
+    - name: format
+      glob: "**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,json,jsonc,md,mdx,css,yml,yaml}"
+      exclude: ["pnpm-lock.yaml", "**/next-env.d.ts", "packages/api/src/dpm.ts"]
+      run: pnpm exec oxfmt --no-error-on-unmatched-pattern -- {staged_files}
+      stage_fixed: true
+
+    - name: lint
+      glob: "**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}"
+      run: pnpm exec oxlint --no-error-on-unmatched-pattern -- {staged_files}
+
+    - name: typecheck
+      glob: "**/*.{ts,tsx,mts,cts}"
+      run: pnpm check-types
+
+commit-msg:
+  jobs:
+    - name: commitlint
+      run: pnpm exec commitlint --edit {1}

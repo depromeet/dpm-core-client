@@ -23,7 +23,7 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 					href={loginUrl.toString()}
 					// 이전 로그인(다른 계정)의 토큰 쿠키가 남아 있으면 새 로그인 대신 그 계정으로 인증될 수 있다.
 					onClick={clearAuthCookies}
-					className="flex items-center gap-2 font-medium text-sm"
+					className="flex items-center gap-2 text-sm font-medium"
 				>
 					<KakaoLogo />
 					<p className="flex-1 text-[#000000] opacity-85">카카오로 시작하기</p>

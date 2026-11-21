@@ -18,7 +18,7 @@ export function useImageUploads(initialImages: ImageResponse[] = []) {
 		})),
 	);
 	function replaceItem(item: ImageUploadItem) {
-		setItems((items) => items.map((entry) => (entry.id === item.id ? item : entry)));
+		setItems((previousItems) => previousItems.map((entry) => (entry.id === item.id ? item : entry)));
 	}
 
 	async function start(item: ImageUploadItem) {
@@ -40,16 +40,16 @@ export function useImageUploads(initialImages: ImageResponse[] = []) {
 			file,
 			status: 'uploading',
 		}));
-		setItems((items) => [...items, ...added]);
+		setItems((previousItems) => [...previousItems, ...added]);
 		for (const item of added) start(item);
 	}
 
 	function remove(id: string) {
-		setItems((items) => items.filter((item) => item.id !== id));
+		setItems((previousItems) => previousItems.filter((item) => item.id !== id));
 	}
 
 	function retry(id: string) {
-		const item = items.find((item) => item.id === id);
+		const item = items.find((entry) => entry.id === id);
 		if (item?.status === 'error') start(item);
 	}
 

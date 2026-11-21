@@ -1,7 +1,7 @@
 'use client';
 
 import type React from 'react';
-import { useRef } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import {
 	Button,
 	Dialog,
@@ -68,30 +68,41 @@ export const MemberMergeAccountDialog = ({
 	isPending = false,
 	onConfirm,
 }: MemberMergeAccountDialogProps) => {
-	const lastContentRef = useRef({ variant, approvedAccounts, note, isPending });
-	if (open) lastContentRef.current = { variant, approvedAccounts, note, isPending };
-	const content = lastContentRef.current;
+	const currentContent = { variant, approvedAccounts, note, isPending };
+	const [lastOpenContent, setLastOpenContent] = useState(currentContent);
+
+	useLayoutEffect(() => {
+		if (!open) return;
+
+		function rememberOpenContent() {
+			setLastOpenContent({ variant, approvedAccounts, note, isPending });
+		}
+
+		rememberOpenContent();
+	}, [open, variant, approvedAccounts, note, isPending]);
+
+	const content = open ? currentContent : lastOpenContent;
 	const copy = COPY[content.variant];
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="gap-6 sm:max-w-[505px]">
 				<DialogHeader className="gap-2">
-					<DialogTitle className="text-left font-bold text-headline2 text-label-normal">
+					<DialogTitle className="text-left text-headline2 font-bold text-label-normal">
 						{copy.title}
 					</DialogTitle>
-					<DialogDescription className="text-left font-medium text-body2 text-label-assistive">
+					<DialogDescription className="text-left text-body2 font-medium text-label-assistive">
 						{copy.description}
 					</DialogDescription>
 				</DialogHeader>
 
 				<div className="flex flex-col gap-3">
-					<p className="font-medium text-body2 text-label-assistive">이미 승인된 계정</p>
+					<p className="text-body2 font-medium text-label-assistive">이미 승인된 계정</p>
 					{content.approvedAccounts.map((account) => (
 						<dl
 							key={account.id}
 							data-clarity-mask="True"
-							className="grid grid-cols-[4.5rem_1fr] gap-x-8 gap-y-3 rounded-2xl bg-background-strong px-8 py-6 font-medium text-body2"
+							className="grid grid-cols-[4.5rem_1fr] gap-x-8 gap-y-3 rounded-2xl bg-background-strong px-8 py-6 text-body2 font-medium"
 						>
 							<dt className="text-label-assistive">이름</dt>
 							<dd className="font-semibold text-label-normal">{account.name}</dd>
@@ -107,7 +118,7 @@ export const MemberMergeAccountDialog = ({
 				</div>
 
 				{content.variant === 'confirm' && content.note ? (
-					<p className="font-medium text-body2 text-label-assistive">{content.note}</p>
+					<p className="text-body2 font-medium text-label-assistive">{content.note}</p>
 				) : null}
 
 				<div className="flex gap-2">

@@ -63,10 +63,10 @@ export const ErrorState = ({ action, className, variant }: ErrorStateProps) => {
 			className={cn('relative flex h-dvh w-full flex-col items-center justify-center', className)}
 		>
 			<ErrorStateIcon />
-			<h1 className="mt-8 mb-4 text-center font-bold text-label-strong text-title1">
+			<h1 className="mt-8 mb-4 text-center text-title1 font-bold text-label-strong">
 				{content.title}
 			</h1>
-			<p className="text-center font-medium text-body2 text-label-assistive">
+			<p className="text-center text-body2 font-medium text-label-assistive">
 				{content.description}
 			</p>
 			{action}
