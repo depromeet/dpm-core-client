@@ -10,7 +10,7 @@ export function usePushNotification() {
 	const { isApp } = useAppConfig();
 	const { isWebViewBridgeAvailable, isNativeMethodAvailable } = useBridgeStatus();
 	const requestPushPermission = useBridgeStore(
-		({ requestPushPermission }) => requestPushPermission,
+		(state) => state.requestPushPermission,
 	);
 	const { mutateAsync: registerToken } = useMutation(registerPushTokenMutationOptions());
 

@@ -15,7 +15,7 @@ const AttendanceStatusLabel = ({ status, absenceReasonStatus, ...props }: Attend
 
 	return (
 		<span
-			className={cn('flex items-center gap-1 font-semibold text-body2', className)}
+			className={cn('flex items-center gap-1 text-body2 font-semibold', className)}
 			{...restProps}
 		>
 			{icon}

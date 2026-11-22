@@ -31,42 +31,42 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 		<div className="flex flex-col gap-y-5">
 			<GAPageTracker type="session-detail" sessionId={String(sessionId)} />
 			<div className="flex items-start justify-between">
-				<h3 className="self-start font-bold text-label-normal text-title1">{sessionDetail.name}</h3>
+				<h3 className="self-start text-title1 font-bold text-label-normal">{sessionDetail.name}</h3>
 				{!isMobile && <SessionDropDownMenu sessionId={sessionId} />}
 			</div>
 
 			<SessionDetailInfoBox label="세션 정보">
-				<p className="font-semibold text-body2 text-label-assistive">세션 주차</p>
-				<p className="font-medium text-body2 text-label-subtle">{`${sessionDetail.week}주차`}</p>
-				<p className="font-semibold text-body2 text-label-assistive">세션명</p>
-				<p className="font-medium text-body2 text-label-subtle">{sessionDetail.name}</p>
-				<p className="font-semibold text-body2 text-label-assistive">세션 날짜</p>
-				<p className="font-medium text-body2 text-label-subtle">
+				<p className="text-body2 font-semibold text-label-assistive">세션 주차</p>
+				<p className="text-body2 font-medium text-label-subtle">{`${sessionDetail.week}주차`}</p>
+				<p className="text-body2 font-semibold text-label-assistive">세션명</p>
+				<p className="text-body2 font-medium text-label-subtle">{sessionDetail.name}</p>
+				<p className="text-body2 font-semibold text-label-assistive">세션 날짜</p>
+				<p className="text-body2 font-medium text-label-subtle">
 					{formatISOStringToFullDateString(sessionDetail.date)}
 				</p>
-				<p className="font-semibold text-body2 text-label-assistive">세션 장소</p>
-				<p className="font-medium text-body2 text-label-subtle">
+				<p className="text-body2 font-semibold text-label-assistive">세션 장소</p>
+				<p className="text-body2 font-medium text-label-subtle">
 					{sessionDetail.isOnline ? '온라인' : sessionDetail.place}
 				</p>
 			</SessionDetailInfoBox>
 
 			<SessionDetailInfoBox label="출석 코드">
-				<p className="font-semibold text-body2 text-label-assistive leading-none">출석 코드</p>
+				<p className="text-body2 leading-none font-semibold text-label-assistive">출석 코드</p>
 				<div className="flex items-center justify-between">
-					<p className="font-medium text-body2 text-label-subtle">{sessionDetail.attendanceCode}</p>
+					<p className="text-body2 font-medium text-label-subtle">{sessionDetail.attendanceCode}</p>
 					<CopyButton value={sessionDetail.attendanceCode} />
 				</div>
 			</SessionDetailInfoBox>
 
 			<SessionDetailInfoBox label="출석/지각 시간">
-				<p className="font-semibold text-body2 text-label-assistive">출석 시간</p>
-				<p className="font-medium text-body2 text-label-subtle">
+				<p className="text-body2 font-semibold text-label-assistive">출석 시간</p>
+				<p className="text-body2 font-medium text-label-subtle">
 					{formatISOStringHHMM(sessionDetail.attendanceStart)} -{' '}
 					{dayjs(sessionDetail.lateStart).subtract(1, 'minute').format('HH:mm')}
 				</p>
 
-				<p className="font-semibold text-body2 text-label-assistive">지각 시간</p>
-				<p className="font-medium text-body2 text-label-subtle">
+				<p className="text-body2 font-semibold text-label-assistive">지각 시간</p>
+				<p className="text-body2 font-medium text-label-subtle">
 					{formatISOStringHHMM(sessionDetail.lateStart)} -{' '}
 					{dayjs(sessionDetail.absentStart).subtract(1, 'minute').format('HH:mm')}
 				</p>
@@ -74,9 +74,9 @@ const SessionDetailInfoContainer = (props: SessionDetailInfoProps) => {
 
 			{sessionDetail.feedback && (
 				<SessionDetailInfoBox label="피드백 링크">
-					<p className="font-semibold text-body2 text-label-assistive">링크 복사</p>
+					<p className="text-body2 font-semibold text-label-assistive">링크 복사</p>
 					<div className="flex items-center justify-between">
-						<p className="font-medium text-body2 text-label-subtle">피드백 링크</p>
+						<p className="text-body2 font-medium text-label-subtle">피드백 링크</p>
 						<CopyButton
 							value={getSessionFeedbackUrl(sessionId)}
 							successMessage="피드백 링크를 복사했습니다."
@@ -111,7 +111,7 @@ const SessionDetailInfoBox = ({
 	return (
 		<div className="flex flex-col">
 			<div className="mb-2 flex items-center justify-between">
-				<span className="font-semibold text-body1 text-label-subtle">{label}</span>
+				<span className="text-body1 font-semibold text-label-subtle">{label}</span>
 				{actions}
 			</div>
 
@@ -122,11 +122,11 @@ const SessionDetailInfoBox = ({
 	);
 };
 
+const SessionErrorFallback = ({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />;
+
 export const SessionDetailInfo = ({ sessionId }: SessionDetailInfoProps) => {
 	return (
-		<ErrorBoundary
-			fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
-		>
+		<ErrorBoundary fallback={SessionErrorFallback}>
 			<Suspense fallback={<LoadingBox />}>
 				<SessionDetailInfoContainer sessionId={sessionId} />
 			</Suspense>

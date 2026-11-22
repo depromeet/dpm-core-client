@@ -45,7 +45,7 @@ export const SubmissionStatusModal = ({
 			<DialogContent className="max-w-160! gap-0 p-0" showCloseButton={false}>
 				<DialogHeader className="gap-3 px-8 pt-8 pb-4">
 					<div className="flex items-center justify-between">
-						<DialogTitle className="font-bold text-headline2 text-label-normal">
+						<DialogTitle className="text-headline2 font-bold text-label-normal">
 							제출 상태 변경
 						</DialogTitle>
 						<IconButton
@@ -57,7 +57,7 @@ export const SubmissionStatusModal = ({
 							<X className="size-4" />
 						</IconButton>
 					</div>
-					<DialogDescription className="text-left font-medium text-[#81898F]! text-[14px] leading-5.5">
+					<DialogDescription className="text-left text-[14px] leading-5.5 font-medium text-[#81898F]!">
 						선택한 인원의 과제 제출 상태가 지정한 값으로 일괄 변경됩니다.
 					</DialogDescription>
 				</DialogHeader>
@@ -66,7 +66,7 @@ export const SubmissionStatusModal = ({
 					<div className="flex flex-col gap-2">
 						<label
 							htmlFor="submission-status"
-							className="font-semibold text-body2 text-label-subtle"
+							className="text-body2 font-semibold text-label-subtle"
 						>
 							과제 제출 상태
 						</label>
@@ -83,7 +83,7 @@ export const SubmissionStatusModal = ({
 								<ToggleGroupItem
 									key={value}
 									value={value}
-									className="h-12 flex-1 rounded-none border-line-normal border-r last:border-r-0 data-[state=off]:bg-background-normal data-[state=on]:bg-primary-extralight data-[state=off]:text-label-assistive data-[state=on]:text-primary-normal"
+									className="h-12 flex-1 rounded-none border-r border-line-normal last:border-r-0 data-[state=off]:bg-background-normal data-[state=off]:text-label-assistive data-[state=on]:bg-primary-extralight data-[state=on]:text-primary-normal"
 								>
 									{label}
 								</ToggleGroupItem>
@@ -91,7 +91,7 @@ export const SubmissionStatusModal = ({
 						</ToggleGroup>
 					</div>
 					{affectedUsers.length > 0 && (
-						<p className="font-semibold text-body1 text-label-subtle">
+						<p className="text-body1 font-semibold text-label-subtle">
 							수정 적용 대상 :{' '}
 							{affectedUsers.length === 1
 								? affectedUsers[0]

@@ -162,7 +162,7 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 				/>
 			) : (
 				<div className="flex flex-1 overflow-hidden">
-					<div className="flex flex-1 flex-col overflow-y-auto border-line-normal border-r p-10">
+					<div className="flex flex-1 flex-col overflow-y-auto border-r border-line-normal p-10">
 						<NoticeContent
 							title={detail.title}
 							date={formattedDate}
@@ -173,10 +173,10 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 					</div>
 
 					<ReadStatusSidebar
-					announcementId={announcementId}
-					onSendReminder={handleRemindSend}
-					isRemindPending={isRemindPending}
-				/>
+						announcementId={announcementId}
+						onSendReminder={handleRemindSend}
+						isRemindPending={isRemindPending}
+					/>
 				</div>
 			)}
 		</div>
@@ -186,6 +186,8 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 interface NoticeDetailPageProps {
 	params: Promise<{ id: string }>;
 }
+
+const AnnouncementErrorFallback = (props: ErrorBoundaryFallbackProps) => <ErrorBox onReset={() => props.reset()} />;
 
 const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
 	const params = use(paramsPromise);
@@ -201,9 +203,7 @@ const NoticeDetailPage = ({ params: paramsPromise }: NoticeDetailPageProps) => {
 
 	return (
 		<SidebarInset>
-			<ErrorBoundary
-				fallback={(props: ErrorBoundaryFallbackProps) => <ErrorBox onReset={() => props.reset()} />}
-			>
+			<ErrorBoundary fallback={AnnouncementErrorFallback}>
 				<Suspense
 					fallback={
 						<div className="flex h-screen w-full items-center justify-center">

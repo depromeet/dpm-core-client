@@ -19,10 +19,10 @@ const AuthPage = () => {
 					fill="#FFC06E"
 				/>
 			</svg>
-			<h1 className="mt-8 mb-4 text-center font-bold text-label-strong text-title1">
+			<h1 className="mt-8 mb-4 text-center text-title1 font-bold text-label-strong">
 				운영진 권한이 없습니다.
 			</h1>
-			<p className="text-center font-medium text-body2 text-label-assistive">
+			<p className="text-center text-body2 font-medium text-label-assistive">
 				디프만 운영진이라면
 				<br />
 				회/부회장에게 접근 권한을 요청해 주세요.

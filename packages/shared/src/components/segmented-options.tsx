@@ -41,7 +41,7 @@ export const SegmentedOptions = ({
 				if (next) onChange(next);
 			}}
 			className={cn(
-				'h-12 w-full overflow-hidden rounded-lg border border-line-normal bg-comp-fill-white',
+				'bg-comp-fill-white h-12 w-full overflow-hidden rounded-lg border border-line-normal',
 				className,
 			)}
 			{...props}
@@ -53,7 +53,7 @@ export const SegmentedOptions = ({
 					disabled={disabled}
 					title={disabled ? disabledReason : undefined}
 					className={cn(
-						'h-full min-w-0 flex-1 rounded-none border-line-normal border-l px-3 font-medium text-body2 text-label-assistive first:border-l-0',
+						'h-full min-w-0 flex-1 rounded-none border-l border-line-normal px-3 text-body2 font-medium text-label-assistive first:border-l-0',
 						'data-[state=on]:bg-primary-extralight data-[state=on]:font-semibold data-[state=on]:text-primary-normal',
 						'disabled:cursor-not-allowed disabled:opacity-40',
 					)}

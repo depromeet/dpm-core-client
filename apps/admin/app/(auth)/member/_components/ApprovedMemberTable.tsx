@@ -67,17 +67,17 @@ export const ApprovedMemberTable = ({
 							aria-label="전체 선택"
 						/>
 					</TableHead>
-					<TableHead className="w-44 px-3 font-medium text-body2 text-label-subtle">파트</TableHead>
-					<TableHead className="px-3 font-medium text-body2 text-label-subtle">이름</TableHead>
-					<TableHead className="px-3 font-medium text-body2 text-label-subtle">가입 계정</TableHead>
-					<TableHead className="w-36 px-3 font-medium text-body2 text-label-subtle">
+					<TableHead className="w-44 px-3 text-body2 font-medium text-label-subtle">파트</TableHead>
+					<TableHead className="px-3 text-body2 font-medium text-label-subtle">이름</TableHead>
+					<TableHead className="px-3 text-body2 font-medium text-label-subtle">가입 계정</TableHead>
+					<TableHead className="w-36 px-3 text-body2 font-medium text-label-subtle">
 						멤버 타입
 					</TableHead>
-					<TableHead className="w-32 px-3 font-medium text-body2 text-label-subtle">팀</TableHead>
-					<TableHead className="w-48 px-3 font-medium text-body2 text-label-subtle">
+					<TableHead className="w-32 px-3 text-body2 font-medium text-label-subtle">팀</TableHead>
+					<TableHead className="w-48 px-3 text-body2 font-medium text-label-subtle">
 						활동 상태
 					</TableHead>
-					<TableHead className="w-28 px-3 text-right font-medium text-body2 text-label-subtle">
+					<TableHead className="w-28 px-3 text-right text-body2 font-medium text-label-subtle">
 						수정
 					</TableHead>
 				</TableRow>

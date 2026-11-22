@@ -77,7 +77,7 @@ import { http, auth } from '@dpm-core/api';
 - **TypeScript**: 5.x
 - **Tailwind CSS**: 4.x
 - **Turborepo**: 2.x
-- **Biome**: 코드 포맷팅 및 린팅
+- **Oxfmt · Oxlint**: 코드 포맷팅 및 린팅
 
 ### 중요 설정
 
@@ -113,8 +113,6 @@ pnpm dev                    # 모든 앱 개발 모드 실행
 pnpm build                  # 모든 패키지 빌드
 pnpm lint                   # 코드 린팅
 pnpm format                 # 코드 포맷팅
-pnpm format-and-lint        # biome check .
-pnpm format-and-lint:fix    # biome check . --write
 pnpm check-types            # 타입 체크
 pnpm clean                  # 빌드 캐시 정리 (node_modules, .turbo, dist)
 ```
@@ -138,11 +136,11 @@ pnpm turbo [명령어] --filter [workspace]
 - **interface** 우선 사용
 
 ### 3. 코드 품질
-- **Biome**를 사용한 일관된 코드 포맷팅
+- **Oxfmt**를 사용한 일관된 코드 포맷팅
 - **커밋 컨벤션** 사용
 
 ### 4. 순환 참조 방지
-- **Biome noImportCycles**를 통한 순환 참조 방지
+- **Oxlint `import/no-cycle`**을 통한 순환 참조 방지
 - **Turborepo**를 통한 패키지 간 순환 참조 방지
 
 ```typescript

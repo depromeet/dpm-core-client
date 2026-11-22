@@ -5,6 +5,7 @@ import { type PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { auth, type Member } from '@dpm-core/api';
 import { createContext } from '@dpm-core/shared';
+
 import { UnauthenticatedLayout } from '@/components/unauthenticated-layout';
 import { usePushNotification } from '@/hooks/use-push-notification';
 import { setLastLoginMethod } from '@/lib/last-login';
@@ -54,7 +55,10 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	const queryClient = useQueryClient();
 
 	useEffect(() => {
-		setIsAuthReady(true);
+		function markAuthReady() {
+			setIsAuthReady(true);
+		}
+		markAuthReady();
 	}, []);
 
 	const {
@@ -69,8 +73,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 			// 앱 기본 staleTime(5분) 안에 받아 둔 getMyMemberInfoQuery 캐시가 있으면 fetchQuery 가 재요청 없이
 			// 그 값을 돌려준다. 재신청 직후 이 쿼리를 무효화하면 직전(REJECTED)의 캐시가 그대로 반환돼
 			// 상태가 PENDING에서 REJECTED로 되돌아가므로, 이 쿼리는 항상 서버에서 새로 받는다.
-			const memberInfo = await queryClient.fetchQuery({ ...getMyMemberInfoQuery, staleTime: 0 });
-			return memberInfo;
+			return queryClient.fetchQuery({ ...getMyMemberInfoQuery, staleTime: 0 });
 		},
 		retry: false,
 		enabled: isAuthReady,
@@ -85,19 +88,22 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	});
 
 	useEffect(() => {
-		if (memberInfo) {
-			setIsAuthenticated(true);
-			setUser(memberInfo);
-			// 홈에 도달하지 못하는 승인 대기·반려 회원도 로그인 화면의 '최근 로그인' 배지가 갱신되도록 여기서 기록한다.
-			if (memberInfo.loginMethod) setLastLoginMethod(memberInfo.loginMethod);
+		function syncMemberInfo() {
+			if (memberInfo) {
+				setIsAuthenticated(true);
+				setUser(memberInfo);
+				// 홈에 도달하지 못하는 승인 대기·반려 회원도 로그인 화면의 '최근 로그인' 배지가 갱신되도록 여기서 기록한다.
+				if (memberInfo.loginMethod) setLastLoginMethod(memberInfo.loginMethod);
 
-			if (!pushRegistered.current) {
-				pushRegistered.current = true;
-				// 실패해도 다시 시도하지 않는다. (등록 mutation 상태 변화로 리렌더될 때마다 재시도되어
-				// 요청이 반복되는 것을 막는다.)
-				void requestAndRegister();
+				if (!pushRegistered.current) {
+					pushRegistered.current = true;
+					// 실패해도 다시 시도하지 않는다. (등록 mutation 상태 변화로 리렌더될 때마다 재시도되어
+					// 요청이 반복되는 것을 막는다.)
+					void requestAndRegister();
+				}
 			}
 		}
+		syncMemberInfo();
 	}, [memberInfo, requestAndRegister]);
 
 	useEffect(() => {
@@ -143,8 +149,8 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	}
 
 	if (!isAuthReady || isLoading) {
-      return null;
-  }
+		return null;
+	}
 
 	// REJECTED는 제외한다: 재신청 직후 상태 캐시가 아직 REJECTED로 남아있는 순간에도
 	// 이 체크가 먼저 걸려 홈으로, 이어서 홈의 반려자 가드에 의해 다시 /rejected로 튕겨나가는 것을 막는다.

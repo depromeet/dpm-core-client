@@ -2,14 +2,13 @@
 
 import Link from 'next/link';
 import { Suspense } from 'react';
-import type { ErrorBoundaryFallbackProps } from '@suspensive/react';
 import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import type { MyAttendanceBySessionIdResponse } from '@dpm-core/api';
 import { Button } from '@dpm-core/shared';
 
 import AttendanceStatusLabel from '@/components/attendance/AttendanceStatusLabel';
-import { ErrorBox } from '@/components/error-box';
+import { ErrorBoxFallback } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { formatISOStringToFullDateString } from '@/lib/date';
 import {
@@ -35,7 +34,7 @@ function SessionInfoCard({ session }: SessionInfoCardProps) {
 
 	return (
 		<div className="flex flex-col gap-2">
-			<p className="font-semibold text-body1 text-label-subtle">세션 정보</p>
+			<p className="text-body1 font-semibold text-label-subtle">세션 정보</p>
 			<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-3 text-body2">
 				{rows.map(({ label, value }) => (
 					<div key={label} className="flex gap-4">
@@ -69,8 +68,8 @@ const AttendanceSessionDetailContainer = ({ sessionId }: AttendanceSessionDetail
 		<>
 			<section className="mt-5">
 				<article className="mb-5 px-4">
-					<h3 className="mb-3 font-semibold text-body1 text-label-subtle">출석 정보</h3>
-					<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-3 font-semibold text-body2">
+					<h3 className="mb-3 text-body1 font-semibold text-label-subtle">출석 정보</h3>
+					<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-3 text-body2 font-semibold">
 						<div className="flex gap-4">
 							<p className="w-17.5 text-label-assistive">출석 상태</p>
 							<AttendanceStatusLabel
@@ -109,7 +108,7 @@ const AttendanceSessionDetailContainer = ({ sessionId }: AttendanceSessionDetail
 };
 
 export const AttendanceSessionDetail = ({ sessionId }: AttendanceSessionDetailProps) => (
-	<ErrorBoundary fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}>
+	<ErrorBoundary fallback={ErrorBoxFallback}>
 		<Suspense fallback={<LoadingBox />}>
 			<AttendanceSessionDetailContainer sessionId={sessionId} />
 		</Suspense>

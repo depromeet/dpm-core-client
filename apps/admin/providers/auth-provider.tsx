@@ -42,8 +42,8 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 		queryFn: async () => {
 			await auth.reissue();
 
-			const memberInfo = await queryClient.fetchQuery(getMyMemberInfoQuery);
-			return memberInfo;
+			const fetchedMemberInfo = await queryClient.fetchQuery(getMyMemberInfoQuery);
+			return fetchedMemberInfo;
 		},
 		retry: false,
 		enabled: isReady,
@@ -62,18 +62,24 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 	const isForbidden = Boolean(memberInfo) && !memberInfo?.isAdmin;
 
 	useEffect(() => {
-		setIsReady(true);
+		function markReady() {
+			setIsReady(true);
+		}
+		markReady();
 	}, []);
 
 	useEffect(() => {
-		if (memberInfo) {
-			if (!memberInfo.isAdmin) {
-				logoutMutate();
-				return;
+		function syncMemberInfo() {
+			if (memberInfo) {
+				if (!memberInfo.isAdmin) {
+					logoutMutate();
+					return;
+				}
+				setIsAuthenticated(true);
+				setUser(memberInfo);
 			}
-			setIsAuthenticated(true);
-			setUser(memberInfo);
 		}
+		syncMemberInfo();
 	}, [memberInfo, logoutMutate]);
 
 	if (isReady && error && pathname !== '/login') {

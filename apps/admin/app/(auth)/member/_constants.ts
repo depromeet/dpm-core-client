@@ -68,12 +68,7 @@ export const MEMBER_TYPE_LABEL: Record<ManagedMemberType, string> = {
 	CORE: '코어',
 };
 
-export const MEMBER_TYPE_ORDER: ManagedMemberType[] = [
-	'UNASSIGNED', 
-	'DEEPER', 
-	'ORGANIZER', 
-	'CORE'
-];
+export const MEMBER_TYPE_ORDER: ManagedMemberType[] = ['UNASSIGNED', 'DEEPER', 'ORGANIZER', 'CORE'];
 
 export const ACTIVITY_STATUS_LABEL: Record<MemberActivityStatus, string> = {
 	NORMAL: '활동 중',

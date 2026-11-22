@@ -16,10 +16,10 @@ export default function RejectedPage() {
 			<main className="flex flex-1 flex-col items-center justify-center gap-6 px-4 text-center">
 				<CircleAlert size={42} />
 				<div className="flex flex-col gap-4">
-					<h1 className="font-bold text-headline2 text-label-normal tracking-[-0.44px]">
+					<h1 className="text-headline2 font-bold tracking-[-0.44px] text-label-normal">
 						가입이 반려되었어요
 					</h1>
-					<p className="text-body1 text-label-subtle leading-[1.5]">
+					<p className="text-body1 leading-[1.5] text-label-subtle">
 						입력한 개인정보가 지원 시 개인정보와
 						<br />
 						일치하지 않아 반려되었을 수 있어요

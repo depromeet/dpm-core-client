@@ -37,7 +37,7 @@ export const SearchInputOutlined = React.forwardRef<HTMLInputElement, SearchInpu
 				<input
 					ref={ref}
 					type="search"
-					className="h-5 min-w-0 flex-1 bg-transparent font-medium text-body2 text-label-normal outline-none placeholder:text-label-assistive"
+					className="h-5 min-w-0 flex-1 bg-transparent text-body2 font-medium text-label-normal outline-none placeholder:text-label-assistive"
 					placeholder={placeholder}
 					{...props}
 				/>

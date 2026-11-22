@@ -17,7 +17,7 @@ interface SessionFeedbackInsightsProps {
 }
 
 const FeedbackSectionTitle = ({ children }: { children: ReactNode }) => (
-	<h3 className="font-semibold text-body1 text-label-normal">{children}</h3>
+	<h3 className="text-body1 font-semibold text-label-normal">{children}</h3>
 );
 
 const getAspectLabel = (code: string, label: string) =>
@@ -37,9 +37,8 @@ const ReasonGroup = ({
 	variant: 'positive' | 'improvement';
 }) => {
 	const [isEtcExpanded, setIsEtcExpanded] = useState(false);
-	const rankedItems = [...items]
-		.filter(({ code, count }) => code !== 'ETC' || count > 0)
-		.sort((a, b) => b.count - a.count);
+	const rankedItems = [...items].filter(({ code, count }) => code !== 'ETC' || count > 0);
+	rankedItems.sort((a, b) => b.count - a.count);
 	const topItems = rankedItems.slice(0, 3);
 	const otherItems = rankedItems.slice(3);
 	const getRate = (count: number) =>
@@ -48,7 +47,7 @@ const ReasonGroup = ({
 	return (
 		<div className="flex flex-col gap-5 rounded-lg border border-line-subtle p-5">
 			<div className="flex flex-col gap-3">
-				<p className="font-medium text-body2 text-label-subtle">{title}</p>
+				<p className="text-body2 font-medium text-label-subtle">{title}</p>
 				<p className="text-caption1 text-label-assistive">총 {respondentCount}건 · 복수 선택</p>
 				<ul className="flex flex-wrap gap-2">
 					{topItems.map(({ code, label: responseLabel, count }) => {
@@ -92,7 +91,7 @@ const ReasonGroup = ({
 								{isEtc ? (
 									<button
 										type="button"
-										className="flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-full bg-background-subtle px-3 py-2 font-medium text-body2 text-label-tertiary"
+										className="flex cursor-pointer items-center gap-1 rounded-full bg-background-subtle px-3 py-2 text-body2 font-medium whitespace-nowrap text-label-tertiary"
 										aria-expanded={isEtcExpanded}
 										aria-controls={`feedback-etc-${variant}`}
 										onClick={() => setIsEtcExpanded((expanded) => !expanded)}
@@ -105,7 +104,7 @@ const ReasonGroup = ({
 										)}
 									</button>
 								) : (
-									<span className="block whitespace-nowrap rounded-full bg-background-subtle px-3 py-2 font-medium text-body2 text-label-tertiary">
+									<span className="block rounded-full bg-background-subtle px-3 py-2 text-body2 font-medium whitespace-nowrap text-label-tertiary">
 										{label} {count}명 ({getRate(count)}%)
 									</span>
 								)}
@@ -122,7 +121,7 @@ const ReasonGroup = ({
 					className={`${isEtcExpanded ? 'flex' : 'hidden'} list-disc flex-col gap-2 rounded-lg bg-background-subtle px-8 py-3 text-body2 text-label-subtle`}
 				>
 					{etcComments.map((comment, index) => (
-						// biome-ignore lint/suspicious/noArrayIndexKey: The API returns anonymous comment text without IDs.
+						// The API returns anonymous comment text without IDs.
 						<li key={index}>{comment}</li>
 					))}
 				</ul>
@@ -231,15 +230,15 @@ export const SessionFeedbackInsights = ({
 	return (
 		<div className="flex min-h-full flex-col gap-10 pb-8">
 			<header className="flex flex-col gap-1">
-				<h2 className="font-bold text-label-normal text-title1">{insight.sessionName}</h2>
-				<p className="font-semibold text-body2 text-label-assistive">
+				<h2 className="text-title1 font-bold text-label-normal">{insight.sessionName}</h2>
+				<p className="text-body2 font-semibold text-label-assistive">
 					{feedbackStatusLabel}
 					{` · ${feedbackPeriod}`}
 				</p>
 			</header>
 
 			{insight.status === 'SCHEDULED' || !hasResponses ? (
-				<div className="-translate-y-8 flex flex-1 items-center justify-center">
+				<div className="flex flex-1 -translate-y-8 items-center justify-center">
 					<EmptyView
 						className="h-36 w-full max-w-[360px] flex-none gap-y-4 p-6"
 						message={emptyStateMessage}
@@ -254,16 +253,16 @@ export const SessionFeedbackInsights = ({
 							</FeedbackSectionTitle>
 							<div className="grid grid-cols-2 gap-3">
 								<div className="flex h-[92px] flex-col justify-center gap-2.5 rounded-lg bg-background-subtle p-5">
-									<p className="font-semibold text-caption1 text-label-subtle">응답률</p>
-									<p className="font-semibold text-headline1 text-label-normal">
+									<p className="text-caption1 font-semibold text-label-subtle">응답률</p>
+									<p className="text-headline1 font-semibold text-label-normal">
 										{insight.responseSummary.responseRate}% ·{' '}
 										{insight.responseSummary.respondentCount}/{insight.responseSummary.targetCount}
 										명
 									</p>
 								</div>
 								<div className="flex h-[92px] flex-col justify-center gap-2.5 rounded-lg bg-background-subtle p-5">
-									<p className="font-semibold text-caption1 text-label-subtle">평균 만족도</p>
-									<p className="font-semibold text-headline1 text-label-normal">
+									<p className="text-caption1 font-semibold text-label-subtle">평균 만족도</p>
+									<p className="text-headline1 font-semibold text-label-normal">
 										{insight.satisfaction.average}점 / {insight.satisfaction.maxScore}점
 									</p>
 								</div>
@@ -276,7 +275,7 @@ export const SessionFeedbackInsights = ({
 						>
 							<h3
 								id="feedback-distribution-heading"
-								className="font-semibold text-body2 text-label-subtle"
+								className="text-body2 font-semibold text-label-subtle"
 							>
 								만족도 분포
 							</h3>
@@ -287,10 +286,11 @@ export const SessionFeedbackInsights = ({
 											key={code}
 											className="grid grid-cols-[80px_minmax(0,1fr)_70px] items-center gap-3"
 										>
-											<span className="truncate font-semibold text-caption1 text-label-assistive">
+											<span className="truncate text-caption1 font-semibold text-label-assistive">
 												{label}
 											</span>
 											<div
+												// oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- 응답 분포를 CSS 막대로 표시하고 접근 가능한 이름을 제공한다.
 												role="img"
 												aria-label={`${label}: ${count}명, ${rate}%`}
 												className="h-6 overflow-hidden rounded-md bg-background-subtle"
@@ -300,7 +300,7 @@ export const SessionFeedbackInsights = ({
 													style={{ width: `${rate}%` }}
 												/>
 											</div>
-											<span className="text-right font-semibold text-caption1 text-label-subtle">
+											<span className="text-right text-caption1 font-semibold text-label-subtle">
 												{count}명 <span className="text-label-assistive">· {rate}%</span>
 											</span>
 										</li>
@@ -337,13 +337,13 @@ export const SessionFeedbackInsights = ({
 							<span id="feedback-comments-heading">자유 의견</span>
 						</FeedbackSectionTitle>
 						<div className="rounded-lg border border-line-subtle px-4">
-							<h4 className="border-line-subtle border-b py-4 font-semibold text-caption1 text-label-subtle">
+							<h4 className="border-b border-line-subtle py-4 text-caption1 font-semibold text-label-subtle">
 								세션 자유 의견{' '}
 								<span className="text-primary-strong">{insight.freeComments.count}건</span>
 							</h4>
 							<ul aria-label="익명 세션 자유 의견" className="flex flex-col gap-2 py-4">
 								{insight.freeComments.items.map((text, index) => (
-									// biome-ignore lint/suspicious/noArrayIndexKey: The API returns ordered anonymous comments without IDs.
+									// The API returns ordered anonymous comments without IDs.
 									<FreeComment key={index} id={index} text={text} />
 								))}
 							</ul>

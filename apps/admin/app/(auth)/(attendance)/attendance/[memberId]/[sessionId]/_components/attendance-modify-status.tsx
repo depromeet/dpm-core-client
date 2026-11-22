@@ -91,7 +91,7 @@ export const AttendanceModifyStatus = (props: AttendanceModifyStatusProps) => {
 								value={status.value}
 								className="flex-1 px-3 py-2.5 data-[state=checked]:bg-primary-extralight data-[state=checked]:text-primary-normal"
 							>
-								<span className="whitespace-nowrap font-semibold text-body2">{status.label}</span>
+								<span className="text-body2 font-semibold whitespace-nowrap">{status.label}</span>
 							</RadioGroup.Item>
 						))}
 					</RadioGroup.Root>

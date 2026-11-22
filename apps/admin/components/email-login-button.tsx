@@ -23,7 +23,7 @@ const EmailLoginButton = ({ className }: EmailLoginButtonProps) => {
 			variant="none"
 			onClick={handleLoginEmail}
 			className={cn(
-				'h-auto gap-2 rounded-xl border border-line-normal bg-white px-[15px] py-3.5 font-medium text-sm leading-1',
+				'h-auto gap-2 rounded-xl border border-line-normal bg-white px-[15px] py-3.5 text-sm leading-1 font-medium',
 				className,
 			)}
 		>

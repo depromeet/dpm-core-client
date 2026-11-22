@@ -15,23 +15,23 @@ interface AttendanceDetailHeaderProps {
 export const AttendanceDetailHeader = ({ title, onBack }: AttendanceDetailHeaderProps) => {
 	return (
 		<SheetHeader
-			className={`flex-row items-center justify-between border-gray-200 border-b py-6 pr-10 ${onBack ? 'pl-6' : 'pl-10'}`}
+			className={`flex-row items-center justify-between border-b border-gray-200 py-6 pr-10 ${onBack ? 'pl-6' : 'pl-10'}`}
 		>
 			{onBack ? (
 				<div className="flex items-center gap-3">
 					<Button variant="none" size="none" onClick={onBack} className="size-6">
-						<ChevronLeft className="size-6 text-icon-normal" />
+						<ChevronLeft className="text-icon-normal size-6" />
 					</Button>
-					<SheetTitle className="font-semibold text-headline2 text-label-normal">
+					<SheetTitle className="text-headline2 font-semibold text-label-normal">
 						{title}
 					</SheetTitle>
 				</div>
 			) : (
-				<SheetTitle className="font-semibold text-headline2 text-label-normal">{title}</SheetTitle>
+				<SheetTitle className="text-headline2 font-semibold text-label-normal">{title}</SheetTitle>
 			)}
 			<SheetClose asChild>
 				<Button variant="none" size="none" className="size-6">
-					<XCircle className="size-6 text-icon-normal" />
+					<XCircle className="text-icon-normal size-6" />
 				</Button>
 			</SheetClose>
 		</SheetHeader>

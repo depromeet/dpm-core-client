@@ -33,8 +33,8 @@ export const Profile = (props: ProfileProps) => {
 				/>
 			</div>
 			<div className="flex flex-col gap-0.5">
-				<span className="font-semibold text-body1">{name}</span>
-				<div className="flex flex-wrap gap-1.5 font-medium text-caption1 text-label-assistive">
+				<span className="text-body1 font-semibold">{name}</span>
+				<div className="flex flex-wrap gap-1.5 text-caption1 font-medium text-label-assistive">
 					{metaItems.map((item, idx) => (
 						<div key={`${item}`} className="flex items-center gap-1.5">
 							{idx !== 0 && <span className="h-3.5 w-px bg-line-subtle" />}

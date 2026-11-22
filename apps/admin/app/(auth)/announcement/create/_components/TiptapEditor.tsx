@@ -33,7 +33,7 @@ export const TiptapEditor = ({ editor, className, placeholder }: TiptapEditorPro
 			<EditorContent editor={editor} className={cn('w-full focus:outline-none', className)} />
 			{placeholder && isEmpty && (
 				<div
-					className="pointer-events-none absolute top-0 left-0 p-4 font-medium text-body2 text-label-assistive"
+					className="pointer-events-none absolute top-0 left-0 p-4 text-body2 font-medium text-label-assistive"
 					aria-hidden
 				>
 					{placeholder}
@@ -53,8 +53,8 @@ export const useTiptapEditor = ({ content, onChange }: UseTiptapEditorProps) => 
 		extensions: tiptapExtensions,
 		content,
 		immediatelyRender: false,
-		onUpdate: ({ editor }) => {
-			onChange(editor.getHTML());
+		onUpdate: ({ editor: updatedEditor }) => {
+			onChange(updatedEditor.getHTML());
 		},
 		editorProps: {
 			attributes: {

@@ -109,7 +109,7 @@ export default function AttendanceList({
 					<col className="w-[16%]" />
 					<col />
 				</colgroup>
-				<thead className="bg-background-subtle font-medium text-caption1 text-label-subtle">
+				<thead className="bg-background-subtle text-caption1 font-medium text-label-subtle">
 					<tr className="h-10">
 						<th className="pl-3">
 							<TableCheckbox
@@ -127,7 +127,7 @@ export default function AttendanceList({
 				</thead>
 				<tbody>
 					{data.map((member) => (
-						<tr key={member.id} className="h-17.5 border-line-subtle border-b text-body2">
+						<tr key={member.id} className="h-17.5 border-b border-line-subtle text-body2">
 							<td className="pl-3">
 								<TableCheckbox
 									className="size-4"
@@ -164,7 +164,7 @@ export default function AttendanceList({
 								{member.absenceReason !== null ? (
 									<button
 										type="button"
-										className="line-clamp-2 cursor-pointer break-all text-left"
+										className="line-clamp-2 cursor-pointer text-left break-all"
 										onClick={() => setMemberId(member.id)}
 									>
 										{member.absenceReason}

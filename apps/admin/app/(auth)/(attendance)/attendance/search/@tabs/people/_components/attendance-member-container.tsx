@@ -46,8 +46,8 @@ function AttendanceMemberContainer() {
 	};
 	return (
 		<div className="flex h-dvh min-h-0 flex-col bg-background-normal">
-			<header className="flex h-20 shrink-0 items-center gap-2 border-line-normal border-b px-10">
-				<h1 className="font-bold text-label-normal text-title1">
+			<header className="flex h-20 shrink-0 items-center gap-2 border-b border-line-normal px-10">
+				<h1 className="text-title1 font-bold text-label-normal">
 					사람별 출석 <span className="text-primary-normal">{assignedMembers.length}</span>
 				</h1>
 			</header>
@@ -63,16 +63,19 @@ function AttendanceMemberContainer() {
 		</div>
 	);
 }
+
+const AttendanceMembersErrorFallback = ({ reset }: ErrorBoundaryFallbackProps) => (
+	<div className="h-dvh">
+		<ErrorBox onReset={reset} />
+	</div>
+);
+
 export function AttendanceMember() {
 	const { reset: resetQueries } = useQueryErrorResetBoundary();
 	return (
 		<ErrorBoundary
 			onReset={resetQueries}
-			fallback={({ reset }: ErrorBoundaryFallbackProps) => (
-				<div className="h-dvh">
-					<ErrorBox onReset={reset} />
-				</div>
-			)}
+			fallback={AttendanceMembersErrorFallback}
 		>
 			<Suspense
 				fallback={

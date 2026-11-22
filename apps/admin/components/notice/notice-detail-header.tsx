@@ -28,7 +28,7 @@ export const NoticeDetailHeader = ({
 	return (
 		<div
 			className={cn(
-				'flex h-20 items-center gap-3 border-line-normal border-b bg-background-normal px-6',
+				'flex h-20 items-center gap-3 border-b border-line-normal bg-background-normal px-6',
 				className,
 			)}
 			{...props}
@@ -36,13 +36,13 @@ export const NoticeDetailHeader = ({
 			<IconButton variant="ghost" size="md" onClick={onBack} aria-label="뒤로 가기">
 				<ChevronLeft className="size-5" />
 			</IconButton>
-			<h1 className="flex-1 font-bold text-headline1 text-label-normal">{title}</h1>
+			<h1 className="flex-1 text-headline1 font-bold text-label-normal">{title}</h1>
 
 			<div className="flex items-center gap-6">
 				{readProfiles.length > 0 && (
 					<div className="flex items-center gap-1">
 						<ProfileStack profiles={readProfiles} max={3} showCount={false} />
-						<p className="font-semibold text-body2 text-label-assistive">+{readCount}명 읽음</p>
+						<p className="text-body2 font-semibold text-label-assistive">+{readCount}명 읽음</p>
 					</div>
 				)}
 

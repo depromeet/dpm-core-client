@@ -7,8 +7,8 @@
 		"./shared-styles.css": "./src/shared-styles.css"
 	},
 	"scripts": {
-		"format": "biome format --write .",
-		"lint": "biome lint --write .",
+		"format": "oxfmt --config ../../.oxfmtrc.json .",
+		"lint": "oxlint --config ../../.oxlintrc.json --fix .",
 		"check-types": "tsc --noEmit",
 		"clean": "rm -rf .turbo && rm -rf node_modules"
 	},

@@ -17,7 +17,7 @@ export const SubmissionLinkCell = ({
 	if (isHeader) {
 		return (
 			<div className={cn('flex h-10 items-center gap-2.5 bg-background-strong px-3', className)}>
-				<p className="font-medium text-body2 text-label-subtle">과제 점수</p>
+				<p className="text-body2 font-medium text-label-subtle">과제 점수</p>
 			</div>
 		);
 	}

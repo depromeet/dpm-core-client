@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 
 /** HTML 태그 제거 후 실제 텍스트가 있는지 확인 (Tiptap 빈 에디터는 <p></p> 등 반환) */
 const hasContentText = (html: string) => html.replace(/<[^>]*>/g, '').replace(/\s/g, '').length > 0;

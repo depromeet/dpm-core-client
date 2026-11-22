@@ -102,7 +102,7 @@ function SessionRoster({ session, sessions }: SessionRosterProps) {
 										<Button
 											variant="none"
 											size="none"
-											className="max-w-full gap-3 font-bold text-headline1 tracking-[-0.48px]"
+											className="max-w-full gap-3 text-headline1 font-bold tracking-[-0.48px]"
 										>
 											<span className="truncate">
 												{session.week}주차 | {session.eventName}
@@ -119,7 +119,7 @@ function SessionRoster({ session, sessions }: SessionRosterProps) {
 												key={item.id}
 												onSelect={() => selectSession(String(item.id))}
 												className={cn(
-													'h-9 justify-between gap-2 py-2 font-medium text-body2 focus:bg-background-strong',
+													'h-9 justify-between gap-2 py-2 text-body2 font-medium focus:bg-background-strong',
 													item.id === session.id && 'bg-background-strong',
 												)}
 											>
@@ -135,7 +135,7 @@ function SessionRoster({ session, sessions }: SessionRosterProps) {
 										))}
 									</DropdownMenuContent>
 								</DropdownMenu>
-								<span className="shrink-0 rounded bg-primary-extralight px-2 py-1 font-medium text-caption1 text-primary-normal">
+								<span className="shrink-0 rounded bg-primary-extralight px-2 py-1 text-caption1 font-medium text-primary-normal">
 									{SESSION_STATUS_LABEL[session.attendanceStatus]}
 								</span>
 							</div>
@@ -160,7 +160,7 @@ function SessionRoster({ session, sessions }: SessionRosterProps) {
 								</Button>
 							</div>
 						</div>
-						<div className="mt-4 flex flex-wrap gap-x-3 gap-y-1 font-medium text-body1 text-label-subtle">
+						<div className="mt-4 flex flex-wrap gap-x-3 gap-y-1 text-body1 font-medium text-label-subtle">
 							<p>
 								<span className="mr-2 text-label-assistive">시간</span>
 								{formatKoreanDate(session.date)} {formatTimeOnly(session.date)}
@@ -211,6 +211,8 @@ function SessionRoster({ session, sessions }: SessionRosterProps) {
 	);
 }
 
+const today = new Date();
+
 function AttendanceSessionContainer() {
 	const {
 		data: {
@@ -219,15 +221,15 @@ function AttendanceSessionContainer() {
 	} = useSuspenseQuery(getSessionWeeks());
 
 	const params = useCustomSearchParams();
-	const today = new Intl.DateTimeFormat('sv-SE', {
+	const formattedToday = new Intl.DateTimeFormat('sv-SE', {
 		timeZone: 'Asia/Seoul',
 		year: 'numeric',
 		month: '2-digit',
 		day: '2-digit',
-	}).format(new Date());
+	}).format(today);
 	const session =
 		sessions.find((item) => String(item.id) === params.get('week')) ??
-		sessions.find((item) => formatDateOnly(item.date) >= today) ??
+		sessions.find((item) => formatDateOnly(item.date) >= formattedToday) ??
 		sessions.at(-1);
 
 	if (!session) return <EmptyView message="현재 조회된 세션 정보가 없습니다" />;
@@ -235,14 +237,15 @@ function AttendanceSessionContainer() {
 	return <SessionRoster key={session.id} session={session} sessions={sessions} />;
 }
 
+const AttendanceSessionsErrorFallback = ({ reset }: ErrorBoundaryFallbackProps) => (
+	<ErrorBox onReset={reset} />
+);
+
 export const AttendanceSession = () => {
 	const { reset } = useQueryErrorResetBoundary();
 
 	return (
-		<ErrorBoundary
-			onReset={reset}
-			fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
-		>
+		<ErrorBoundary onReset={reset} fallback={AttendanceSessionsErrorFallback}>
 			<Suspense fallback={<LoadingBox />}>
 				<AttendanceSessionContainer />
 			</Suspense>

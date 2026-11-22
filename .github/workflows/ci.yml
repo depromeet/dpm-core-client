@@ -1,4 +1,4 @@
-name: Check Build
+name: CI
 
 on: pull_request
 
@@ -23,6 +23,12 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm exec oxlint .
+
+      - name: Type check
+        run: pnpm check-types
 
       - name: Build
         run: pnpm build

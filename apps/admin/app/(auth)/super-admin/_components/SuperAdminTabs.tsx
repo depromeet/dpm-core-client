@@ -21,15 +21,15 @@ export const SuperAdminTabs = () => {
 	return (
 		<div className="mx-auto flex w-full max-w-[1200px] flex-col items-start gap-6 px-4 pt-8 md:px-10">
 			{/* Tab Headers */}
-			<div className="flex w-full border-line-normal border-b">
+			<div className="flex w-full border-b border-line-normal">
 				{TABS.map((tab) => (
 					<button
 						key={tab.key}
 						type="button"
 						className={cn(
-							'cursor-pointer px-4 py-3 font-semibold text-body1 transition-colors',
+							'cursor-pointer px-4 py-3 text-body1 font-semibold transition-colors',
 							activeTab === tab.key
-								? 'border-label-normal border-b-2 text-label-normal'
+								? 'border-b-2 border-label-normal text-label-normal'
 								: 'text-label-assistive hover:text-label-subtle',
 						)}
 						onClick={() => setActiveTab(tab.key)}
