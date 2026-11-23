@@ -3,11 +3,7 @@ import { cohort } from '@dpm-core/api';
 import type { CreateCohortRequest, UpdateCohortRequest } from '@dpm-core/api';
 
 export const createCohortMutationOptions = (
-	options?: MutationOptions<
-		Awaited<ReturnType<typeof cohort.create>>,
-		Error,
-		CreateCohortRequest
-	>,
+	options?: MutationOptions<Awaited<ReturnType<typeof cohort.create>>, Error, CreateCohortRequest>,
 ) =>
 	mutationOptions({
 		mutationKey: ['cohort', 'create'],

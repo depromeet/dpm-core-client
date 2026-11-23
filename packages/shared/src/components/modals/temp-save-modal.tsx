@@ -40,10 +40,10 @@ export const TempSaveModal = ({
 				showCloseButton={false}
 			>
 				<DialogHeader className="shrink-0 pt-0 pb-4 text-left">
-					<DialogTitle className="font-bold text-headline2 text-label-normal">임시저장</DialogTitle>
+					<DialogTitle className="text-headline2 font-bold text-label-normal">임시저장</DialogTitle>
 				</DialogHeader>
 
-				<DialogDescription className="min-h-0 shrink-0 px-0 py-3 font-medium text-body1 text-gray-400">
+				<DialogDescription className="min-h-0 shrink-0 px-0 py-3 text-body1 font-medium text-gray-400">
 					지금까지 작성된 내용을 임시저장할까요?
 					<br />
 					나중에 이어서 작성할 수 있어요.

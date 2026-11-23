@@ -64,7 +64,7 @@ function AttendanceMemberDetail({ memberId }: AttendanceMemberDetailProps) {
 	];
 	return (
 		<div className="min-h-0 flex-1 overflow-y-auto px-10 pb-15">
-			<div className="mb-4 flex items-start justify-between [&>div>div:first-child]:p-1.5 [&>div]:gap-3 [&_.text-body1]:text-title2">
+			<div className="mb-4 flex items-start justify-between [&_.text-body1]:text-title2 [&>div]:gap-3 [&>div>div:first-child]:p-1.5">
 				<Profile
 					size={48}
 					name={data.member.name}
@@ -82,7 +82,7 @@ function AttendanceMemberDetail({ memberId }: AttendanceMemberDetailProps) {
 				{counts.map(({ label, value }) => (
 					<li
 						key={label}
-						className="flex flex-col items-center gap-1 border-line-normal border-r py-2 text-body2 last:border-0"
+						className="flex flex-col items-center gap-1 border-r border-line-normal py-2 text-body2 last:border-0"
 					>
 						<span className="font-medium text-label-assistive">{label}</span>
 						<span
@@ -136,7 +136,7 @@ function MemberSession({ memberId, session }: MemberSessionProps) {
 		>
 			<div className="relative">
 				<AccordionTrigger
-					className="data-[state=closed]:-mb-0.75 items-center gap-3 rounded-none p-0 font-normal text-inherit"
+					className="items-center gap-3 rounded-none p-0 font-normal text-inherit data-[state=closed]:-mb-0.75"
 					icon={
 						<ChevronDown
 							size={24}
@@ -145,13 +145,13 @@ function MemberSession({ memberId, session }: MemberSessionProps) {
 					}
 				>
 					<div className="min-w-0 flex-1">
-						<p className="mb-0.5 font-medium text-body2 text-label-assistive leading-4.75">
+						<p className="mb-0.5 text-body2 leading-4.75 font-medium text-label-assistive">
 							{session.week}주차
 						</p>
-						<p className="wrap-break-word font-semibold text-body1 text-label-normal">
+						<p className="text-body1 font-semibold wrap-break-word text-label-normal">
 							{session.eventName}
 						</p>
-						<p className="mt-1 font-medium text-body2 text-label-assistive leading-4.75">
+						<p className="mt-1 text-body2 leading-4.75 font-medium text-label-assistive">
 							{formatDotFullDate(session.date, { withTime: true })}
 						</p>
 					</div>
@@ -167,7 +167,7 @@ function MemberSession({ memberId, session }: MemberSessionProps) {
 						<button
 							type="button"
 							onClick={handleEdit}
-							className="-translate-y-1/2 absolute top-1/2 right-9 size-4 cursor-pointer rounded-sm bg-background-subtle"
+							className="absolute top-1/2 right-9 size-4 -translate-y-1/2 cursor-pointer rounded-sm bg-background-subtle"
 						>
 							<Pencil width={10.5} height={10.5} className="absolute top-[2.95px] left-[2.95px]" />
 						</button>
@@ -175,7 +175,7 @@ function MemberSession({ memberId, session }: MemberSessionProps) {
 					<TooltipContent
 						side="bottom"
 						sideOffset={12}
-						className="[&_svg]:hidden! rounded-md bg-gray-800 px-3 py-2 text-caption1 text-white"
+						className="rounded-md bg-gray-800 px-3 py-2 text-caption1 text-white [&_svg]:hidden!"
 					>
 						출석 상태 수정
 					</TooltipContent>
@@ -198,7 +198,7 @@ function MemberSession({ memberId, session }: MemberSessionProps) {
 							<>
 								<dt className="text-label-assistive">결석 사유</dt>
 								<dd className="min-w-0 space-y-2 text-label-normal">
-									<p className="whitespace-pre-wrap break-all">{session.absenceReason.contents}</p>
+									<p className="break-all whitespace-pre-wrap">{session.absenceReason.contents}</p>
 									{session.absenceReason.images.map((image, index) => (
 										<div
 											key={image.imageId}
@@ -257,7 +257,7 @@ function MemberSession({ memberId, session }: MemberSessionProps) {
 								disabled={isLoading}
 								onClick={() => setSelectedStatus(option.value)}
 								className={cn(
-									'h-full min-w-0 flex-1 cursor-pointer border-line-normal border-r text-body2 first:rounded-l-lg last:rounded-r-lg last:border-0 disabled:cursor-default',
+									'h-full min-w-0 flex-1 cursor-pointer border-r border-line-normal text-body2 first:rounded-l-lg last:rounded-r-lg last:border-0 disabled:cursor-default',
 									selectedStatus === option.value
 										? 'bg-primary-extralight font-semibold text-primary-normal'
 										: 'text-label-assistive',
@@ -294,6 +294,9 @@ function MemberSession({ memberId, session }: MemberSessionProps) {
 		</AccordionItem>
 	);
 }
+
+const AttendanceMemberDetailErrorFallback = ({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />;
+
 export function AttendanceMemberDetailDrawer({
 	memberId,
 	open,
@@ -304,7 +307,7 @@ export function AttendanceMemberDetailDrawer({
 		<Sheet open={open} onOpenChange={onOpenChange}>
 			<SheetContent side="right" className="w-full max-w-150! gap-0 border-none p-0">
 				<SheetHeader className="h-20 shrink-0 flex-row items-center justify-between px-10">
-					<SheetTitle className="font-bold text-label-normal text-title1">출석 현황</SheetTitle>
+					<SheetTitle className="text-title1 font-bold text-label-normal">출석 현황</SheetTitle>
 					<SheetClose asChild>
 						<Button variant="none" size="none" className="size-6">
 							<XCircle className="size-6 text-label-assistive" />
@@ -314,7 +317,7 @@ export function AttendanceMemberDetailDrawer({
 				<ErrorBoundary
 					key={memberId}
 					onReset={resetQueries}
-					fallback={({ reset }: ErrorBoundaryFallbackProps) => <ErrorBox onReset={reset} />}
+					fallback={AttendanceMemberDetailErrorFallback}
 				>
 					<Suspense fallback={<LoadingBox />}>
 						<AttendanceMemberDetail memberId={memberId} />

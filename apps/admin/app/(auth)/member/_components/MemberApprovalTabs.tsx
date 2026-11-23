@@ -12,7 +12,7 @@ interface MemberApprovalTabsProps {
 
 export const MemberApprovalTabs = ({ value, onChange }: MemberApprovalTabsProps) => {
 	return (
-		<div role="tablist" className="flex w-full border-line-normal border-b">
+		<div role="tablist" className="flex w-full border-b border-line-normal">
 			{APPROVAL_TABS.map((tab) => {
 				const isActive = tab.value === value;
 
@@ -24,7 +24,7 @@ export const MemberApprovalTabs = ({ value, onChange }: MemberApprovalTabsProps)
 						aria-selected={isActive}
 						onClick={() => onChange(tab.value)}
 						className={cn(
-							'flex h-11.5 w-30 cursor-pointer items-center justify-center font-bold text-title2 transition-colors',
+							'flex h-11.5 w-30 cursor-pointer items-center justify-center text-title2 font-bold transition-colors',
 							isActive
 								? 'border-b-2 border-gray-900 text-label-normal'
 								: 'text-label-assistive hover:text-label-subtle',

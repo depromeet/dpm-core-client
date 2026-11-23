@@ -28,7 +28,7 @@ export const AssignmentDetailTab = ({
 	return (
 		<div className="flex flex-1 overflow-hidden">
 			{/* 좌측: 과제 상세 */}
-			<div className="flex flex-1 flex-col overflow-y-auto border-line-normal border-r p-10">
+			<div className="flex flex-1 flex-col overflow-y-auto border-r border-line-normal p-10">
 				<NoticeContent
 					title={title}
 					date={date}

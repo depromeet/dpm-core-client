@@ -19,10 +19,10 @@ export const MemberDesktopOnlyGuard = ({ children }: { children: React.ReactNode
 				<AppHeader title="멤버 관리" />
 				<div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
 					<Monitor className="size-12 text-label-assistive" strokeWidth={1.5} />
-					<p className="font-semibold text-body1 text-label-normal">
+					<p className="text-body1 font-semibold text-label-normal">
 						멤버 관리는 PC에서 이용할 수 있어요
 					</p>
-					<p className="font-medium text-body2 text-label-assistive">
+					<p className="text-body2 font-medium text-label-assistive">
 						더 넓은 화면에서 멤버 정보를 확인하고 수정해 주세요.
 					</p>
 				</div>

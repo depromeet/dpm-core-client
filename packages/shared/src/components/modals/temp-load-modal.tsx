@@ -35,7 +35,7 @@ export const TempLoadModal = ({
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="max-w-160">
 				<DialogHeader className="pt-8 pb-4">
-					<DialogTitle className="font-bold text-headline2 text-label-normal">
+					<DialogTitle className="text-headline2 font-bold text-label-normal">
 						임시저장 불러오기
 					</DialogTitle>
 				</DialogHeader>

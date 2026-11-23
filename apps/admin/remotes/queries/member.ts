@@ -37,12 +37,15 @@ export const getMyMemberInfoQuery = queryOptions({
 });
 
 /** GET /v1/roles/members?memberIds=... - 멤버 기수별 역할 목록 조회 */
-export const getMembersRolesQuery = (memberIds: number[]) =>
-	queryOptions({
-		queryKey: ['members-roles', [...memberIds].sort((a, b) => a - b)] as const,
+export const getMembersRolesQuery = (memberIds: number[]) => {
+	const sortedMemberIds = [...memberIds];
+	sortedMemberIds.sort((a, b) => a - b);
+	return queryOptions({
+		queryKey: ['members-roles', sortedMemberIds] as const,
 		queryFn: () => member.getMembersRoles(memberIds),
 		enabled: memberIds.length > 0,
 	});
+};
 
 /* -------------------------------------------------------------------------- *
  * 멤버 관리 (v3)
@@ -107,8 +110,6 @@ export const getApprovedMergeCandidatesQuery = (name: string, part: ManagedMembe
 				approvalStatus: 'APPROVED',
 				search: name,
 				parts: [part],
-				// 병합 상대가 운영진·코어 계정일 수도 있어 함께 조회한다.
-				excludeStaff: false,
 				missingInformationOnly: false,
 				page: 1,
 				size: 30,

@@ -13,8 +13,8 @@ pnpm --filter @dpm-core/admin dev     # Admin 앱 (포트 3020)
 
 # 빌드 & 품질 관리
 pnpm build                  # 모든 패키지 빌드
-pnpm lint                   # Biome으로 린트
-pnpm format                 # Biome으로 포맷
+pnpm lint                   # Oxlint로 린트
+pnpm format                 # Oxfmt로 포맷
 
 # 패키지 관리
 pnpm create-package         # 대화형 패키지 생성 CLI
@@ -80,7 +80,7 @@ const nextConfig: NextConfig = {
 - **UI 컴포넌트**: Radix UI primitives
 - **애니메이션**: Motion.js, Lottie React, tw-animate-css
 - **아이콘**: Lucide React
-- **코드 스타일**: Biome 2.2.5 (포매터 및 린터)
+- **코드 스타일**: Oxfmt (포매터), Oxlint (린터)
 - **가상화**: React Virtuoso (긴 리스트 최적화)
 - **서스펜스**: @suspensive/react
 - **드로어**: Vaul
@@ -122,7 +122,8 @@ const nextConfig: NextConfig = {
 ## 주요 설정 파일
 
 - **turbo.json** - Turborepo 작업 설정 및 캐싱
-- **biome.json** - 코드 포맷팅 및 린트 규칙
+- **.oxfmtrc.json** - 코드 포맷팅 설정
+- **.oxlintrc.json** - 코드 린트 규칙
 - **package.json** - 루트 워크스페이스 설정
 - **.cursor/rules/** - 개발 규칙 및 컨벤션
 

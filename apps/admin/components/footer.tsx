@@ -11,7 +11,7 @@ const Footer = () => {
 				<a
 					href="https://depromeet.com/privacy"
 					target="_blank"
-					className="font-semibold text-caption1 text-gray-400 underline"
+					className="text-caption1 font-semibold text-gray-400 underline"
 					rel="noopener"
 				>
 					개인정보 처리방침
@@ -19,7 +19,7 @@ const Footer = () => {
 				<a
 					href="https://depromeet.com/terms"
 					target="_blank"
-					className="font-semibold text-caption1 text-gray-400 underline"
+					className="text-caption1 font-semibold text-gray-400 underline"
 					rel="noopener"
 				>
 					서비스 이용약관
@@ -30,7 +30,7 @@ const Footer = () => {
 					<a
 						href="https://www.instagram.com/depromeet/"
 						target="_blank"
-						className="font-medium text-caption1 text-label-assistive"
+						className="text-caption1 font-medium text-label-assistive"
 						rel="noopener"
 					>
 						Instagram
@@ -39,7 +39,7 @@ const Footer = () => {
 					<a
 						href="https://www.behance.net/Depromeet"
 						target="_blank"
-						className="font-medium text-caption1 text-label-assistive"
+						className="text-caption1 font-medium text-label-assistive"
 						rel="noopener"
 					>
 						Behance
@@ -48,7 +48,7 @@ const Footer = () => {
 					<a
 						href="https://github.com/depromeet/"
 						target="_blank"
-						className="font-medium text-caption1 text-label-assistive"
+						className="text-caption1 font-medium text-label-assistive"
 						rel="noopener"
 					>
 						Github
@@ -57,7 +57,7 @@ const Footer = () => {
 					<a
 						href="https://depromeet.medium.com/"
 						target="_blank"
-						className="font-medium text-caption1 text-label-assistive"
+						className="text-caption1 font-medium text-label-assistive"
 						rel="noopener"
 					>
 						Medium
@@ -66,7 +66,7 @@ const Footer = () => {
 					<a
 						href="https://www.linkedin.com/company/depromeet/"
 						target="_blank"
-						className="font-medium text-caption1 text-label-assistive"
+						className="text-caption1 font-medium text-label-assistive"
 						rel="noopener"
 					>
 						LinkedIn

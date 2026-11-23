@@ -15,12 +15,11 @@ import type {
 const GUEST_CUSTOM_ID_KEY_PREFIX = 'clarity_guest_custom_id';
 const LEGACY_GUEST_CUSTOM_ID_KEY = GUEST_CUSTOM_ID_KEY_PREFIX;
 
-const serializeTags = (tags: ClarityTags) =>
-	JSON.stringify(
-		Object.entries(tags)
-			.sort(([leftKey], [rightKey]) => leftKey.localeCompare(rightKey))
-			.map(([key, value]) => [key, value]),
-	);
+const serializeTags = (tags: ClarityTags) => {
+	const entries = Object.entries(tags);
+	entries.sort(([leftKey], [rightKey]) => leftKey.localeCompare(rightKey));
+	return JSON.stringify(entries);
+};
 
 /**
  * 앱별 액션과 페이지 ID 타입을 유지하는 Clarity Provider와 hook을 생성한다.

@@ -37,7 +37,7 @@ const CurrentWeekSessionContainer = () => {
 			return (
 				<div className="flex h-[166px] flex-col items-center justify-center">
 					<Aesterisk />
-					<p className="font-semibold text-body1 text-label-assistive">
+					<p className="text-body1 font-semibold text-label-assistive">
 						아직 등록된 세션 정보가 없어요
 					</p>
 				</div>
@@ -72,7 +72,7 @@ const CurrentWeekSessionContainer = () => {
 	return (
 		<section>
 			<div className="mb-3.5 hidden items-center gap-3 md:flex">
-				<h3 className="font-bold text-label-normal text-title1">세션</h3>
+				<h3 className="text-title1 font-bold text-label-normal">세션</h3>
 				<Button variant="text" className="gap-0" asChild>
 					<Link href="/session">
 						전체보기
@@ -86,17 +86,17 @@ const CurrentWeekSessionContainer = () => {
 	);
 };
 
+const CurrentWeekSessionErrorFallback = ({ reset }: ErrorBoundaryFallbackProps) => (
+	<div className="flex h-full flex-col items-center justify-center">
+		<p className="text-body2 font-semibold">세션 정보 조회에 실패했어요.</p>
+		<Button type="button" onClick={() => reset()}>
+			다시 시도
+		</Button>
+	</div>
+);
+
 const CurrentWeekSession = () => (
-	<ErrorBoundary
-		fallback={({ reset }: ErrorBoundaryFallbackProps) => (
-			<div className="flex h-full flex-col items-center justify-center">
-				<p className="font-semibold text-body2">세션 정보 조회에 실패했어요.</p>
-				<Button type="button" onClick={() => reset()}>
-					다시 시도
-				</Button>
-			</div>
-		)}
-	>
+	<ErrorBoundary fallback={CurrentWeekSessionErrorFallback}>
 		<Suspense fallback={<LoadingBox />}>
 			<CurrentWeekSessionContainer />
 		</Suspense>

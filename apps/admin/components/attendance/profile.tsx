@@ -37,13 +37,13 @@ export const Profile = (props: ProfileProps) => {
 			<div className={cn('flex gap-0.5', inline ? 'flex-row items-center gap-4' : 'flex-col')}>
 				{badge ? (
 					<div className="flex min-w-0 flex-wrap items-center gap-2">
-						<span className="break-all font-semibold text-body1">{name}</span>
+						<span className="text-body1 font-semibold break-all">{name}</span>
 						{badge}
 					</div>
 				) : (
-					<span className="font-semibold text-body1">{name}</span>
+					<span className="text-body1 font-semibold">{name}</span>
 				)}
-				<div className="flex flex-wrap gap-1.5 font-medium text-caption1 text-label-assistive">
+				<div className="flex flex-wrap gap-1.5 text-caption1 font-medium text-label-assistive">
 					{metaItems.map((item, idx) => (
 						<div key={`${item}`} className="flex items-center gap-1.5">
 							{idx !== 0 && <span className="h-3.5 w-px bg-line-subtle" />}

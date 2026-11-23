@@ -28,9 +28,18 @@ export const PART_LABEL: Record<ManagedMemberPart, string> = {
 	UNASSIGNED: '미배정',
 	DESIGN: '디자이너',
 	WEB: '웹',
-	ANDROID: '안드로이드',
+	ANDROID: 'AOS',
 	IOS: 'IOS',
 	SERVER: '서버',
+};
+
+export const PART_CHIP_CLASS: Record<ManagedMemberPart, string> = {
+	UNASSIGNED: 'border border-line-normal',
+	DESIGN: 'border-none bg-part-design-bg text-part-design-text',
+	WEB: 'border-none bg-part-web-bg text-part-web-text',
+	ANDROID: 'border-none bg-part-aos-bg text-part-aos-text',
+	IOS: 'border-none bg-part-ios-bg text-part-ios-text',
+	SERVER: 'border-none bg-part-server-bg text-part-server-text',
 };
 
 /** 파트 선택지 노출 순서 (Figma 필터·수정 모달 기준) */

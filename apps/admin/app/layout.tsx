@@ -1,14 +1,15 @@
-import '@/lib/api-setup';
-
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { GAInitializer, getGAConfigScript, getGAScriptSrc, Toaster } from '@dpm-core/shared';
 
+import { configureApiTokenProvider } from '@/lib/api-setup';
+
 import { QueryProvider } from '../providers/query-provider';
 import { pretendard } from './fonts';
-
 import './globals.css';
+
+configureApiTokenProvider();
 
 export const metadata: Metadata = {
 	title: 'Dpmcore',

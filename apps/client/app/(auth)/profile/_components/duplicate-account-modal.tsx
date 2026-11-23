@@ -16,7 +16,7 @@ export const DuplicateAccountModal = ({ open }: { open: boolean }) => {
 		<Dialog open={open}>
 			<DialogContent showCloseButton={false}>
 				<DialogTitle className="sr-only">이미 카카오톡으로 가입된 계정이에요.</DialogTitle>
-				<DialogHeader className="break-keep text-left font-bold text-title1 tracking-[-0.2px]">
+				<DialogHeader className="text-left text-title1 font-bold tracking-[-0.2px] break-keep">
 					이미 카카오톡으로 가입된 계정이에요.
 				</DialogHeader>
 				<DialogFooter>

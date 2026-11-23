@@ -12,15 +12,14 @@
 			"cache": false,
 			"persistent": true
 		},
-		"format": {},
-		"lint": {
-			"dependsOn": ["^lint"]
-		},
-		"generate:type": {
+		"format": {
 			"cache": false
 		},
-		"//#lint-and-format": {},
-		"//#lint-and-format:fix": {
+		"lint": {
+			"dependsOn": ["^lint"],
+			"cache": false
+		},
+		"generate:type": {
 			"cache": false
 		},
 		"check-types": {

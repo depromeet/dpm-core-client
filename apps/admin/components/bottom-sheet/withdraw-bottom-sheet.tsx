@@ -10,7 +10,6 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 	DrawerTrigger,
-	useAppShell,
 } from '@dpm-core/shared';
 
 import { withdrawMutationOptions } from '@/remotes/mutations/member';
@@ -27,7 +26,6 @@ const WithdrawBottomSheet = ({
 }: PropsWithChildren<WithdrawBottomSheetProps>) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const router = useRouter();
-	const { ref } = useAppShell();
 
 	const handleClose = () => {
 		setIsOpen(false);
@@ -49,18 +47,13 @@ const WithdrawBottomSheet = ({
 	const isDisabled = isWithdrawPending || disabled;
 
 	return (
-		<Drawer open={isOpen} onOpenChange={setIsOpen} container={ref.current}>
+		<Drawer open={isOpen} onOpenChange={setIsOpen}>
 			<DrawerTrigger asChild>{children}</DrawerTrigger>
-			<DrawerContent
-				className="!px-2 mx-auto"
-				style={{
-					maxWidth: ref.current?.clientWidth ?? 'auto',
-				}}
-			>
+			<DrawerContent className="mx-auto px-2!" style={{ maxWidth: 'auto' }}>
 				<DrawerTitle className="sr-only">탈퇴하기</DrawerTitle>
-				<DrawerHeader className="!text-left !gap-y-2 items-start">
-					<h3 className="font-semibold text-label-normal text-title2">탈퇴하기</h3>
-					<p className="font-medium text-body2 text-label-assistive">
+				<DrawerHeader className="items-start gap-y-2! text-left!">
+					<h3 className="text-title2 font-semibold text-label-normal">탈퇴하기</h3>
+					<p className="text-body2 font-medium text-label-assistive">
 						지금 디프만 코어에서 탈퇴하면 다시 가입하기 어려워요.
 						<br />
 						그래도 정말 탈퇴할까요?

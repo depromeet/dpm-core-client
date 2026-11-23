@@ -5,7 +5,6 @@ import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { TeamTabBar, toast } from '@dpm-core/shared';
 
 import { remindNotificationMutationOptions } from '@/remotes/mutations/announcement';
-
 import { getAnnouncementReadMembersQuery } from '@/remotes/queries/announcement';
 
 import { type AssignmentDetailProps, type Member, toClientSubmitStatus } from '../../types';
@@ -60,7 +59,7 @@ export const AssignmentDetail = ({
 	return (
 		<div className="flex h-full flex-col overflow-hidden bg-background-normal">
 			{/* 메인 탭 */}
-			<div className="border-line-subtle border-b bg-background-normal px-10">
+			<div className="border-b border-line-subtle bg-background-normal px-10">
 				<TeamTabBar
 					tabs={[
 						{ id: 'detail', label: '과제 상세' },

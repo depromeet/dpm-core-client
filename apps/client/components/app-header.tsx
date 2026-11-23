@@ -43,7 +43,7 @@ const AppHeader = ({
 			className={cn('relative mb-5 flex h-12 items-center justify-center px-4 py-3', className)}
 		>
 			{leftIcon}
-			<h3 className="font-semibold text-body1 text-label-strong">{title}</h3>
+			<h3 className="text-body1 font-semibold text-label-strong">{title}</h3>
 			{rightIcon}
 		</header>
 	);

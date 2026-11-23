@@ -18,11 +18,11 @@ const buttonVariants = cva(
 			},
 			size: {
 				none: 'h-auto',
-				xs: 'h-6 rounded-sm px-2.5 font-medium text-caption1',
-				sm: 'h-8 rounded-md px-3 font-medium text-caption1',
-				md: 'h-10 rounded-lg px-4 font-semibold text-body2',
-				lg: 'h-12 rounded-lg px-5 font-semibold text-body1',
-				full: 'h-14 w-full font-semibold text-body1',
+				xs: 'h-6 rounded-sm px-2.5 text-caption1 font-medium',
+				sm: 'h-8 rounded-md px-3 text-caption1 font-medium',
+				md: 'h-10 rounded-lg px-4 text-body2 font-semibold',
+				lg: 'h-12 rounded-lg px-5 text-body1 font-semibold',
+				full: 'h-14 w-full text-body1 font-semibold',
 			},
 		},
 		compoundVariants: [

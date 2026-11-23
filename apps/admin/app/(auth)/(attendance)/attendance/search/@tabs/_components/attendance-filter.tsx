@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { RotateCw } from 'lucide-react';
 import type { AttendanceStatus } from '@dpm-core/api';
 import {
@@ -37,6 +37,20 @@ const ATTENDANCE_FILTER = [
 	{ label: '미출석', value: 'PENDING' },
 ] as const;
 const TEAM_FILTER = ['1', '2', '3', '4', '5', '6'];
+
+function getAttendanceFilterLabel(selectedAttendanceStatuses: string[]) {
+	if (selectedAttendanceStatuses.length === 0) return '출석 상태별';
+	if (selectedAttendanceStatuses.length === 1)
+		return getAttendanceStatusLabel(selectedAttendanceStatuses[0] as AttendanceStatus);
+	return `${getAttendanceStatusLabel(selectedAttendanceStatuses[0] as AttendanceStatus)} 외 ${selectedAttendanceStatuses.length - 1}`;
+}
+
+function getTeamsFilterLabel(selectedTeams: string[]) {
+	if (selectedTeams.length === 0) return '팀별';
+
+	if (selectedTeams.length === 1) return `${selectedTeams[0]}팀`;
+	return `${selectedTeams[0]}팀 외 ${selectedTeams.length - 1}`;
+}
 
 export const AttendanceFilter = () => {
 	const customSearchParams = useCustomSearchParams();
@@ -93,19 +107,9 @@ export const AttendanceFilter = () => {
 	const selectedAttendanceStatuses =
 		customSearchParams.get('statuses')?.split(',').filter(Boolean) ?? [];
 
-	const attendanceFilterLabel = useMemo(() => {
-		if (selectedAttendanceStatuses.length === 0) return '출석 상태별';
-		if (selectedAttendanceStatuses.length === 1)
-			return getAttendanceStatusLabel(selectedAttendanceStatuses[0] as AttendanceStatus);
-		return `${getAttendanceStatusLabel(selectedAttendanceStatuses[0] as AttendanceStatus)} 외 ${selectedAttendanceStatuses.length - 1}`;
-	}, [selectedAttendanceStatuses]);
+	const attendanceFilterLabel = getAttendanceFilterLabel(selectedAttendanceStatuses);
 
-	const teamsFilterLabel = useMemo(() => {
-		if (selectedTeams.length === 0) return '팀별';
-
-		if (selectedTeams.length === 1) return `${selectedTeams[0]}팀`;
-		return `${selectedTeams[0]}팀 외 ${selectedTeams.length - 1}`;
-	}, [selectedTeams]);
+	const teamsFilterLabel = getTeamsFilterLabel(selectedTeams);
 
 	return (
 		<>
@@ -117,7 +121,7 @@ export const AttendanceFilter = () => {
 							<Button
 								size="none"
 								className={cn(
-									'gap-1 rounded-lg border border-line-normal bg-background-normal px-2.5 py-1 font-normal text-body2 text-label-assistive hover:bg-inherit',
+									'gap-1 rounded-lg border border-line-normal bg-background-normal px-2.5 py-1 text-body2 font-normal text-label-assistive hover:bg-inherit',
 									attendanceFilterLabel !== '출석 상태별' &&
 										'border-primary-normal text-primary-normal',
 								)}
@@ -130,7 +134,7 @@ export const AttendanceFilter = () => {
 							<Button
 								size="none"
 								className={cn(
-									'gap-1 rounded-lg border border-line-normal bg-background-normal px-2.5 py-1 font-normal text-body2 text-label-assistive hover:bg-inherit',
+									'gap-1 rounded-lg border border-line-normal bg-background-normal px-2.5 py-1 text-body2 font-normal text-label-assistive hover:bg-inherit',
 									teamsFilterLabel !== '팀별' && 'border-primary-normal text-primary-normal',
 								)}
 							>
@@ -144,7 +148,7 @@ export const AttendanceFilter = () => {
 							<DrawerTitle>필터</DrawerTitle>
 						</DrawerHeader>
 						<div className="mt-8 px-6">
-							<p className="mb-2 font-semibold text-body1 text-label-normal">출석 상태별</p>
+							<p className="mb-2 text-body1 font-semibold text-label-normal">출석 상태별</p>
 							<div className="flex flex-wrap gap-2">
 								{ATTENDANCE_FILTER.map((chip, index) => {
 									const selected = customSearchParams
@@ -167,7 +171,7 @@ export const AttendanceFilter = () => {
 							</div>
 						</div>
 						<div className="mt-7.5 mb-40 px-6">
-							<p className="mb-2 font-semibold text-body1 text-label-normal">팀별</p>
+							<p className="mb-2 text-body1 font-semibold text-label-normal">팀별</p>
 							<div className="flex flex-wrap gap-2">
 								{TEAM_FILTER.map((chip, index) => {
 									const selected = customSearchParams.get('teams')?.split(',').includes(chip);
@@ -228,7 +232,7 @@ export const AttendanceFilter = () => {
 					/>
 					<Label
 						htmlFor="my-team-mobile"
-						className="cursor-pointer font-normal text-body2 text-label-assistive"
+						className="cursor-pointer text-body2 font-normal text-label-assistive"
 					>
 						내 팀만 보기
 					</Label>
@@ -252,7 +256,7 @@ export const AttendanceFilter = () => {
 					/>
 					<Label
 						htmlFor="my-team-desktop"
-						className="cursor-pointer font-normal text-body2 text-label-assistive"
+						className="cursor-pointer text-body2 font-normal text-label-assistive"
 					>
 						내 팀만 보기
 					</Label>
@@ -264,7 +268,7 @@ export const AttendanceFilter = () => {
 							<Button
 								size="none"
 								className={cn(
-									'h-10 gap-1 rounded-lg border border-line-subtle bg-white px-4 py-2.5 font-normal text-body2 text-label-assistive hover:bg-inherit',
+									'h-10 gap-1 rounded-lg border border-line-subtle bg-white px-4 py-2.5 text-body2 font-normal text-label-assistive hover:bg-inherit',
 									attendanceFilterLabel !== '출석 상태별' &&
 										'border-primary-normal text-primary-normal',
 								)}
@@ -277,7 +281,7 @@ export const AttendanceFilter = () => {
 							<Button
 								size="none"
 								className={cn(
-									'h-10 gap-1 rounded-lg border border-line-subtle bg-white px-4 py-2.5 font-normal text-body2 text-label-assistive hover:bg-inherit',
+									'h-10 gap-1 rounded-lg border border-line-subtle bg-white px-4 py-2.5 text-body2 font-normal text-label-assistive hover:bg-inherit',
 									teamsFilterLabel !== '팀별' && 'border-primary-normal text-primary-normal',
 								)}
 							>
@@ -294,11 +298,11 @@ export const AttendanceFilter = () => {
 						className="rounded-xl border-none bg-background-normal px-4 py-5 shadow-[0_-4px_21.1px_0_rgba(0,0,0,0.12)]"
 					>
 						<div className="flex items-center justify-between">
-							<DropdownMenuLabel className="p-0 font-semibold text-title2">필터</DropdownMenuLabel>
+							<DropdownMenuLabel className="p-0 text-title2 font-semibold">필터</DropdownMenuLabel>
 							<XCircle className="cursor-pointer" onClick={() => setIsDropdownOpen(false)} />
 						</div>
 						<div className="mt-8">
-							<p className="mb-2 font-semibold text-body1 text-label-normal">출석 상태별</p>
+							<p className="mb-2 text-body1 font-semibold text-label-normal">출석 상태별</p>
 							<div className="flex flex-wrap gap-2">
 								{ATTENDANCE_FILTER.map((chip, index) => {
 									const selected = customSearchParams
@@ -321,7 +325,7 @@ export const AttendanceFilter = () => {
 							</div>
 						</div>
 						<div className="mt-7.5 mb-8">
-							<p className="mb-2 font-semibold text-body1 text-label-normal">팀별</p>
+							<p className="mb-2 text-body1 font-semibold text-label-normal">팀별</p>
 							<div className="flex flex-wrap gap-2">
 								{TEAM_FILTER.map((chip, index) => {
 									const selected = customSearchParams.get('teams')?.split(',').includes(chip);

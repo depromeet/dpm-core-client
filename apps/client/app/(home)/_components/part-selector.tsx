@@ -42,7 +42,7 @@ export const PartSelector = ({ value, onChange, name }: PartSelectorProps) => {
 						>
 							{isSelected && <span className="size-1.5 rounded-full bg-background-normal" />}
 						</span>
-						<span className="font-medium text-body2 text-label-normal">{label}</span>
+						<span className="text-body2 font-medium text-label-normal">{label}</span>
 					</label>
 				);
 			})}

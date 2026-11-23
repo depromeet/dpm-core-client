@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Search, X } from 'lucide-react';
 import { Button, cn } from '@dpm-core/shared';
 
-interface DebouncedSearchInputProps
-	extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'defaultValue' | 'value' | 'onChange'> {
+interface DebouncedSearchInputProps extends Omit<
+	React.InputHTMLAttributes<HTMLInputElement>,
+	'defaultValue' | 'value' | 'onChange'
+> {
 	value: string | undefined;
 	onChange: (value: string) => void;
 	onClear?: () => void;
@@ -55,7 +57,10 @@ export function DebouncedSearchInput({
 	};
 
 	useEffect(() => {
-		setInput(value ?? '');
+		function syncInput() {
+			setInput(value ?? '');
+		}
+		syncInput();
 
 		return () => clearTimeout(timerRef.current);
 	}, [value]);
@@ -75,7 +80,7 @@ export function DebouncedSearchInput({
 				value={input}
 				onChange={handleInputChange}
 				className={cn(
-					'min-w-0 flex-1 bg-transparent font-medium text-body2 outline-none placeholder:text-label-assistive',
+					'min-w-0 flex-1 bg-transparent text-body2 font-medium outline-none placeholder:text-label-assistive',
 					className,
 				)}
 			/>

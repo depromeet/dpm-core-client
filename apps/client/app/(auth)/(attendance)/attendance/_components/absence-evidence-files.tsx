@@ -16,7 +16,7 @@ export function AbsenceEvidenceFiles({ images }: AbsenceEvidenceFilesProps) {
 			{images.map(({ imageId, fileName }, index) => (
 				<li
 					key={imageId}
-					className="flex w-fit max-w-full items-center rounded-md bg-background-normal px-2 py-1 font-medium text-caption1 text-label-subtle"
+					className="flex w-fit max-w-full items-center rounded-md bg-background-normal px-2 py-1 text-caption1 font-medium text-label-subtle"
 				>
 					<EvidencePreview imageId={imageId} fileName={fileName} sequence={index + 1} />
 				</li>

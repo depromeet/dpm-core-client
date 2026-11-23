@@ -23,19 +23,9 @@ export const CLARITY_PAGE_ID = defineClarityPageIds({
 	SESSION_FEEDBACK: 'session_feedback', // 세션 피드백
 	ANNOUNCEMENT: 'announcement', // 공지 목록
 	ANNOUNCEMENT_DETAIL: 'announcement_detail', // 공지 상세
-	AFTER_PARTY: 'after_party', // 회식 목록
-	AFTER_PARTY_DETAIL: 'after_party_detail', // 회식 상세
-	AFTER_PARTY_PARTICIPANTS: 'after_party_participants', // 회식 제출 현황
-	AFTER_PARTY_ATTENDEES: 'after_party_attendees', // 회식 참석자
-	AFTER_PARTY_UPDATE: 'after_party_update', // 회식 수정
-	AFTER_PARTY_CREATE: 'after_party_create', // 회식 생성
-	AFTER_PARTY_CREATE_COMPLETE: 'after_party_create_complete', // 회식 생성 완료
-	BILLS: 'bills', // 정산 목록
-	BILLS_DETAIL: 'bills_detail', // 정산 상세
 	MY_PAGE: 'my_page', // 마이페이지
 	ATTENDANCE_ME: 'attendance_me', // 내 출석 현황
 	ATTENDANCE_ME_SESSION: 'attendance_me_session', // 내 출석 상세
-	ATTENDANCE_POLICY: 'attendance_policy', // 출석 규정
 	ATTENDANCE_SESSION: 'attendance_session', // 출석 체크
 	ATTENDANCE_SESSION_RESULT: 'attendance_session_result', // 출석 체크 결과
 });
@@ -118,15 +108,6 @@ export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 	},
 	ANNOUNCEMENT: {},
 	ANNOUNCEMENT_DETAIL: {},
-	AFTER_PARTY: {},
-	AFTER_PARTY_DETAIL: {},
-	AFTER_PARTY_PARTICIPANTS: {},
-	AFTER_PARTY_ATTENDEES: {},
-	AFTER_PARTY_UPDATE: {},
-	AFTER_PARTY_CREATE: {},
-	AFTER_PARTY_CREATE_COMPLETE: {},
-	BILLS: {},
-	BILLS_DETAIL: {},
 	MY_PAGE: {
 		LOGOUT_CONFIRM: 'logout_confirm',
 		WITHDRAW_OPEN: 'withdraw_open',
@@ -134,9 +115,10 @@ export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 		ACCOUNT_LINK_CLICK: 'account_link_click',
 		ACCOUNT_UNLINK_CONFIRM: 'account_unlink_confirm',
 	},
-	ATTENDANCE_ME: {},
+	ATTENDANCE_ME: {
+		POLICY_BUTTON_CLICK: 'policy_button_click',
+	},
 	ATTENDANCE_ME_SESSION: {},
-	ATTENDANCE_POLICY: {},
 	ATTENDANCE_SESSION: {},
 	ATTENDANCE_SESSION_RESULT: {},
 });

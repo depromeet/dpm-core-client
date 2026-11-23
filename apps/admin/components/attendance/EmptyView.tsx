@@ -8,7 +8,7 @@ export const EmptyView = ({ className, message }: React.ComponentProps<'div'> & 
 	return (
 		<div className={cn('flex flex-1 flex-col items-center justify-center gap-y-3', className)}>
 			<Aesterisk />
-			<p className="font-semibold text-body1 text-label-assistive">{message}</p>
+			<p className="text-body1 font-semibold text-label-assistive">{message}</p>
 		</div>
 	);
 };

@@ -41,7 +41,6 @@ function toMemberManagementSearchParams(params: MemberManagementRequest) {
 	const searchParams = new URLSearchParams();
 
 	searchParams.set('approvalStatus', params.approvalStatus);
-	searchParams.set('excludeStaff', String(params.excludeStaff));
 	searchParams.set('missingInformationOnly', String(params.missingInformationOnly));
 	searchParams.set('page', String(params.page));
 	searchParams.set('size', String(params.size));
@@ -52,6 +51,7 @@ function toMemberManagementSearchParams(params: MemberManagementRequest) {
 	for (const part of params.parts ?? []) searchParams.append('parts', part);
 	for (const teamNumber of params.teamNumbers ?? [])
 		searchParams.append('teamNumbers', String(teamNumber));
+	for (const type of params.memberTypes ?? []) searchParams.append('memberTypes', type);
 	for (const status of params.activityStatuses ?? [])
 		searchParams.append('activityStatuses', status);
 	for (const status of params.graduationStatuses ?? [])

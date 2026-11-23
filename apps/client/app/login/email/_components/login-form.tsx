@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import z from 'zod';
+import { z } from 'zod';
 import { auth } from '@dpm-core/api';
 import { Form, toast } from '@dpm-core/shared';
 

@@ -112,7 +112,7 @@ function IconCard({ icon, title, href }: IconCardProps) {
 				className="flex w-15 flex-col items-center gap-y-2 rounded-xl bg-background-strong px-1 pt-4 pb-3 text-center transition-transform hover:scale-105"
 			>
 				<div className="flex items-center justify-center text-icon-strong">{icon}</div>
-				<p className="font-semibold text-body2 text-label-subtle">{title}</p>
+				<p className="text-body2 font-semibold text-label-subtle">{title}</p>
 			</Link>
 		</li>
 	);

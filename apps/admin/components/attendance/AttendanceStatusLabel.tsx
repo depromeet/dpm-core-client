@@ -13,7 +13,7 @@ const AttendanceStatusLabel = ({ status, className, ...props }: AttendanceLabelP
 			{icon}
 			<strong
 				className={cn(
-					'font-semibold text-body2',
+					'text-body2 font-semibold',
 					status === 'PENDING' ? 'text-label-assistive' : 'text-label-subtle',
 				)}
 			>

@@ -19,10 +19,10 @@ export const MemberApprovalBanner = () => {
 				className="relative flex h-33.5 w-full flex-col justify-between rounded-[10px] bg-background-inverse p-5 max-md:h-50"
 			>
 				<div className="flex flex-col items-start">
-					<p className="font-semibold text-caption1 text-label-assistive leading-[133%]">
+					<p className="text-caption1 leading-[133%] font-semibold text-label-assistive">
 						멤버 승인
 					</p>
-					<p className="font-bold text-headline2 text-white leading-[136%] tracking-[-0.02em]">
+					<p className="text-headline2 leading-[136%] font-bold tracking-[-0.02em] text-white">
 						새로운 멤버 승인 요청이
 						<br />
 						{pendingCount}개 들어왔어요.

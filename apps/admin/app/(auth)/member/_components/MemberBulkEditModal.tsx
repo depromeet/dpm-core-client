@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { OptionPickerModal, type SegmentedOption } from '@dpm-core/shared';
 
@@ -15,14 +15,13 @@ import {
 import { toRealTeamNumbers } from '../_lib/team-options';
 import type { MemberEditableField, MemberEditableFields, MemberRow } from '../_types';
 
-/** 파트 수정 모달은 Figma 기준으로 영문 라벨과 이 순서로 노출한다. (표·필터의 한글 라벨과 다르다.) */
 const PART_PICKER_OPTIONS: SegmentedOption[] = [
 	{ value: 'UNASSIGNED', label: '미배정' },
-	{ value: 'DESIGN', label: 'DESIGN' },
-	{ value: 'WEB', label: 'WEB' },
-	{ value: 'SERVER', label: 'SERVER' },
+	{ value: 'DESIGN', label: '디자이너' },
+	{ value: 'WEB', label: '웹' },
+	{ value: 'SERVER', label: '서버' },
 	{ value: 'IOS', label: 'IOS' },
-	{ value: 'ANDROID', label: 'ANDROID' },
+	{ value: 'ANDROID', label: 'AOS' },
 ];
 
 const FIELD_TITLE: Record<MemberEditableField, string> = {
@@ -53,21 +52,17 @@ export const MemberBulkEditModal = ({
 	const [value, setValue] = useState('');
 
 	// 모달을 다시 열 때마다 현재 공통값에서 시작한다.
-	useEffect(() => {
-		setValue(currentValue === null ? '' : String(currentValue));
-	}, [currentValue]);
+	useLayoutEffect(() => {
+		if (field === null) return;
 
-	/**
-	 * field 가 null 이 되는 순간 바로 return null 해버리면 Dialog 전체가 React 트리에서
-	 * 사라져 Radix 의 닫힘 애니메이션이 재생될 틈이 없다. 그래서 실제로 보여줄 필드는
-	 * "마지막으로 열렸던 필드" 를 기억해두고, Dialog 는 open={field !== null} 로만 닫는다.
-	 */
-	const lastFieldRef = useRef<MemberEditableField | null>(null);
-	if (field) lastFieldRef.current = field;
-	const displayField = field ?? lastFieldRef.current;
+		function updateValue() {
+			setValue(currentValue === null ? '' : String(currentValue));
+		}
+		updateValue();
+	}, [field, currentValue]);
 
 	const options = useMemo<SegmentedOption[]>(() => {
-		switch (displayField) {
+		switch (field) {
 			case 'part':
 				return PART_PICKER_OPTIONS;
 			case 'memberType':
@@ -83,9 +78,24 @@ export const MemberBulkEditModal = ({
 			default:
 				return [];
 		}
-	}, [displayField, teams]);
+	}, [field, teams]);
 
-	if (!displayField) return null;
+	const currentContent = field === null ? null : { field, subjects, options, value };
+	const [lastOpenContent, setLastOpenContent] = useState<typeof currentContent>(null);
+
+	// 닫힘 애니메이션 동안에는 마지막으로 보이던 선택지와 선택값을 유지한다.
+	useLayoutEffect(() => {
+		if (field === null) return;
+
+		const openContent = { field, subjects, options, value };
+		function rememberOpenContent() {
+			setLastOpenContent(openContent);
+		}
+		rememberOpenContent();
+	}, [field, subjects, options, value]);
+
+	const content = currentContent ?? lastOpenContent;
+	if (!content) return null;
 
 	const handleConfirm = () => {
 		if (!value || !field) return;
@@ -105,25 +115,27 @@ export const MemberBulkEditModal = ({
 		<OptionPickerModal
 			open={field !== null}
 			onOpenChange={(next) => {
-				if (!next) onClose();
+				if (field !== null && !next) onClose();
 			}}
-			title={FIELD_TITLE[displayField]}
+			title={FIELD_TITLE[content.field]}
 			description={
 				<>
-					다음 <span className="text-primary-normal">{subjects.length}명</span>의 계정 정보를
+					다음 <span className="text-primary-normal">{content.subjects.length}명</span>의 계정 정보를
 					변경합니다.
 				</>
 			}
-			subjects={subjects.map(({ id, name, part }) => ({
+			subjects={content.subjects.map(({ id, name, part }) => ({
 				id,
 				name,
 				imageSrc: PART_ICON[part].src,
 			}))}
-			options={options}
-			value={value}
-			onChange={setValue}
+			options={content.options}
+			value={content.value}
+			onChange={(next) => {
+				if (field !== null) setValue(next);
+			}}
 			onConfirm={handleConfirm}
-			confirmDisabled={!value}
+			confirmDisabled={!content.value}
 		/>
 	);
 };

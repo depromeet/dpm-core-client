@@ -1,25 +1,18 @@
-import Link from 'next/link';
-import { ChevronRight } from '@dpm-core/shared';
-
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { BottomTabBar } from '@/components/bottom-tab-bar';
 import { NavigationBar } from '@/components/navigation-bar';
 
 import { AttendanceMe } from '../_components/attendance-me';
+import { AttendancePolicyButton } from './attendance-policy-button';
 
 export default function AttendanceMePage() {
 	return (
 		<SafeAreaAppLayout hasBottomTabBar className="h-dvh bg-background-normal">
 			<NavigationBar className="justify-end">
-				<h1 className="-translate-x-1/2 absolute left-1/2 font-semibold text-body1">
+				<h1 className="absolute left-1/2 -translate-x-1/2 text-body1 font-semibold">
 					내 출석 현황
 				</h1>
-				<div className="flex items-center gap-1">
-					<Link href="/attendance/policy" className="font-medium text-caption1 text-label-tertiary">
-						규정
-					</Link>
-					<ChevronRight className="size-3 text-icon-noraml" />
-				</div>
+				<AttendancePolicyButton />
 			</NavigationBar>
 			<AttendanceMe />
 			<BottomTabBar />

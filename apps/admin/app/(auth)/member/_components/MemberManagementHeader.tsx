@@ -21,18 +21,18 @@ export const MemberManagementHeader = ({
 
 	return (
 		<>
-			<header className="flex h-20 w-full items-center justify-between border-line-normal border-b px-10">
-				<h1 className="flex items-center gap-2 font-bold text-headline1 text-label-normal">
+			<header className="flex h-20 w-full items-center justify-between border-b border-line-normal px-10">
+				<h1 className="flex items-center gap-2 text-headline1 font-bold text-label-normal">
 					멤버 관리
-					<span className="font-bold text-headline1 text-primary-normal">{totalMemberCount}</span>
+					<span className="text-headline1 font-bold text-primary-normal">{totalMemberCount}</span>
 				</h1>
 				{updatedLabel && (
-					<p className="font-medium text-body2 text-label-assistive">{updatedLabel} 업데이트됨</p>
+					<p className="text-body2 font-medium text-label-assistive">{updatedLabel} 업데이트됨</p>
 				)}
 			</header>
 
 			<div className="flex w-full items-center justify-between px-10 pt-6">
-				<h2 className="font-bold text-label-normal text-title2">요약</h2>
+				<h2 className="text-title2 font-bold text-label-normal">요약</h2>
 				<DebouncedSearchInput
 					value={search}
 					onChange={onSearchChange}

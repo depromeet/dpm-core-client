@@ -67,7 +67,7 @@ const HomeCoachmarkSession = ({ member }: HomeCoachmarkSessionProps) => {
 
 	useEffect(() => {
 		if (!isReady || status !== 'checking' || !session.data) return;
-		const current = session.data.data;
+		const currentSession = session.data.data;
 		const shell = shellRef.current;
 		if (!shell) return;
 
@@ -75,9 +75,9 @@ const HomeCoachmarkSession = ({ member }: HomeCoachmarkSessionProps) => {
 			// Suspense의 query 완료와 실제 DOM 커밋은 같은 시점이 아닐 수 있다.
 			// 프로필 시트는 닫힘 애니메이션으로 DOM에서 제거될 때까지 기다린다.
 			if (shell.querySelector('output, [data-slot="drawer-content"]')) return;
-			if (current.status === 'AVAILABLE' && current.session) {
+			if (currentSession.status === 'AVAILABLE' && currentSession.session) {
 				if (!shell.querySelector('[data-coachmark="session-info"]')) return;
-				const { attendanceStart, absentStart, id, canRecordAttendance } = current.session;
+				const { attendanceStart, absentStart, id, canRecordAttendance } = currentSession.session;
 				const isAttendanceOpen =
 					canRecordAttendance && showAttendanceBanner(attendanceStart, absentStart);
 				if (isAttendanceOpen) {

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
-import z from 'zod';
+import { z } from 'zod';
 import { Form } from '@dpm-core/shared';
 
 import { useSession } from '@/app/(auth)/(home)/_components/session-provider';
@@ -67,6 +67,15 @@ export const buildSessionPayload = (formData: SessionSchema) => {
 			'YYYY-MM-DDTHH:mm:ss',
 		),
 	};
+};
+
+const toMinutes = (value: string) => {
+	if (value.length !== 4) return NaN;
+
+	const h = Number(value.slice(0, 2));
+	const m = Number(value.slice(2, 4));
+
+	return h * 60 + m;
 };
 
 const createSessionSchema = (initialFeedbackStartAt?: string, existingWeeks: number[] = []) =>
@@ -134,15 +143,6 @@ const createSessionSchema = (initialFeedbackStartAt?: string, existingWeeks: num
 					});
 				}
 
-				const toMinutes = (value: string) => {
-					if (value.length !== 4) return NaN;
-
-					const h = Number(value.slice(0, 2));
-					const m = Number(value.slice(2, 4));
-
-					return h * 60 + m;
-				};
-
 				const presentStart = toMinutes(attendancePresentTime.start);
 				const presentEnd = toMinutes(attendancePresentTime.end);
 				const LateStart = toMinutes(attendanceLateTime.start);
@@ -207,6 +207,8 @@ export type SessionSchema = z.infer<ReturnType<typeof createSessionSchema>>;
 
 export const FORM_ID = 'session-form';
 
+const today = new Date();
+
 export const SessionForm = ({
 	defaultValues,
 	showFeedbackSettings = false,
@@ -244,7 +246,7 @@ export const SessionForm = ({
 			feedbackPushEnabled: true,
 			...defaultValues,
 			sessionDate: {
-				date: defaultValues?.sessionDate?.date ?? new Date(),
+				date: defaultValues?.sessionDate?.date ?? today,
 				time: defaultValues?.sessionDate?.time ?? '',
 			},
 			attendancePresentTime: {
@@ -271,7 +273,7 @@ export const SessionForm = ({
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} id={FORM_ID} className="flex flex-col gap-20">
 				<section className="flex flex-col gap-10">
-					<h3 className="font-semibold text-title2">세션 기본 정보</h3>
+					<h3 className="text-title2 font-semibold">세션 기본 정보</h3>
 					<div className="flex flex-col gap-10">
 						<FormName />
 						<FormDate />
@@ -280,7 +282,7 @@ export const SessionForm = ({
 					</div>
 				</section>
 				<section className="flex flex-col gap-10">
-					<h3 className="font-semibold text-title2">출결 시간 설정</h3>
+					<h3 className="text-title2 font-semibold">출결 시간 설정</h3>
 					<div className="flex flex-col gap-10">
 						<FormAttendancePresentTime />
 						<FormAttendanceLateTime />

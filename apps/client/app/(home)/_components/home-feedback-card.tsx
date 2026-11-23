@@ -43,18 +43,18 @@ export const HomeFeedbackCard = ({ isAttendanceOpen }: HomeFeedbackCardProps) =>
 			className="flex h-[150px] flex-col gap-4 rounded-[10px] border border-white bg-background-normal p-4 shadow-[0_0_10px_rgba(0,0,0,0.04)]"
 		>
 			<div className="flex flex-col gap-1">
-				<p className="font-medium text-caption1 text-label-assistive">
+				<p className="text-caption1 font-medium text-label-assistive">
 					{pendingFeedback.week}주차 세션
 				</p>
-				<h2 className="truncate font-semibold text-body1 text-label-normal">
+				<h2 className="truncate text-body1 font-semibold text-label-normal">
 					{pendingFeedback.sessionName}
 				</h2>
-				<p className="font-medium text-caption1 text-label-assistive">
+				<p className="text-caption1 font-medium text-label-assistive">
 					좋았던 점이나 아쉬웠던 점을 알려주세요.
 				</p>
 			</div>
 			<Link
-				className="flex h-10 shrink-0 items-center justify-center rounded-lg bg-background-inverse font-semibold text-caption1 text-label-inverse"
+				className="flex h-10 shrink-0 items-center justify-center rounded-lg bg-background-inverse text-caption1 font-semibold text-label-inverse"
 				href={`/session/${pendingFeedback.sessionId}/feedback?returnTo=%2F&source=home`}
 				onClick={() => {
 					try {

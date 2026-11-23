@@ -27,12 +27,12 @@ export const MultiActionToolbar = ({
 	return (
 		<div
 			className={cn(
-				'flex h-17.5 items-center gap-4 border-line-subtle border-t bg-background-normal py-3',
+				'flex h-17.5 items-center gap-4 border-t border-line-subtle bg-background-normal py-3',
 				className,
 			)}
 			{...props}
 		>
-			<p className="flex-1 font-medium text-body1 text-label-subtle">
+			<p className="flex-1 text-body1 font-medium text-label-subtle">
 				{active ? (
 					<>
 						<span className="text-primary-normal">{selectedCount}명</span> 선택됨

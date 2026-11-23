@@ -33,12 +33,14 @@ export const metadata: Metadata = {
 		title: HOME_TITLE,
 		description: HOME_DESCRIPTION,
 		type: 'website',
-		images: [{
-			url: HOME_IMAGE,
-			width: 1200,
-			height: 600,
-			alt: '디프만 - Depromeet',
-		}],
+		images: [
+			{
+				url: HOME_IMAGE,
+				width: 1200,
+				height: 600,
+				alt: '디프만 - Depromeet',
+			},
+		],
 	},
 	twitter: {
 		card: 'summary_large_image',
@@ -88,5 +90,5 @@ export default function HomePage() {
 // 세션
 // 접근 가능
 // 읽기만
-// 출석, 공지, 회식, 내 정보
+// 출석, 공지, 내 정보
 // 로그인 화면으로

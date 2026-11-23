@@ -18,7 +18,7 @@ interface AttendanceSessionDetailContainerProps {
 	sessionId: number;
 }
 
-const _AttendanceSessionDetailContainer = (props: AttendanceSessionDetailContainerProps) => {
+const AttendanceSessionDetailContainerContent = (props: AttendanceSessionDetailContainerProps) => {
 	const {
 		data: { data },
 	} = useSuspenseQuery(getAttendanceBySessionDetailOptions(props));
@@ -30,20 +30,20 @@ const _AttendanceSessionDetailContainer = (props: AttendanceSessionDetailContain
 				<Button variant="none" size="none" onClick={() => router.back()} asChild>
 					<ChevronLeft />
 				</Button>
-				<h1 className="-translate-x-1/2 absolute left-1/2 font-semibold text-body1">출석 상세</h1>
+				<h1 className="absolute left-1/2 -translate-x-1/2 text-body1 font-semibold">출석 상세</h1>
 			</header>
 			<AttendanceMemberInfo member={data?.member} />
 			<section className="mt-5 px-4">
 				<article className="mb-5">
 					<div className="mb-2 flex items-center justify-between">
-						<h3 className="font-semibold text-body1 text-label-subtle">출석 정보</h3>
+						<h3 className="text-body1 font-semibold text-label-subtle">출석 정보</h3>
 						{data?.attendance.updatedAt && (
-							<p className="font-medium text-label-subtle text-xs">
+							<p className="text-xs font-medium text-label-subtle">
 								{formatISOStringToFullDateString(data.attendance.updatedAt)} 저장됨
 							</p>
 						)}
 					</div>
-					<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-3 font-semibold text-body2">
+					<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-3 text-body2 font-semibold">
 						<div className="flex gap-4">
 							<p className="w-17.5 text-label-assistive">출석 상태</p>
 							<AttendanceStatusLabel status={data?.attendance.status} />
@@ -57,8 +57,8 @@ const _AttendanceSessionDetailContainer = (props: AttendanceSessionDetailContain
 					</div>
 				</article>
 				<article>
-					<h3 className="mb-2 font-semibold text-body1 text-label-subtle">세션 정보</h3>
-					<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-3 font-semibold text-body2">
+					<h3 className="mb-2 text-body1 font-semibold text-label-subtle">세션 정보</h3>
+					<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-3 text-body2 font-semibold">
 						<div className="flex gap-4">
 							<p className="w-17.5 text-label-assistive">세션 주차</p>
 							<p className="font-medium text-label-subtle">{data?.session.week}주차</p>
@@ -89,7 +89,7 @@ export const AttendanceSessionDetailContainer = (props: AttendanceSessionDetailC
 	return (
 		<ErrorBoundary fallback>
 			<Suspense>
-				<_AttendanceSessionDetailContainer {...props} />
+				<AttendanceSessionDetailContainerContent {...props} />
 			</Suspense>
 		</ErrorBoundary>
 	);

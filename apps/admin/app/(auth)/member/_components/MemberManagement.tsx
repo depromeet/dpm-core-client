@@ -28,7 +28,7 @@ import {
 
 import { useBulkMemberEdit } from '../_hooks/useBulkMemberEdit';
 import { useInlineMemberEdit } from '../_hooks/useInlineMemberEdit';
-import { useMemberFilters } from '../_hooks/useMemberFilters';
+import { type MemberFilterState, useMemberFilters } from '../_hooks/useMemberFilters';
 import { useMemberList } from '../_hooks/useMemberList';
 import { useMemberSelection } from '../_hooks/useMemberSelection';
 import { buildMemberChanges, hasChanges, toTeamId } from '../_lib/build-member-changes';
@@ -66,18 +66,8 @@ type DialogState =
 export const MemberManagement = () => {
 	const queryClient = useQueryClient();
 	const { track } = useClarity();
-	const {
-		filters,
-		queryParams,
-		setApprovalStatus,
-		setSearch,
-		setParts,
-		setTeamNumbers,
-		setActivityStatuses,
-		setExcludeStaff,
-		setOrganizerOnly,
-		applyBadgePreset,
-	} = useMemberFilters();
+	const { filters, queryParams, setApprovalStatus, updateFilter, applyBadgePreset } =
+		useMemberFilters();
 
 	// 탭 진입 기록은 탭이 바뀔 때만 남긴다. track 은 로그인 상태가 정해질 때 새로 만들어지므로
 	// 의존성에 넣으면 같은 탭에서 중복 기록되어, 최신 track 만 ref 로 들고 있는다.
@@ -94,10 +84,10 @@ export const MemberManagement = () => {
 	}, [filters.approvalStatus]);
 
 	const withFilterTracking =
-		<T,>(setter: (value: T) => void) =>
-		(value: T) => {
+		<K extends keyof MemberFilterState>(key: K) =>
+		(value: MemberFilterState[K]) => {
 			track(CLARITY_ACTION_ID.MEMBER.FILTER_CHANGE);
-			setter(value);
+			updateFilter(key, value);
 		};
 
 	const [searchInput, setSearchInput] = useState('');
@@ -112,7 +102,7 @@ export const MemberManagement = () => {
 		isFetchingNextPage,
 		isLoadingAllForSelection,
 		loadAllAndGetIds,
-	} = useMemberList(queryParams, filters.organizerOnly && filters.approvalStatus === 'APPROVED');
+	} = useMemberList(queryParams);
 
 	const { data: cohortNumber } = useQuery(getCurrentCohortQuery);
 	const { data: teams } = useQuery(getCurrentCohortTeamsQuery);
@@ -499,7 +489,7 @@ export const MemberManagement = () => {
 				search={searchInput}
 				onSearchChange={(value) => {
 					setSearchInput(value);
-					setSearch(value);
+					updateFilter('search', value);
 				}}
 			/>
 
@@ -526,14 +516,12 @@ export const MemberManagement = () => {
 						<MemberFilterBar
 							parts={filters.parts}
 							teamNumbers={filters.teamNumbers}
+							memberTypes={filters.memberTypes}
 							activityStatuses={filters.activityStatuses}
-							excludeStaff={filters.excludeStaff}
-							organizerOnly={filters.organizerOnly}
-							onPartsChange={withFilterTracking(setParts)}
-							onTeamNumbersChange={withFilterTracking(setTeamNumbers)}
-							onActivityStatusesChange={withFilterTracking(setActivityStatuses)}
-							onExcludeStaffChange={withFilterTracking(setExcludeStaff)}
-							onOrganizerOnlyChange={withFilterTracking(setOrganizerOnly)}
+							onPartsChange={withFilterTracking('parts')}
+							onTeamNumbersChange={withFilterTracking('teamNumbers')}
+							onMemberTypesChange={withFilterTracking('memberTypes')}
+							onActivityStatusesChange={withFilterTracking('activityStatuses')}
 						/>
 					)}
 					<MemberSelectionSummary
@@ -642,7 +630,7 @@ export const MemberManagement = () => {
 				{/* 끝에 닿으면 다음 페이지를 불러온다. */}
 				<div ref={loadMoreRef} className={showBulkEditBar ? 'h-28' : 'h-10'} />
 				{isFetchingNextPage && (
-					<p className="py-4 text-center font-medium text-body2 text-label-assistive">
+					<p className="py-4 text-center text-body2 font-medium text-label-assistive">
 						불러오는 중...
 					</p>
 				)}

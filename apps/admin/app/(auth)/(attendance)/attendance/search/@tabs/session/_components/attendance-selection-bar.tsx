@@ -65,12 +65,12 @@ export function AttendanceSelectionBar({
 			className="absolute inset-x-0 bottom-5 z-30 mx-10 flex flex-wrap items-center justify-between gap-2.5 rounded-[20px] bg-background-inverse px-6 py-4 text-label-inverse"
 		>
 			<div className="flex items-center gap-2">
-				<p className="font-bold text-title1">출석 상태 변경</p>
+				<p className="text-title1 font-bold">출석 상태 변경</p>
 				<p>
-					<span className="font-semibold text-body1 text-primary-normal">
+					<span className="text-body1 font-semibold text-primary-normal">
 						{selectedIds.length}명
 					</span>{' '}
-					<span className="font-medium text-body1 text-label-assistive">선택됨</span>
+					<span className="text-body1 font-medium text-label-assistive">선택됨</span>
 				</p>
 			</div>
 			<div className="flex flex-wrap items-center gap-3">

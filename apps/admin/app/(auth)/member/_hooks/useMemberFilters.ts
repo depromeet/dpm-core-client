@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import type {
 	ManagedMemberPart,
+	ManagedMemberType,
 	MemberActivityStatus,
 	MemberApprovalStatus,
 	MemberBadgeCard,
@@ -17,11 +18,8 @@ export interface MemberFilterState {
 	search: string;
 	parts: ManagedMemberPart[];
 	teamNumbers: number[];
+	memberTypes: ManagedMemberType[];
 	activityStatuses: MemberActivityStatus[];
-	/** 운영진·코어 제외. 승인 완료 탭의 기본값은 켜짐 */
-	excludeStaff: boolean;
-	/** 운영진만 보기. 켜면 운영진/코어 제외와 함께 쓸 수 없어 서로 끈다 */
-	organizerOnly: boolean;
 	missingInformationOnly: boolean;
 }
 
@@ -30,9 +28,8 @@ const INITIAL_STATE: MemberFilterState = {
 	search: '',
 	parts: [],
 	teamNumbers: [],
+	memberTypes: ['DEEPER'],
 	activityStatuses: [],
-	excludeStaff: true,
-	organizerOnly: false,
 	missingInformationOnly: false,
 };
 
@@ -69,37 +66,12 @@ export const useMemberFilters = () => {
 		);
 	}, []);
 
-	const setSearch = useCallback((search: string) => {
-		setFilters((prev) => ({ ...prev, search }));
-	}, []);
-
-	const setParts = useCallback((parts: ManagedMemberPart[]) => {
-		setFilters((prev) => ({ ...prev, parts }));
-	}, []);
-
-	const setTeamNumbers = useCallback((teamNumbers: number[]) => {
-		setFilters((prev) => ({ ...prev, teamNumbers }));
-	}, []);
-
-	const setActivityStatuses = useCallback((activityStatuses: MemberActivityStatus[]) => {
-		setFilters((prev) => ({ ...prev, activityStatuses }));
-	}, []);
-
-	const setExcludeStaff = useCallback((excludeStaff: boolean) => {
-		setFilters((prev) => ({
-			...prev,
-			excludeStaff,
-			organizerOnly: excludeStaff ? false : prev.organizerOnly,
-		}));
-	}, []);
-
-	const setOrganizerOnly = useCallback((organizerOnly: boolean) => {
-		setFilters((prev) => ({
-			...prev,
-			organizerOnly,
-			excludeStaff: organizerOnly ? false : prev.excludeStaff,
-		}));
-	}, []);
+	const updateFilter = useCallback(
+		<K extends keyof MemberFilterState>(key: K, value: MemberFilterState[K]) => {
+			setFilters((prev) => ({ ...prev, [key]: value }));
+		},
+		[],
+	);
 
 	const applyBadgePreset = useCallback((card: MemberBadgeCard) => {
 		setFilters(presetForCard(card));
@@ -115,9 +87,10 @@ export const useMemberFilters = () => {
 			parts: filters.parts.length > 0 ? filters.parts : undefined,
 			teamNumbers:
 				isApprovedTab && filters.teamNumbers.length > 0 ? filters.teamNumbers : undefined,
+			memberTypes:
+				isApprovedTab && filters.memberTypes.length > 0 ? filters.memberTypes : undefined,
 			activityStatuses:
 				isApprovedTab && filters.activityStatuses.length > 0 ? filters.activityStatuses : undefined,
-			excludeStaff: isApprovedTab ? filters.excludeStaff : false,
 			missingInformationOnly: isApprovedTab ? filters.missingInformationOnly : false,
 			size: MEMBER_PAGE_SIZE,
 		};
@@ -127,12 +100,7 @@ export const useMemberFilters = () => {
 		filters,
 		queryParams,
 		setApprovalStatus,
-		setSearch,
-		setParts,
-		setTeamNumbers,
-		setActivityStatuses,
-		setExcludeStaff,
-		setOrganizerOnly,
+		updateFilter,
 		applyBadgePreset,
 	};
 };

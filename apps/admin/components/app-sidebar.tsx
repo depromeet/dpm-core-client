@@ -229,7 +229,7 @@ export const AppSidebar = () => {
 	};
 
 	return (
-		<Sidebar collapsible="icon" className="border-line-normal border-r">
+		<Sidebar collapsible="icon" className="border-r border-line-normal">
 			<SidebarHeader className="p-4">
 				<Link href="/" className="flex items-center justify-center px-4.5 py-2.5">
 					<TextLogo className="hidden h-5 w-36 text-gray-400 lg:block" />
@@ -262,7 +262,7 @@ export const AppSidebar = () => {
 												<item.icon active={active} />
 												<span
 													className={cn(
-														'font-semibold text-body2',
+														'text-body2 font-semibold',
 														active ? 'text-label-normal' : 'text-label-subtle',
 													)}
 												>
@@ -311,14 +311,14 @@ const SideBarUserMenu = () => {
 						align="end"
 						sideOffset={18}
 					>
-						<DropdownMenuLabel className="p-0 font-semibold text-body2 text-label-assistive">
+						<DropdownMenuLabel className="p-0 text-body2 font-semibold text-label-assistive">
 							<div className="mb-3 flex items-center gap-4">
 								<span className="w-[25px] shrink-0">메일</span>
 								<span className="truncate font-medium">{user.email}</span>
 							</div>
 							<div className="flex items-center gap-4">
 								<span className="w-[25px] shrink-0">기수</span>
-								<span className="font-medium text-body1 text-label-subtle">{user.cohort}기</span>
+								<span className="text-body1 font-medium text-label-subtle">{user.cohort}기</span>
 							</div>
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator className="my-0" />
@@ -353,7 +353,7 @@ const SideBarProfile = (props: SidebarProfileProps) => {
 				/>
 			</div>
 			<div className="flex flex-col gap-0.5">
-				<span className="font-semibold text-body1">{name}</span>
+				<span className="text-body1 font-semibold">{name}</span>
 			</div>
 		</div>
 	);
@@ -386,7 +386,7 @@ const LogoutAlert = () => {
 				<Button
 					size="none"
 					variant="none"
-					className="flex h-12 w-full justify-between rounded-lg px-1 font-medium text-body1 text-label-subtle hover:bg-background-subtle"
+					className="flex h-12 w-full justify-between rounded-lg px-1 text-body1 font-medium text-label-subtle hover:bg-background-subtle"
 				>
 					로그아웃
 					<ChevronRight className="text-icon-noraml" width={18} height={18} />
@@ -439,7 +439,7 @@ const WithdrawAlert = () => {
 				<Button
 					size="none"
 					variant="none"
-					className="flex h-12 w-full justify-between rounded-lg px-1 font-medium text-body1 text-label-subtle hover:bg-background-subtle"
+					className="flex h-12 w-full justify-between rounded-lg px-1 text-body1 font-medium text-label-subtle hover:bg-background-subtle"
 				>
 					탈퇴
 					<ChevronRight className="text-icon-noraml" width={18} height={18} />
@@ -486,7 +486,7 @@ const AttendanceSideBarItem = (props: AttendanceSideBarItemProps) => {
 					<props.icon active={props.active} />
 					<span
 						className={cn(
-							'font-semibold text-body2',
+							'text-body2 font-semibold',
 							props.active ? 'text-label-normal' : 'text-label-subtle',
 						)}
 					>

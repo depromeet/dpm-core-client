@@ -49,11 +49,11 @@ export const OptionPickerModal = ({
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="gap-6 sm:max-w-[589px]">
 				<DialogHeader className="gap-2">
-					<DialogTitle className="text-left font-bold text-headline2 text-label-normal">
+					<DialogTitle className="text-left text-headline2 font-bold text-label-normal">
 						{title}
 					</DialogTitle>
 					{description ? (
-						<DialogDescription className="text-left font-medium text-body2 text-label-assistive">
+						<DialogDescription className="text-left text-body2 font-medium text-label-assistive">
 							{description}
 						</DialogDescription>
 					) : null}
