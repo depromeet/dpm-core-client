@@ -7,6 +7,10 @@ import { Button, cn, Input } from '@dpm-core/shared';
 import { LinkIcon } from '../icons';
 import type { EditorProps } from './types';
 
+const focusLinkInput = (input: HTMLInputElement | null) => {
+	input?.focus();
+};
+
 /**
  * @description 링크 삽입/편집 툴
  */
@@ -103,19 +107,19 @@ export const TiptapLink = ({ editor }: EditorProps) => {
 		>
 			<div className="relative">
 				<Input
+					ref={focusLinkInput}
 					placeholder="URL을 입력하세요"
 					value={url}
 					onChange={(e) => setUrl(e.target.value)}
 					onKeyDown={handleKeyDown}
 					className="border-line-normal bg-background-normal p-0 py-6 pr-[calc(60px+8px)] pl-4"
 					variant="line"
-					autoFocus
 				/>
 				<Button
 					onClick={handleSubmit}
 					variant="secondary"
 					size="md"
-					className="-translate-y-1/2 absolute top-1/2 right-1.5 h-10 shrink-0"
+					className="absolute top-1/2 right-1.5 h-10 shrink-0 -translate-y-1/2"
 				>
 					완료
 				</Button>

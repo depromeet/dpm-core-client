@@ -7,9 +7,9 @@
 		"dev": "node scripts/local-client-server.js",
 		"build": "next build",
 		"start": "next start --turbopack",
-		"format": "biome format --write .",
-		"lint": "biome lint --write .",
-		"check-types": "tsc --noEmit",
+		"format": "oxfmt --config ../../.oxfmtrc.json .",
+		"lint": "oxlint --config ../../.oxlintrc.json --fix .",
+		"check-types": "next typegen && tsc --noEmit",
 		"clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next"
 	},
 	"dependencies": {

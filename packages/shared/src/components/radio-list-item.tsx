@@ -24,6 +24,7 @@ export const RadioListItem = ({
 	return (
 		<div
 			className={cn('flex items-start gap-4', className)}
+			// oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- 선택 항목의 설명과 삭제 버튼을 그대로 제공한다.
 			role="option"
 			aria-selected={checked}
 			data-value={value}
@@ -46,7 +47,7 @@ export const RadioListItem = ({
 
 			{/* Content */}
 			<div className="flex flex-1 flex-col gap-0.5">
-				<p className="line-clamp-1 font-semibold text-body1 text-label-normal">{title}</p>
+				<p className="line-clamp-1 text-body1 font-semibold text-label-normal">{title}</p>
 				<p className="text-caption1 text-label-assistive">{description}</p>
 			</div>
 
@@ -55,7 +56,7 @@ export const RadioListItem = ({
 				<button
 					type="button"
 					onClick={onDelete}
-					className="font-semibold text-body2 text-red-500 transition-colors hover:text-red-600"
+					className="text-body2 font-semibold text-red-500 transition-colors hover:text-red-600"
 				>
 					삭제
 				</button>

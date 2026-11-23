@@ -43,9 +43,9 @@ export const MemberProfile = ({
 			</Avatar>
 
 			<div className="flex flex-col gap-0.75">
-				<p className="font-semibold text-body1 text-label-normal">{name}</p>
+				<p className="text-body1 font-semibold text-label-normal">{name}</p>
 				{(team || role) && (
-					<div className="flex items-center gap-1.5 font-medium text-caption1 text-label-assistive">
+					<div className="flex items-center gap-1.5 text-caption1 font-medium text-label-assistive">
 						{isAdmin && <span>운영진</span>}
 						{isAdmin && team && <div className="h-3.5 w-px bg-line-subtle" />}
 						{team && <span>{team}</span>}

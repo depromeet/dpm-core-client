@@ -42,7 +42,7 @@ export const AssignmentSubmitStatus = ({ status, className }: AssignmentSubmitSt
 	return (
 		<div className={cn('flex items-center gap-1', className)}>
 			<Icon className="size-5 shrink-0" />
-			<span className="font-semibold text-body2 text-label-subtle">{config.label}</span>
+			<span className="text-body2 font-semibold text-label-subtle">{config.label}</span>
 		</div>
 	);
 };

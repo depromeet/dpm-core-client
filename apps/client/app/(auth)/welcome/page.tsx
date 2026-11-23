@@ -69,9 +69,9 @@ export default function WelcomePage() {
 				src={bgEllipse}
 				alt=""
 				aria-hidden
-				className="-bottom-[381px] -translate-x-1/2 pointer-events-none absolute left-1/2 max-w-none"
+				className="pointer-events-none absolute -bottom-[381px] left-1/2 max-w-none -translate-x-1/2"
 			/>
-			<h1 className="relative mt-24 text-center font-bold text-headline2 text-label-normal tracking-[-0.44px]">
+			<h1 className="relative mt-24 text-center text-headline2 font-bold tracking-[-0.44px] text-label-normal">
 				디프만 {user.cohort}기 멤버 {user.name}님,
 				<br />
 				멤버 인증이 완료되었어요
@@ -83,7 +83,7 @@ export default function WelcomePage() {
 					src={cardTexture}
 					alt=""
 					aria-hidden
-					className="-top-1.5 -left-2 absolute h-68 w-57.75 max-w-none opacity-30"
+					className="absolute -top-1.5 -left-2 h-68 w-57.75 max-w-none opacity-30"
 				/>
 				<div className="relative flex flex-col items-center gap-3.5 pt-8">
 					<div className="flex size-23 items-center justify-center rounded-full bg-background-normal">
@@ -96,26 +96,26 @@ export default function WelcomePage() {
 						/>
 					</div>
 					<div className="flex flex-col items-center gap-1">
-						<p className="font-bold text-[20.71px] text-label-normal leading-[1.44]">{user.name}</p>
-						<p className="font-medium text-[13.8px] text-label-subtle leading-[1.33]">
+						<p className="text-[20.71px] leading-[1.44] font-bold text-label-normal">{user.name}</p>
+						<p className="text-[13.8px] leading-[1.33] font-medium text-label-subtle">
 							{cohort[part].label}
 						</p>
 					</div>
 				</div>
-				<p className="absolute inset-x-0 bottom-0 flex h-8.5 items-center justify-center font-semibold text-body2 text-label-subtle">
+				<p className="absolute inset-x-0 bottom-0 flex h-8.5 items-center justify-center text-body2 font-semibold text-label-subtle">
 					DPM {user.cohort}th
 				</p>
 				<Image
 					src={cardEllipse}
 					alt=""
 					aria-hidden
-					className="-translate-x-1/2 -translate-y-1/2 pointer-events-none absolute top-1/2 left-1/2 max-w-none mix-blend-overlay"
+					className="pointer-events-none absolute top-1/2 left-1/2 max-w-none -translate-x-1/2 -translate-y-1/2 mix-blend-overlay"
 				/>
 			</div>
 
 			<Button
 				variant="primary"
-				className="relative mt-12.75 h-14 w-70 rounded-lg font-semibold text-body1"
+				className="relative mt-12.75 h-14 w-70 rounded-lg text-body1 font-semibold"
 				loading={isPending}
 				onClick={() => {
 					track(CLARITY_ACTION_ID.WELCOME.ENTER_CLICK);

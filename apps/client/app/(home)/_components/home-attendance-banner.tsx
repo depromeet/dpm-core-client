@@ -128,10 +128,10 @@ const HomeCheckAttendanceBannerContent = ({
 			<>
 				<div className="flex justify-between">
 					<div>
-						<p className="mb-1 font-semibold text-caption1 text-label-assistive">
+						<p className="mb-1 text-caption1 font-semibold text-label-assistive">
 							{attendanceSession.week}주차
 						</p>
-						<p className="font-bold text-headline2 text-white">
+						<p className="text-headline2 font-bold text-white">
 							{isPastAbsentStart ? (
 								completedAttendanceCopy.ABSENT.title
 							) : (
@@ -160,7 +160,7 @@ const HomeCheckAttendanceBannerContent = ({
 					</AttendanceCheckBottomSheet>
 					<Link
 						href={`/attendance/me/${attendanceSession.id}/absence-reason`}
-						className="font-medium text-body2 text-label-assistive"
+						className="text-body2 font-medium text-label-assistive"
 					>
 						오늘 참석이 어렵다면 &gt;
 					</Link>
@@ -188,16 +188,16 @@ const HomeCheckAttendanceBannerContent = ({
 		<>
 			<div className="flex justify-between">
 				<div>
-					<p className="mb-1 font-semibold text-caption1 text-label-assistive">
+					<p className="mb-1 text-caption1 font-semibold text-label-assistive">
 						{formatSessionWeekString(attendanceSession.week)} 출석
 					</p>
-					<p className="font-bold text-headline2 text-white">{title}</p>
+					<p className="text-headline2 font-bold text-white">{title}</p>
 					{isReviewPending || isExcusedAbsent ? (
-						<p className="mt-1 font-semibold text-caption1 text-label-assistive">
+						<p className="mt-1 text-caption1 font-semibold text-label-assistive">
 							{isReviewPending ? '결석 사유서를 검토하고 있어요.' : '결석 사유서를 제출했어요.'}
 						</p>
 					) : (
-						<p className="mt-1 font-semibold text-caption1 text-label-assistive">
+						<p className="mt-1 text-caption1 font-semibold text-label-assistive">
 							{timeLabel} |{' '}
 							<span className="font-normal">{formatISOStringToFullDateString(time)}</span>
 						</p>

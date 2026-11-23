@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { HTTPError } from 'ky';
 import { useForm } from 'react-hook-form';
-import z from 'zod';
+import { z } from 'zod';
 import type { ApiErrorReponse } from '@dpm-core/api';
 import {
 	CircleAlert,
@@ -141,16 +141,16 @@ export const AttendanceCheckBottomSheet = ({
 	return (
 		<Drawer open={isOpen} onOpenChange={handleOpenChange} repositionInputs={!isApp}>
 			<DrawerTrigger asChild>{children}</DrawerTrigger>
-			<DrawerContent className="mx-auto max-w-lg pb-safe-area">
+			<DrawerContent className="pb-safe-area mx-auto max-w-lg">
 				<Form {...form}>
 					<DrawerTitle className="sr-only">출석코드를 입력해 주세요</DrawerTitle>
 					<DrawerHeader
 						showCloseButton={false}
-						className="mb-4 flex flex-col items-start gap-1 px-5 font-bold text-label-normal text-title1"
+						className="mb-4 flex flex-col items-start gap-1 px-5 text-title1 font-bold text-label-normal"
 					>
 						출석코드를 입력해 주세요
 						{isValidationError ? (
-							<p className="flex items-center gap-2 font-semibold text-body2 text-red-400">
+							<p className="flex items-center gap-2 text-body2 font-semibold text-red-400">
 								<CircleAlert />
 								코드가 일치하지 않아요.
 							</p>

@@ -21,6 +21,12 @@ import { formatSessionWeekString } from '@/lib/session/format';
 import { useClarity } from '@/providers/client-clarity-adapter';
 import { getSessionListQuery } from '@/remotes/queries/session';
 
+const renderSessionItem = (
+	_: number,
+	session: SessionListItem,
+	onFeedbackView: (sessionId: number) => void,
+) => <SessionItem key={session.id} session={session} onFeedbackView={onFeedbackView} />;
+
 const SessionListContainer = () => {
 	const {
 		data: { data: sessionResponse },
@@ -54,9 +60,8 @@ const SessionListContainer = () => {
 	return (
 		<Virtuoso
 			data={sessionResponse.sessions}
-			itemContent={(_, session) => (
-				<SessionItem key={session.id} session={session} onFeedbackView={handleFeedbackView} />
-			)}
+			context={handleFeedbackView}
+			itemContent={renderSessionItem}
 			className="scrollbar-hide flex-1"
 		/>
 	);
@@ -82,7 +87,7 @@ function SessionItem({
 
 	return (
 		<div className="px-4">
-			<div className="flex flex-col gap-2.5 border-line-subtle border-b px-3 py-4">
+			<div className="flex flex-col gap-2.5 border-b border-line-subtle px-3 py-4">
 				<Button
 					size="none"
 					variant="none"
@@ -92,19 +97,19 @@ function SessionItem({
 					<Link href={`/session/${session.id}?returnTo=%2Fsession`}>
 						<div className="flex w-full flex-col gap-1.5">
 							<div className="flex flex-col gap-0.5">
-								<p className="font-medium text-caption1 text-label-assistive">
+								<p className="text-caption1 font-medium text-label-assistive">
 									{formatSessionWeekString(session.week)}
 								</p>
-								<h3 className="font-semibold text-body1 text-label-normal">{session.name}</h3>
+								<h3 className="text-body1 font-semibold text-label-normal">{session.name}</h3>
 							</div>
 							<div className="flex items-center gap-x-1">
 								<Calender />
-								<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
+								<p className="ml-0.5 text-caption1 font-medium text-label-assistive">
 									{formatDotFullDate(session.date)}
 								</p>
 
 								<Clock className="ml-2" />
-								<p className="ml-0.5 font-medium text-caption1 text-label-assistive">
+								<p className="ml-0.5 text-caption1 font-medium text-label-assistive">
 									{formatISOStringHHMM(session.date)}
 								</p>
 							</div>
@@ -115,7 +120,7 @@ function SessionItem({
 					<Button
 						variant="none"
 						size="none"
-						className="h-9 w-full rounded-lg border border-primary-normal bg-background-normal font-semibold text-caption1 text-primary-normal hover:bg-primary-extralight"
+						className="h-9 w-full rounded-lg border border-primary-normal bg-background-normal text-caption1 font-semibold text-primary-normal hover:bg-primary-extralight"
 						asChild
 					>
 						<Link

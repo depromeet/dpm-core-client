@@ -25,12 +25,12 @@ const SessionItem = (props: AttendanceSession & { memberId: number }) => {
 	return (
 		<Link
 			href={`/attendance/${memberId}/${sessionId}`}
-			className="flex w-full items-center justify-between border-line-normal border-b px-3 py-4"
+			className="flex w-full items-center justify-between border-b border-line-normal px-3 py-4"
 		>
 			<div>
-				<p className="mb-0.5 font-medium text-caption1 text-label-assistive">{week}주차 세션</p>
-				<p className="mb-0.5 font-semibold text-body1 text-label-normal">{eventName}</p>
-				<p className="flex gap-2 font-medium text-caption1 text-label-assistive">
+				<p className="mb-0.5 text-caption1 font-medium text-label-assistive">{week}주차 세션</p>
+				<p className="mb-0.5 text-body1 font-semibold text-label-normal">{eventName}</p>
+				<p className="flex gap-2 text-caption1 font-medium text-label-assistive">
 					<span className="flex items-center gap-0.5">
 						<Calender />
 						<time dateTime={date}>{formatDotFullDate(date)}</time>

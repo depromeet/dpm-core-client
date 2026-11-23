@@ -38,10 +38,6 @@ export function getNotificationPath(data: Record<string, unknown> | null | undef
 			const sessionId = toId(data?.sessionId);
 			return sessionId && `/session/${sessionId}/feedback`;
 		}
-		case 'AFTER_PARTY_INVITATION': {
-			const afterPartyId = toId(data?.afterPartyId);
-			return afterPartyId && `/after-party/${afterPartyId}`;
-		}
 		// 출석 체크는 홈의 출석 배너/바텀시트에서 진행한다.
 		case 'ATTENDANCE_STARTED':
 			return '/';

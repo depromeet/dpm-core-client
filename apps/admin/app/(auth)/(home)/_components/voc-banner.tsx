@@ -8,11 +8,11 @@ export const VocBanner = () => {
 			className="flex items-center justify-between rounded-lg bg-primary-extralight p-5 max-lg:px-2.5 max-lg:py-3"
 		>
 			<div>
-				<p className="flex items-center font-bold text-primary-normal text-title2 max-lg:flex-col">
+				<p className="flex items-center text-title2 font-bold text-primary-normal max-lg:flex-col">
 					<span>VOC</span>
 					<span className="max-lg:text-caption1">수집중!</span>
 				</p>
-				<p className="mt-2 font-medium text-caption1 text-label-assistive max-lg:hidden">
+				<p className="mt-2 text-caption1 font-medium text-label-assistive max-lg:hidden">
 					여러분의 의견을 기다리고 있어요!
 				</p>
 			</div>

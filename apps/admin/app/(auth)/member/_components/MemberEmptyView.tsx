@@ -13,7 +13,7 @@ export const MemberEmptyView = ({
 	return (
 		<div className={cn('flex w-full flex-col items-center justify-center gap-4 py-30', className)}>
 			<Asterisk className="size-14 text-label-assistive" strokeWidth={1.5} />
-			<p className="font-medium text-body1 text-label-assistive">{message}</p>
+			<p className="text-body1 font-medium text-label-assistive">{message}</p>
 		</div>
 	);
 };

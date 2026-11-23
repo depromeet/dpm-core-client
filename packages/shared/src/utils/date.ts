@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import 'dayjs/locale/ko';
+import koreanLocale from 'dayjs/locale/ko';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 // date-fns locale for Calendar
@@ -8,7 +8,7 @@ export { ko as koLocale } from 'date-fns/locale';
 import { ATTENDANCE_GAP_DURATION, ATTENDANCE_LATE_DURATION } from '../constants/attendance';
 
 dayjs.extend(relativeTime);
-dayjs.locale('ko');
+dayjs.locale(koreanLocale.name);
 
 export const formatDate = (date: Date | string) => {
 	return dayjs(date).format('YYYY-MM-DD HH:mm:ss');

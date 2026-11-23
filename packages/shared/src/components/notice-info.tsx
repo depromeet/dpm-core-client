@@ -38,7 +38,7 @@ export const NoticeInfo = ({
 				</div>
 			)}
 			<div className="flex flex-col gap-2">
-				<p className={cn('font-semibold text-body1 text-label-normal', titleClassName)}>{title}</p>
+				<p className={cn('text-body1 font-semibold text-label-normal', titleClassName)}>{title}</p>
 				<div
 					className={cn(
 						'flex items-center gap-1 text-caption1 text-label-assistive',

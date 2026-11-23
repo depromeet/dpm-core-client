@@ -11,7 +11,7 @@ export function useIsTablet() {
 			setIsTablet(window.innerWidth < TABLET_BREAKPOINT);
 		};
 		mql.addEventListener('change', onChange);
-		setIsTablet(window.innerWidth < TABLET_BREAKPOINT);
+		onChange();
 		return () => mql.removeEventListener('change', onChange);
 	}, []);
 

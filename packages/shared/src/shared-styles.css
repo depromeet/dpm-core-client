@@ -1,5 +1,5 @@
-@import "tw-animate-css";
-@import "./theme-styles.css";
+@import 'tw-animate-css';
+@import './theme-styles.css';
 
 @source "./";
 
@@ -20,7 +20,7 @@
 @layer base {
 	body {
 		overscroll-behavior: none;
-		@apply bg-background text-label-normal font-pretendard;
+		@apply bg-background font-pretendard text-label-normal;
 	}
 }
 

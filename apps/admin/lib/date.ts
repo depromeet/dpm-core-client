@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
-import 'dayjs/locale/ko';
+import koreanLocale from 'dayjs/locale/ko';
 
-dayjs.locale('ko');
+dayjs.locale(koreanLocale.name);
 
 /**
  * @param isoString ISO 8601 형식의 날짜 문자열

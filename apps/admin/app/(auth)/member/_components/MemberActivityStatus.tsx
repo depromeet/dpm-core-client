@@ -18,11 +18,11 @@ const DOT_COLOR: Record<ActivityStatus, string> = {
 export const MemberActivityStatus = ({ status }: MemberActivityStatusProps) => (
 	<div className="flex items-center gap-1.5">
 		<span className={cn('size-2 shrink-0 rounded-full', DOT_COLOR[status])} />
-		<span className="font-semibold text-body2 text-label-normal">
+		<span className="text-body2 font-semibold text-label-normal">
 			{status === 'INACTIVE' ? '활동 정지' : '활동 중'}
 		</span>
 		{status === 'AT_RISK' && (
-			<span className="rounded-md bg-red-50 px-1.5 py-0.5 font-semibold text-caption1 text-red-500">
+			<span className="rounded-md bg-red-50 px-1.5 py-0.5 text-caption1 font-semibold text-red-500">
 				수료 위험
 			</span>
 		)}

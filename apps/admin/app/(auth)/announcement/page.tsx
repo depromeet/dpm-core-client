@@ -60,8 +60,8 @@ const NoticeListContainer = ({ selectedType, onTabChange }: NoticeListContainerP
 			{/* Title + Button */}
 			<div className="flex w-full items-center justify-between px-10 pt-6">
 				<div className="flex items-center gap-2">
-					<h2 className="font-bold text-label-normal text-title1">공지 목록</h2>
-					<span className="font-medium text-body1 text-primary-normal">
+					<h2 className="text-title1 font-bold text-label-normal">공지 목록</h2>
+					<span className="text-body1 font-medium text-primary-normal">
 						{filteredAnnouncements.length}
 					</span>
 				</div>
@@ -70,7 +70,7 @@ const NoticeListContainer = ({ selectedType, onTabChange }: NoticeListContainerP
 					className="h-12 gap-1.5 rounded-lg bg-background-inverse px-5 py-3"
 					onClick={() => router.push('/announcement/create')}
 				>
-					<Plus className="size-5 text-icon-normal" />
+					<Plus className="text-icon-normal size-5" />
 					공지 등록
 				</Button>
 			</div>
@@ -112,6 +112,10 @@ const NoticeListContainer = ({ selectedType, onTabChange }: NoticeListContainerP
 	);
 };
 
+const AnnouncementErrorFallback = (props: ErrorBoundaryFallbackProps) => (
+	<ErrorBox onReset={() => props.reset()} />
+);
+
 const NoticePage = () => {
 	const [selectedType, setSelectedType] = useState<NoticeType>('all');
 
@@ -121,11 +125,7 @@ const NoticePage = () => {
 				<NoticeHeader title="공지" className="w-full py-6" />
 
 				<div className="flex w-full flex-1 flex-col items-start bg-background-normal">
-					<ErrorBoundary
-						fallback={(props: ErrorBoundaryFallbackProps) => (
-							<ErrorBox onReset={() => props.reset()} />
-						)}
-					>
+					<ErrorBoundary fallback={AnnouncementErrorFallback}>
 						<Suspense
 							fallback={
 								<div className="flex w-full flex-1 items-center justify-center">

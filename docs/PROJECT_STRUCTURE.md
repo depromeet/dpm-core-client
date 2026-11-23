@@ -71,7 +71,7 @@ dpm-core-client/
 - **모노레포**: Turborepo
 - **패키지 관리**: Yarn Workspaces
 - **TypeScript**: 5.x
-- **코드 포맷팅**: Biome
+- **코드 포맷팅**: Oxfmt
 - **애니메이션**: Motion.js
 
 ### 프론트엔드 (Next.js 앱)
@@ -153,7 +153,7 @@ const nextConfig: NextConfig = {
 ## 📋 개발 규칙
 
 ### 1. 코드 스타일
-- **Biome**를 사용한 일관된 코드 포맷팅
+- **Oxfmt**를 사용한 일관된 코드 포맷팅
 - **TypeScript** 강제 사용
 - **엄격한 타입 검사** 적용
 
@@ -186,5 +186,6 @@ const nextConfig: NextConfig = {
 - `package.json`: 루트 설정 및 워크스페이스 정의
 - `turbo.json`: Turborepo 태스크 설정
 - `tsconfig.base.json`: 공통 TypeScript 설정
-- `biome.json`: 코드 포맷팅 설정
+- `.oxfmtrc.json`: 코드 포맷팅 설정
+- `.oxlintrc.json`: 코드 린트 규칙
 - `yarn.lock`: 의존성 잠금 파일 

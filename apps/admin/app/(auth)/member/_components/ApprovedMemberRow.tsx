@@ -90,14 +90,14 @@ export const ApprovedMemberRow = ({
 
 			<TableCell data-clarity-mask="True" className="px-3">
 				{/* 닉네임은 서버에서 수정하지 않는 값이라 수정 중에도 평소와 같은 모습으로 보여준다. */}
-				<span className="block truncate font-semibold text-body1 text-label-normal">
+				<span className="block truncate text-body1 font-semibold text-label-normal">
 					{row.name}
 				</span>
 			</TableCell>
 
 			<TableCell
 				data-clarity-mask="True"
-				className="truncate px-3 font-medium text-body2 text-label-subtle"
+				className="truncate px-3 text-body2 font-medium text-label-subtle"
 			>
 				<span className="flex items-center gap-1.5">
 					<MemberLoginMethodIcon loginMethod={row.loginMethod} />

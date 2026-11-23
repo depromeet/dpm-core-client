@@ -12,18 +12,24 @@ export interface ToggleButtonProps extends React.ComponentProps<typeof CheckboxP
 	labelClassName?: string;
 }
 
-export const ToggleButton = ({ className, label, labelClassName, id, ...props }: ToggleButtonProps) => {
+export const ToggleButton = ({
+	className,
+	label,
+	labelClassName,
+	id,
+	...props
+}: ToggleButtonProps) => {
 	return (
 		<label
 			htmlFor={id}
 			className={cn(
-				'inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-lg bg-comp-fill-white px-4 py-3 transition-colors',
-				'has-checked:text-primary-normal has-not-checked:text-label-assistive',
+				'bg-comp-fill-white inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-lg px-4 py-3 transition-colors',
+				'has-not-checked:text-label-assistive has-checked:text-primary-normal',
 				className,
 			)}
 		>
 			<TableCheckbox id={id} {...props} />
-			<span className={cn('font-semibold text-body3', labelClassName)}>{label}</span>
+			<span className={cn('text-body3 font-semibold', labelClassName)}>{label}</span>
 		</label>
 	);
 };

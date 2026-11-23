@@ -11,7 +11,12 @@ import type {
 
 import { getCurrentCohortTeamsQuery } from '@/remotes/queries/cohort';
 
-import { MEMBER_TYPE_OPTIONS, ACTIVITY_STATUS_OPTIONS, PART_OPTIONS, UNASSIGNED_TEAM_NUMBER } from '../_constants';
+import {
+	MEMBER_TYPE_OPTIONS,
+	ACTIVITY_STATUS_OPTIONS,
+	PART_OPTIONS,
+	UNASSIGNED_TEAM_NUMBER,
+} from '../_constants';
 import { toRealTeamNumbers } from '../_lib/team-options';
 import { MultiSelectFilter } from './MultiSelectFilter';
 

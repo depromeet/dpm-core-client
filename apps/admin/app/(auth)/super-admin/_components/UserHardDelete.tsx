@@ -44,7 +44,7 @@ const statusBadgeStatus = (status: string) => {
 export const UserHardDelete = () => {
 	const queryClient = useQueryClient();
 	const { data: membersData } = useQuery(getMembersOverviewQuery());
-	const members = membersData?.data.members ?? [];
+	const members = useMemo(() => membersData?.data.members ?? [], [membersData]);
 
 	const [searchQuery, setSearchQuery] = useState('');
 	const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
@@ -89,7 +89,7 @@ export const UserHardDelete = () => {
 	return (
 		<div className="flex w-full flex-col gap-6">
 			<div className="flex flex-col gap-2">
-				<span className="font-bold text-label-normal text-title1">유저 하드 딜리트</span>
+				<span className="text-title1 font-bold text-label-normal">유저 하드 딜리트</span>
 				<p className="text-body2 text-label-subtle">
 					기존 계정 정보에서 member_oauth 값과 이메일만 변경하여 하드 딜리트된 것처럼 처리합니다.
 				</p>
@@ -108,23 +108,23 @@ export const UserHardDelete = () => {
 			{/* Results */}
 			{!searchQuery.trim() ? (
 				<div className="flex min-h-[200px] w-full items-center justify-center rounded-lg border border-line-normal py-12">
-					<p className="font-medium text-body1 text-label-assistive">
+					<p className="text-body1 font-medium text-label-assistive">
 						유저를 검색하여 삭제 대상을 선택하세요
 					</p>
 				</div>
 			) : searchResults.length === 0 ? (
 				<div className="flex min-h-[200px] w-full items-center justify-center rounded-lg border border-line-normal py-12">
-					<p className="font-medium text-body1 text-label-assistive">검색 결과가 없습니다</p>
+					<p className="text-body1 font-medium text-label-assistive">검색 결과가 없습니다</p>
 				</div>
 			) : (
 				<Table className="w-full">
 					<TableHeader>
 						<TableRow className="h-10 border-0 bg-background-strong hover:bg-background-strong">
-							<TableHead className="px-3 font-medium text-body2 text-label-subtle">ID</TableHead>
-							<TableHead className="px-3 font-medium text-body2 text-label-subtle">이름</TableHead>
-							<TableHead className="px-3 font-medium text-body2 text-label-subtle">파트</TableHead>
-							<TableHead className="px-3 font-medium text-body2 text-label-subtle">상태</TableHead>
-							<TableHead className="w-[100px] px-3 text-right font-medium text-body2 text-label-subtle">
+							<TableHead className="px-3 text-body2 font-medium text-label-subtle">ID</TableHead>
+							<TableHead className="px-3 text-body2 font-medium text-label-subtle">이름</TableHead>
+							<TableHead className="px-3 text-body2 font-medium text-label-subtle">파트</TableHead>
+							<TableHead className="px-3 text-body2 font-medium text-label-subtle">상태</TableHead>
+							<TableHead className="w-[100px] px-3 text-right text-body2 font-medium text-label-subtle">
 								관리
 							</TableHead>
 						</TableRow>
@@ -132,13 +132,13 @@ export const UserHardDelete = () => {
 					<TableBody>
 						{searchResults.map((m) => (
 							<TableRow key={m.memberId} className="h-[56px] border-line-subtle">
-								<TableCell className="px-3 font-medium text-body1 text-label-normal">
+								<TableCell className="px-3 text-body1 font-medium text-label-normal">
 									{m.memberId}
 								</TableCell>
-								<TableCell className="px-3 font-medium text-body1 text-label-normal">
+								<TableCell className="px-3 text-body1 font-medium text-label-normal">
 									{m.name}
 								</TableCell>
-								<TableCell className="px-3 font-medium text-body1 text-label-normal">
+								<TableCell className="px-3 text-body1 font-medium text-label-normal">
 									{m.part}
 								</TableCell>
 								<TableCell className="px-3">
@@ -147,7 +147,7 @@ export const UserHardDelete = () => {
 								<TableCell className="px-3 text-right">
 									<button
 										type="button"
-										className="cursor-pointer rounded-md px-3 py-1.5 font-medium text-body2 text-status-danger hover:bg-red-50"
+										className="text-status-danger cursor-pointer rounded-md px-3 py-1.5 text-body2 font-medium hover:bg-red-50"
 										onClick={() => openConfirmDialog(m)}
 									>
 										삭제

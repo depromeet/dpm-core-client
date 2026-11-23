@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../utils/cn';
 
 const bedgeVariants = cva(
-	'inline-flex items-center justify-center rounded-sm p-[5px] py-[3px] font-semibold text-caption1',
+	'inline-flex items-center justify-center rounded-sm p-[5px] py-[3px] text-caption1 font-semibold',
 	{
 		variants: {
 			variant: {

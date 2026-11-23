@@ -59,7 +59,7 @@ export const KakaoLoginPromptSheet = ({
 	const router = useRouter();
 	const { data } = useQuery(getMyMemberInfoQuery);
 	const { isSetupRequired } = useAppleProfileSetup();
-	const { ref } = useAppShell();
+	const { container, containerWidth } = useAppShell();
 	const { canUseNativeKakao, loginWithNative, webFallbackUrl, isPending } = useKakaoLogin();
 	const [isAutoOpen, setIsAutoOpen] = useState(false);
 	const isControlled = open !== undefined;
@@ -68,9 +68,12 @@ export const KakaoLoginPromptSheet = ({
 	const isAppleMember = data?.data.loginMethod === 'APPLE';
 
 	useEffect(() => {
-		if (!isControlled && isAppleMember && !isSetupRequired && !isKakaoPromptDismissed()) {
-			setIsAutoOpen(true);
+		function openPromptIfNeeded() {
+			if (!isControlled && isAppleMember && !isSetupRequired && !isKakaoPromptDismissed()) {
+				setIsAutoOpen(true);
+			}
 		}
+		openPromptIfNeeded();
 	}, [isControlled, isAppleMember, isSetupRequired]);
 
 	const handleOpenChange = (nextOpen: boolean) => {
@@ -104,17 +107,17 @@ export const KakaoLoginPromptSheet = ({
 	const copy = PROMPT_COPY[variant];
 
 	return (
-		<Drawer open={isOpen} onOpenChange={handleOpenChange} container={ref.current}>
+		<Drawer open={isOpen} onOpenChange={handleOpenChange} container={container}>
 			<DrawerContent
-				className="mx-auto gap-3 px-6 pt-7.5 pb-safe-area"
-				style={{ maxWidth: ref.current?.clientWidth ?? 'auto' }}
+				className="pb-safe-area mx-auto gap-3 px-6 pt-7.5"
+				style={{ maxWidth: containerWidth ?? 'auto' }}
 			>
-				<DrawerTitle className="text-left font-semibold text-label-normal text-title2">
+				<DrawerTitle className="text-left text-title2 font-semibold text-label-normal">
 					{copy.title[0]}
 					<br />
 					{copy.title[1]}
 				</DrawerTitle>
-				<DrawerDescription className="text-left font-medium text-body2 text-label-assistive">
+				<DrawerDescription className="text-left text-body2 font-medium text-label-assistive">
 					{copy.description}
 				</DrawerDescription>
 				<Button

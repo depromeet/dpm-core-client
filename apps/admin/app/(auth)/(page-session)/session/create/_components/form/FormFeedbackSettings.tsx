@@ -59,7 +59,7 @@ export const FormFeedbackSettings = ({
 				render={({ field }) => (
 					<FormItem>
 						<div className="flex items-center justify-between">
-							<FormLabel className="font-semibold text-title2">피드백 받기</FormLabel>
+							<FormLabel className="text-title2 font-semibold">피드백 받기</FormLabel>
 							<FormControl>
 								<Switch
 									checked={field.value}
@@ -95,7 +95,7 @@ export const FormFeedbackSettings = ({
 											<PopoverTrigger asChild>
 												<Button
 													variant="none"
-													className="h-12 w-full justify-between border border-line-normal bg-background-normal p-4 font-medium text-body2"
+													className="h-12 w-full justify-between border border-line-normal bg-background-normal p-4 text-body2 font-medium"
 													aria-label="피드백 시작 날짜 선택"
 													disabled={feedbackSettingsLocked}
 												>
@@ -154,26 +154,26 @@ export const FormFeedbackSettings = ({
 												<InputOTPGroup>
 													<div className="relative left-1 flex items-center gap-1">
 														<InputOTPSlot
-															className="size-2.5 bg-inherit font-medium text-body2"
+															className="size-2.5 bg-inherit text-body2 font-medium"
 															index={0}
 														/>
 														<InputOTPSlot
-															className="size-2.5 bg-inherit font-medium text-body2"
+															className="size-2.5 bg-inherit text-body2 font-medium"
 															index={1}
 														/>
 													</div>
-													<p className="mx-1 font-medium text-body2 text-label-assistive">시</p>
+													<p className="mx-1 text-body2 font-medium text-label-assistive">시</p>
 													<div className="relative left-1 flex items-center gap-1">
 														<InputOTPSlot
-															className="size-2.5 bg-inherit font-medium text-body2"
+															className="size-2.5 bg-inherit text-body2 font-medium"
 															index={2}
 														/>
 														<InputOTPSlot
-															className="size-2.5 bg-inherit font-medium text-body2"
+															className="size-2.5 bg-inherit text-body2 font-medium"
 															index={3}
 														/>
 													</div>
-													<p className="ml-1 font-medium text-body2 text-label-assistive">분</p>
+													<p className="ml-1 text-body2 font-medium text-label-assistive">분</p>
 												</InputOTPGroup>
 											</InputOTP>
 										</FormControl>

@@ -42,9 +42,9 @@ export const AttendanceStatusSection = ({
 	return (
 		<section className="mb-6">
 			<div className="mb-3 flex items-center justify-between">
-				<h3 className="font-semibold text-body1 text-label-normal">출석 정보</h3>
+				<h3 className="text-body1 font-semibold text-label-normal">출석 정보</h3>
 				{updatedAt && (
-					<p className="font-medium text-label-subtle text-xs">
+					<p className="text-xs font-medium text-label-subtle">
 						{formatISOStringToFullDateString(updatedAt)} 저장됨
 					</p>
 				)}
@@ -63,7 +63,7 @@ export const AttendanceStatusSection = ({
 								value={status.value}
 								className="flex-1 px-3 py-2.5 text-label-assistive data-[state=checked]:bg-primary-extralight data-[state=checked]:text-primary-normal"
 							>
-								<span className="whitespace-nowrap font-normal text-body2">{status.label}</span>
+								<span className="text-body2 font-normal whitespace-nowrap">{status.label}</span>
 							</RadioGroup.Item>
 						))}
 					</RadioGroup.Root>
@@ -74,7 +74,7 @@ export const AttendanceStatusSection = ({
 							onClick={onSave}
 							disabled={isSaveDisabled}
 							loading={isSaving}
-							className="rounded-lg bg-gray-800 px-4 py-3 font-medium text-body2 text-white disabled:opacity-50"
+							className="rounded-lg bg-gray-800 px-4 py-3 text-body2 font-medium text-white disabled:opacity-50"
 						>
 							저장하기
 						</Button>
@@ -83,7 +83,7 @@ export const AttendanceStatusSection = ({
 							size="none"
 							onClick={onCancel}
 							disabled={isSaving}
-							className="rounded-lg bg-gray-100 px-4 py-3 font-medium text-body2"
+							className="rounded-lg bg-gray-100 px-4 py-3 text-body2 font-medium"
 						>
 							취소
 						</Button>
@@ -93,22 +93,22 @@ export const AttendanceStatusSection = ({
 				<>
 					<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-4">
 						<div className="flex items-center gap-4">
-							<p className="w-20 font-medium text-body2 text-label-assistive">출석 상태</p>
+							<p className="w-20 text-body2 font-medium text-label-assistive">출석 상태</p>
 							<div className="flex items-center gap-2">
 								<AttendanceStatusLabel status={originalStatus} />
 								{absenceReasonBadge}
 							</div>
 						</div>
 						<div className="flex items-center gap-4">
-							<p className="w-20 font-medium text-body2 text-label-assistive">출석 시간</p>
-							<p className="font-medium text-body2 text-label-normal">
+							<p className="w-20 text-body2 font-medium text-label-assistive">출석 시간</p>
+							<p className="text-body2 font-medium text-label-normal">
 								{formatISOStringToFullDateString(attendedAt)}
 							</p>
 						</div>
 						<div className="flex gap-4">
-							<p className="w-20 shrink-0 font-medium text-body2 text-label-assistive">결석 사유</p>
+							<p className="w-20 shrink-0 text-body2 font-medium text-label-assistive">결석 사유</p>
 							<div className="min-w-0 flex-1">
-								<p className="wrap-break-word font-medium text-body2 text-label-normal">
+								<p className="text-body2 font-medium wrap-break-word text-label-normal">
 									{absenceReason ?? '-'}
 								</p>
 								{absenceReasonReview}
@@ -119,7 +119,7 @@ export const AttendanceStatusSection = ({
 						variant="none"
 						size="none"
 						onClick={onEdit}
-						className="mt-3 rounded-lg border border-line-normal bg-white px-4 py-3 font-medium text-body2"
+						className="mt-3 rounded-lg border border-line-normal bg-white px-4 py-3 text-body2 font-medium"
 					>
 						수정
 					</Button>

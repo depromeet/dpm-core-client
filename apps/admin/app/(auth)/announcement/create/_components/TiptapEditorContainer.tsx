@@ -1,14 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { cn } from '@dpm-core/shared';
 
 import { TiptapEditor, useTiptapEditor } from './TiptapEditor';
 import { TiptapEditorSkeleton } from './TiptapEditorSkeleton';
 import { Toolbar } from './Toolbar';
 
-interface TiptapEditorContainerProps
-	extends Omit<React.ComponentPropsWithoutRef<'div'>, 'content' | 'onChange'> {
+interface TiptapEditorContainerProps extends Omit<
+	React.ComponentPropsWithoutRef<'div'>,
+	'content' | 'onChange'
+> {
 	content: string;
 	onChange: (content: string) => void;
 	placeholder?: string;
@@ -21,14 +22,9 @@ export const TiptapEditorContainer = ({
 	className,
 	...props
 }: TiptapEditorContainerProps) => {
-	const [isMounted, setIsMounted] = useState(false);
 	const editor = useTiptapEditor({ content, onChange });
 
-	useEffect(() => {
-		setIsMounted(true);
-	}, []);
-
-	if (!isMounted || !editor) {
+	if (!editor) {
 		return <TiptapEditorSkeleton />;
 	}
 
