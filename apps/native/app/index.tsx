@@ -138,6 +138,7 @@ function WebViewContainer() {
 					applicationNameForUserAgent={`DPMApp/${version} (${platformStr}; Insets=${insetsStr})`}
 					onNavigationStateChange={handleNavigationChanage}
 					onLoadEnd={handleWebViewLoadEnd}
+					scrollEnabled={!(Platform.OS === 'ios' && isFeedbackRoute)}
 					overScrollMode="never"
 					bounces={false}
 					sharedCookiesEnabled={true}
