@@ -269,7 +269,7 @@ export const FeedbackForm = ({
 }: FeedbackFormProps) => {
 	const router = useRouter();
 	const { track } = useClarity();
-	const { isApp, platform, safeAreaInsets } = useAppConfig();
+	const { isApp, platform } = useAppConfig();
 	const isIOSApp = isApp && platform === 'ios';
 	const queryClient = useQueryClient();
 	const feedbackQuery = useQuery(getSessionFeedbackMeQuery(sessionId));
@@ -480,25 +480,28 @@ export const FeedbackForm = ({
 
 		let viewportWidth = window.innerWidth;
 		let restingHeight = form.clientHeight;
+		form.style.setProperty('--feedback-resting-height', `${restingHeight}px`);
+		// Resolve the inset against the same viewport height as the form, in the same layout pass.
+		form.style.paddingBottom =
+			'clamp(0px, calc(var(--safe-area-inset-bottom) + 100dvh - var(--feedback-resting-height)), var(--safe-area-inset-bottom))';
+
 		const observer = new ResizeObserver(() => {
 			const width = window.innerWidth;
 			const height = form.clientHeight;
 			if (width !== viewportWidth || height > restingHeight) {
 				viewportWidth = width;
 				restingHeight = height;
+				form.style.setProperty('--feedback-resting-height', `${restingHeight}px`);
 			}
-
-			// Release the home-indicator inset as the native WebView shrinks.
-			const bottomInset = Math.max(0, safeAreaInsets.bottom - (restingHeight - height));
-			form.style.paddingBottom = `${bottomInset}px`;
 		});
 
 		observer.observe(form, { box: 'border-box' });
 		return () => {
 			observer.disconnect();
 			form.style.removeProperty('padding-bottom');
+			form.style.removeProperty('--feedback-resting-height');
 		};
-	}, [isIOSApp, isFeedbackFormVisible, safeAreaInsets.bottom]);
+	}, [isIOSApp, isFeedbackFormVisible]);
 
 	useEffect(() => {
 		const content = formContentRef.current;
