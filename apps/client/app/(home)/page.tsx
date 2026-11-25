@@ -7,8 +7,6 @@ import {
 } from '@tanstack/react-query';
 import { GAPageTracker } from '@dpm-core/shared';
 
-import { SafeAreaAppLayout } from '@/components/app-layout';
-import { BottomTabBar } from '@/components/bottom-tab-bar';
 import { LastLoginRecorder } from '@/components/last-login-recorder';
 import { LoginReturnToRedirect } from '@/components/login-return-to-redirect';
 import { getAnnouncementListQuery } from '@/remotes/queries/announcement';
@@ -18,9 +16,8 @@ import { AppleProfileSetupSheet } from './_components/apple-profile-setup-sheet'
 import { HomeAnnouncementBanner } from './_components/home-announcement-banner';
 import { HomeBannerList } from './_components/home-banner-list';
 import { HomeCoachmark } from './_components/home-coachmark';
-import { HomeHeader } from './_components/home-header';
+import { HomeScreen } from './_components/home-screen';
 import { MemberStatusRedirect } from './_components/member-status-redirect';
-import { UserActionList } from './_components/user-action-list';
 
 const HOME_TITLE = '디프만 - Depromeet';
 const HOME_DESCRIPTION = '디프만 활동을 쉽고 체계적으로 관리하세요';
@@ -62,23 +59,27 @@ export default function HomePage() {
 	});
 
 	return (
-		<SafeAreaAppLayout hasBottomTabBar className="h-dvh">
-			<LoginReturnToRedirect />
-			<GAPageTracker type="home" />
-			<HomeHeader />
-			<main className="scrollbar-hide flex-1 overflow-auto">
-				<HydrationBoundary state={dehydratedState}>
-					<HomeAnnouncementBanner />
-					<HomeBannerList />
-				</HydrationBoundary>
-				<UserActionList />
-			</main>
-			<BottomTabBar />
-			<AppleProfileSetupSheet />
-			<LastLoginRecorder />
-			<MemberStatusRedirect />
-			<HomeCoachmark />
-		</SafeAreaAppLayout>
+		<HomeScreen
+			beforeHeader={
+				<>
+					<LoginReturnToRedirect />
+					<GAPageTracker type="home" />
+				</>
+			}
+			afterTabBar={
+				<>
+					<AppleProfileSetupSheet />
+					<LastLoginRecorder />
+					<MemberStatusRedirect />
+					<HomeCoachmark />
+				</>
+			}
+		>
+			<HydrationBoundary state={dehydratedState}>
+				<HomeAnnouncementBanner />
+				<HomeBannerList />
+			</HydrationBoundary>
+		</HomeScreen>
 	);
 }
 

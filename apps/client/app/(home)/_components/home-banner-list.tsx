@@ -8,26 +8,53 @@ import { Aesterisk, gaTrackHomeEnter, Skeleton } from '@dpm-core/shared';
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
 import { showAttendanceBanner } from '@/lib/attendance/banner';
 import { getSessionCurrentOptions } from '@/remotes/queries/session';
+import type { getMyPendingSessionFeedbackQuery } from '@/remotes/queries/session-feedback';
 
+import type { AttendanceCheckBottomSheetOptions } from './attendance-check-bottom-sheet';
 import { CohortEndedBanner } from './cohort-ended-banner';
-import { HomeCheckAttendanceBanner } from './home-attendance-banner';
+import { HomeCheckAttendanceBanner, type HomeAttendanceQueries } from './home-attendance-banner';
 import { HomeFeedbackCard } from './home-feedback-card';
 import { SessionCard } from './session-card';
 
-// 세션 조회가 실패해도 피드백 카드 조회는 계속 보여준다.
-export const HomeBannerList = ErrorBoundary.with(
-	{
-		fallback: () => (
+interface HomeBannerListProps {
+	query?: ReturnType<typeof getSessionCurrentOptions>;
+	feedbackQuery?: ReturnType<typeof getMyPendingSessionFeedbackQuery>;
+	onSessionView?: (sessionId: string) => void;
+	currentTime?: string;
+	attendanceQueries?: HomeAttendanceQueries;
+	attendanceSheet?: AttendanceCheckBottomSheetOptions;
+}
+
+export const HomeBannerList = ({
+	query = getSessionCurrentOptions(),
+	feedbackQuery,
+	onSessionView = gaTrackHomeEnter,
+	currentTime,
+	attendanceQueries,
+	attendanceSheet,
+}: HomeBannerListProps) => (
+	<ErrorBoundary
+		fallback={
 			<section className="px-4 pb-5">
-				<HomeFeedbackCard isAttendanceOpen={false} />
+				<HomeFeedbackCard
+					isAttendanceOpen={false}
+					query={feedbackQuery}
+					currentTime={currentTime}
+				/>
 			</section>
-		),
-	},
-	() => (
+		}
+	>
 		<Suspense fallback={<HomeSessionSkeleton />}>
-			<HomeBannerListContainer />
+			<HomeBannerListContainer
+				query={query}
+				feedbackQuery={feedbackQuery}
+				onSessionView={onSessionView}
+				currentTime={currentTime}
+				attendanceQueries={attendanceQueries}
+				attendanceSheet={attendanceSheet}
+			/>
 		</Suspense>
-	),
+	</ErrorBoundary>
 );
 
 const HomeSessionSkeleton = () => (
@@ -42,22 +69,38 @@ const HomeSessionSkeleton = () => (
 	</output>
 );
 
-const HomeBannerListContainer = () => {
+interface HomeBannerListContainerProps extends HomeBannerListProps {
+	query: ReturnType<typeof getSessionCurrentOptions>;
+	onSessionView: (sessionId: string) => void;
+}
+
+const HomeBannerListContainer = ({
+	query,
+	feedbackQuery,
+	onSessionView,
+	currentTime,
+	attendanceQueries,
+	attendanceSheet,
+}: HomeBannerListContainerProps) => {
 	const {
 		data: { data: nextSessionHome },
-	} = useSuspenseQuery(getSessionCurrentOptions());
+	} = useSuspenseQuery(query);
 	const currentWeekSession =
 		nextSessionHome.status === 'AVAILABLE' ? (nextSessionHome.session ?? null) : null;
 
 	useEffect(() => {
 		const sessionId = currentWeekSession?.id?.toString() || 'home';
-		gaTrackHomeEnter(sessionId);
-	}, [currentWeekSession]);
+		onSessionView(sessionId);
+	}, [currentWeekSession, onSessionView]);
 
 	if (nextSessionHome.status === 'COHORT_ENDED') {
 		return (
-			<section className="px-4 pb-5">
-				<HomeFeedbackCard isAttendanceOpen={false} />
+			<section className="flex flex-col gap-4 px-4 pb-5">
+				<HomeFeedbackCard
+					isAttendanceOpen={false}
+					query={feedbackQuery}
+					currentTime={currentTime}
+				/>
 				<CohortEndedBanner cohortValue={nextSessionHome.cohortValue} />
 			</section>
 		);
@@ -65,8 +108,12 @@ const HomeBannerListContainer = () => {
 
 	if (!currentWeekSession) {
 		return (
-			<section className="px-4 pb-5">
-				<HomeFeedbackCard isAttendanceOpen={false} />
+			<section className="flex flex-col gap-4 px-4 pb-5">
+				<HomeFeedbackCard
+					isAttendanceOpen={false}
+					query={feedbackQuery}
+					currentTime={currentTime}
+				/>
 				<Empty className="h-43.5 rounded-lg bg-background-normal p-5">
 					<EmptyHeader className="gap-6">
 						<Aesterisk />
@@ -80,16 +127,23 @@ const HomeBannerListContainer = () => {
 	const { canRecordAttendance, attendanceStart, absentStart } = currentWeekSession;
 
 	const isAttendanceOpen =
-		canRecordAttendance && showAttendanceBanner(attendanceStart, absentStart);
+		canRecordAttendance && showAttendanceBanner(attendanceStart, absentStart, currentTime);
 
 	return (
 		<section className="px-4 pb-5">
 			<HomeCheckAttendanceBanner
 				attendanceSession={currentWeekSession}
 				isAttendanceOpen={isAttendanceOpen}
+				currentTime={currentTime}
+				queries={attendanceQueries}
+				sheet={attendanceSheet}
 			/>
 			<div className="flex flex-col gap-4">
-				<HomeFeedbackCard isAttendanceOpen={isAttendanceOpen} />
+				<HomeFeedbackCard
+					isAttendanceOpen={isAttendanceOpen}
+					query={feedbackQuery}
+					currentTime={currentTime}
+				/>
 				<SessionCard session={currentWeekSession} isAttendanceOpen={isAttendanceOpen} />
 			</div>
 		</section>

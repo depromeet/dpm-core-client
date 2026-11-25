@@ -21,19 +21,33 @@ import {
 	getMyAbsenceReasonOptions,
 } from '@/remotes/queries/attendance';
 
-import { AttendanceCheckBottomSheet } from './attendance-check-bottom-sheet';
+import {
+	AttendanceCheckBottomSheet,
+	type AttendanceCheckBottomSheetOptions,
+} from './attendance-check-bottom-sheet';
+
+export interface HomeAttendanceQueries {
+	attendance?: ReturnType<typeof getAttendanceMeBySessionIdOptions>;
+	absenceReason?: ReturnType<typeof getMyAbsenceReasonOptions>;
+}
 
 interface HomeCheckAttendanceBannerProps {
 	attendanceSession: CurrentWeekSessionResponse;
 	isAttendanceOpen: boolean;
+	currentTime?: string;
+	queries?: HomeAttendanceQueries;
+	sheet?: AttendanceCheckBottomSheetOptions;
 }
 
 export const HomeCheckAttendanceBanner = ({
 	attendanceSession,
 	isAttendanceOpen,
+	currentTime,
+	queries,
+	sheet,
 }: HomeCheckAttendanceBannerProps) => {
 	const reduceMotion = useReducedMotion();
-	const now = dayjs();
+	const now = dayjs(currentTime);
 	const isVisible =
 		attendanceSession.canRecordAttendance &&
 		(isAttendanceOpen ||
@@ -41,11 +55,12 @@ export const HomeCheckAttendanceBanner = ({
 				now.isSame(dayjs(attendanceSession.date), 'day') &&
 				!now.isBefore(dayjs(attendanceSession.absentStart))));
 	const { data } = useQuery({
-		...getAttendanceMeBySessionIdOptions({ sessionId: attendanceSession.id }),
+		...(queries?.attendance ??
+			getAttendanceMeBySessionIdOptions({ sessionId: attendanceSession.id })),
 		enabled: isVisible,
 	});
 	const absenceReasonQuery = useQuery({
-		...getMyAbsenceReasonOptions({ sessionId: attendanceSession.id }),
+		...(queries?.absenceReason ?? getMyAbsenceReasonOptions({ sessionId: attendanceSession.id })),
 		enabled: isVisible,
 	});
 	const absenceReasonStatus = absenceReasonQuery.data?.data?.status;
@@ -84,6 +99,8 @@ export const HomeCheckAttendanceBanner = ({
 								attendanceSession={attendanceSession}
 								attendanceMeBySessionId={data?.data}
 								absenceReasonStatus={absenceReasonStatus}
+								currentTime={currentTime}
+								sheet={sheet}
 							/>
 						</div>
 					</motion.div>
@@ -106,18 +123,22 @@ interface HomeCheckAttendanceBannerContentProps {
 	attendanceSession: CurrentWeekSessionResponse;
 	attendanceMeBySessionId?: MyAttendanceBySessionIdResponse;
 	absenceReasonStatus?: AbsenceReasonStatus;
+	currentTime?: string;
+	sheet?: AttendanceCheckBottomSheetOptions;
 }
 
 const HomeCheckAttendanceBannerContent = ({
 	attendanceSession,
 	attendanceMeBySessionId,
 	absenceReasonStatus,
+	currentTime,
+	sheet,
 }: HomeCheckAttendanceBannerContentProps) => {
 	const attendanceStatus = attendanceMeBySessionId?.attendance.status ?? 'PENDING';
 	const attendedAt = attendanceMeBySessionId?.attendance.attendedAt ?? null;
 	const isReviewPending = absenceReasonStatus === 'PENDING';
 	const { absentStart } = attendanceSession;
-	const isPastAbsentStart = !dayjs().isBefore(dayjs(absentStart));
+	const isPastAbsentStart = !dayjs(currentTime).isBefore(dayjs(absentStart));
 	const canCheckAttendance = isPastAbsentStart
 		? attendanceMeBySessionId?.attendance.canRegisterLateParticipation
 		: attendanceStatus === 'PENDING';
@@ -152,7 +173,7 @@ const HomeCheckAttendanceBannerContent = ({
 					/>
 				</div>
 				<div className="flex flex-col items-center gap-3">
-					<AttendanceCheckBottomSheet sessionId={attendanceSession.id}>
+					<AttendanceCheckBottomSheet sessionId={attendanceSession.id} options={sheet}>
 						<Button className="mt-5 w-full" variant="primary" size="lg">
 							출석체크하기
 							<ArrowRight />

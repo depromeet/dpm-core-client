@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Part } from '@dpm-core/api';
+import type { MemberProfileUpdateRequest, Part } from '@dpm-core/api';
 import {
 	Button,
 	Drawer,
@@ -23,6 +23,23 @@ import { PartSelector } from './part-selector';
 
 const MAX_NAME_LENGTH = 20;
 
+interface ProfileSetupViewport {
+	keyboardHeight: number;
+	viewportHeight: number;
+}
+
+interface ProfileSetupSaveCallbacks {
+	onSuccess: () => void;
+	onError: () => void;
+}
+
+interface AppleProfileSetupFormProps {
+	isSetupRequired: boolean;
+	isPending: boolean;
+	saveProfile: (profile: MemberProfileUpdateRequest, callbacks: ProfileSetupSaveCallbacks) => void;
+	viewport?: ProfileSetupViewport;
+}
+
 /**
  * 프로필(이름/직군) 최초 입력 바텀시트
  *
@@ -32,8 +49,35 @@ const MAX_NAME_LENGTH = 20;
  */
 export const AppleProfileSetupSheet = () => {
 	const { isSetupRequired } = useAppleProfileSetup();
-	const { container, containerWidth } = useAppShell();
 	const queryClient = useQueryClient();
+	const { mutate: updateProfile, isPending } = useMutation(updateMyProfileMutationOptions());
+
+	return (
+		<AppleProfileSetupForm
+			isSetupRequired={isSetupRequired}
+			isPending={isPending}
+			saveProfile={(profile, { onSuccess, onError }) => {
+				updateProfile(profile, {
+					onSuccess: () => {
+						// 입력 필요 여부 캐시를 무효화해 시트 재노출을 방지한다.
+						queryClient.invalidateQueries({ queryKey: getMyMemberInfoQuery.queryKey });
+						queryClient.invalidateQueries({ queryKey: getMyProfileQuery.queryKey });
+						onSuccess();
+					},
+					onError,
+				});
+			}}
+		/>
+	);
+};
+
+export const AppleProfileSetupForm = ({
+	isSetupRequired,
+	isPending,
+	saveProfile,
+	viewport,
+}: AppleProfileSetupFormProps) => {
+	const { container, containerWidth } = useAppShell();
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [name, setName] = useState('');
@@ -43,27 +87,32 @@ export const AppleProfileSetupSheet = () => {
 	// → 키보드가 뜨면 버튼을 숨기고, 드로어를 키보드 위 가용 공간에 꽉 채운 뒤 내부 스크롤로
 	//   포커스된 입력창이 항상 보이게 한다.
 	// 포커스(onFocus/onBlur)는 iOS에서 Vaul과 타이밍이 꼬여 불안정하므로 visualViewport 로 직접 감지한다.
-	const [keyboardHeight, setKeyboardHeight] = useState(0);
+	const [visualViewport, setVisualViewport] = useState<ProfileSetupViewport>({
+		keyboardHeight: 0,
+		viewportHeight: 0,
+	});
 	// 키보드 위로 확보되는 가용 높이(=visualViewport 높이).
-	const [viewportHeight, setViewportHeight] = useState(0);
+	const { keyboardHeight, viewportHeight } = viewport ?? visualViewport;
 	// 브라우저 UI 변동으로 인한 오탐을 피하기 위해 임계값(150px)을 둔다.
 	const isKeyboardOpen = keyboardHeight > 150;
 
 	useEffect(() => {
-		const viewport = window.visualViewport;
-		if (!viewport) return;
+		const currentViewport = window.visualViewport;
+		if (viewport || !currentViewport) return;
 
 		const handleViewportResize = () => {
 			// 키보드가 올라오면 visualViewport 높이가 레이아웃 뷰포트보다 크게 줄어든다.
-			setKeyboardHeight(Math.max(0, window.innerHeight - viewport.height));
-			setViewportHeight(viewport.height);
+			setVisualViewport({
+				keyboardHeight: Math.max(0, window.innerHeight - currentViewport.height),
+				viewportHeight: currentViewport.height,
+			});
 		};
 
-		viewport.addEventListener('resize', handleViewportResize);
+		currentViewport.addEventListener('resize', handleViewportResize);
 		handleViewportResize();
 
-		return () => viewport.removeEventListener('resize', handleViewportResize);
-	}, []);
+		return () => currentViewport.removeEventListener('resize', handleViewportResize);
+	}, [viewport]);
 
 	// iOS Safari는 인풋 포커스 시 문서를 간헐적으로 스크롤해, position:fixed 인 드로어까지
 	// 시각적으로 위로 밀어버린다(입력창이 잘리고 키보드와 시트 사이 빈 공간 발생).
@@ -90,21 +139,16 @@ export const AppleProfileSetupSheet = () => {
 		promptProfileSetup();
 	}, [isSetupRequired]);
 
-	const { mutate: updateProfile, isPending } = useMutation(updateMyProfileMutationOptions());
-
 	const trimmedName = name.trim();
 	const isValid = trimmedName.length > 0 && part !== null;
 
 	const handleSubmit = () => {
 		if (!isValid || part === null || part === 'ETC') return;
 
-		updateProfile(
+		saveProfile(
 			{ name: trimmedName, part },
 			{
 				onSuccess: () => {
-					// 입력 필요 여부 캐시를 무효화해 시트 재노출을 방지한다.
-					queryClient.invalidateQueries({ queryKey: getMyMemberInfoQuery.queryKey });
-					queryClient.invalidateQueries({ queryKey: getMyProfileQuery.queryKey });
 					setIsOpen(false);
 					toast.success('프로필이 설정되었어요.');
 				},

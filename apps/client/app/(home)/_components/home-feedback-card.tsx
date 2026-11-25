@@ -12,10 +12,16 @@ import { getMyPendingSessionFeedbackQuery } from '@/remotes/queries/session-feed
 
 interface HomeFeedbackCardProps {
 	isAttendanceOpen: boolean;
+	currentTime?: string;
+	query?: ReturnType<typeof getMyPendingSessionFeedbackQuery>;
 }
 
-export const HomeFeedbackCard = ({ isAttendanceOpen }: HomeFeedbackCardProps) => {
-	const { data } = useQuery(getMyPendingSessionFeedbackQuery());
+export const HomeFeedbackCard = ({
+	isAttendanceOpen,
+	currentTime,
+	query = getMyPendingSessionFeedbackQuery(),
+}: HomeFeedbackCardProps) => {
+	const { data } = useQuery(query);
 	const pendingFeedback = data?.data;
 	const sessionId = pendingFeedback?.sessionId;
 	const { track } = useClarity();
@@ -36,7 +42,7 @@ export const HomeFeedbackCard = ({ isAttendanceOpen }: HomeFeedbackCardProps) =>
 
 	if (!pendingFeedback || isAttendanceOpen) return null;
 
-	const daysRemaining = getFeedbackDaysRemaining(pendingFeedback.endAt);
+	const daysRemaining = getFeedbackDaysRemaining(pendingFeedback.endAt, currentTime);
 	return (
 		<div
 			ref={cardRef}

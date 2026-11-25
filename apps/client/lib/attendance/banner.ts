@@ -1,10 +1,14 @@
 import dayjs from 'dayjs';
 
-export const showAttendanceBanner = (attendanceStart: string, absentStart: string) => {
+export const showAttendanceBanner = (
+	attendanceStart: string,
+	absentStart: string,
+	currentTime?: string,
+) => {
 	if (!attendanceStart || !absentStart) {
 		return false;
 	}
-	const now = dayjs();
+	const now = dayjs(currentTime);
 	const start = dayjs(attendanceStart);
 	return !now.isBefore(start) && now.isSame(start, 'day');
 };
