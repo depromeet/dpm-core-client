@@ -61,12 +61,21 @@ pnpm build:admin
 ### 패키지 사용법
 
 ```typescript
-// @dpm-core/shared 패키지 사용
-import { Button, Avatar, cn } from '@dpm-core/shared';
-
 // @dpm-core/api 패키지 사용
 import { http, auth } from '@dpm-core/api';
+// @dpm-core/shared 패키지 사용
+import { Button, Avatar, cn } from '@dpm-core/shared';
 ```
+
+## Client 화면을 디자인하고 리뷰하기
+
+홈·출석·세션 같은 제품 화면을 제안하거나 수정할 때는 이 저장소를 엽니다. 여러 화면에서 재사용할 공용 버튼·배지나 컬러·타이포그래피 토큰의 변경은 `dpm-core-dpm-system`에서 작업합니다.
+
+1. AI에게 대상 화면의 Figma 프레임 링크와 보고 싶은 케이스를 전달합니다. 예를 들어 “이 프레임으로 세션 피드백 결과 화면을 만들어 주세요. 응답이 있는 상태와 없는 상태를 보고 싶어요.”라고 요청할 수 있습니다.
+2. AI가 Figma 확인 방식을 물으면 **Figma MCP** 또는 **앱 브라우저**를 선택합니다. Codex 데스크톱은 `@Browser`, Claude Code 데스크톱은 Browser 패널을 사용합니다. 앱에서 프레임을 열 수 없으면 프레임 캡처를 첨부할 수 있습니다. Claude Code의 `/dpm-client-storybook`과 Codex의 `$dpm-client-storybook`에서 같은 [작성 절차](.claude/skills/dpm-client-storybook/SKILL.md)를 사용합니다.
+3. 저장소 루트에서 `pnpm storybook:client`를 실행하고 [localhost:3000](http://localhost:3000)에서 화면과 하위 동작 테스트를 확인합니다. PR에는 리뷰할 스토리 이름과 조작 순서를 적습니다.
+
+기존 Vercel Git 배포에서 Client와 Storybook을 함께 빌드합니다. `main` 운영 배포와 Client Preview의 `/storybook/`에서 각각 열 수 있습니다. 같은 저장소의 Client 관련 PR에는 Preview 배포 성공 후 GitHub Actions가 미리보기 링크를 댓글로 남깁니다.
 
 ## 🔧 개발 환경 설정
 
@@ -82,20 +91,22 @@ import { http, auth } from '@dpm-core/api';
 ### 중요 설정
 
 #### transpilePackages 설정
+
 ```typescript
 // apps/admin/next.config.ts, apps/client/next.config.ts
 const nextConfig: NextConfig = {
-  transpilePackages: ['@dpm-core/shared'],
+	transpilePackages: ['@dpm-core/shared'],
 };
 ```
 
 #### 의존성 관리
+
 ```json
 {
-  "dependencies": {
-    "@dpm-core/shared": "workspace:*",
-    "@dpm-core/api": "workspace:*"
-  }
+	"dependencies": {
+		"@dpm-core/shared": "workspace:*",
+		"@dpm-core/api": "workspace:*"
+	}
 }
 ```
 
@@ -108,6 +119,7 @@ const nextConfig: NextConfig = {
 ## 🛠️ 사용 가능한 명령어
 
 ### 개발
+
 ```bash
 pnpm dev                    # 모든 앱 개발 모드 실행
 pnpm build                  # 모든 패키지 빌드
@@ -118,28 +130,33 @@ pnpm clean                  # 빌드 캐시 정리 (node_modules, .turbo, dist)
 ```
 
 ### 특정 워크스페이스 명령어
+
 ```bash
-pnpm turbo [명령어] --filter [workspace] 
+pnpm turbo [명령어] --filter [workspace]
 ```
 
 ## 🎯 개발 가이드라인
 
 ### 1. 컴포넌트 개발
+
 - **'use client'** 디렉티브 명시적 사용
 - **Radix UI** 기반 컴포넌트 개발
 - **Tailwind CSS** 사용
 - **cn 함수**를 통한 클래스 이름 조합
 
 ### 2. 타입 안전성
+
 - **TypeScript** 강제 사용
 - **엄격한 타입 검사** 적용
 - **interface** 우선 사용
 
 ### 3. 코드 품질
+
 - **Oxfmt**를 사용한 일관된 코드 포맷팅
 - **커밋 컨벤션** 사용
 
 ### 4. 순환 참조 방지
+
 - **Oxlint `import/no-cycle`**을 통한 순환 참조 방지
 - **Turborepo**를 통한 패키지 간 순환 참조 방지
 
@@ -154,6 +171,7 @@ import { cn } from '../../utils/cn';
 ## 🔍 문제 해결
 
 ### 빌드 오류
+
 ```bash
 # 캐시 관련 정리
 pnpm clean
