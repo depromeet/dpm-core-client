@@ -101,8 +101,10 @@ export function useFeedbackKeyboardLayout(
 		let restingHeight = form.clientHeight;
 		form.style.setProperty('--feedback-resting-height', `${restingHeight}px`);
 		// Resolve the inset against the same viewport height as the form, in the same layout pass.
-		form.style.paddingBottom =
-			'clamp(0px, calc(var(--safe-area-inset-bottom) + 100dvh - var(--feedback-resting-height)), var(--safe-area-inset-bottom))';
+		form.style.setProperty(
+			'padding-bottom',
+			'clamp(0px, calc(var(--safe-area-inset-bottom) + 100dvh - var(--feedback-resting-height)), var(--safe-area-inset-bottom))',
+		);
 
 		const observer = new ResizeObserver(() => {
 			const width = window.innerWidth;
