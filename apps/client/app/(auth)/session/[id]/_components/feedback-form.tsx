@@ -32,6 +32,8 @@ import { useClarity } from '@/providers/client-clarity-adapter';
 import { submitSessionFeedbackOptions } from '@/remotes/mutations/session-feedback';
 import { getSessionFeedbackMeQuery } from '@/remotes/queries/session-feedback';
 
+import { useFeedbackKeyboardLayout } from './use-feedback-keyboard-layout';
+
 interface FeedbackFormProps {
 	sessionId: number;
 	returnTo: '/' | '/session';
@@ -474,34 +476,11 @@ export const FeedbackForm = ({
 		};
 	}, [isIOSApp, keepFocusedFieldVisible]);
 
-	useEffect(() => {
-		const form = formContentRef.current?.parentElement;
-		if (!isIOSApp || !isFeedbackFormVisible || !form) return;
-
-		let viewportWidth = window.innerWidth;
-		let restingHeight = form.clientHeight;
-		form.style.setProperty('--feedback-resting-height', `${restingHeight}px`);
-		// Resolve the inset against the same viewport height as the form, in the same layout pass.
-		form.style.paddingBottom =
-			'clamp(0px, calc(var(--safe-area-inset-bottom) + 100dvh - var(--feedback-resting-height)), var(--safe-area-inset-bottom))';
-
-		const observer = new ResizeObserver(() => {
-			const width = window.innerWidth;
-			const height = form.clientHeight;
-			if (width !== viewportWidth || height > restingHeight) {
-				viewportWidth = width;
-				restingHeight = height;
-				form.style.setProperty('--feedback-resting-height', `${restingHeight}px`);
-			}
-		});
-
-		observer.observe(form, { box: 'border-box' });
-		return () => {
-			observer.disconnect();
-			form.style.removeProperty('padding-bottom');
-			form.style.removeProperty('--feedback-resting-height');
-		};
-	}, [isIOSApp, isFeedbackFormVisible]);
+	useFeedbackKeyboardLayout(
+		isIOSApp && isFeedbackFormVisible,
+		formContentRef,
+		keepFocusedFieldVisible,
+	);
 
 	useEffect(() => {
 		const content = formContentRef.current;
