@@ -1,6 +1,6 @@
 ---
 name: dpm-client-storybook
-description: dpm-core-client에서 제품 화면을 만들거나 수정하고 화면별 Storybook 스토리와 사용자 동작 테스트를 구성할 때 사용합니다. Figma 시안을 참조할 때는 링크를 받고 Figma MCP와 앱 브라우저 중 사용자가 선택한 방식으로 확인합니다.
+description: dpm-core-client에서 제품 화면을 만들거나 수정하고 화면별 Storybook 스토리와 사용자 동작 테스트를 구성할 때 사용합니다. Figma 프레임은 사용자가 지정한 방식으로 확인하며, 이미 로그인한 일반 Chrome을 사용할 수 있습니다.
 ---
 
 # Client 화면 Storybook

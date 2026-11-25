@@ -72,7 +72,7 @@ import { Button, Avatar, cn } from '@dpm-core/shared';
 홈·출석·세션 같은 제품 화면을 제안하거나 수정할 때는 이 저장소를 엽니다. 여러 화면에서 재사용할 공용 버튼·배지나 컬러·타이포그래피 토큰의 변경은 `dpm-core-dpm-system`에서 작업합니다.
 
 1. AI에게 대상 화면의 Figma 프레임 링크와 보고 싶은 케이스를 전달합니다. 예를 들어 “이 프레임으로 세션 피드백 결과 화면을 만들어 주세요. 응답이 있는 상태와 없는 상태를 보고 싶어요.”라고 요청할 수 있습니다.
-2. AI가 Figma 확인 방식을 물으면 **Figma MCP** 또는 **앱 브라우저**를 선택합니다. Codex 데스크톱은 `@Browser`, Claude Code 데스크톱은 Browser 패널을 사용합니다. 앱에서 프레임을 열 수 없으면 프레임 캡처를 첨부할 수 있습니다. Claude Code의 `/dpm-client-storybook`과 Codex의 `$dpm-client-storybook`에서 같은 [작성 절차](.claude/skills/dpm-client-storybook/SKILL.md)를 사용합니다.
+2. **Figma MCP**, **이미 로그인한 Chrome**, **앱 브라우저** 중 편한 방식으로 확인을 요청합니다. 일반 Chrome에서 Figma를 쓰고 있다면 “지금 로그인한 Chrome에서 열어 주세요”라고 요청하세요. 프레임 캡처를 첨부할 수도 있습니다. Claude Code의 `/dpm-client-storybook`과 Codex의 `$dpm-client-storybook`에서 같은 [작성 절차](.claude/skills/dpm-client-storybook/SKILL.md)를 사용합니다.
 3. 저장소 루트에서 `pnpm storybook:client`를 실행하고 [localhost:3000](http://localhost:3000)에서 화면과 하위 동작 테스트를 확인합니다. PR에는 리뷰할 스토리 이름과 조작 순서를 적습니다.
 
 기존 Vercel Git 배포에서 Client와 Storybook을 함께 빌드합니다. `main` 운영 배포와 Client Preview의 `/storybook/`에서 각각 열 수 있습니다. 같은 저장소의 Client 관련 PR에는 Preview 배포 성공 후 GitHub Actions가 미리보기 링크를 댓글로 남깁니다.
