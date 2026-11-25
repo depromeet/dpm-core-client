@@ -23,7 +23,9 @@
 		"changeset": "changeset",
 		"changeset:version": "changeset version",
 		"changeset:publish": "changeset publish",
-		"generate:type": "turbo generate:type"
+		"generate:type": "turbo generate:type",
+		"storybook:client": "pnpm --filter client storybook",
+		"build-storybook:client": "pnpm --filter client build-storybook"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.29.5",

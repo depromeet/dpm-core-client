@@ -10,7 +10,9 @@
 		"format": "oxfmt --config ../../.oxfmtrc.json .",
 		"lint": "oxlint --config ../../.oxlintrc.json --fix .",
 		"check-types": "next typegen && tsc --noEmit",
-		"clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next"
+		"clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next",
+		"storybook": "storybook dev --host localhost --port 3000 --exact-port --no-open --disable-telemetry",
+		"build-storybook": "storybook build --disable-telemetry"
 	},
 	"dependencies": {
 		"@dpm-core/api": "workspace:*",
@@ -41,12 +43,15 @@
 	},
 	"devDependencies": {
 		"@dpm-core/typescript-config": "workspace:*",
+		"@storybook/nextjs-vite": "10.6.8",
 		"@tailwindcss/postcss": "^4",
 		"@types/js-cookie": "^3",
 		"@types/node": "^20",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
 		"@types/react-lottie": "^1",
-		"typescript": "^5"
+		"storybook": "10.6.8",
+		"typescript": "^5",
+		"vite": "8.3.8"
 	}
 }
