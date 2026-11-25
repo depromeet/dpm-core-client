@@ -14,7 +14,7 @@ export const TableCheckbox = ({
 		<CheckboxPrimitive.Root
 			data-slot="table-checkbox"
 			className={cn(
-				'peer flex size-4 shrink-0 items-center justify-center rounded-sm border border-line-normal bg-background-normal outline-none transition-colors',
+				'peer flex size-4 shrink-0 items-center justify-center rounded-sm border border-line-normal bg-background-normal transition-colors outline-none',
 				'focus-visible:ring-2 focus-visible:ring-primary-normal focus-visible:ring-offset-2',
 				'disabled:cursor-not-allowed disabled:opacity-50',
 				'data-[state=checked]:border-primary-normal data-[state=checked]:bg-primary-normal',

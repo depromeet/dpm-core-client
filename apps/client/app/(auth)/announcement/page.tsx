@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { Suspense, useState } from 'react';
-import { ErrorBoundary, type ErrorBoundaryFallbackProps } from '@suspensive/react';
+import { ErrorBoundary } from '@suspensive/react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import type { Announcement } from '@dpm-core/api';
 import { Aesterisk, TeamTabBar } from '@dpm-core/shared';
@@ -11,7 +11,7 @@ import { AppHeader } from '@/components/app-header';
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { BottomTabBar } from '@/components/bottom-tab-bar';
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/empty';
-import { ErrorBox } from '@/components/error-box';
+import { ErrorBoxFallback } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
 import { NoticeCard } from '@/components/notice/notice-card';
 import { formatISOStringToDotDate } from '@/lib/date';
@@ -109,9 +109,7 @@ const NoticePage = () => {
 				className="w-full px-4 pt-1"
 			/>
 
-			<ErrorBoundary
-				fallback={(props: ErrorBoundaryFallbackProps) => <ErrorBox onReset={() => props.reset()} />}
-			>
+			<ErrorBoundary fallback={ErrorBoxFallback}>
 				<Suspense
 					fallback={
 						<div className="flex flex-1 items-center justify-center">

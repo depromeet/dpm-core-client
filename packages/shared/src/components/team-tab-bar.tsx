@@ -25,7 +25,7 @@ export const TeamTabBar = ({
 	return (
 		<div
 			className={cn(
-				'flex items-end border-line-normal border-b bg-background-normal pt-3',
+				'flex items-end border-b border-line-normal bg-background-normal pt-3',
 				className,
 			)}
 			{...props}
@@ -46,7 +46,7 @@ export const TeamTabBar = ({
 						>
 							<div
 								className={cn(
-									'rounded-lg px-3 py-1 font-semibold text-title2',
+									'rounded-lg px-3 py-1 text-title2 font-semibold',
 									isActive
 										? 'bg-background-normal text-label-strong'
 										: 'text-label-assistive hover:bg-background-strong',

@@ -32,7 +32,7 @@ const MAX_NAME_LENGTH = 20;
  */
 export const AppleProfileSetupSheet = () => {
 	const { isSetupRequired } = useAppleProfileSetup();
-	const { ref } = useAppShell();
+	const { container, containerWidth } = useAppShell();
 	const queryClient = useQueryClient();
 
 	const [isOpen, setIsOpen] = useState(false);
@@ -81,10 +81,13 @@ export const AppleProfileSetupSheet = () => {
 	// 설정이 필요해지면 자동으로 바텀시트를 연다.
 	// 사용자가 바텀시트가 왜 떴는지 헷갈리지 않도록 안내 토스트를 함께 노출한다.
 	useEffect(() => {
-		if (isSetupRequired) {
-			setIsOpen(true);
-			toast.info('원활한 활동을 위해 이름과 직군 설정이 필요해요.');
+		function promptProfileSetup() {
+			if (isSetupRequired) {
+				setIsOpen(true);
+				toast.info('원활한 활동을 위해 이름과 직군 설정이 필요해요.');
+			}
 		}
+		promptProfileSetup();
 	}, [isSetupRequired]);
 
 	const { mutate: updateProfile, isPending } = useMutation(updateMyProfileMutationOptions());
@@ -117,15 +120,15 @@ export const AppleProfileSetupSheet = () => {
 			open={isOpen}
 			onOpenChange={setIsOpen}
 			dismissible={false}
-			container={ref.current}
+			container={container}
 			// Vaul 기본 키보드 리포지셔닝은 콘텐츠가 클 때 드로어를 과하게 밀어올려 입력창이 잘리므로 끄고,
 			// 아래에서 드로어를 키보드 위 공간에 직접 맞춘다.
 			repositionInputs={false}
 		>
 			<DrawerContent
-				className={`mx-auto pb-safe-area ${isKeyboardOpen ? 'overflow-y-auto' : ''}`}
+				className={`pb-safe-area mx-auto ${isKeyboardOpen ? 'overflow-y-auto' : ''}`}
 				style={{
-					maxWidth: ref.current?.clientWidth ?? 'auto',
+					maxWidth: containerWidth ?? 'auto',
 					// 키보드가 떠 있는 동안: 드로어 바닥을 키보드 바로 위에 두고(bottom),
 					// 높이를 키보드 위 가용 공간으로 고정해(height) 꽉 채운다. 넘치는 내용은 내부 스크롤되며
 					// 포커스된 입력창은 브라우저가 자동으로 스크롤해 보여준다.
@@ -136,7 +139,7 @@ export const AppleProfileSetupSheet = () => {
 			>
 				<DrawerHeader showCloseButton={false} className="gap-4 px-5 pt-3 pb-0">
 					<div aria-hidden className="mx-auto h-1 w-12 rounded-full bg-background-heavy" />
-					<DrawerTitle className="text-left font-semibold text-label-normal text-title1 tracking-[-0.2px]">
+					<DrawerTitle className="text-left text-title1 font-semibold tracking-[-0.2px] text-label-normal">
 						활동에 필요한 정보를 입력해주세요.
 					</DrawerTitle>
 				</DrawerHeader>
@@ -144,8 +147,8 @@ export const AppleProfileSetupSheet = () => {
 				<div className="flex flex-col gap-5 px-5 pt-4">
 					<div className="flex flex-col gap-2">
 						<div className="flex flex-col gap-1">
-							<span className="font-semibold text-body2 text-label-subtle">이름</span>
-							<span className="font-medium text-caption1 text-label-assistive">
+							<span className="text-body2 font-semibold text-label-subtle">이름</span>
+							<span className="text-caption1 font-medium text-label-assistive">
 								한글 본명으로 입력해주세요.
 							</span>
 						</div>
@@ -161,8 +164,8 @@ export const AppleProfileSetupSheet = () => {
 
 					<div className="flex flex-col gap-2">
 						<div className="flex flex-col gap-1">
-							<span className="font-semibold text-body2 text-label-subtle">파트</span>
-							<span className="font-medium text-caption1 text-label-assistive">
+							<span className="text-body2 font-semibold text-label-subtle">파트</span>
+							<span className="text-caption1 font-medium text-label-assistive">
 								디프만에서 활동 중인 파트를 선택해주세요.
 							</span>
 						</div>

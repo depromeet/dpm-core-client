@@ -22,7 +22,7 @@ export const AttendancePolicyButton = () => {
 				await openExternalUrl(`${window.location.origin}${ATTENDANCE_POLICY_PDF_PATH}`);
 			}}
 		>
-			<span className="font-medium text-caption1 text-label-tertiary">규정</span>
+			<span className="text-caption1 font-medium text-label-tertiary">규정</span>
 			<ChevronRight className="size-3 text-icon-noraml" />
 		</button>
 	);

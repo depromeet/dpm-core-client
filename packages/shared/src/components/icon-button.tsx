@@ -7,7 +7,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../utils/cn';
 
 const iconButtonVariants = cva(
-	'inline-flex shrink-0 cursor-pointer items-center justify-center rounded-lg outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40',
+	'focus-visible:ring-ring inline-flex shrink-0 cursor-pointer items-center justify-center rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40',
 	{
 		variants: {
 			variant: {
@@ -28,8 +28,7 @@ const iconButtonVariants = cva(
 );
 
 export interface IconButtonProps
-	extends React.ComponentProps<'button'>,
-		VariantProps<typeof iconButtonVariants> {
+	extends React.ComponentProps<'button'>, VariantProps<typeof iconButtonVariants> {
 	asChild?: boolean;
 }
 

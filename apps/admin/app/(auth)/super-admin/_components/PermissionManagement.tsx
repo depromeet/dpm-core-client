@@ -93,7 +93,9 @@ const parseCohortRoles = (roles: string[], cohortIdToNumber: Map<number, string>
 			map.set(number, { cohortNumber: number, isAdmin: false });
 		}
 	}
-	return [...map.values()].sort((a, b) => Number(a.cohortNumber) - Number(b.cohortNumber));
+	const cohortRoles = [...map.values()];
+	cohortRoles.sort((a, b) => Number(a.cohortNumber) - Number(b.cohortNumber));
+	return cohortRoles;
 };
 
 const formatCohortRoles = (cohortRoles: CohortRole[]) =>
@@ -136,8 +138,8 @@ export const PermissionManagement = () => {
 	} = useQuery(getMembersOverviewQuery());
 	const { data: cohortsData } = useQuery(getCohortListQuery);
 
-	const members = membersData?.data.members ?? [];
-	const cohorts = cohortsData?.data.cohorts ?? [];
+	const members = useMemo(() => membersData?.data.members ?? [], [membersData]);
+	const cohorts = useMemo(() => cohortsData?.data.cohorts ?? [], [cohortsData]);
 
 	const memberIds = useMemo(() => members.map((m) => m.memberId), [members]);
 	const { data: rolesData, isFetching: rolesFetching } = useQuery(getMembersRolesQuery(memberIds));
@@ -198,7 +200,8 @@ export const PermissionManagement = () => {
 			return Number.POSITIVE_INFINITY;
 		};
 
-		return [...filtered].sort((a, b) => {
+		const sortedMembers = [...filtered];
+		sortedMembers.sort((a, b) => {
 			const dir = sortOrder === 'asc' ? 1 : -1;
 			switch (sortKey) {
 				case 'memberId':
@@ -215,6 +218,7 @@ export const PermissionManagement = () => {
 					return 0;
 			}
 		});
+		return sortedMembers;
 	}, [members, searchQuery, sortKey, sortOrder, cohortRolesMap]);
 
 	const invalidateAll = async () => {
@@ -276,28 +280,31 @@ export const PermissionManagement = () => {
 
 	const isPending = isRolePending || isStatusPending || isInitPending;
 
-	const openRoleDialog = (member: MemberOverviewItem, cohortNumber: string) => {
-		setTargetMember(member);
+	const openRoleDialog = (selectedMember: MemberOverviewItem, cohortNumber: string) => {
+		setTargetMember(selectedMember);
 		setActionType('role');
 		setSelectedCohort(cohortNumber);
 		setDialogOpen(true);
 	};
 
-	const openStatusDialog = (member: MemberOverviewItem) => {
-		setTargetMember(member);
+	const openStatusDialog = (selectedMember: MemberOverviewItem) => {
+		setTargetMember(selectedMember);
 		setActionType('status');
 		setSelectedStatus('ACTIVE');
 		setDialogOpen(true);
 	};
 
-	const openAddCohortDialog = (member: MemberOverviewItem) => {
-		setTargetMember(member);
+	const openAddCohortDialog = (selectedMember: MemberOverviewItem) => {
+		setTargetMember(selectedMember);
 		setActionType('add-cohort');
 		setAddCohortId('');
 		setDialogOpen(true);
 	};
 
-	const targetCohortRoles = targetMember ? (cohortRolesMap.get(targetMember.memberId) ?? []) : [];
+	const targetCohortRoles = useMemo(
+		() => (targetMember ? (cohortRolesMap.get(targetMember.memberId) ?? []) : []),
+		[targetMember, cohortRolesMap],
+	);
 	const selectedCohortRole = targetCohortRoles.find((r) => r.cohortNumber === selectedCohort);
 
 	const availableCohortsToAdd = useMemo(() => {
@@ -379,8 +386,8 @@ export const PermissionManagement = () => {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
-					<span className="font-bold text-label-normal text-title1">권한 관리</span>
-					<span className="font-medium text-body1 text-primary-normal">
+					<span className="text-title1 font-bold text-label-normal">권한 관리</span>
+					<span className="text-body1 font-medium text-primary-normal">
 						{filteredAndSortedMembers.length}
 					</span>
 				</div>
@@ -407,7 +414,7 @@ export const PermissionManagement = () => {
 					{['sk-1', 'sk-2', 'sk-3', 'sk-4', 'sk-5'].map((key) => (
 						<div
 							key={key}
-							className="flex h-14 items-center gap-6 border-line-subtle border-b px-3"
+							className="flex h-14 items-center gap-6 border-b border-line-subtle px-3"
 						>
 							<Skeleton className="h-4 w-8" />
 							<Skeleton className="h-4 w-20" />
@@ -420,7 +427,7 @@ export const PermissionManagement = () => {
 				</div>
 			) : filteredAndSortedMembers.length === 0 ? (
 				<div className="flex min-h-75 w-full items-center justify-center py-12">
-					<p className="font-medium text-body1 text-label-assistive">
+					<p className="text-body1 font-medium text-label-assistive">
 						{searchQuery ? '검색 결과가 없습니다' : '등록된 멤버가 없습니다'}
 					</p>
 				</div>
@@ -429,7 +436,7 @@ export const PermissionManagement = () => {
 					<TableHeader>
 						<TableRow className="h-10 border-0 bg-background-strong hover:bg-background-strong">
 							{SORT_COLUMNS.map((col) => (
-								<TableHead key={col.key} className="px-3 font-medium text-body2 text-label-subtle">
+								<TableHead key={col.key} className="px-3 text-body2 font-medium text-label-subtle">
 									<button
 										type="button"
 										className="inline-flex cursor-pointer items-center gap-1"
@@ -445,7 +452,7 @@ export const PermissionManagement = () => {
 									</button>
 								</TableHead>
 							))}
-							<TableHead className="w-32 px-6 font-medium text-body2 text-label-subtle">
+							<TableHead className="w-32 px-6 text-body2 font-medium text-label-subtle">
 								관리
 							</TableHead>
 						</TableRow>
@@ -470,13 +477,13 @@ export const PermissionManagement = () => {
 							const roles = cohortRolesMap.get(m.memberId) ?? [];
 							return (
 								<TableRow key={m.memberId} className="h-12 border-line-subtle">
-									<TableCell className="px-3 font-medium text-body1 text-label-normal">
+									<TableCell className="px-3 text-body1 font-medium text-label-normal">
 										{m.memberId}
 									</TableCell>
-									<TableCell className="px-3 font-medium text-body1 text-label-normal">
+									<TableCell className="px-3 text-body1 font-medium text-label-normal">
 										{m.name}
 									</TableCell>
-									<TableCell className="px-3 font-medium text-body1 text-label-normal">
+									<TableCell className="px-3 text-body1 font-medium text-label-normal">
 										<div className="flex flex-wrap items-center gap-1.5">
 											{roles.length === 0 ? (
 												<span className="text-label-assistive">미배정</span>
@@ -487,10 +494,10 @@ export const PermissionManagement = () => {
 														type="button"
 														title={`클릭하여 ${r.isAdmin ? '디퍼' : '운영진'}(으)로 변환`}
 														className={cn(
-															'cursor-pointer rounded-md border px-2 py-0.5 font-medium text-body2 transition-colors',
+															'cursor-pointer rounded-md border px-2 py-0.5 text-body2 font-medium transition-colors',
 															r.isAdmin
 																? 'border-primary-normal/30 bg-primary-normal/10 text-primary-normal hover:bg-primary-normal/20'
-																: 'border-line-normal bg-background-strong text-label-normal hover:bg-background-stronger',
+																: 'hover:bg-background-stronger border-line-normal bg-background-strong text-label-normal',
 														)}
 														onClick={() => openRoleDialog(m, r.cohortNumber)}
 													>
@@ -501,7 +508,7 @@ export const PermissionManagement = () => {
 											<button
 												type="button"
 												title="기수 추가"
-												className="inline-flex cursor-pointer items-center gap-0.5 rounded-md border border-line-normal border-dashed px-2 py-0.5 font-medium text-body2 text-label-subtle hover:bg-background-strong hover:text-label-normal"
+												className="inline-flex cursor-pointer items-center gap-0.5 rounded-md border border-dashed border-line-normal px-2 py-0.5 text-body2 font-medium text-label-subtle hover:bg-background-strong hover:text-label-normal"
 												onClick={() => openAddCohortDialog(m)}
 											>
 												<Plus className="size-3" />
@@ -509,7 +516,7 @@ export const PermissionManagement = () => {
 											</button>
 										</div>
 									</TableCell>
-									<TableCell className="px-3 font-medium text-body1 text-label-normal">
+									<TableCell className="px-3 text-body1 font-medium text-label-normal">
 										{m.part}
 									</TableCell>
 									<TableCell className="px-3">
@@ -518,7 +525,7 @@ export const PermissionManagement = () => {
 									<TableCell className="flex items-center justify-end gap-2 px-3">
 										<button
 											type="button"
-											className="cursor-pointer rounded-md border border-line-normal px-3 py-1.5 font-medium text-body2 text-label-normal hover:bg-background-strong"
+											className="cursor-pointer rounded-md border border-line-normal px-3 py-1.5 text-body2 font-medium text-label-normal hover:bg-background-strong"
 											onClick={() => openStatusDialog(m)}
 										>
 											상태 변경
@@ -540,11 +547,11 @@ export const PermissionManagement = () => {
 
 					{actionType === 'role' && selectedCohortRole && (
 						<div className="flex flex-col gap-1 rounded-md bg-background-strong px-3 py-2">
-							<span className="font-medium text-body2 text-label-subtle">
+							<span className="text-body2 font-medium text-label-subtle">
 								{selectedCohortRole.cohortNumber}기 현재:{' '}
 								{selectedCohortRole.isAdmin ? '운영진 (ORGANIZER)' : '디퍼 (DEEPER)'}
 							</span>
-							<span className="font-medium text-body2 text-primary-normal">
+							<span className="text-body2 font-medium text-primary-normal">
 								변경 후: {selectedCohortRole.isAdmin ? '디퍼 (DEEPER)' : '운영진 (ORGANIZER)'}
 							</span>
 						</div>
@@ -572,9 +579,9 @@ export const PermissionManagement = () => {
 
 					{actionType === 'add-cohort' && (
 						<div className="flex flex-col gap-2">
-							<span className="font-medium text-body2 text-label-subtle">추가할 기수</span>
+							<span className="text-body2 font-medium text-label-subtle">추가할 기수</span>
 							{availableCohortsToAdd.length === 0 ? (
-								<span className="font-medium text-body2 text-label-assistive">
+								<span className="text-body2 font-medium text-label-assistive">
 									추가할 수 있는 기수가 없습니다.
 								</span>
 							) : (

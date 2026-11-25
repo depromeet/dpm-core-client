@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react';
 import { ChevronUp } from 'lucide-react';
 import { cn } from '@dpm-core/shared';
 
+const scrollToTop = () => {
+	window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
 export const ScrollToTop = () => {
 	const [visible, setVisible] = useState(false);
 
@@ -15,10 +19,6 @@ export const ScrollToTop = () => {
 		window.addEventListener('scroll', handleScroll);
 		return () => window.removeEventListener('scroll', handleScroll);
 	}, []);
-
-	const scrollToTop = () => {
-		window.scrollTo({ top: 0, behavior: 'smooth' });
-	};
 
 	return (
 		<button

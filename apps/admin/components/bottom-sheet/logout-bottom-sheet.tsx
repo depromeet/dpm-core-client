@@ -10,7 +10,6 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 	DrawerTrigger,
-	useAppShell,
 } from '@dpm-core/shared';
 
 import { logoutMutationOptions } from '@/remotes/mutations/auth';
@@ -24,7 +23,6 @@ interface LogoutBottomSheetProps {
 const LogoutBottomSheet = ({ children, disabled }: PropsWithChildren<LogoutBottomSheetProps>) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const router = useRouter();
-	const { ref } = useAppShell();
 
 	const handleClose = () => {
 		setIsOpen(false);
@@ -46,19 +44,13 @@ const LogoutBottomSheet = ({ children, disabled }: PropsWithChildren<LogoutBotto
 	const isDisabled = isLogoutPending || disabled;
 
 	return (
-		<Drawer activeSnapPoint={1} open={isOpen} onOpenChange={setIsOpen} container={ref.current}>
+		<Drawer activeSnapPoint={1} open={isOpen} onOpenChange={setIsOpen}>
 			<DrawerTrigger asChild>{children}</DrawerTrigger>
-			<DrawerContent
-				className="!px-2 mx-auto"
-				style={{
-					// FIXME: 바텀시트 위치 계산식 분리
-					maxWidth: ref.current?.clientWidth ?? 'auto',
-				}}
-			>
+			<DrawerContent className="mx-auto px-2!" style={{ maxWidth: 'auto' }}>
 				<DrawerTitle className="sr-only">로그아웃</DrawerTitle>
-				<DrawerHeader className="!text-left !gap-y-2 items-start">
-					<h3 className="font-semibold text-label-normal text-title2">로그아웃</h3>
-					<p className="font-medium text-body2 text-label-assistive">정말 로그아웃할까요?</p>
+				<DrawerHeader className="items-start gap-y-2! text-left!">
+					<h3 className="text-title2 font-semibold text-label-normal">로그아웃</h3>
+					<p className="text-body2 font-medium text-label-assistive">정말 로그아웃할까요?</p>
 				</DrawerHeader>
 				<DrawerFooter>
 					<Pressable

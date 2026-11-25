@@ -277,7 +277,7 @@ export const HomeCoachmarkTour = ({ onComplete }: HomeCoachmarkTourProps) => {
 			)}
 			<div
 				ref={popupRef}
-				className="absolute w-62 max-w-[calc(100%_-_32px)] rounded-xl bg-white p-4 text-label-normal shadow-md"
+				className="absolute w-62 max-w-[calc(100%-32px)] rounded-xl bg-white p-4 text-label-normal shadow-md"
 				style={{
 					visibility: position ? 'visible' : 'hidden',
 					left: position?.popupLeft,
@@ -294,8 +294,8 @@ export const HomeCoachmarkTour = ({ onComplete }: HomeCoachmarkTourProps) => {
 				<p className="mb-2 text-body2 text-label-tertiary">
 					{visibleSteps.indexOf(step) + 1}/{visibleSteps.length}
 				</p>
-				<p className="mb-1 font-semibold text-body2">{STEPS[step].title}</p>
-				<p className="break-keep text-body2 text-label-subtle [overflow-wrap:break-word]">
+				<p className="mb-1 text-body2 font-semibold">{STEPS[step].title}</p>
+				<p className="text-body2 wrap-break-word break-keep text-label-subtle">
 					{STEPS[step].description}
 				</p>
 				<div className="mt-3 flex justify-end">

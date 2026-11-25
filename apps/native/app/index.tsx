@@ -92,8 +92,11 @@ function WebViewContainer() {
 	}, [webManagesFeedbackKeyboard]);
 
 	useEffect(() => {
-		const nextFeedbackUrl = getFeedbackLink(feedbackUrl);
-		if (nextFeedbackUrl) setWebViewUrl(nextFeedbackUrl);
+		function syncFeedbackUrl() {
+			const nextFeedbackUrl = getFeedbackLink(feedbackUrl);
+			if (nextFeedbackUrl) setWebViewUrl(nextFeedbackUrl);
+		}
+		syncFeedbackUrl();
 	}, [feedbackUrl]);
 
 	// 알림 탭 → 앱이 꺼져 있던 경우(콜드 스타트)와 켜져 있던 경우 모두 마지막 응답으로 들어온다.
@@ -200,7 +203,7 @@ function WebViewContainer() {
 					allowsBackForwardNavigationGestures={true}
 					webviewDebuggingEnabled={__DEV__ || process.env.EXPO_PUBLIC_WEBVIEW_DEBUG === 'true'}
 				/>
-				<StatusBar style="dark" />
+				<StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
 			</KeyboardAvoidingView>
 		</View>
 	);

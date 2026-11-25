@@ -13,7 +13,7 @@ const HomeHeader = () => {
 				</Link>
 			</div>
 			<div className="hidden px-10 py-6 md:block">
-				<h1 className="font-bold text-headline1 text-label-normal">홈</h1>
+				<h1 className="text-headline1 font-bold text-label-normal">홈</h1>
 			</div>
 		</NavigationBar>
 	);

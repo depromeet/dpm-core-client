@@ -67,7 +67,7 @@ export const SessionDetailTabs = ({ sessionId }: SessionDetailTabsProps) => {
 			onValueChange={handleTabChange}
 			className="flex min-h-0 flex-1 flex-col"
 		>
-			<TabsList className="mt-3 h-12 w-full shrink-0 justify-start border-line-subtle border-b px-10">
+			<TabsList className="mt-3 h-12 w-full shrink-0 justify-start border-b border-line-subtle px-10">
 				<TabsTrigger value="info" className="w-[68px] flex-none px-5 text-body2">
 					정보
 				</TabsTrigger>

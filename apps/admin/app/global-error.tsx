@@ -1,8 +1,8 @@
 'use client';
 
-import './globals.css';
-
 import { Button, ErrorState } from '@dpm-core/shared';
+
+import './globals.css';
 
 export default function GlobalError({ reset }: { reset: () => void }) {
 	return (

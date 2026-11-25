@@ -45,7 +45,7 @@ export function AbsenceEvidenceField({
 				type="button"
 				variant="none"
 				size="lg"
-				className="w-full justify-start gap-2 border border-line-normal bg-background-normal px-4 font-medium text-body2 text-label-assistive hover:bg-background-subtle"
+				className="w-full justify-start gap-2 border border-line-normal bg-background-normal px-4 text-body2 font-medium text-label-assistive hover:bg-background-subtle"
 				disabled={disabled}
 				onClick={() => input.current?.click()}
 			>
@@ -57,7 +57,7 @@ export function AbsenceEvidenceField({
 				{items.map((item, index) => (
 					<li
 						key={item.id}
-						className="flex w-fit max-w-full items-center gap-3 rounded-md bg-background-normal px-2 py-1 font-medium text-caption1 text-label-subtle"
+						className="flex w-fit max-w-full items-center gap-3 rounded-md bg-background-normal px-2 py-1 text-caption1 font-medium text-label-subtle"
 					>
 						{item.status === 'uploaded' ? (
 							<EvidencePreview

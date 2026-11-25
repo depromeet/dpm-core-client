@@ -4,7 +4,7 @@ type ToastOptions = NonNullable<Parameters<typeof sharedToast.success>[1]>;
 
 const desktopOptions = (options?: ToastOptions): ToastOptions => ({
 	...options,
-	className: cn('[&>div]:px-5 [&_p]:font-semibold [&_p]:text-body1', options?.className),
+	className: cn('[&_p]:text-body1 [&_p]:font-semibold [&>div]:px-5', options?.className),
 });
 
 export const toast = {

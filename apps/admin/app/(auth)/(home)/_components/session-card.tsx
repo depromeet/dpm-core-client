@@ -29,7 +29,7 @@ const SessionCard = ({
 		<Link
 			href={`/session/${sessionId}`}
 			className={cn(
-				'flex animate-view-transition cursor-pointer flex-col rounded-lg bg-background-subtle p-5 transition-colors hover:bg-background-strong',
+				'animate-view-transition flex cursor-pointer flex-col rounded-lg bg-background-subtle p-5 transition-colors hover:bg-background-strong',
 				className,
 			)}
 			style={cardStyle}
@@ -41,7 +41,7 @@ const SessionCard = ({
 				{subtitle}
 			</small>
 			<h3
-				className="font-semibold text-body1"
+				className="text-body1 font-semibold"
 				style={sessionId ? { viewTransitionName: `session-title-${sessionId}` } : {}}
 			>
 				{title}

@@ -1,4 +1,4 @@
-@import "@dpm-core/shared/shared-styles.css";
+@import '@dpm-core/shared/shared-styles.css';
 
 @utility scrollbar-hide {
 	&::-webkit-scrollbar {

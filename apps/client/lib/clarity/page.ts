@@ -15,10 +15,6 @@ const STATIC_PAGE_ID_BY_PATHNAME: Partial<Record<string, ClarityPageId>> = {
 	'/welcome': CLARITY_PAGE_ID.WELCOME,
 	'/session': CLARITY_PAGE_ID.SESSION,
 	'/announcement': CLARITY_PAGE_ID.ANNOUNCEMENT,
-	'/after-party': CLARITY_PAGE_ID.AFTER_PARTY,
-	'/after-party/create': CLARITY_PAGE_ID.AFTER_PARTY_CREATE,
-	'/after-party/create/complete': CLARITY_PAGE_ID.AFTER_PARTY_CREATE_COMPLETE,
-	'/bills': CLARITY_PAGE_ID.BILLS,
 	'/my-page': CLARITY_PAGE_ID.MY_PAGE,
 	'/attendance/me': CLARITY_PAGE_ID.ATTENDANCE_ME,
 };
@@ -27,20 +23,6 @@ const DYNAMIC_PAGE_IDS: ReadonlyArray<ClarityDynamicPageRoute<ClarityPageId>> = 
 	{ pattern: /^\/session\/[^/]+\/feedback$/, pageId: CLARITY_PAGE_ID.SESSION_FEEDBACK },
 	{ pattern: /^\/session\/[^/]+$/, pageId: CLARITY_PAGE_ID.SESSION_DETAIL },
 	{ pattern: /^\/announcement\/[^/]+$/, pageId: CLARITY_PAGE_ID.ANNOUNCEMENT_DETAIL },
-	{
-		pattern: /^\/after-party\/[^/]+\/participants$/,
-		pageId: CLARITY_PAGE_ID.AFTER_PARTY_PARTICIPANTS,
-	},
-	{
-		pattern: /^\/after-party\/[^/]+\/attendees$/,
-		pageId: CLARITY_PAGE_ID.AFTER_PARTY_ATTENDEES,
-	},
-	{
-		pattern: /^\/after-party\/[^/]+\/update$/,
-		pageId: CLARITY_PAGE_ID.AFTER_PARTY_UPDATE,
-	},
-	{ pattern: /^\/after-party\/[^/]+$/, pageId: CLARITY_PAGE_ID.AFTER_PARTY_DETAIL },
-	{ pattern: /^\/bills\/[^/]+$/, pageId: CLARITY_PAGE_ID.BILLS_DETAIL },
 	{ pattern: /^\/attendance\/me\/[^/]+$/, pageId: CLARITY_PAGE_ID.ATTENDANCE_ME_SESSION },
 	{
 		pattern: /^\/attendance\/[^/]+\/result$/,

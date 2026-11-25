@@ -39,7 +39,7 @@ const LoginButton = forwardRef<HTMLButtonElement, LoginButtonProps>(
 				<a
 					href={href ?? webFallbackUrl}
 					onClick={handleClick}
-					className="flex items-center justify-center gap-3.75 font-medium text-body1"
+					className="flex items-center justify-center gap-3.75 text-body1 font-medium"
 				>
 					<KakaoLogo />
 					<p className="text-[#000000] opacity-85">카카오로 시작하기</p>

@@ -69,7 +69,9 @@ export const useMemberFilters = () => {
 	const updateFilter = useCallback(
 		<K extends keyof MemberFilterState>(key: K, value: MemberFilterState[K]) => {
 			setFilters((prev) => ({ ...prev, [key]: value }));
-	}, []);
+		},
+		[],
+	);
 
 	const applyBadgePreset = useCallback((card: MemberBadgeCard) => {
 		setFilters(presetForCard(card));

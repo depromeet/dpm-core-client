@@ -93,7 +93,7 @@ export const MyPageAccount = ({ accounts }: MyPageAccountProps) => {
 
 	return (
 		<MyPageBox className="flex flex-col gap-2">
-			<p className="font-semibold text-body2 text-label-assistive">계정 정보</p>
+			<p className="text-body2 font-semibold text-label-assistive">계정 정보</p>
 			<div className="flex flex-col gap-2">
 				{accounts.map((account) => (
 					<AccountRow
@@ -135,7 +135,7 @@ export const MyPageAccount = ({ accounts }: MyPageAccountProps) => {
 			<Dialog open={unlinkTarget != null} onOpenChange={(open) => !open && setUnlinkTarget(null)}>
 				<DialogContent showCloseButton={false}>
 					<DialogTitle className="sr-only">계정 연동 해제</DialogTitle>
-					<DialogHeader className="text-left font-bold text-title1">
+					<DialogHeader className="text-left text-title1 font-bold">
 						계정 연동을 해제할까요?
 					</DialogHeader>
 					<p className="text-body1 text-label-subtle">
@@ -183,7 +183,7 @@ const AccountRow = ({
 
 	return (
 		<div className={cn('flex items-center justify-between gap-2', children != null && 'h-9')}>
-			<p className="flex min-w-0 flex-1 gap-2 font-medium text-body2 text-label-subtle">
+			<p className="flex min-w-0 flex-1 gap-2 text-body2 font-medium text-label-subtle">
 				{socialIcon != null ? (
 					<span
 						className={cn(

@@ -33,10 +33,11 @@ export const useBulkMemberEdit = (selectedRows: MemberRow[]) => {
 
 	// 저장하지 않고 선택을 전부 풀면, 나중에 고르는 전혀 다른 멤버들에게
 	// 예전에 올려둔 임시 값이 그대로 다시 붙어 나오지 않도록 선택이 비는 시점에 초기화한다.
-	// biome-ignore lint/correctness/useExhaustiveDependencies: selectedRows.length 변화만 감지하면 된다
+	// oxlint-disable react/exhaustive-deps, react/exhaustive-effect-dependencies, react/set-state-in-effect
 	useEffect(() => {
 		if (selectedRows.length === 0) reset();
 	}, [selectedRows.length]);
+	// oxlint-enable react/exhaustive-deps, react/exhaustive-effect-dependencies, react/set-state-in-effect
 
 	const stage = useCallback(
 		<K extends MemberEditableField>(field: K, value: MemberEditableFields[K]) => {

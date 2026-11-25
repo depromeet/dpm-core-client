@@ -39,7 +39,7 @@ export function AttendanceList({ data, parts }: AttendanceListProps) {
 						{columns.map(({ part, members }) => (
 							<h2
 								key={part}
-								className="rounded-t-2xl bg-background-subtle px-4 pt-4 pb-3 font-semibold text-label-normal text-title2"
+								className="rounded-t-2xl bg-background-subtle px-4 pt-4 pb-3 text-title2 font-semibold text-label-normal"
 							>
 								{PART_LABELS[part]} <span className="text-primary-normal">{members.length}</span>
 							</h2>
@@ -69,11 +69,11 @@ export function AttendanceList({ data, parts }: AttendanceListProps) {
 													{getAttendanceMemberStatusLabel(member.attendanceStatus)}
 												</Badge>
 												<p className="mt-2 flex w-full min-w-0 items-center gap-1.5">
-													<span className="shrink-0 font-medium text-body2 text-label-assistive">
+													<span className="shrink-0 text-body2 font-medium text-label-assistive">
 														{member.teamNumber === 0 ? '미배정' : `${member.teamNumber}팀`}
 													</span>
 													<span className="h-3.5 w-px shrink-0 bg-line-subtle" />
-													<span className="break-all font-semibold text-body1 text-label-subtle">
+													<span className="text-body1 font-semibold break-all text-label-subtle">
 														{member.name}
 													</span>
 												</p>

@@ -191,9 +191,9 @@ const FeedbackResultScreen = ({
 			<div className="flex flex-col items-center gap-3 text-center">
 				{icon}
 				<div className="flex flex-col items-center gap-3">
-					<h1 className={cn('font-bold text-[#1A1C1E] text-headline2', titleClassName)}>{title}</h1>
+					<h1 className={cn('text-headline2 font-bold text-[#1A1C1E]', titleClassName)}>{title}</h1>
 					{description ? (
-						<p className="font-medium text-body1 text-label-subtle">{description}</p>
+						<p className="text-body1 font-medium text-label-subtle">{description}</p>
 					) : null}
 				</div>
 			</div>
@@ -624,7 +624,7 @@ export const FeedbackForm = ({
 	if (feedbackQuery.isPending) {
 		return (
 			<SafeAreaAppLayout className="h-dvh bg-background-normal">
-				<div className="flex flex-1 items-center justify-center font-medium text-body2 text-label-subtle">
+				<div className="flex flex-1 items-center justify-center text-body2 font-medium text-label-subtle">
 					피드백 정보를 불러오고 있어요.
 				</div>
 			</SafeAreaAppLayout>
@@ -743,7 +743,7 @@ export const FeedbackForm = ({
 				>
 					<X className="size-6" aria-hidden="true" />
 				</button>
-				<h1 className="font-semibold text-body1 text-label-normal">세션 피드백</h1>
+				<h1 className="text-body1 font-semibold text-label-normal">세션 피드백</h1>
 			</header>
 
 			<main
@@ -759,31 +759,31 @@ export const FeedbackForm = ({
 				>
 					{step === 'satisfaction' ? (
 						<>
-							<p className="font-bold text-headline2 text-label-assistive">
+							<p className="text-headline2 font-bold text-label-assistive">
 								{feedbackInfo.sessionName}
 							</p>
-							<h2 className="mt-1 font-bold text-headline2 text-label-normal">
+							<h2 className="mt-1 text-headline2 font-bold text-label-normal">
 								이번 세션에 얼마나 만족하셨나요? <span className="text-primary-normal">*</span>
 							</h2>
 						</>
 					) : step === 'positive' ? (
 						<>
-							<h2 className="font-bold text-headline2 text-label-normal">
+							<h2 className="text-headline2 font-bold text-label-normal">
 								이번 세션에서 특히 좋았던 부분이 있었나요?{' '}
 								<span className="text-primary-normal">*</span>
 							</h2>
-							<p className="font-medium text-body1 text-label-subtle">최대 2개까지 선택해주세요.</p>
+							<p className="text-body1 font-medium text-label-subtle">최대 2개까지 선택해주세요.</p>
 						</>
 					) : step === 'improvement' ? (
 						<>
-							<h2 className="font-bold text-headline2 text-label-normal">
+							<h2 className="text-headline2 font-bold text-label-normal">
 								이번 세션에서 개선이 필요한 부분이 있었나요?{' '}
 								<span className="text-primary-normal">*</span>
 							</h2>
-							<p className="font-medium text-body1 text-label-subtle">최대 2개까지 선택해주세요.</p>
+							<p className="text-body1 font-medium text-label-subtle">최대 2개까지 선택해주세요.</p>
 						</>
 					) : (
-						<h2 className="font-bold text-headline2 text-label-normal">
+						<h2 className="text-headline2 font-bold text-label-normal">
 							세션에 대해 더 전하고 싶은 이야기가 있나요?
 						</h2>
 					)}
@@ -799,7 +799,7 @@ export const FeedbackForm = ({
 								<label
 									key={option.value}
 									className={cn(
-										'flex h-[50px] cursor-pointer items-center justify-between rounded-lg border px-4 font-medium text-body2 transition-colors',
+										'flex h-[50px] cursor-pointer items-center justify-between rounded-lg border px-4 text-body2 font-medium transition-colors',
 										selected
 											? 'border-[1.5px] border-label-normal text-label-normal'
 											: 'border-line-normal text-label-assistive hover:border-line-subtle hover:bg-background-subtle',
@@ -849,7 +849,7 @@ export const FeedbackForm = ({
 						</fieldset>
 						{positiveReasons.includes('ETC') && (
 							<div className="flex flex-col gap-3">
-								<label htmlFor="positive-etc" className="font-bold text-label-normal text-title2">
+								<label htmlFor="positive-etc" className="text-title2 font-bold text-label-normal">
 									기타 의견 <span className="text-primary-normal">*</span>
 								</label>
 								<textarea
@@ -860,7 +860,7 @@ export const FeedbackForm = ({
 									onFocus={handleTextAreaFocus}
 									placeholder="어떤 부분이 좋았는지 적어주세요."
 									maxLength={100}
-									className="h-[120px] w-full resize-none rounded-lg border border-line-normal bg-background-normal p-4 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
+									className="h-[120px] w-full resize-none rounded-lg border border-line-normal bg-background-normal p-4 text-body2 font-medium text-label-normal outline-none placeholder:text-body2 placeholder:leading-[142%] placeholder:font-medium placeholder:tracking-normal placeholder:text-label-assistive"
 								/>
 							</div>
 						)}
@@ -887,7 +887,7 @@ export const FeedbackForm = ({
 							<div className="flex flex-col gap-3">
 								<label
 									htmlFor="improvement-etc"
-									className="font-bold text-label-normal text-title2"
+									className="text-title2 font-bold text-label-normal"
 								>
 									기타 의견 <span className="text-primary-normal">*</span>
 								</label>
@@ -899,7 +899,7 @@ export const FeedbackForm = ({
 									onFocus={handleTextAreaFocus}
 									placeholder="어떤 부분의 개선이 필요한지 적어주세요."
 									maxLength={100}
-									className="h-[120px] w-full resize-none rounded-lg border border-line-normal bg-background-normal p-4 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
+									className="h-[120px] w-full resize-none rounded-lg border border-line-normal bg-background-normal p-4 text-body2 font-medium text-label-normal outline-none placeholder:text-body2 placeholder:leading-[142%] placeholder:font-medium placeholder:tracking-normal placeholder:text-label-assistive"
 								/>
 							</div>
 						)}
@@ -914,7 +914,7 @@ export const FeedbackForm = ({
 						onFocus={handleTextAreaFocus}
 						placeholder="앞에서 고른 항목의 이유나 그 밖의 의견을 자유롭게 남겨주세요. (선택)"
 						maxLength={1000}
-						className="h-[120px] w-full shrink-0 resize-none rounded-lg border border-line-normal p-3 font-medium text-body2 text-label-normal outline-none placeholder:font-medium placeholder:text-body2 placeholder:text-label-assistive placeholder:leading-[142%] placeholder:tracking-normal"
+						className="h-[120px] w-full shrink-0 resize-none rounded-lg border border-line-normal p-3 text-body2 font-medium text-label-normal outline-none placeholder:text-body2 placeholder:leading-[142%] placeholder:font-medium placeholder:tracking-normal placeholder:text-label-assistive"
 					/>
 				)}
 			</main>
@@ -922,7 +922,7 @@ export const FeedbackForm = ({
 			<footer className="shrink-0 bg-background-normal">
 				{(step === 'satisfaction' || step === 'comment') && (
 					<div className="bg-background-subtle px-4 py-4">
-						<p className="font-medium text-body2 text-label-tertiary">
+						<p className="text-body2 font-medium text-label-tertiary">
 							• 이름과 팀은 운영진 결과 화면에 표시되지 않아요.
 						</p>
 					</div>
@@ -930,6 +930,7 @@ export const FeedbackForm = ({
 				<div className="px-4 pt-4 pb-4">
 					<div
 						className="mb-4 flex gap-1"
+						// oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- 단계별 막대와 현재 진행 값을 함께 제공한다.
 						role="progressbar"
 						aria-valuemin={1}
 						aria-valuemax={4}
@@ -981,10 +982,10 @@ export const FeedbackForm = ({
 					className="w-[calc(100%-2rem)] gap-5 rounded-[20px] p-5 min-[512px]:w-[480px]"
 				>
 					<DialogHeader className="gap-2 text-left">
-						<DialogTitle className="font-bold text-label-normal text-title1">
+						<DialogTitle className="text-title1 font-bold text-label-normal">
 							피드백을 그만둘까요?
 						</DialogTitle>
-						<DialogDescription className="font-medium text-body2 text-label-subtle">
+						<DialogDescription className="text-body2 font-medium text-label-subtle">
 							작성중인 내용이 사라져요.
 						</DialogDescription>
 					</DialogHeader>

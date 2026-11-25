@@ -30,13 +30,13 @@ export const SessionCard = ({ session, isAttendanceOpen }: SessionCardProps) => 
 					{!isAttendanceOpen ? (
 						<Link
 							href={`/attendance/me/${session.id}/absence-reason`}
-							className="shrink-0 text-[10px] text-label-assistive leading-4"
+							className="shrink-0 text-[10px] leading-4 text-label-assistive"
 						>
 							이번주 참석이 어렵다면 &gt;
 						</Link>
 					) : null}
 				</div>
-				<h3 className="truncate font-semibold text-body1 text-label-normal" title={session.name}>
+				<h3 className="truncate text-body1 font-semibold text-label-normal" title={session.name}>
 					{session.name}
 				</h3>
 			</div>

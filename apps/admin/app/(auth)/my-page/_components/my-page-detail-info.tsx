@@ -30,11 +30,11 @@ const MyPageDetailInfoContainer = () => {
 		>
 			<MypPageBox className="flex flex-col gap-y-5">
 				<div className="flex flex-col gap-y-2">
-					<p className="font-semibold text-body2 text-label-assistive">메일</p>
+					<p className="text-body2 font-semibold text-label-assistive">메일</p>
 					<p className="text-body2 text-label-subtle">{myMemberInfo.email}</p>
 				</div>
 				<div className="flex flex-col gap-y-2">
-					<p className="font-semibold text-body2 text-label-assistive">기수</p>
+					<p className="text-body2 font-semibold text-label-assistive">기수</p>
 					<p className="text-body2 text-label-subtle">{formatCohort(myMemberInfo.cohort)}기</p>
 				</div>
 			</MypPageBox>
@@ -48,7 +48,7 @@ function MyPageDetailWithdrawBox() {
 
 	return (
 		<MypPageBox className="flex flex-col gap-y-5">
-			<p className="font-semibold text-body2 text-label-assistive">계정 관리</p>
+			<p className="text-body2 font-semibold text-label-assistive">계정 관리</p>
 			<LogoutBottomSheet>
 				<Pressable
 					disabled={!!isMutating}

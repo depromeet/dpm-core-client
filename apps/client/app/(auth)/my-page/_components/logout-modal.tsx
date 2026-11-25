@@ -51,7 +51,7 @@ const LogoutModal = ({ children }: PropsWithChildren) => {
 			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent showCloseButton={false}>
 				<DialogTitle className="sr-only">로그아웃할까요?</DialogTitle>
-				<DialogHeader className="text-left font-bold text-title1">로그아웃할까요?</DialogHeader>
+				<DialogHeader className="text-left text-title1 font-bold">로그아웃할까요?</DialogHeader>
 				<DialogFooter>
 					<Pressable
 						className="flex-1"

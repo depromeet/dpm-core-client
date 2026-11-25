@@ -127,14 +127,13 @@ mkdir src/types
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
-    "format": "biome format --write .",
-    "lint": "biome lint --write ."
+    "format": "oxfmt --config ../../.oxfmtrc.json .",
+    "lint": "oxlint --config ../../.oxlintrc.json --fix ."
   },
   "dependencies": {
     // 필요한 의존성 추가
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
     "tsup": "^8.0.1",
     "typescript": "^5"
   },

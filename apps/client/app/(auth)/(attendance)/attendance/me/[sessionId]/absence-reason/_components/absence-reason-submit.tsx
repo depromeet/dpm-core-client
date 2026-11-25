@@ -10,7 +10,7 @@ import {
 	useSuspenseQueries,
 } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import 'dayjs/locale/ko';
+import koreanLocale from 'dayjs/locale/ko';
 import { HTTPError } from 'ky';
 import type { ApiErrorReponse, ImageResponse, Session } from '@dpm-core/api';
 import {
@@ -97,14 +97,14 @@ function SessionInfoCard({ week, name, date, place, isOnline }: SessionInfoCardP
 		{ label: '세션 주차', value: `${week}주차` },
 		{
 			label: '세션 날짜',
-			value: dayjs(date).locale('ko').format('YY.MM.DD (ddd) HH:mm'),
+			value: dayjs(date).locale(koreanLocale.name).format('YY.MM.DD (ddd) HH:mm'),
 		},
 		{ label: '세션 장소', value: isOnline ? '온라인' : place },
 	];
 
 	return (
 		<section className="flex flex-col gap-4 px-4 py-5">
-			<p className="font-bold text-label-normal text-title1">결석 사유서 제출</p>
+			<p className="text-title1 font-bold text-label-normal">결석 사유서 제출</p>
 			<div className="flex flex-col gap-3 rounded-lg bg-background-subtle px-5 py-3 text-body2">
 				{rows.map(({ label, value }) => (
 					<div key={label} className="flex gap-4">

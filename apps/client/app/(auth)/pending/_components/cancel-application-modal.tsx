@@ -61,7 +61,7 @@ const CancelApplicationModal = ({ children }: PropsWithChildren) => {
 				className="max-w-[min(343px,calc(100%-2rem))] gap-5 rounded-[20px] p-5 sm:max-w-[343px]"
 			>
 				<DialogHeader className="text-left">
-					<DialogTitle className="font-bold text-title1 tracking-[-0.2px]">
+					<DialogTitle className="text-title1 font-bold tracking-[-0.2px]">
 						가입 신청을 취소하시겠어요?
 					</DialogTitle>
 				</DialogHeader>

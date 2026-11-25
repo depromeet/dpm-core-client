@@ -15,7 +15,7 @@ interface AttendanceMemberDetailContainerProps {
 	memberId: number;
 }
 
-export const _AttendanceMemberDetailContainer = (props: AttendanceMemberDetailContainerProps) => {
+export const AttendanceMemberDetailContainerContent = (props: AttendanceMemberDetailContainerProps) => {
 	const { memberId } = props;
 	const router = useRouter();
 
@@ -29,7 +29,7 @@ export const _AttendanceMemberDetailContainer = (props: AttendanceMemberDetailCo
 				<Button variant="none" size="none" onClick={() => router.back()} asChild>
 					<ChevronLeft />
 				</Button>
-				<h1 className="-translate-x-1/2 absolute left-1/2 font-semibold text-body1">
+				<h1 className="absolute left-1/2 -translate-x-1/2 text-body1 font-semibold">
 					{data.member.name}
 				</h1>
 			</header>
@@ -46,7 +46,7 @@ export const AttendanceMemberDetailContainer = (props: AttendanceMemberDetailCon
 	return (
 		<ErrorBoundary fallback>
 			<Suspense>
-				<_AttendanceMemberDetailContainer memberId={memberId} />
+				<AttendanceMemberDetailContainerContent memberId={memberId} />
 			</Suspense>
 		</ErrorBoundary>
 	);

@@ -35,8 +35,8 @@ const MyPageAvatarInfoContainer = () => {
 				/>
 			</div>
 			<div className="flex flex-col gap-y-1 text-center">
-				<p className="font-semibold text-label-normal text-title1">{myMemberInfo.name}</p>
-				<p className="text-label-assistive text-xs">{myMemberInfo.email}</p>
+				<p className="text-title1 font-semibold text-label-normal">{myMemberInfo.name}</p>
+				<p className="text-xs text-label-assistive">{myMemberInfo.email}</p>
 			</div>
 		</motion.div>
 	);

@@ -61,7 +61,7 @@ export const NoticeCard = ({
 				</div>
 			)}
 			<div className="flex flex-col gap-2">
-				<p className="line-clamp-1 font-semibold text-body1 text-label-normal">{title}</p>
+				<p className="line-clamp-1 text-body1 font-semibold text-label-normal">{title}</p>
 				<div className="flex items-center gap-1 text-caption1 text-label-assistive">
 					<span>{date}</span>
 					<div className="h-3 w-px bg-gray-400" />
