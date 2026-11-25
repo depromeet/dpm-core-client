@@ -1,0 +1,58 @@
+name: Client Storybook Preview
+
+on: deployment_status
+
+permissions: {}
+
+jobs:
+  comment:
+    if: >-
+      github.event.deployment_status.state == 'success' &&
+      github.event.deployment_status.creator.login == 'vercel[bot]' &&
+      github.event.deployment.environment == 'Preview – dpm-core-client-client' &&
+      github.event.deployment.production_environment == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    concurrency:
+      group: client-storybook-preview-${{ github.event.deployment.sha }}
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      DEPLOYMENT_SHA: ${{ github.event.deployment.sha }}
+      PREVIEW_URL: ${{ github.event.deployment_status.environment_url }}
+    steps:
+      - name: Publish Storybook link
+        shell: bash
+        run: |
+          if [[ ! "$DEPLOYMENT_SHA" =~ ^[0-9a-f]{40}$ ]] ||
+            [[ ! "$PREVIEW_URL" =~ ^https://dpm-core-client-client-[a-z0-9-]+\.vercel\.app$ ]]; then
+            echo "Client Preview의 커밋 또는 주소를 확인할 수 없습니다." >&2
+            exit 1
+          fi
+
+          prs=$(gh api "repos/$GITHUB_REPOSITORY/commits/$DEPLOYMENT_SHA/pulls" --paginate --jq             '.[] | select(.state == "open" and (.base.ref == "develop" or .base.ref == "main") and .head.repo.full_name == env.GITHUB_REPOSITORY and .head.sha == env.DEPLOYMENT_SHA) | .number')
+
+          marker='<!-- client-storybook-preview -->'
+          body=$(printf '%s\n\n%s\n' "$marker" "[Client Storybook 미리보기 열기](${PREVIEW_URL}/storybook/)")
+
+          for pr_number in $prs; do
+            files=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$pr_number/files" --paginate --jq '.[] | .filename')
+            if ! grep -Eq '^(apps/client/|packages/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|\.nvmrc$)' <<< "$files"; then
+              continue
+            fi
+
+            current=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$pr_number" --jq '.state + " " + .head.sha')
+            if [ "$current" != "open $DEPLOYMENT_SHA" ]; then
+              continue
+            fi
+
+            comments="repos/$GITHUB_REPOSITORY/issues/$pr_number/comments"
+            comment_id=$(gh api "$comments" --paginate --jq               '.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- client-storybook-preview -->"))) | .id' | sed -n '1p')
+            if [ -n "$comment_id" ]; then
+              gh api --method PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$comment_id" -f body="$body" --silent
+            else
+              gh api --method POST "$comments" -f body="$body" --silent
+            fi
+          done

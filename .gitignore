@@ -56,6 +56,7 @@ yarn-error.log*
 
 # Etc
 /apps/client/storybook-static/
+/apps/client/public/storybook/
 *storybook.log
 *.tsbuildinfo
 

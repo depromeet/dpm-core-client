@@ -1,0 +1,17 @@
+{
+	"extends": ["//"],
+	"tasks": {
+		"build": {
+			"inputs": [
+				"$TURBO_EXTENDS$",
+				"!.next/**",
+				"!.turbo/**",
+				"!storybook-static/**",
+				"!public/storybook/**",
+				"!**/*.tsbuildinfo",
+				"!*storybook.log"
+			],
+			"outputs": ["$TURBO_EXTENDS$", "public/storybook/**"]
+		}
+	}
+}
