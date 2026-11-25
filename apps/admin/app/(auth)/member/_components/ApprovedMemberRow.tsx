@@ -15,6 +15,7 @@ import { InlineOptionSelect } from './InlineOptionSelect';
 import { MemberActivityStatus } from './MemberActivityStatus';
 import { MemberFieldChip, MemberPartChip } from './MemberFieldChip';
 import { MemberLoginMethodIcon } from './MemberLoginMethodIcon';
+import type { CohortItem } from '@dpm-core/api';
 
 const PART_OPTIONS = PART_ORDER.map((value) => ({ value, label: PART_LABEL[value] }));
 const MEMBER_TYPE_OPTIONS = MEMBER_TYPE_ORDER.map((value) => ({
@@ -27,6 +28,7 @@ const teamLabel = (teamNumber: number) =>
 interface ApprovedMemberRowProps {
 	row: MemberRow;
 	teamNumbers: number[];
+	cohorts: CohortItem[];
 	isSelected: boolean;
 	onToggle: () => void;
 	isEditing: boolean;
@@ -41,6 +43,7 @@ interface ApprovedMemberRowProps {
 export const ApprovedMemberRow = ({
 	row,
 	teamNumbers,
+	cohorts,
 	isSelected,
 	onToggle,
 	isEditing,
@@ -58,6 +61,15 @@ export const ApprovedMemberRow = ({
 		{ value: UNASSIGNED_TEAM_NUMBER, label: '미배정' },
 		...teamNumbers.map((number) => ({ value: number, label: `${number}팀` })),
 	];
+
+	const cohortOptions = [
+		...cohorts.map((cohort) => 
+			({ value: cohort.cohortId, label: `${cohort.cohortNumber}기` })
+	),
+	];
+
+	const cohortLabel = (cohortId: number) => 
+		(cohortOptions.find((option) => cohortId === option.value))?.label ?? ''
 
 	return (
 		<TableRow
@@ -116,6 +128,21 @@ export const ApprovedMemberRow = ({
 					</InlineOptionSelect>
 				) : (
 					<MemberFieldChip label={MEMBER_TYPE_LABEL[row.memberType]} />
+				)}
+			</TableCell>
+
+			{/* 기수 행 */}
+			<TableCell className="w-32 px-3">
+				{isEditing ? (
+					<InlineOptionSelect
+						options={cohortOptions}
+						value={current.cohortId}
+						onChange={(value) => onChange('cohortId', value)}
+					>
+						<MemberFieldChip label={cohortLabel(current.cohortId)} editable />
+					</InlineOptionSelect>
+				) : (
+					<MemberFieldChip label={cohortLabel(row.cohortId)} />
 				)}
 			</TableCell>
 

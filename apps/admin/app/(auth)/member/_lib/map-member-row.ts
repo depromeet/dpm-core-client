@@ -30,6 +30,7 @@ export function mapMemberRow(member: MemberManagementSummary): MemberRow {
 		part: member.part,
 		memberType: member.memberType,
 		teamNumber: member.teamNumber,
+		cohortId: member.cohortId ?? 0,
 		status: member.status,
 		activityStatus,
 		isGraduationRisk: activityStatus === 'AT_RISK',

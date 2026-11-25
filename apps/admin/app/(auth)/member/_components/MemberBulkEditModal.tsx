@@ -27,6 +27,7 @@ const PART_PICKER_OPTIONS: SegmentedOption[] = [
 const FIELD_TITLE: Record<MemberEditableField, string> = {
 	part: '파트 수정',
 	teamNumber: '팀 수정',
+	cohortId: '기수 수정',
 	memberType: '멤버 타입 수정',
 };
 
