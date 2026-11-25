@@ -1,4 +1,5 @@
 import { type RefObject, useEffect } from 'react';
+import type { AppPlatform } from '@dpm-core/shared';
 
 type KeyboardFrame = {
 	screenY: number;
@@ -82,17 +83,19 @@ function connectNativeKeyboardLayout(
 }
 
 export function useFeedbackKeyboardLayout(
-	active: boolean,
+	platform: AppPlatform | null,
 	contentRef: RefObject<HTMLElement | null>,
 	keepFocusedFieldVisible: () => void,
 ) {
 	useEffect(() => {
 		const content = contentRef.current;
 		const form = content?.parentElement;
-		if (!active || !form || !content) return;
+		if (!platform || !form || !content) return;
 
-		const disconnect = connectNativeKeyboardLayout(content, form, keepFocusedFieldVisible);
-		if (disconnect) return disconnect;
+		if (platform === 'ios') {
+			const disconnect = connectNativeKeyboardLayout(content, form, keepFocusedFieldVisible);
+			if (disconnect) return disconnect;
+		}
 
 		let viewportWidth = window.innerWidth;
 		let restingHeight = form.clientHeight;
@@ -117,5 +120,5 @@ export function useFeedbackKeyboardLayout(
 			form.style.removeProperty('padding-bottom');
 			form.style.removeProperty('--feedback-resting-height');
 		};
-	}, [active, contentRef, keepFocusedFieldVisible]);
+	}, [platform, contentRef, keepFocusedFieldVisible]);
 }

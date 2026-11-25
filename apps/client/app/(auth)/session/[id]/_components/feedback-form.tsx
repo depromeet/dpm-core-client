@@ -477,7 +477,7 @@ export const FeedbackForm = ({
 	}, [isIOSApp, keepFocusedFieldVisible]);
 
 	useFeedbackKeyboardLayout(
-		isIOSApp && isFeedbackFormVisible,
+		isApp && isFeedbackFormVisible ? platform : null,
 		formContentRef,
 		keepFocusedFieldVisible,
 	);
