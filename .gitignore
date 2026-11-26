@@ -55,6 +55,8 @@ yarn-error.log*
 *.pem
 
 # Etc
+/apps/client/storybook-static/
+/apps/client/public/storybook/
 *storybook.log
 *.tsbuildinfo
 

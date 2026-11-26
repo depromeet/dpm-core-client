@@ -2,7 +2,7 @@
 
 import { type PropsWithChildren, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { type QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import { HTTPError } from 'ky';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -36,6 +36,17 @@ import { getMyPendingSessionFeedbackQuery } from '@/remotes/queries/session-feed
 
 interface AttendanceCheckBottomSheetProps {
 	sessionId: number;
+	options?: AttendanceCheckBottomSheetOptions;
+}
+
+type AttendanceSubmit = NonNullable<ReturnType<typeof checkAttendanceOptions>['mutationFn']>;
+
+export interface AttendanceCheckBottomSheetOptions {
+	submit: AttendanceSubmit;
+	onSuccess?: (
+		response: Awaited<ReturnType<AttendanceSubmit>>,
+		queryClient: QueryClient,
+	) => void | Promise<void>;
 }
 
 const FORM_ID = 'attendance-form';
@@ -51,6 +62,7 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 export const AttendanceCheckBottomSheet = ({
 	children,
 	sessionId,
+	options,
 }: PropsWithChildren<AttendanceCheckBottomSheetProps>) => {
 	const { isApp } = useAppConfig();
 	const [isOpen, setIsOpen] = useState(false);
@@ -68,8 +80,9 @@ export const AttendanceCheckBottomSheet = ({
 
 	const { mutate: checkAttendance, isPending: isCheckAttendancePending } = useMutation(
 		checkAttendanceOptions(sessionId, {
+			...(options && { mutationFn: options.submit }),
 			onSuccess: async (response) => {
-				gaTrackAttendanceSubmit(sessionId.toString(), 'success');
+				if (!options) gaTrackAttendanceSubmit(sessionId.toString(), 'success');
 
 				const { attendanceStatus } = response.data;
 
@@ -81,16 +94,20 @@ export const AttendanceCheckBottomSheet = ({
 					toast.error('결석 처리 됐어요.');
 				}
 
-				await Promise.all([
-					queryClient.invalidateQueries(getAttendanceMeBySessionIdOptions({ sessionId })),
-					queryClient.invalidateQueries(getAttendanceMeOptions()),
-					queryClient.invalidateQueries(getMyPendingSessionFeedbackQuery()),
-				]);
+				if (options) {
+					await options.onSuccess?.(response, queryClient);
+				} else {
+					await Promise.all([
+						queryClient.invalidateQueries(getAttendanceMeBySessionIdOptions({ sessionId })),
+						queryClient.invalidateQueries(getAttendanceMeOptions()),
+						queryClient.invalidateQueries(getMyPendingSessionFeedbackQuery()),
+					]);
+				}
 
 				handleClose();
 			},
 			onError: async (error) => {
-				gaTrackAttendanceSubmit(sessionId.toString(), 'fail');
+				if (!options) gaTrackAttendanceSubmit(sessionId.toString(), 'fail');
 
 				if (error instanceof HTTPError) {
 					const serverError = (await error.response

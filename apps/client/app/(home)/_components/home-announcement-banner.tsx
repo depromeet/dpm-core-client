@@ -7,11 +7,19 @@ import { Megaphone, Skeleton } from '@dpm-core/shared';
 
 import { getAnnouncementListQuery } from '@/remotes/queries/announcement';
 
-export const HomeAnnouncementBanner = ErrorBoundary.with({ fallback: () => null }, () => (
-	<Suspense fallback={<HomeAnnouncementSkeleton />}>
-		<HomeAnnouncementBannerContainer />
-	</Suspense>
-));
+interface HomeAnnouncementBannerProps {
+	query?: typeof getAnnouncementListQuery;
+}
+
+export const HomeAnnouncementBanner = ({
+	query = getAnnouncementListQuery,
+}: HomeAnnouncementBannerProps) => (
+	<ErrorBoundary fallback={() => null}>
+		<Suspense fallback={<HomeAnnouncementSkeleton />}>
+			<HomeAnnouncementBannerContainer query={query} />
+		</Suspense>
+	</ErrorBoundary>
+);
 
 const HomeAnnouncementSkeleton = () => (
 	<output className="block px-4 pt-5 pb-2" aria-label="공지 불러오는 중">
@@ -19,8 +27,8 @@ const HomeAnnouncementSkeleton = () => (
 	</output>
 );
 
-const HomeAnnouncementBannerContainer = () => {
-	const { data } = useSuspenseQuery(getAnnouncementListQuery);
+const HomeAnnouncementBannerContainer = ({ query }: { query: typeof getAnnouncementListQuery }) => {
+	const { data } = useSuspenseQuery(query);
 	const announcement = data?.data.announcements[0];
 
 	if (!announcement) return null;

@@ -7,6 +7,10 @@ import { toast } from '@dpm-core/shared';
 import { consumeKakaoLoginToast, setLastLoginMethod } from '@/lib/last-login';
 import { getMyMemberInfoQuery } from '@/remotes/queries/member';
 
+export const showKakaoLoginToast = () => {
+	toast.light('카카오톡으로 로그인했어요');
+};
+
 /** 로그인 수단을 기록해 로그인 화면의 '최근 로그인' 배지에 쓰고, 카카오 로그인 직후 안내 토스트를 띄운다. */
 export const LastLoginRecorder = () => {
 	const { data } = useQuery(getMyMemberInfoQuery);
@@ -17,7 +21,7 @@ export const LastLoginRecorder = () => {
 	}, [loginMethod]);
 
 	useEffect(() => {
-		if (consumeKakaoLoginToast()) toast.light('카카오톡으로 로그인했어요');
+		if (consumeKakaoLoginToast()) showKakaoLoginToast();
 	}, []);
 
 	return null;
