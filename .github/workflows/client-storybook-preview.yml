@@ -35,7 +35,7 @@ jobs:
           prs=$(gh api "repos/$GITHUB_REPOSITORY/commits/$DEPLOYMENT_SHA/pulls" --paginate --jq             '.[] | select(.state == "open" and (.base.ref == "develop" or .base.ref == "main") and .head.repo.full_name == env.GITHUB_REPOSITORY and .head.sha == env.DEPLOYMENT_SHA) | .number')
 
           marker='<!-- client-storybook-preview -->'
-          body=$(printf '%s\n\n%s\n' "$marker" "[Client Storybook 미리보기 열기](${PREVIEW_URL}/storybook/)")
+          body=$(printf '%s\n\n%s\n' "$marker" "[🔗 변경된 화면 살펴보기](${PREVIEW_URL}/storybook/)")
 
           for pr_number in $prs; do
             files=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$pr_number/files" --paginate --jq '.[] | .filename')
