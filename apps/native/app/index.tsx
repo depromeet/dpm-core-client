@@ -4,24 +4,12 @@ import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import { SplashScreen, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import {
-	BackHandler,
-	Keyboard,
-	KeyboardAvoidingView,
-	Platform,
-	StyleSheet,
-	View,
-} from 'react-native';
+import { BackHandler, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
-import type {
-	WebView as NativeWebView,
-	WebViewMessageEvent,
-	WebViewNavigation,
-} from 'react-native-webview';
+import type { WebView as NativeWebView, WebViewNavigation } from 'react-native-webview';
 
 import { appBridge } from '@/bridge/app-bridge';
-import { FEEDBACK_KEYBOARD_MESSAGE } from '@/bridge/feedback-keyboard-messages';
-import { useBehavior } from '@/hooks/useBehavior';
+import { useFeedbackKeyboardBridge } from '@/hooks/useFeedbackKeyboardBridge';
 import { getNotificationPath } from '@/lib/notification-route';
 
 export const { WebView } = createWebView({
@@ -31,7 +19,6 @@ export const { WebView } = createWebView({
 
 const WEBVIEW_URL = process.env.EXPO_PUBLIC_WEBVIEW_URL ?? 'https://dev.depromeet.com';
 const FEEDBACK_PATH_PATTERN = /^\/session\/\d+\/feedback\/?$/;
-const ENABLE_FEEDBACK_KEYBOARD_BRIDGE = 'window.dpmFeedbackKeyboardSupported = true; true;';
 
 const getFeedbackLink = (value: string | string[] | undefined) => {
 	if (typeof value !== 'string') return undefined;
@@ -53,8 +40,6 @@ function WebViewContainer() {
 	const [initialFeedbackUrl] = useState(() => getFeedbackLink(feedbackUrl));
 	const webViewRef = useRef<NativeWebView>(null);
 	const [canGoBack, setCanGoBack] = useState(false);
-	const [feedbackKeyboardReady, setFeedbackKeyboardReady] = useState(false);
-	const behavior = useBehavior();
 	const insets = useSafeAreaInsets();
 
 	const [appIsReady, setAppIsReady] = useState(false);
@@ -69,26 +54,13 @@ function WebViewContainer() {
 	});
 
 	const isIOSFeedback = Platform.OS === 'ios' && isFeedbackRoute;
-	const webManagesFeedbackKeyboard = isIOSFeedback && feedbackKeyboardReady;
-
-	useEffect(() => {
-		if (!webManagesFeedbackKeyboard) return;
-
-		const sendFrame = (screenY: number, height: number, duration: number, easing: string) => {
-			const frame = JSON.stringify({ screenY, height, duration, easing, at: Date.now() });
-			webViewRef.current?.injectJavaScript(
-				`window.dispatchEvent(new CustomEvent('dpm-feedback-keyboard-frame', { detail: ${frame} })); true;`,
-			);
-		};
-		const currentKeyboard = Keyboard.metrics();
-		if (currentKeyboard) sendFrame(currentKeyboard.screenY, currentKeyboard.height, 0, 'linear');
-
-		const subscription = Keyboard.addListener('keyboardWillChangeFrame', (event) => {
-			const { screenY, height } = event.endCoordinates;
-			sendFrame(screenY, height, event.duration, event.easing);
-		});
-		return () => subscription.remove();
-	}, [webManagesFeedbackKeyboard]);
+	const {
+		keyboardAvoidanceEnabled,
+		keyboardBehavior,
+		handleFeedbackKeyboardMessage,
+		resetFeedbackKeyboard,
+		bridgeScript,
+	} = useFeedbackKeyboardBridge(webViewRef, isIOSFeedback);
 
 	useEffect(() => {
 		function syncFeedbackUrl() {
@@ -157,38 +129,22 @@ function WebViewContainer() {
 		try {
 			const isFeedback = FEEDBACK_PATH_PATTERN.test(new URL(navState.url).pathname);
 			setIsFeedbackRoute(isFeedback);
-			if (!isFeedback) setFeedbackKeyboardReady(false);
+			if (!isFeedback) resetFeedbackKeyboard();
 		} catch {
 			setIsFeedbackRoute(false);
-			setFeedbackKeyboardReady(false);
-		}
-	};
-
-	const handleFeedbackKeyboardMessage = ({ nativeEvent }: WebViewMessageEvent) => {
-		if (Platform.OS !== 'ios') return;
-
-		try {
-			const message: unknown = JSON.parse(nativeEvent.data);
-			if (typeof message !== 'object' || message === null || !('type' in message)) return;
-
-			if (message.type === FEEDBACK_KEYBOARD_MESSAGE.READY) setFeedbackKeyboardReady(true);
-			if (message.type === FEEDBACK_KEYBOARD_MESSAGE.INACTIVE) setFeedbackKeyboardReady(false);
-		} catch {
-			// Ignore messages that are not JSON.
+			resetFeedbackKeyboard();
 		}
 	};
 
 	const platformStr = Platform.OS === 'ios' ? 'iOS' : 'Android';
 	const version = Constants.expoConfig?.version ?? '1.0.0';
 	const insetsStr = `${Math.round(insets.top)},${Math.round(insets.right)},${Math.round(insets.bottom)},${Math.round(insets.left)}`;
-	// Keep iOS keyboard avoidance active before the keyboard opens on feedback screens.
-	const keyboardBehavior = isIOSFeedback ? 'padding' : behavior;
 
 	return (
 		<View style={styles.container}>
 			<KeyboardAvoidingView
 				behavior={keyboardBehavior}
-				enabled={!webManagesFeedbackKeyboard}
+				enabled={keyboardAvoidanceEnabled}
 				style={styles.container}
 			>
 				<WebView
@@ -197,12 +153,10 @@ function WebViewContainer() {
 					source={{ uri: webViewUrl }}
 					applicationNameForUserAgent={`DPMApp/${version} (${platformStr}; Insets=${insetsStr})`}
 					onNavigationStateChange={handleNavigationChanage}
-					onLoadStart={() => setFeedbackKeyboardReady(false)}
+					onLoadStart={resetFeedbackKeyboard}
 					onLoadEnd={handleWebViewLoadEnd}
 					onMessage={handleFeedbackKeyboardMessage}
-					injectedJavaScriptBeforeContentLoaded={
-						Platform.OS === 'ios' ? ENABLE_FEEDBACK_KEYBOARD_BRIDGE : undefined
-					}
+					injectedJavaScriptBeforeContentLoaded={bridgeScript}
 					scrollEnabled={!isIOSFeedback}
 					overScrollMode="never"
 					bounces={false}
