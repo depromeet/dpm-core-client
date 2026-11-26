@@ -32,6 +32,8 @@ import { useClarity } from '@/providers/client-clarity-adapter';
 import { submitSessionFeedbackOptions } from '@/remotes/mutations/session-feedback';
 import { getSessionFeedbackMeQuery } from '@/remotes/queries/session-feedback';
 
+import { useFeedbackKeyboardLayout } from './use-feedback-keyboard-layout';
+
 interface FeedbackFormProps {
 	sessionId: number;
 	returnTo: '/' | '/session';
@@ -118,6 +120,36 @@ const FEEDBACK_STATUS_VIEW_ACTION = {
 } satisfies Record<Exclude<SessionFeedbackMyStatus, 'AVAILABLE'>, FeedbackClarityAction>;
 
 const getFeedbackStepIndex = (step: FeedbackStep) => FEEDBACK_STEPS.indexOf(step);
+
+function getTextareaCaretBounds(field: HTMLTextAreaElement, mirror: HTMLDivElement) {
+	const style = window.getComputedStyle(field);
+	Object.assign(mirror.style, {
+		width: `${field.clientWidth}px`,
+		padding: style.padding,
+		fontFamily: style.fontFamily,
+		fontSize: style.fontSize,
+		fontWeight: style.fontWeight,
+		fontStyle: style.fontStyle,
+		lineHeight: style.lineHeight,
+		letterSpacing: style.letterSpacing,
+		wordBreak: style.wordBreak,
+		overflowWrap: style.overflowWrap,
+	});
+
+	// Mirror line wrapping so we can locate the caret within a partially clipped textarea.
+	const selectionOffset =
+		field.selectionDirection === 'backward' ? field.selectionStart : field.selectionEnd;
+	const caret = document.createElement('span');
+	caret.textContent = field.value.slice(selectionOffset) || '\u200b';
+	mirror.replaceChildren(field.value.slice(0, selectionOffset), caret);
+	const caretRect = caret.getClientRects()[0];
+	const offset = field.getBoundingClientRect().top + field.clientTop - field.scrollTop;
+	const mirrorTop = mirror.getBoundingClientRect().top;
+	mirror.replaceChildren();
+	if (!caretRect) return null;
+
+	return { top: offset + caretRect.top - mirrorTop, bottom: offset + caretRect.bottom - mirrorTop };
+}
 
 interface FeedbackResultScreenProps {
 	icon: ReactNode;
@@ -444,6 +476,67 @@ export const FeedbackForm = ({
 		};
 	}, [isIOSApp, keepFocusedFieldVisible]);
 
+	useFeedbackKeyboardLayout(
+		isApp && isFeedbackFormVisible ? platform : null,
+		formContentRef,
+		keepFocusedFieldVisible,
+	);
+
+	useEffect(() => {
+		const content = formContentRef.current;
+		if (!isIOSApp || !isFeedbackFormVisible || !content) return;
+
+		const mirror = document.createElement('div');
+		mirror.setAttribute('aria-hidden', 'true');
+		mirror.setAttribute('data-clarity-mask', 'true');
+		mirror.style.cssText =
+			'position:fixed;top:0;left:0;visibility:hidden;pointer-events:none;white-space:pre-wrap;box-sizing:border-box';
+		document.body.append(mirror);
+
+		let animationFrame = 0;
+		let hiddenCaret: HTMLTextAreaElement | null = null;
+		const updateCaret = () => {
+			animationFrame = 0;
+			const field = document.activeElement;
+			let fieldToHide: HTMLTextAreaElement | null = null;
+
+			if (field instanceof HTMLTextAreaElement && content.contains(field)) {
+				const { top, bottom } = content.getBoundingClientRect();
+				const bounds = field.getBoundingClientRect();
+
+				if (bounds.bottom <= top || bounds.top >= bottom) {
+					fieldToHide = field;
+				} else if (bounds.top < top || bounds.bottom > bottom) {
+					const caret = getTextareaCaretBounds(field, mirror);
+					if (caret && (caret.top < top || caret.bottom > bottom)) fieldToHide = field;
+				}
+			}
+
+			if (hiddenCaret === fieldToHide) return;
+			hiddenCaret?.style.removeProperty('caret-color');
+			fieldToHide?.style.setProperty('caret-color', 'transparent');
+			hiddenCaret = fieldToHide;
+		};
+		const scheduleCaretUpdate = () => {
+			if (!animationFrame) animationFrame = requestAnimationFrame(updateCaret);
+		};
+
+		const events = ['focusin', 'focusout', 'input', 'scroll'] as const;
+		for (const event of events) content.addEventListener(event, scheduleCaretUpdate, true);
+		document.addEventListener('selectionchange', scheduleCaretUpdate);
+		const observer = new ResizeObserver(scheduleCaretUpdate);
+		observer.observe(content);
+
+		return () => {
+			for (const event of events) content.removeEventListener(event, scheduleCaretUpdate, true);
+			document.removeEventListener('selectionchange', scheduleCaretUpdate);
+			observer.disconnect();
+			cancelAnimationFrame(animationFrame);
+			hiddenCaret?.style.removeProperty('caret-color');
+			mirror.remove();
+		};
+	}, [isIOSApp, isFeedbackFormVisible]);
+
 	const stepIndex = getFeedbackStepIndex(step);
 	const canMoveNext =
 		step === 'satisfaction'
@@ -637,7 +730,10 @@ export const FeedbackForm = ({
 	}
 
 	return (
-		<SafeAreaAppLayout hasBottomSafeArea className="h-dvh bg-background-normal">
+		<SafeAreaAppLayout
+			hasBottomSafeArea
+			className="h-dvh min-h-0 overflow-clip bg-background-normal"
+		>
 			<header className="relative flex h-12 shrink-0 items-center justify-center px-4 py-3">
 				<button
 					type="button"
@@ -653,7 +749,7 @@ export const FeedbackForm = ({
 			<main
 				ref={formContentRef}
 				className={cn(
-					'flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pt-5',
+					'flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-y-contain px-4 pt-5',
 					step === 'satisfaction' ? 'gap-6' : 'gap-5',
 					step === 'comment' && 'pb-4',
 				)}
