@@ -1,4 +1,5 @@
 import { type RefObject, useEffect } from 'react';
+import { FEEDBACK_KEYBOARD_MESSAGE } from '@dpm-core/native/feedback-keyboard-messages';
 import type { AppPlatform } from '@dpm-core/shared';
 
 type KeyboardFrame = {
@@ -71,14 +72,14 @@ function connectNativeKeyboardLayout(
 	};
 
 	window.addEventListener('dpm-feedback-keyboard-frame', onFrame);
-	bridge.postMessage(JSON.stringify({ type: 'dpmFeedbackKeyboardReady' }));
+	bridge.postMessage(JSON.stringify({ type: FEEDBACK_KEYBOARD_MESSAGE.READY }));
 	return () => {
 		window.removeEventListener('dpm-feedback-keyboard-frame', onFrame);
 		observer.disconnect();
 		animation?.cancel();
 		form.style.removeProperty('height');
 		form.style.removeProperty('padding-bottom');
-		bridge.postMessage(JSON.stringify({ type: 'dpmFeedbackKeyboardInactive' }));
+		bridge.postMessage(JSON.stringify({ type: FEEDBACK_KEYBOARD_MESSAGE.INACTIVE }));
 	};
 }
 

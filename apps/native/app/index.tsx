@@ -20,6 +20,7 @@ import type {
 } from 'react-native-webview';
 
 import { appBridge } from '@/bridge/app-bridge';
+import { FEEDBACK_KEYBOARD_MESSAGE } from '@/bridge/feedback-keyboard-messages';
 import { useBehavior } from '@/hooks/useBehavior';
 import { getNotificationPath } from '@/lib/notification-route';
 
@@ -30,8 +31,6 @@ export const { WebView } = createWebView({
 
 const WEBVIEW_URL = process.env.EXPO_PUBLIC_WEBVIEW_URL ?? 'https://dev.depromeet.com';
 const FEEDBACK_PATH_PATTERN = /^\/session\/\d+\/feedback\/?$/;
-const FEEDBACK_KEYBOARD_READY = JSON.stringify({ type: 'dpmFeedbackKeyboardReady' });
-const FEEDBACK_KEYBOARD_INACTIVE = JSON.stringify({ type: 'dpmFeedbackKeyboardInactive' });
 const ENABLE_FEEDBACK_KEYBOARD_BRIDGE = 'window.dpmFeedbackKeyboardSupported = true; true;';
 
 const getFeedbackLink = (value: string | string[] | undefined) => {
@@ -167,8 +166,16 @@ function WebViewContainer() {
 
 	const handleFeedbackKeyboardMessage = ({ nativeEvent }: WebViewMessageEvent) => {
 		if (Platform.OS !== 'ios') return;
-		if (nativeEvent.data === FEEDBACK_KEYBOARD_READY) setFeedbackKeyboardReady(true);
-		if (nativeEvent.data === FEEDBACK_KEYBOARD_INACTIVE) setFeedbackKeyboardReady(false);
+
+		try {
+			const message: unknown = JSON.parse(nativeEvent.data);
+			if (typeof message !== 'object' || message === null || !('type' in message)) return;
+
+			if (message.type === FEEDBACK_KEYBOARD_MESSAGE.READY) setFeedbackKeyboardReady(true);
+			if (message.type === FEEDBACK_KEYBOARD_MESSAGE.INACTIVE) setFeedbackKeyboardReady(false);
+		} catch {
+			// Ignore messages that are not JSON.
+		}
 	};
 
 	const platformStr = Platform.OS === 'ios' ? 'iOS' : 'Android';
