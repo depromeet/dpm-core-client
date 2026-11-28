@@ -47,6 +47,9 @@ export const PROFILE_FORM_ACTION = {
 export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 	HOME: {
 		VIEWED: 'viewed',
+		BANNER_STATE_ACTIVE: 'banner_state_active',
+		BANNER_STATE_INACTIVE: 'banner_state_inactive',
+		BANNER_STATE_NO_SESSION: 'banner_state_no_session',
 		ATTENDANCE_BANNER_VIEWED: 'attendance_banner_viewed',
 		ATTENDANCE_BANNER_CLICKED: 'attendance_banner_clicked',
 		VOC_BUTTON_CLICK: 'voc_button_click',
