@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useCallback, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
@@ -14,8 +15,11 @@ import type {
 import { ArrowRight, Button, CheckIcon } from '@dpm-core/shared';
 
 import Iconttendance3D from '@/assets/icons/icon_attendance_3d.png';
+import { CLARITY_ACTION_ID } from '@/constants/clarity';
+import { useFeedbackImpression } from '@/hooks/use-feedback-impression';
 import { formatISOStringToFullDateString } from '@/lib/date';
 import { formatSessionWeekString } from '@/lib/session/format';
+import { useClarity } from '@/providers/client-clarity-adapter';
 import {
 	getAttendanceMeBySessionIdOptions,
 	getMyAbsenceReasonOptions,
@@ -33,6 +37,10 @@ export const HomeCheckAttendanceBanner = ({
 	isAttendanceOpen,
 }: HomeCheckAttendanceBannerProps) => {
 	const reduceMotion = useReducedMotion();
+
+	const { track } = useClarity();
+	const hasViewedBanner = useRef(false);
+
 	const now = dayjs();
 	const isVisible =
 		attendanceSession.canRecordAttendance &&
@@ -51,6 +59,19 @@ export const HomeCheckAttendanceBanner = ({
 	const absenceReasonStatus = absenceReasonQuery.data?.data?.status;
 	const visible =
 		isVisible && !absenceReasonQuery.isPending && (data || absenceReasonStatus === 'PENDING');
+
+	const handleBannerView = useCallback(() => {
+		if (hasViewedBanner.current) return;
+		hasViewedBanner.current = true;
+		try {
+			track(CLARITY_ACTION_ID.HOME.ATTENDANCE_BANNER_VIEWED);
+		} catch {
+			// 분석 이벤트 실패가 홈 화면에 영향을 주지 않도록 한다.
+		}
+	}, [track]);
+
+	const bannerRef = useFeedbackImpression<HTMLDivElement>(Boolean(visible), handleBannerView);
+
 	const transition = { duration: reduceMotion ? 0 : 0.28, ease: 'easeOut' as const };
 
 	return (
@@ -71,6 +92,7 @@ export const HomeCheckAttendanceBanner = ({
 						className="pb-5"
 					>
 						<div
+							ref={bannerRef}
 							data-coachmark={
 								isAttendanceOpen &&
 								data?.data.attendance.status === 'PENDING' &&
@@ -113,6 +135,8 @@ const HomeCheckAttendanceBannerContent = ({
 	attendanceMeBySessionId,
 	absenceReasonStatus,
 }: HomeCheckAttendanceBannerContentProps) => {
+	const { track } = useClarity();
+
 	const attendanceStatus = attendanceMeBySessionId?.attendance.status ?? 'PENDING';
 	const attendedAt = attendanceMeBySessionId?.attendance.attendedAt ?? null;
 	const isReviewPending = absenceReasonStatus === 'PENDING';
@@ -153,7 +177,18 @@ const HomeCheckAttendanceBannerContent = ({
 				</div>
 				<div className="flex flex-col items-center gap-3">
 					<AttendanceCheckBottomSheet sessionId={attendanceSession.id}>
-						<Button className="mt-5 w-full" variant="primary" size="lg">
+						<Button
+							className="mt-5 w-full"
+							variant="primary"
+							size="lg"
+							onClick={() => {
+								try {
+									track(CLARITY_ACTION_ID.HOME.ATTENDANCE_BANNER_CLICKED);
+								} catch {
+									// 분석 이벤트 실패가 출석 코드 시트 열기를 막지 않도록 한다.
+								}
+							}}
+						>
 							출석체크하기
 							<ArrowRight />
 						</Button>

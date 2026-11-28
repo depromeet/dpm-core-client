@@ -46,6 +46,8 @@ export const PROFILE_FORM_ACTION = {
 /** client Clarity 액션 ID */
 export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 	HOME: {
+		ATTENDANCE_BANNER_VIEWED: 'attendance_banner_viewed',
+		ATTENDANCE_BANNER_CLICKED: 'attendance_banner_clicked',
 		VOC_BUTTON_CLICK: 'voc_button_click',
 		FEEDBACK_CARD_VIEW: 'feedback_card_view',
 		FEEDBACK_BUTTON_CLICK: 'feedback_button_click',
