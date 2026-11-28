@@ -53,6 +53,7 @@ export const CLARITY_ACTION_ID = defineClarityActionIds(CLARITY_PAGE_ID, {
 		ATTENDANCE_BANNER_VIEWED: 'attendance_banner_viewed',
 		ATTENDANCE_BANNER_CLICKED: 'attendance_banner_clicked',
 		VOC_BUTTON_CLICK: 'voc_button_click',
+		GUIDE_BANNER_CLICKED: 'guide_banner_clicked',
 		FEEDBACK_CARD_VIEW: 'feedback_card_view',
 		FEEDBACK_BUTTON_CLICK: 'feedback_button_click',
 	},
