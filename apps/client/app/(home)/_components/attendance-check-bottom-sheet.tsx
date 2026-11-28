@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { HTTPError } from 'ky';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import type { ApiErrorReponse } from '@dpm-core/api';
+import type { ApiErrorReponse, AttendanceStatus } from '@dpm-core/api';
 import {
 	CircleAlert,
 	Drawer,
@@ -26,7 +26,9 @@ import {
 } from '@dpm-core/shared';
 
 import { Pressable } from '@/components/motion';
+import { CLARITY_ACTION_ID, type ClarityActionId } from '@/constants/clarity';
 import { useAppConfig } from '@/providers/app-config-provider';
+import { useClarity } from '@/providers/client-clarity-adapter';
 import { checkAttendanceOptions } from '@/remotes/mutations/attendance';
 import {
 	getAttendanceMeBySessionIdOptions,
@@ -48,11 +50,29 @@ const FormSchema = z.object({
 
 type FormSchemaType = z.infer<typeof FormSchema>;
 
+const { HOME } = CLARITY_ACTION_ID;
+
+const attendanceCodeSuccessActions = new Map<AttendanceStatus, ClarityActionId>([
+	['PRESENT', HOME.ATTENDANCE_CODE_SUCCEEDED_PRESENT],
+	['LATE', HOME.ATTENDANCE_CODE_SUCCEEDED_LATE],
+	['ABSENT', HOME.ATTENDANCE_CODE_SUCCEEDED_ABSENT],
+]);
+
+const attendanceCodeFailureActions = new Map<string, ClarityActionId>([
+	['SESSION-400-02', HOME.ATTENDANCE_CODE_FAILED_MISMATCH],
+	['SESSION-400-03', HOME.ATTENDANCE_CODE_FAILED_TOO_EARLY],
+	['SESSION-400-04', HOME.ATTENDANCE_CODE_FAILED_ALREADY_RECORDED],
+	['SESSION-400-06', HOME.ATTENDANCE_CODE_FAILED_EXPIRED],
+	['SESSION-400-07', HOME.ATTENDANCE_CODE_FAILED_FINALIZED],
+	['ATTENDANCE-403-01', HOME.ATTENDANCE_CODE_FAILED_FORBIDDEN],
+]);
+
 export const AttendanceCheckBottomSheet = ({
 	children,
 	sessionId,
 }: PropsWithChildren<AttendanceCheckBottomSheetProps>) => {
 	const { isApp } = useAppConfig();
+	const { track } = useClarity();
 	const [isOpen, setIsOpen] = useState(false);
 	const [isValidationError, setIsValidationError] = useState(false);
 
@@ -66,52 +86,72 @@ export const AttendanceCheckBottomSheet = ({
 
 	const queryClient = useQueryClient();
 
-	const { mutate: checkAttendance, isPending: isCheckAttendancePending } = useMutation(
-		checkAttendanceOptions(sessionId, {
-			onSuccess: async (response) => {
-				gaTrackAttendanceSubmit(sessionId.toString(), 'success');
+	const trackAttendanceCode = (actionId: ClarityActionId) => {
+		try {
+			track(actionId);
+		} catch {
+			// 분석 이벤트 실패가 출석 인증에 영향을 주지 않도록 한다.
+		}
+	};
 
-				const { attendanceStatus } = response.data;
+	const { mutate: checkAttendance, isPending: isCheckAttendancePending } = useMutation({
+		...checkAttendanceOptions(sessionId),
+		onSuccess: async (response) => {
+			gaTrackAttendanceSubmit(sessionId.toString(), 'success');
 
-				if (attendanceStatus === 'PRESENT') {
-					toast.success('출석했어요.');
-				} else if (attendanceStatus === 'LATE') {
-					toast.success('출석했어요. 오늘은 조금 늦었네요.');
-				} else if (attendanceStatus === 'ABSENT') {
-					toast.error('결석 처리 됐어요.');
-				}
+			const { attendanceStatus } = response.data;
+			trackAttendanceCode(
+				attendanceCodeSuccessActions.get(attendanceStatus) ?? HOME.ATTENDANCE_CODE_SUCCEEDED,
+			);
 
-				await Promise.all([
-					queryClient.invalidateQueries(getAttendanceMeBySessionIdOptions({ sessionId })),
-					queryClient.invalidateQueries(getAttendanceMeOptions()),
-					queryClient.invalidateQueries(getMyPendingSessionFeedbackQuery()),
-				]);
+			if (attendanceStatus === 'PRESENT') {
+				toast.success('출석했어요.');
+			} else if (attendanceStatus === 'LATE') {
+				toast.success('출석했어요. 오늘은 조금 늦었네요.');
+			} else if (attendanceStatus === 'ABSENT') {
+				toast.error('결석 처리 됐어요.');
+			}
 
-				handleClose();
-			},
-			onError: async (error) => {
-				gaTrackAttendanceSubmit(sessionId.toString(), 'fail');
+			await Promise.all([
+				queryClient.invalidateQueries(getAttendanceMeBySessionIdOptions({ sessionId })),
+				queryClient.invalidateQueries(getAttendanceMeOptions()),
+				queryClient.invalidateQueries(getMyPendingSessionFeedbackQuery()),
+			]);
 
-				if (error instanceof HTTPError) {
-					const serverError = (await error.response
-						.json()
-						.catch(() => null)) as Partial<ApiErrorReponse> | null;
+			handleClose();
+		},
+		onError: async (error) => {
+			gaTrackAttendanceSubmit(sessionId.toString(), 'fail');
 
-					if (serverError?.code === 'SESSION-400-02') {
-						setIsValidationError(true);
-					} else {
-						const message =
-							typeof serverError?.message === 'string' ? serverError.message.trim() : '';
-						toast.error(message || '운영진에게 문의해 주세요.');
-					}
+			const isHttpError = error instanceof HTTPError;
+			const serverError = isHttpError
+				? ((await error.response.json().catch(() => null)) as Partial<ApiErrorReponse> | null)
+				: null;
+			const failureAction = (() => {
+				if (!isHttpError) return HOME.ATTENDANCE_CODE_FAILED_NETWORK;
 
-					return;
-				}
+				return (
+					attendanceCodeFailureActions.get(serverError?.code ?? '') ??
+					HOME.ATTENDANCE_CODE_FAILED_OTHER
+				);
+			})();
+			trackAttendanceCode(failureAction);
 
+			if (!isHttpError) {
 				toast.error('네트워크 상태를 확인해 주세요.');
-			},
-		}),
-	);
+
+				return;
+			}
+
+			if (serverError?.code === 'SESSION-400-02') {
+				setIsValidationError(true);
+
+				return;
+			}
+			const message = typeof serverError?.message === 'string' ? serverError.message.trim() : '';
+			toast.error(message || '운영진에게 문의해 주세요.');
+		},
+	});
 
 	const isSubmitDisabled = !form.formState.isValid || isCheckAttendancePending;
 
@@ -128,11 +168,14 @@ export const AttendanceCheckBottomSheet = ({
 	};
 
 	const handleSubmitCode = (data: FormSchemaType) => {
+		trackAttendanceCode(HOME.ATTENDANCE_CODE_SUBMITTED);
 		checkAttendance(data);
 	};
 
 	const handleOpenChange = (open: boolean) => {
-		if (!open) {
+		if (open) {
+			trackAttendanceCode(HOME.ATTENDANCE_CODE_VIEWED);
+		} else {
 			handleReset();
 		}
 		setIsOpen(open);
