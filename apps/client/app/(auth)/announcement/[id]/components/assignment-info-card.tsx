@@ -1,5 +1,7 @@
 import { ExternalLink } from 'lucide-react';
 
+import { useExternalLinkClick } from '@/hooks/use-external-link-click';
+
 interface AssignmentInfoCardProps {
 	dueAt?: string;
 	assignmentType?: 'INDIVIDUAL' | 'TEAM' | null;
@@ -16,6 +18,8 @@ export const AssignmentInfoCard = ({
 	assignmentType,
 	submitLink,
 }: AssignmentInfoCardProps) => {
+	const handleExternalLinkClick = useExternalLinkClick();
+
 	return (
 		<div className="flex flex-col gap-3 rounded-xl bg-background-subtle p-4">
 			<div className="flex gap-6 text-body2 font-medium">
@@ -33,6 +37,7 @@ export const AssignmentInfoCard = ({
 					<span className="shrink-0 text-label-subtle">과제 링크</span>
 					<a
 						href={submitLink}
+						onClick={handleExternalLinkClick}
 						target="_blank"
 						rel="noopener noreferrer"
 						className="flex min-w-0 flex-1 items-center gap-1 text-label-normal"
