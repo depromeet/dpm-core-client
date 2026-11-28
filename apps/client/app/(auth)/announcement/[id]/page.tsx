@@ -10,6 +10,7 @@ import { AppHeader } from '@/components/app-header';
 import { SafeAreaAppLayout } from '@/components/app-layout';
 import { ErrorBox, ErrorBoxFallback } from '@/components/error-box';
 import { LoadingBox } from '@/components/loading-box';
+import { useExternalLinkClick } from '@/hooks/use-external-link-click';
 import { formatISOStringToDotDate, formatISOStringToKoreanDate } from '@/lib/date';
 import { getAnnouncementDetailQuery } from '@/remotes/queries/announcement';
 
@@ -36,6 +37,8 @@ interface NoticeDetailContentProps {
 
 const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 	const queryClient = useQueryClient();
+	const handleExternalLinkClick = useExternalLinkClick();
+
 	const {
 		data: { data: detail },
 	} = useSuspenseQuery(getAnnouncementDetailQuery(announcementId));
@@ -98,6 +101,7 @@ const NoticeDetailContent = ({ announcementId }: NoticeDetailContentProps) => {
 
 			<div
 				className="ProseMirror text-body2 font-medium wrap-break-word text-label-normal"
+				onClick={handleExternalLinkClick}
 				dangerouslySetInnerHTML={{ __html: detail.content }}
 			/>
 
