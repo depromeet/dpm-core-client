@@ -19,6 +19,7 @@ import { HomeAnnouncementBanner } from './_components/home-announcement-banner';
 import { HomeBannerList } from './_components/home-banner-list';
 import { HomeCoachmark } from './_components/home-coachmark';
 import { HomeHeader } from './_components/home-header';
+import { HomeViewTracker } from './_components/home-view-tracker';
 import { MemberStatusRedirect } from './_components/member-status-redirect';
 import { UserActionList } from './_components/user-action-list';
 
@@ -65,6 +66,7 @@ export default function HomePage() {
 		<SafeAreaAppLayout hasBottomTabBar className="h-dvh">
 			<LoginReturnToRedirect />
 			<GAPageTracker type="home" />
+			<HomeViewTracker />
 			<HomeHeader />
 			<main className="scrollbar-hide flex-1 overflow-auto">
 				<HydrationBoundary state={dehydratedState}>
