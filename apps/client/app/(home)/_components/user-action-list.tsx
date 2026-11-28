@@ -1,6 +1,6 @@
 'use client';
 
-import { CLARITY_ACTION_ID } from '@/constants/clarity';
+import { CLARITY_ACTION_ID, ClarityActionId } from '@/constants/clarity';
 import { useOpenExternalUrl } from '@/hooks/use-open-external-url';
 import { useClarity } from '@/providers/client-clarity-adapter';
 
@@ -12,6 +12,15 @@ export const UserActionList = () => {
 	const { track } = useClarity();
 	const { openExternalUrl } = useOpenExternalUrl();
 
+	const handleOpenExternalUrl = async (url: string, actionId: ClarityActionId) => {
+		try {
+			track(actionId);
+		} catch {
+			// 분석 이벤트 실패가 링크 열기를 막지 않도록 한다.
+		}
+		await openExternalUrl(url);
+	};
+
 	return (
 		<section className="px-4 pb-2">
 			<div className="flex gap-3">
@@ -20,10 +29,9 @@ export const UserActionList = () => {
 					data-coachmark="feedback"
 					aria-label="디프만 코어 VOC 수집중!"
 					className="flex basis-1/2 cursor-pointer rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f9faff_59.35%,#eff3ff_73.36%)] p-4 text-left shadow-[0_0_10px_rgba(0,0,0,0.04)]"
-					onClick={async () => {
-						track(CLARITY_ACTION_ID.HOME.VOC_BUTTON_CLICK);
-						await openExternalUrl(USER_VOC_LINK);
-					}}
+					onClick={() =>
+						handleOpenExternalUrl(USER_VOC_LINK, CLARITY_ACTION_ID.HOME.VOC_BUTTON_CLICK)
+					}
 				>
 					<div className="flex w-full flex-wrap items-center justify-between">
 						<p className="text-body2 font-semibold text-label-subtle">
@@ -90,9 +98,9 @@ export const UserActionList = () => {
 				</button>
 				<button
 					type="button"
-					onClick={async () => {
-						await openExternalUrl(USER_GUIDE_LINK);
-					}}
+					onClick={() =>
+						handleOpenExternalUrl(USER_GUIDE_LINK, CLARITY_ACTION_ID.HOME.GUIDE_BANNER_CLICKED)
+					}
 					data-coachmark="user-guide"
 					aria-label="사용 가이드 보러가기"
 					className="flex basis-1/2 cursor-pointer rounded-lg border border-background-normal bg-[linear-gradient(133deg,#ffffff_24.8%,#f8feff_56.78%,#effdff_73.36%)] p-4 text-left shadow-[0_0_10px_rgba(0,0,0,0.04)]"
