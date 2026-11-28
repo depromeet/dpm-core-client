@@ -66,52 +66,51 @@ export const AttendanceCheckBottomSheet = ({
 
 	const queryClient = useQueryClient();
 
-	const { mutate: checkAttendance, isPending: isCheckAttendancePending } = useMutation(
-		checkAttendanceOptions(sessionId, {
-			onSuccess: async (response) => {
-				gaTrackAttendanceSubmit(sessionId.toString(), 'success');
+	const { mutate: checkAttendance, isPending: isCheckAttendancePending } = useMutation({
+		...checkAttendanceOptions(sessionId),
+		onSuccess: async (response) => {
+			gaTrackAttendanceSubmit(sessionId.toString(), 'success');
 
-				const { attendanceStatus } = response.data;
+			const { attendanceStatus } = response.data;
 
-				if (attendanceStatus === 'PRESENT') {
-					toast.success('출석했어요.');
-				} else if (attendanceStatus === 'LATE') {
-					toast.success('출석했어요. 오늘은 조금 늦었네요.');
-				} else if (attendanceStatus === 'ABSENT') {
-					toast.error('결석 처리 됐어요.');
+			if (attendanceStatus === 'PRESENT') {
+				toast.success('출석했어요.');
+			} else if (attendanceStatus === 'LATE') {
+				toast.success('출석했어요. 오늘은 조금 늦었네요.');
+			} else if (attendanceStatus === 'ABSENT') {
+				toast.error('결석 처리 됐어요.');
+			}
+
+			await Promise.all([
+				queryClient.invalidateQueries(getAttendanceMeBySessionIdOptions({ sessionId })),
+				queryClient.invalidateQueries(getAttendanceMeOptions()),
+				queryClient.invalidateQueries(getMyPendingSessionFeedbackQuery()),
+			]);
+
+			handleClose();
+		},
+		onError: async (error) => {
+			gaTrackAttendanceSubmit(sessionId.toString(), 'fail');
+
+			if (error instanceof HTTPError) {
+				const serverError = (await error.response
+					.json()
+					.catch(() => null)) as Partial<ApiErrorReponse> | null;
+
+				if (serverError?.code === 'SESSION-400-02') {
+					setIsValidationError(true);
+				} else {
+					const message =
+						typeof serverError?.message === 'string' ? serverError.message.trim() : '';
+					toast.error(message || '운영진에게 문의해 주세요.');
 				}
 
-				await Promise.all([
-					queryClient.invalidateQueries(getAttendanceMeBySessionIdOptions({ sessionId })),
-					queryClient.invalidateQueries(getAttendanceMeOptions()),
-					queryClient.invalidateQueries(getMyPendingSessionFeedbackQuery()),
-				]);
+				return;
+			}
 
-				handleClose();
-			},
-			onError: async (error) => {
-				gaTrackAttendanceSubmit(sessionId.toString(), 'fail');
-
-				if (error instanceof HTTPError) {
-					const serverError = (await error.response
-						.json()
-						.catch(() => null)) as Partial<ApiErrorReponse> | null;
-
-					if (serverError?.code === 'SESSION-400-02') {
-						setIsValidationError(true);
-					} else {
-						const message =
-							typeof serverError?.message === 'string' ? serverError.message.trim() : '';
-						toast.error(message || '운영진에게 문의해 주세요.');
-					}
-
-					return;
-				}
-
-				toast.error('네트워크 상태를 확인해 주세요.');
-			},
-		}),
-	);
+			toast.error('네트워크 상태를 확인해 주세요.');
+		},
+	});
 
 	const isSubmitDisabled = !form.formState.isValid || isCheckAttendancePending;
 
