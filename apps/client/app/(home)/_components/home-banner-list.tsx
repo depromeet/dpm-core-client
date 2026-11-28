@@ -11,6 +11,7 @@ import { getSessionCurrentOptions } from '@/remotes/queries/session';
 
 import { CohortEndedBanner } from './cohort-ended-banner';
 import { HomeCheckAttendanceBanner } from './home-attendance-banner';
+import { HomeBannerStateReporter } from './home-banner-state-tracker';
 import { HomeFeedbackCard } from './home-feedback-card';
 import { SessionCard } from './session-card';
 
@@ -57,6 +58,7 @@ const HomeBannerListContainer = () => {
 	if (nextSessionHome.status === 'COHORT_ENDED') {
 		return (
 			<section className="px-4 pb-5">
+				<HomeBannerStateReporter state="no_session" />
 				<HomeFeedbackCard isAttendanceOpen={false} />
 				<CohortEndedBanner cohortValue={nextSessionHome.cohortValue} />
 			</section>
@@ -66,6 +68,7 @@ const HomeBannerListContainer = () => {
 	if (!currentWeekSession) {
 		return (
 			<section className="px-4 pb-5">
+				<HomeBannerStateReporter state="no_session" />
 				<HomeFeedbackCard isAttendanceOpen={false} />
 				<Empty className="h-43.5 rounded-lg bg-background-normal p-5">
 					<EmptyHeader className="gap-6">

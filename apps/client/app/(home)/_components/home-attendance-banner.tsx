@@ -26,6 +26,7 @@ import {
 } from '@/remotes/queries/attendance';
 
 import { AttendanceCheckBottomSheet } from './attendance-check-bottom-sheet';
+import { HomeBannerStateReporter } from './home-banner-state-tracker';
 
 interface HomeCheckAttendanceBannerProps {
 	attendanceSession: CurrentWeekSessionResponse;
@@ -48,7 +49,7 @@ export const HomeCheckAttendanceBanner = ({
 			(dayjs(attendanceSession.absentStart).isValid() &&
 				now.isSame(dayjs(attendanceSession.date), 'day') &&
 				!now.isBefore(dayjs(attendanceSession.absentStart))));
-	const { data } = useQuery({
+	const { data, isSuccess: isAttendanceResolved } = useQuery({
 		...getAttendanceMeBySessionIdOptions({ sessionId: attendanceSession.id }),
 		enabled: isVisible,
 	});
@@ -59,6 +60,9 @@ export const HomeCheckAttendanceBanner = ({
 	const absenceReasonStatus = absenceReasonQuery.data?.data?.status;
 	const visible =
 		isVisible && !absenceReasonQuery.isPending && (data || absenceReasonStatus === 'PENDING');
+	const isBannerStateResolved =
+		!isVisible || (isAttendanceResolved && absenceReasonQuery.isSuccess);
+	const bannerState = visible ? 'active' : 'inactive';
 
 	const handleBannerView = useCallback(() => {
 		if (hasViewedBanner.current) return;
@@ -75,43 +79,46 @@ export const HomeCheckAttendanceBanner = ({
 	const transition = { duration: reduceMotion ? 0 : 0.28, ease: 'easeOut' as const };
 
 	return (
-		<AnimatePresence>
-			{visible ? (
-				<motion.div
-					key="attendance-banner"
-					initial={{ height: 0, opacity: 0 }}
-					animate={{ height: 'auto', opacity: 1 }}
-					exit={{ height: 0, opacity: 0 }}
-					transition={transition}
-					className="overflow-hidden"
-				>
+		<>
+			{isBannerStateResolved ? <HomeBannerStateReporter state={bannerState} /> : null}
+			<AnimatePresence>
+				{visible ? (
 					<motion.div
-						initial={{ y: reduceMotion ? 0 : -12 }}
-						animate={{ y: 0 }}
+						key="attendance-banner"
+						initial={{ height: 0, opacity: 0 }}
+						animate={{ height: 'auto', opacity: 1 }}
+						exit={{ height: 0, opacity: 0 }}
 						transition={transition}
-						className="pb-5"
+						className="overflow-hidden"
 					>
-						<div
-							ref={bannerRef}
-							data-coachmark={
-								isAttendanceOpen &&
-								data?.data.attendance.status === 'PENDING' &&
-								absenceReasonStatus !== 'PENDING'
-									? 'attendance-check'
-									: undefined
-							}
-							className="rounded-[10px] bg-background-inverse p-5"
+						<motion.div
+							initial={{ y: reduceMotion ? 0 : -12 }}
+							animate={{ y: 0 }}
+							transition={transition}
+							className="pb-5"
 						>
-							<HomeCheckAttendanceBannerContent
-								attendanceSession={attendanceSession}
-								attendanceMeBySessionId={data?.data}
-								absenceReasonStatus={absenceReasonStatus}
-							/>
-						</div>
+							<div
+								ref={bannerRef}
+								data-coachmark={
+									isAttendanceOpen &&
+									data?.data.attendance.status === 'PENDING' &&
+									absenceReasonStatus !== 'PENDING'
+										? 'attendance-check'
+										: undefined
+								}
+								className="rounded-[10px] bg-background-inverse p-5"
+							>
+								<HomeCheckAttendanceBannerContent
+									attendanceSession={attendanceSession}
+									attendanceMeBySessionId={data?.data}
+									absenceReasonStatus={absenceReasonStatus}
+								/>
+							</div>
+						</motion.div>
 					</motion.div>
-				</motion.div>
-			) : null}
-		</AnimatePresence>
+				) : null}
+			</AnimatePresence>
+		</>
 	);
 };
 
