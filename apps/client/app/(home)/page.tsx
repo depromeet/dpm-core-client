@@ -17,6 +17,7 @@ import { getSessionCurrentOptions } from '@/remotes/queries/session';
 import { AppleProfileSetupSheet } from './_components/apple-profile-setup-sheet';
 import { HomeAnnouncementBanner } from './_components/home-announcement-banner';
 import { HomeBannerList } from './_components/home-banner-list';
+import { HomeBannerStateTracker } from './_components/home-banner-state-tracker';
 import { HomeCoachmark } from './_components/home-coachmark';
 import { HomeHeader } from './_components/home-header';
 import { HomeViewTracker } from './_components/home-view-tracker';
@@ -71,7 +72,9 @@ export default function HomePage() {
 			<main className="scrollbar-hide flex-1 overflow-auto">
 				<HydrationBoundary state={dehydratedState}>
 					<HomeAnnouncementBanner />
-					<HomeBannerList />
+					<HomeBannerStateTracker>
+						<HomeBannerList />
+					</HomeBannerStateTracker>
 				</HydrationBoundary>
 				<UserActionList />
 			</main>
